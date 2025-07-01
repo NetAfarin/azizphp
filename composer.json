@@ -1,0 +1,16 @@
+{
+    "name": "leon/fw",
+    "description": "a simple PHP Framework",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Netafarin",
+            "email": "netafarin@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}
