@@ -13,7 +13,7 @@ class Router
         $method = $segments[1] ?? 'index';
         $params = array_slice($segments, 2);
 
-        $controllerFile = __DIR__ . '/../Controllers/' . $controllerName . '.php';
+        $controllerFile = BASE_PATH . '/app/Controllers/' . $controllerName . '.php';
 
         if (file_exists($controllerFile)) {
             require_once $controllerFile;

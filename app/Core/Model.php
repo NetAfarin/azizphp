@@ -12,7 +12,9 @@ abstract class Model
 
     public function __construct(array $data = [])
     {
-        $this->fill($data);
+        if (!empty($data)) {
+            $this->fill($data);
+        }
     }
 
     public function fill(array $data): void
@@ -40,7 +42,8 @@ abstract class Model
     {
         $instance = new static();
         $stmt = Database::pdo()->query("SELECT * FROM {$instance->table}");
-        return $stmt->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn($row) => new static($row), $results);
     }
 
     public static function find(int $id): ?static
@@ -48,8 +51,8 @@ abstract class Model
         $instance = new static();
         $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE id = ?");
         $stmt->execute([$id]);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
-        return $stmt->fetch() ?: null;
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $data ? new static($data) : null;
     }
 
     public static function where(string $column, $value): array
@@ -57,7 +60,8 @@ abstract class Model
         $instance = new static();
         $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE {$column} = ?");
         $stmt->execute([$value]);
-        return $stmt->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn($row) => new static($row), $rows);
     }
 
     public function save(): bool
@@ -71,24 +75,25 @@ abstract class Model
         $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
 
         $stmt = Database::pdo()->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
-        $result = $stmt->execute($values);
+        $success = $stmt->execute($values);
 
-        if ($result) {
+        if ($success) {
             $this->attributes['id'] = Database::pdo()->lastInsertId();
         }
 
-        return $result;
+        return $success;
     }
 
     protected function update(): bool
     {
-        $setClause = implode(', ', array_map(fn($col) => "$col = ?", $this->fillable));
+        $set = implode(', ', array_map(fn($col) => "$col = ?", $this->fillable));
         $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
         $values[] = $this->attributes['id'];
 
-        $stmt = Database::pdo()->prepare("UPDATE {$this->table} SET $setClause WHERE id = ?");
+        $stmt = Database::pdo()->prepare("UPDATE {$this->table} SET $set WHERE id = ?");
         return $stmt->execute($values);
     }
+
 
     public function delete(): bool
     {
