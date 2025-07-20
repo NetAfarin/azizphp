@@ -15,9 +15,7 @@ class UserController extends Controller
             return;
         }
 
-        $this->view('user/show', [
-            'user' => $user,
-        ]);
+        $this->view('user/show', ['user' => $user,'title' => 'پروفایل کاربر',]);
     }
 
     public function register()
@@ -58,27 +56,25 @@ class UserController extends Controller
                     $errors[] = "ذخیره کاربر با خطا مواجه شد.";
                 }
             }
-
-            return $this->view('user/register', compact('errors', 'success'));
+            $this->view('user/register', ['title' => 'ثبت نام کاربر', 'errors' => $errors, 'success' => $success]);
         }
-
-        // نمایش فرم خام (GET)
-        $this->view('user/register');
     }
 
     public function login()
     {
-        session_start(); // شروع سشن
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
         $errors = [];
-        $success = false;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $phone = $_POST['phone_number'] ?? '';
             $password = $_POST['password'] ?? '';
 
-            if (strlen($phone) !== 11) {
-                $errors[] = "شماره موبایل باید ۱۱ رقم باشد.";
+            // اعتبارسنجی
+            if (strlen($phone) !== 11 || !ctype_digit($phone)) {
+                $errors[] = "شماره موبایل باید ۱۱ رقم عددی باشد.";
             }
 
             if (empty($password)) {
@@ -91,14 +87,39 @@ class UserController extends Controller
                 if ($user && password_verify($password, $user->password)) {
                     $_SESSION['user_id'] = $user->id;
                     $_SESSION['user_name'] = $user->first_name;
-                    $success = true;
+
+                    $_SESSION['flash_success'] = __('login_success');
+
+                    header("Location: " . BASE_URL . "/home/index");
+                    exit;
                 } else {
                     $errors[] = "اطلاعات ورود اشتباه است.";
                 }
             }
         }
 
-        $this->view('user/login', compact('errors', 'success'));
+        $this->view('user/login', [
+            'title' => __('login'),
+            'errors' => $errors
+        ]);
+    }
+
+    public function logout()
+    {
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $lang = $_SESSION['lang'] ?? 'fa';
+
+        $_SESSION['flash_success'] = __('logout_success');
+
+        session_unset();
+        session_destroy();
+
+        header("Location: " . BASE_URL . "/user/login?lang={$lang}");
+        exit;
     }
 
 }

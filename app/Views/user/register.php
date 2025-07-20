@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>فرم ثبت‌نام</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container mt-5">
+<h2 class="mb-4">فرم ثبت ‌نام</h2>
 
-<h2 class="mb-4">ثبت‌نام کاربر جدید</h2>
-
-<?php if (!empty($errors)): ?>
+<?php if (!empty($errors)):    ?>
     <div class="alert alert-danger">
         <ul>
             <?php foreach ($errors as $e): ?>
@@ -21,7 +12,7 @@
 
 <?php if (!empty($success)): ?>
     <div class="alert alert-success">
-        کاربر با موفقیت ثبت شد ✅
+        ثبت ‌نام با موفقیت انجام شد ✅
     </div>
 <?php endif; ?>
 
@@ -50,7 +41,4 @@
         <button type="submit" class="btn btn-primary">ثبت‌نام</button>
     </div>
 </form>
-
-</body>
-</html>
 

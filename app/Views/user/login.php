@@ -1,10 +1,4 @@
-<?php
-$title = "ورود به حساب کاربری";
-include BASE_PATH . '/app/Views/layout/header.php';
-
-?>
-
-<h2>فرم ورود</h2>
+<h2 class="mb-4">فرم ورود</h2>
 
 <?php if (!empty($errors)): ?>
     <div class="alert alert-danger">
@@ -37,9 +31,4 @@ include BASE_PATH . '/app/Views/layout/header.php';
         <button type="submit" class="btn btn-primary">ورود</button>
     </div>
 </form>
-
-<!-- فرم و محتوا اینجا... -->
-
-<?php include BASE_PATH . '/app/Views/layout/footer.php'; ?>
-
 
