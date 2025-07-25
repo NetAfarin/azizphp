@@ -30,10 +30,11 @@ $bootstrapCss = $dir === 'rtl'
 
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <span class="navbar-text">
-            <?= __('hello_user', ['name' => htmlspecialchars($userName)]) ?>
-        </span>
-
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <span class="navbar-text">
+        <?= __('hello_user', ['name' => htmlspecialchars($userName)]) ?>
+    </span>
+        <?php endif; ?>
         <div class="d-flex align-items-center gap-2">
             <a href="?lang=fa" class="btn btn-sm btn-outline-primary">🇮🇷 فارسی</a>
             <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>

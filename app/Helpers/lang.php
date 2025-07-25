@@ -1,5 +1,6 @@
 <?php
-function __($key) {
+function __($key, array $replace = []): string
+{
     static $translations;
 
     if (!$translations) {
@@ -11,5 +12,11 @@ function __($key) {
         }
     }
 
-    return $translations[$key] ?? $key;
+    $line = $translations[$key] ?? $key;
+
+    foreach ($replace as $k => $v) {
+        $line = str_replace(":$k", $v, $line);
+    }
+
+    return $line;
 }

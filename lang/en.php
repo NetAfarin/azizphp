@@ -2,7 +2,7 @@
 
 return [
     'welcome' => 'Welcome to your custom framework 🎉',
-    'login' => 'Login',
+    'login' => 'Login to your account',
     'register' => 'Register',
     'first_name' => 'First Name',
     'last_name' => 'Last Name',
@@ -14,4 +14,11 @@ return [
     'hello_user' => 'Hello, :name',
     'logout_success' => 'You have successfully logged out ✅',
     'login_success' => 'Login successfully ✅',
+    'name_required' => 'Name is too short.',
+    'phone_invalid' => 'Phone number must be 11 digits.',
+    'password_short' => 'Password must be at least 6 characters.',
+    'phone_taken' => 'This phone number is already registered.',
+    'user_save_error' => 'User save failed.',
+    'login_failed' => 'Login credentials are incorrect.',
+    'password_required' => 'Password cannot be empty.',
 ];

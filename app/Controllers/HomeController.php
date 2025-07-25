@@ -2,13 +2,16 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Middleware\Auth;
 
 class HomeController extends Controller
 {
     public function index(): void
     {
+        Auth::check();
+
         $this->view('home/index', [
-            'title' => 'به فریمورک خودت خوش اومدی 🎉',
+            'title' => __('dashboard'),
             'message' => 'ساختار پایه به‌درستی کار می‌کند!'
         ]);
     }

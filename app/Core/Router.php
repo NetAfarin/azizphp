@@ -3,30 +3,37 @@ namespace App\Core;
 
 class Router
 {
+    protected array $routes;
+
+    public function __construct()
+    {
+        require BASE_PATH . '/routes/web.php';
+        $this->routes = Route::all();
+    }
+
     public function dispatch()
     {
-        $url = $_GET['url'] ?? '';
-        $url = trim($url, '/');
-        $segments = explode('/', $url);
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = str_replace('/fw/public', '', $uri);
 
-        $controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'HomeController';
-        $method = $segments[1] ?? 'index';
-        $params = array_slice($segments, 2);
+        if (isset($this->routes[$method][$uri])) {
+            [$controller, $action, $middlewares] = $this->routes[$method][$uri];
 
-        $controllerFile = BASE_PATH . '/app/Controllers/' . $controllerName . '.php';
-
-        if (file_exists($controllerFile)) {
-            require_once $controllerFile;
-            $controllerClass = 'App\\Controllers\\' . $controllerName;
-            $controller = new $controllerClass;
-
-            if (method_exists($controller, $method)) {
-                call_user_func_array([$controller, $method], $params);
-            } else {
-                echo "Method '$method' not found";
+            // اجرای middlewareها
+            foreach ($middlewares as $mw) {
+                $mwClass = "App\\Middleware\\" . ucfirst($mw);
+                if (class_exists($mwClass) && method_exists($mwClass, 'check')) {
+                    $mwClass::check();
+                }
             }
+
+            $instance = new $controller;
+            $instance->$action();
         } else {
-            echo "Controller '$controllerName' not found";
+            http_response_code(404);
+            echo "404 - مسیر یافت نشد: $uri";
         }
     }
+
 }

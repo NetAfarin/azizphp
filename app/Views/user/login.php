@@ -1,4 +1,4 @@
-<h2 class="mb-4">فرم ورود</h2>
+<h1><?= __('login') ?></h1>
 
 <?php if (!empty($errors)): ?>
     <div class="alert alert-danger">
@@ -10,25 +10,22 @@
     </div>
 <?php endif; ?>
 
-<?php if (!empty($success)): ?>
+<?php if (!empty($_SESSION['flash_success'])): ?>
     <div class="alert alert-success">
-        خوش آمدید <?= $_SESSION['user_name'] ?> ✅
+        <?= $_SESSION['flash_success'] ?>
+        <?php unset($_SESSION['flash_success']); ?>
     </div>
 <?php endif; ?>
 
 <form method="post" class="row g-3">
-    <div class="col-md-6">
-        <label class="form-label">شماره موبایل</label>
-        <input type="text" name="phone_number" class="form-control" required>
+    <div class="mb-3">
+        <label for="phone_number"><?= __('phone_number') ?></label>
+        <input type="text" class="form-control" name="phone_number" id="phone_number">
+    </div>
+    <div class="mb-3">
+        <label for="password"><?= __('password') ?></label>
+        <input type="password" class="form-control" name="password" id="password">
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label">رمز عبور</label>
-        <input type="password" name="password" class="form-control" required>
-    </div>
-
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">ورود</button>
-    </div>
+    <button type="submit" class="btn btn-primary"><?= __('submit') ?></button>
 </form>
-
