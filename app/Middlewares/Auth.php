@@ -1,7 +1,8 @@
 <?php
-namespace App\Middleware;
 
-class Guest
+namespace App\Middlewares;
+
+class Auth
 {
     public static function check(): void
     {
@@ -9,8 +10,8 @@ class Guest
             session_start();
         }
 
-        if (isset($_SESSION['user_id'])) {
-            header("Location: " . BASE_URL . "/home/index");
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: " . BASE_URL . "/user/login");
             exit;
         }
     }

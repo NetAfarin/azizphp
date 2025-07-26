@@ -2,7 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use App\Middleware\Auth;
+use App\Middlewares\Auth;
 
 class HomeController extends Controller
 {

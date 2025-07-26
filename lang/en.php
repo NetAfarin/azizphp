@@ -21,4 +21,24 @@ return [
     'user_save_error' => 'User save failed.',
     'login_failed' => 'Login credentials are incorrect.',
     'password_required' => 'Password cannot be empty.',
+
+    'user_not_found' => 'User not found.',
+    'user_profile' => 'User Profile',
+
+    'edit_profile' => 'Edit Profile',
+    'first_name_short' => 'The first name is too short.',
+    'save_changes' => 'Save Changes',
+    'profile_updated' => 'Your profile has been successfully updated.',
+    'save_error' => 'There was an error saving your information.',
+
+    'user_deleted' => 'User deleted successfully.',
+    'delete_failed' => 'Failed to delete the user.',
+
+    'users_list' => 'User List',
+    'user_type' => 'Role',
+    'active' => 'Active',
+    'inactive' => 'Inactive',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'confirm_delete' => 'Are you sure you want to delete this user?',
 ];

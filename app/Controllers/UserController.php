@@ -4,18 +4,23 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\User;
+use App\Middlewares\Role;
 
 class UserController extends Controller
 {
     public function show($id)
     {
+
+        Role::allow(['admin', 'operator']);
+
         $user = User::find((int)$id);
+
         if (!$user) {
-            echo "کاربر پیدا نشد.";
+            echo __('user_not_found');
             return;
         }
 
-        $this->view('user/show', ['user' => $user,'title' => 'پروفایل کاربر',]);
+        $this->view('user/show', ['user' => $user, 'title' => __('user_profile')]);
     }
 
     public function register()
@@ -98,6 +103,8 @@ class UserController extends Controller
                     $_SESSION['user_name'] = $user->first_name;
                     $_SESSION['is_admin'] = $user->is_admin;
                     $_SESSION['flash_success'] = __('login_success');
+                    $user_type = \App\Models\UserType::find($user->user_type);
+                    $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                     $redirect = $user->is_admin ? '/admin/panel' : '/home/index';
                     header("Location: " . BASE_URL . $redirect);
                     exit;
@@ -130,8 +137,178 @@ class UserController extends Controller
     }
     public function panel()
     {
-        AdminOnly::check();
+//        AdminOnly::check();
+        \App\Middlewares\Role::allow(['admin', 'operator']);
         $this->view('admin/panel', ['title' => 'پنل مدیریت']);
     }
+
+//    public function update()
+//    {
+//        if (!isset($_SESSION['user_id'])) {
+//            header("Location: " . BASE_URL . "/user/login");
+//            exit;
+//        }
+//
+//        $errors = [];
+//        $success = false;
+//
+//        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//            $first_name = $_POST['first_name'] ?? '';
+//            $last_name = $_POST['last_name'] ?? '';
+//            $phone = $_POST['phone_number'] ?? '';
+//
+//            if (strlen($first_name) < 2) $errors[] = __('first_name_short');
+//            if (strlen($phone) !== 11) $errors[] = __('phone_invalid');
+//
+//            $user = User::find($_SESSION['user_id']);
+//
+//            if (empty($errors) && $user) {
+//                $user->first_name = $first_name;
+//                $user->last_name = $last_name;
+//                $user->phone_number = $phone;
+//                if ($user->save()) {
+//                    $_SESSION['flash_success'] = __('profile_updated');
+//                    header("Location: " . BASE_URL . "/user/edit");
+//                    exit;
+//                } else {
+//                    $errors[] = __('save_error');
+//                }
+//            }
+//
+//            $this->view('user/edit', [
+//                'title' => __('edit_profile'),
+//                'user' => $user,
+//                'errors' => $errors
+//            ]);
+//        }
+//    }
+//    public function update()
+//    {
+//        Auth::check();
+//
+//        $user = User::find($_SESSION['user_id']);
+//
+//        if (!$user) {
+//            $_SESSION['flash_error'] = __('user_not_found');
+//            header("Location: " . BASE_URL . "/user/login");
+//            exit;
+//        }
+//
+//        $first_name = $_POST['first_name'] ?? '';
+//        $last_name = $_POST['last_name'] ?? '';
+//        $errors = [];
+//
+//        if (strlen($first_name) < 2) $errors[] = __('first_name_short');
+//        if (strlen($last_name) < 2) $errors[] = __('last_name_short');
+//
+//        if (empty($errors)) {
+//            $user->first_name = $first_name;
+//            $user->last_name = $last_name;
+//
+//            if ($user->save()) {
+//                $_SESSION['flash_success'] = __('profile_updated');
+//                header("Location: " . BASE_URL . "/user/profile");
+//                exit;
+//            } else {
+//                $errors[] = __('save_error');
+//            }
+//        }
+//
+//        $this->view('user/profile', [
+//            'title' => __('edit_profile'),
+//            'user' => $user,
+//            'errors' => $errors
+//        ]);
+//    }
+//
+//    public function edit()
+//    {
+//        if (!isset($_SESSION['user_id'])) {
+//            header("Location: " . BASE_URL . "/user/login");
+//            exit;
+//        }
+//
+//        $user = User::find($_SESSION['user_id']);
+//
+//        $this->view('user/edit', [
+//            'title' => __('edit_profile'),
+//            'user' => $user
+//        ]);
+//    }
+
+
+    public function userTypeTitle(): string
+    {
+        $types = [
+            1 => __('admin'),
+            2 => __('operator'),
+            3 => __('customer'),
+        ];
+
+        return $types[$this->user_type] ?? __('unknown');
+    }
+// مشاهده پروفایل کاربر خاص (برای ادمین)
+    public function showProfile($id)
+    {
+        $user = User::find((int)$id);
+        if (!$user) {
+            echo __('user_not_found');
+            return;
+        }
+
+        $this->view('user/show', ['user' => $user, 'title' => __('user_profile')]);
+    }
+
+// فرم ویرایش پروفایل خودم
+    public function edit()
+    {
+        Auth::check();
+        $user = User::find($_SESSION['user_id']);
+
+        $this->view('user/edit', [
+            'title' => __('edit_profile'),
+            'user' => $user
+        ]);
+    }
+
+// ذخیره ویرایش
+    public function update()
+    {
+        Auth::check();
+
+        $errors = [];
+        $user = User::find($_SESSION['user_id']);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $first_name = $_POST['first_name'] ?? '';
+            $last_name = $_POST['last_name'] ?? '';
+            $phone = $_POST['phone_number'] ?? '';
+
+            if (strlen($first_name) < 2) $errors[] = __('first_name_short');
+            if (strlen($phone) !== 11) $errors[] = __('phone_invalid');
+
+            if (empty($errors) && $user) {
+                $user->first_name = $first_name;
+                $user->last_name = $last_name;
+                $user->phone_number = $phone;
+
+                if ($user->save()) {
+                    $_SESSION['flash_success'] = __('profile_updated');
+                    header("Location: " . BASE_URL . "/user/edit");
+                    exit;
+                } else {
+                    $errors[] = __('save_error');
+                }
+            }
+        }
+
+        $this->view('user/edit', [
+            'title' => __('edit_profile'),
+            'user' => $user,
+            'errors' => $errors
+        ]);
+    }
+
+
 
 }

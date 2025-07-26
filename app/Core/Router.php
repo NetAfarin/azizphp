@@ -20,7 +20,6 @@ class Router
         if (isset($this->routes[$method][$uri])) {
             [$controller, $action, $middlewares] = $this->routes[$method][$uri];
 
-            // اجرای middlewareها
             foreach ($middlewares as $mw) {
                 $mwClass = "App\\Middleware\\" . ucfirst($mw);
                 if (class_exists($mwClass) && method_exists($mwClass, 'check')) {

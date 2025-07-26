@@ -24,6 +24,7 @@ class User extends Model
         'register_datetime',
         'user_type',
         'password',
+        'user_type',
         'is_active',
         'deleted'
     ];
@@ -37,4 +38,15 @@ class User extends Model
         $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
         return $stmt->fetch() ?: null;
     }
+    public function getUserType(): ?UserType
+    {
+        return UserType::find($this->user_type);
+    }
+
+    public function getRoleTitle(): string
+    {
+        $type = $this->getUserType();
+        return $type->title ?? __('unknown');
+    }
+
 }
