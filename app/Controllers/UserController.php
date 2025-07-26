@@ -71,6 +71,11 @@ class UserController extends Controller
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        if (isset($_SESSION['user_id'])) {
+            $redirect = ($_SESSION['is_admin'] ?? false) ? '/admin/panel' : '/home/index';
+            header("Location: " . BASE_URL . $redirect);
+            exit;
+        }
 
         $errors = [];
 
@@ -79,11 +84,11 @@ class UserController extends Controller
             $password = $_POST['password'] ?? '';
 
             if (strlen($phone) !== 11 || !ctype_digit($phone)) {
-                $errors[] = "شماره موبایل باید ۱۱ رقم عددی باشد.";
+                $errors[] = __('phone_invalid');
             }
 
             if (empty($password)) {
-                $errors[] = "رمز عبور نمی‌تواند خالی باشد.";
+                $errors[] = __('password_required');
             }
 
             if (empty($errors)) {
@@ -93,19 +98,16 @@ class UserController extends Controller
                     $_SESSION['user_name'] = $user->first_name;
                     $_SESSION['is_admin'] = $user->is_admin;
                     $_SESSION['flash_success'] = __('login_success');
-
-                    header("Location: " . BASE_URL . "/home/index");
+                    $redirect = $user->is_admin ? '/admin/panel' : '/home/index';
+                    header("Location: " . BASE_URL . $redirect);
                     exit;
                 } else {
-                    $errors[] = "اطلاعات ورود اشتباه است.";
+                    $errors[] = __('login_failed');
                 }
             }
         }
 
-        $this->view('user/login', [
-            'title' => __('login'),
-            'errors' => $errors
-        ]);
+        $this->view('user/login', ['title' => __('login'), 'errors' => $errors]);
     }
 
 

@@ -16,6 +16,7 @@ class User extends Model
     // ستون‌هایی که مجاز به fill شدن هستند
 
     protected array $fillable = [
+        'id',
         'first_name',
         'last_name',
         'birth_date',
