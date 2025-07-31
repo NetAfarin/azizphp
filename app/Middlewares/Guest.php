@@ -3,7 +3,7 @@ namespace App\Middlewares;
 
 class Guest
 {
-    public static function check(): void
+    public static function handle(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();

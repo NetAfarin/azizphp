@@ -13,24 +13,32 @@ class Route
 
     public static function get(string $uri, array $action): void
     {
-        self::$routes['GET'][$uri] = [...$action, self::$currentMiddleware];
+        self::$routes['GET'][$uri] = [
+            'controller' => $action[0],
+            'method'     => $action[1],
+            'middleware' => self::$currentMiddleware
+        ];
     }
 
     public static function post(string $uri, array $action): void
     {
-        self::$routes['POST'][$uri] = [...$action, self::$currentMiddleware];
+        self::$routes['POST'][$uri] = [
+            'controller' => $action[0],
+            'method'     => $action[1],
+            'middleware' => self::$currentMiddleware
+        ];
     }
 
     public static function middleware(array $middleware): self
     {
         self::$currentMiddleware = $middleware;
-        return new self;
+        return new self();
     }
 
     public function group(callable $callback): void
     {
-        $callback();
-        self::$currentMiddleware = []; // reset after group
+        $callback(new self);
+        self::$currentMiddleware = [];
     }
 
     public static function all(): array

@@ -8,7 +8,7 @@ class HomeController extends Controller
 {
     public function index(): void
     {
-        Auth::check();
+        Auth::handle();
 
         $this->view('home/index', [
             'title' => __('dashboard'),
