@@ -10,6 +10,7 @@
 <?php endif; ?>
 
 <form method="post" action="">
+    <?= csrf_field() ?>
     <div class="mb-3">
         <label class="form-label"><?= __('first_name') ?></label>
         <input type="text" name="first_name" class="form-control"

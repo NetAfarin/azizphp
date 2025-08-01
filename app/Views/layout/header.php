@@ -30,17 +30,19 @@ $bootstrapCss = $dir === 'rtl'
 
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <span class="navbar-text">
-        <?= __('hello_user', ['name' => htmlspecialchars($userName)]) ?>
-    </span>
-        <?php endif; ?>
+        <span class="navbar-text">
+            <?= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ?? 'مهمان')]) ?>
+        </span>
+
         <div class="d-flex align-items-center gap-2">
             <a href="?lang=fa" class="btn btn-sm btn-outline-primary">🇮🇷 فارسی</a>
             <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="<?= BASE_URL ?>/user/logout" class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
+            <?php else: ?>
+                <a href="<?= BASE_URL ?>/user/login" class="btn btn-sm btn-outline-success">🔐 <?= __('login') ?></a>
+                <a href="<?= BASE_URL ?>/user/register" class="btn btn-sm btn-outline-primary">📝 <?= __('register') ?></a>
             <?php endif; ?>
         </div>
     </div>

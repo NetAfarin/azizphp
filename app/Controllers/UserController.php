@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Validator;
 use App\Models\User;
 use App\Middlewares\Role;
 use App\Middlewares\Auth;
@@ -10,7 +11,7 @@ use App\Middlewares\Auth;
 
 class UserController extends Controller
 {
-    public function show($id)
+    public function show($id): void
     {
 
         Role::allow(['admin', 'operator']);
@@ -25,45 +26,53 @@ class UserController extends Controller
         $this->view('user/show', ['user' => $user, 'title' => __('user_profile')]);
     }
 
-    public function register()
+    public function register(): void
     {
         $errors = [];
         $success = false;
-
+//        vd($_SERVER['REQUEST_METHOD']);
         if (isset($_SESSION['user_id'])) {
             header("Location: " . BASE_URL . "/home/index");
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
+                http_response_code(403);
+                echo "درخواست نامعتبر (CSRF)";
+                exit;
+            }
+
             $first_name = $_POST['first_name'] ?? '';
             $last_name = $_POST['last_name'] ?? '';
             $phone = $_POST['phone_number'] ?? '';
             $password = $_POST['password'] ?? '';
 
-            // اعتبارسنجی ساده
-            if (strlen($first_name) < 2) $errors[] = "نام خیلی کوتاه است.";
-            if (strlen($phone) !== 11) $errors[] = "شماره موبایل باید ۱۱ رقم باشد.";
-            if (strlen($password) < 6) $errors[] = "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+
+            if (isset($_SESSION['validation_errors']) && is_array($_SESSION['validation_errors'])) {
+                $errors = $_SESSION['validation_errors'];
+                unset($_SESSION['validation_errors']);
+            }
 
             if (User::where('phone_number', $phone)) {
-//                $errors[] = "این شماره قبلاً ثبت شده است.";
-                $errors[] =  __('phone_taken');
+                $errors[] = __('phone_taken');
             }
 
             if (empty($errors)) {
                 $user = new \App\Models\User([
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'phone_number' => $phone,
-                    'password' => password_hash($password, PASSWORD_DEFAULT),
-                    'user_type' => 2, // مشتری
-                    'birth_date' => date('2000-01-01'),
+                    'first_name'        => $first_name,
+                    'last_name'         => $last_name,
+                    'phone_number'      => $phone,
+                    'password'          => password_hash($password, PASSWORD_DEFAULT),
+                    'user_type'         => 2,
+                    'birth_date'        => date('2000-01-01'),
                     'register_datetime' => date('Y-m-d H:i:s'),
-                    'is_active' => 1,
-                    'deleted' => 0
+                    'is_active'         => 1,
+                    'deleted'           => 0
                 ]);
 
                 if ($user->save()) {
+                    clear_old_input();
                     $success = true;
                 } else {
                     $errors[] = __('user_save_error');
@@ -73,7 +82,7 @@ class UserController extends Controller
         $this->view('user/register', ['title' => 'ثبت نام کاربر', 'errors' => $errors, 'success' => $success]);
     }
 
-    public function login()
+    public function login(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -85,8 +94,14 @@ class UserController extends Controller
         }
 
         $errors = [];
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
+                http_response_code(403);
+                echo "درخواست نامعتبر (CSRF)";
+                exit;
+            }
+
             $phone = $_POST['phone_number'] ?? '';
             $password = $_POST['password'] ?? '';
 
@@ -98,6 +113,7 @@ class UserController extends Controller
                 $errors[] = __('password_required');
             }
 
+
             if (empty($errors)) {
                 $user = \App\Models\User::where('phone_number', $phone)[0] ?? null;
                 if ($user && password_verify($password, $user->password)) {
@@ -108,6 +124,7 @@ class UserController extends Controller
                     $user_type = \App\Models\UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                     $redirect = $user->is_admin ? '/admin/panel' : '/home/index';
+                    clear_old_input();
                     header("Location: " . BASE_URL . $redirect);
                     exit;
                 } else {
@@ -137,6 +154,7 @@ class UserController extends Controller
         header("Location: " . BASE_URL . "/user/login?lang={$lang}");
         exit;
     }
+
     public function panel()
     {
 //        AdminOnly::check();
@@ -176,6 +194,22 @@ class UserController extends Controller
         $errors = [];
         $user = User::find($_SESSION['user_id']);
 
+        if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
+            http_response_code(403);
+            echo "درخواست نامعتبر (CSRF)";
+            exit;
+        }
+
+//        $validator = new Validator($_POST, [
+//            'first_name'    => 'required|min:2',
+//            'phone_number'  => 'required|phone',
+//            'password'      => 'required|min:6'
+//        ]);
+//
+//        if ($validator->fails()) {
+//            $errors = $validator->errors();
+//        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = $_POST['first_name'] ?? '';
             $last_name = $_POST['last_name'] ?? '';
@@ -190,6 +224,7 @@ class UserController extends Controller
                 $user->phone_number = $phone;
 
                 if ($user->save()) {
+                    clear_old_input();
                     $_SESSION['flash_success'] = __('profile_updated');
                     header("Location: " . BASE_URL . "/user/edit");
                     exit;
@@ -205,7 +240,6 @@ class UserController extends Controller
             'errors' => $errors
         ]);
     }
-
 
 
 }

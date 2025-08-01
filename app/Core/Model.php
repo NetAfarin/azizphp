@@ -73,7 +73,8 @@ abstract class Model
         $columns = implode(',', $this->fillable);
         $placeholders = implode(',', array_fill(0, count($this->fillable), '?'));
         $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
-
+//vd($values);
+//vd($columns);
         $stmt = Database::pdo()->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
         $success = $stmt->execute($values);
 

@@ -18,6 +18,7 @@
 <?php endif; ?>
 
 <form method="post" class="row g-3">
+    <?= csrf_field() ?>
     <div class="mb-3">
         <label for="phone_number"><?= __('phone_number') ?></label>
         <input type="text" class="form-control" name="phone_number" id="phone_number">

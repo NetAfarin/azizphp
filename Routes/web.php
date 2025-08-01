@@ -4,18 +4,19 @@ use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\ErrorController;
 use App\Core\Route;
-use App\Core\Router;
 use App\Middlewares\Auth;
 use App\Middlewares\Guest;
+use App\Middlewares\RegisterValidationMiddleware;
 use App\Middlewares\Role;
 
-//$router = new Router();
-//$router->loadRoutes();
 Route::get('/', [HomeController::class, 'index']);
 
 Route::middleware([Guest::class])->group(function () {
     Route::get('/user/login', [UserController::class, 'login']);
     Route::post('/user/login', [UserController::class, 'login']);
+});
+
+Route::middleware([Guest::class, RegisterValidationMiddleware::class])->group(function () {
     Route::get('/user/register', [UserController::class, 'register']);
     Route::post('/user/register', [UserController::class, 'register']);
 });

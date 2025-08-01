@@ -22,7 +22,6 @@ class User extends Model
         'birth_date',
         'phone_number',
         'register_datetime',
-        'user_type',
         'password',
         'user_type',
         'is_active',
