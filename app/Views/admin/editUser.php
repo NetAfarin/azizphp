@@ -26,5 +26,12 @@
         <input type="text" name="phone_number" class="form-control"
                value="<?= htmlspecialchars($user->phone_number ?? '') ?>">
     </div>
+    <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" name="is_active" id="is_active"
+            <?= ( $user->is_active == 1) ? 'checked' : '' ?>>
+        <label class="form-check-label" for="is_active">
+            <?= __('is_active') ?>
+        </label>
+    </div>
     <button class="btn btn-primary"><?= __('save_changes') ?></button>
 </form>

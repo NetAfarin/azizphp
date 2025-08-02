@@ -25,6 +25,43 @@ class Router
         $uri = rtrim(str_replace('/fw/public', '', $uri), '/');
 
         $route = $this->routes[$method][$uri] ?? null;
+        $routes = $this->routes[$method] ?? [];
+
+        foreach ($routes as $routePattern => $handler) {
+            // تبدیل مسیر به الگوی regex: /admin/user/edit/{id} → /admin/user/edit/([^/]+)
+            $regex = preg_replace('#\{[^}]+\}#', '([^/]+)', $routePattern);
+            $regex = '#^' . $regex . '$#';
+
+            if (preg_match($regex, $uri, $matches)) {
+                array_shift($matches); // حذف match کامل
+
+//                $controllerClass = $handler[0];
+                $controllerClass = $handler["controller"];
+//                $controllerMethod = $handler[1];
+                $controllerMethod = $handler["method"];
+//                $middleware = $handler[2] ?? [];
+                $middleware = $handler["middleware"] ?? [];
+
+                // اجرای Middlewareها
+                foreach ($middleware as $mw) {
+                    (new $mw)->handle();
+                }
+
+                $controller = new $controllerClass();
+
+                if (!method_exists($controller, $controllerMethod)) {
+                    echo "متد {$controllerMethod} در کنترلر {$controllerClass} یافت نشد.";
+                    return;
+                }
+
+                call_user_func_array([$controller, $controllerMethod], $matches);
+                return;
+            }
+        }
+        http_response_code(404);
+        echo "404 - مسیر یافت نشد: $uri";
+        vd($this->routes[$method][$uri]);
+
         if (!$route) {
             http_response_code(404);
             echo "404 - مسیر یافت نشد: $uri";

@@ -38,9 +38,13 @@ if (!function_exists('clear_old_input')) {
 
 
 if (!function_exists('vd')) {
-    function vd($input=null): void
+    function vd($input=null,bool $jsonPretty=false): void
     {
-        var_dump($input);
+        if ($jsonPretty) {
+            print_r(json_encode($input, JSON_PRETTY_PRINT));
+        }else{
+            var_dump($input);
+        }
         die();
     }
 }

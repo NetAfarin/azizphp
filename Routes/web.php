@@ -24,8 +24,8 @@ Route::middleware([Guest::class, RegisterValidationMiddleware::class])->group(fu
 Route::middleware([Auth::class])->group(function () {
     Route::get('/home/index', [HomeController::class, 'index']);
     Route::get('/user/profile', [UserController::class, 'profile']);
-    Route::get('/user/edit', [UserController::class, 'edit']);
-    Route::post('/user/edit', [UserController::class, 'update']);
+//    Route::get('/user/edit', [UserController::class, 'edit']);
+//    Route::post('/user/edit', [UserController::class, 'update']);
     Route::get('/user/logout', [UserController::class, 'logout']);
     Route::get('/user/show/{id}', [UserController::class, 'showProfile']);
 });

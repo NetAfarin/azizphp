@@ -8,13 +8,13 @@ class AdminController extends Controller
 {
     public function panel()
     {
-        Role::allow(['admin', 'operator']);
+//        Role::allow(['admin', 'operator']);
         $this->view('admin/panel', ['title' => __('admin_panel')]);
     }
 
     public function usersList()
     {
-        Role::allow(['admin', 'operator']);
+//        Role::allow(['admin', 'operator']);
 
         $users = User::where('deleted', 0);
 
@@ -26,7 +26,8 @@ class AdminController extends Controller
 
     public function editUser($id)
     {
-        Role::allow(['admin', 'operator']);
+
+//        Role::allow(['admin', 'operator']);
 
         $user = User::find((int)$id);
 
@@ -36,7 +37,7 @@ class AdminController extends Controller
             exit;
         }
 
-        $this->view('admin/edit_user', [
+        $this->view('admin/editUser', [
             'title' => __('edit_user'),
             'user' => $user
         ]);
@@ -44,7 +45,7 @@ class AdminController extends Controller
 
     public function updateUser($id)
     {
-        Role::allow(['admin', 'operator']);
+//        Role::allow(['admin', 'operator']);
 
         $user = User::find((int)$id);
 
@@ -55,7 +56,6 @@ class AdminController extends Controller
         }
 
         $errors = [];
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = $_POST['first_name'] ?? '';
             $last_name = $_POST['last_name'] ?? '';
@@ -87,7 +87,7 @@ class AdminController extends Controller
 
     public function deleteUser($id)
     {
-        Role::allow(['admin']);
+//        Role::allow(['admin']);
 
         $user = User::find((int)$id);
 

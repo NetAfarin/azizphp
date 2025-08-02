@@ -48,4 +48,6 @@ return [
     'field_phone_number' => 'Phone number',
     'phone_invalid' => 'Invalid phone number.',
 //    'phone_invalid' => 'Phone number must be 11 digits.',
+
+    'is_active' => 'Active user',
 ];
