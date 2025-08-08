@@ -1,6 +1,8 @@
 <?php
 namespace App\Core;
 
+use App\Middleware\RateLimiterMiddleware;
+use Redis;
 class App
 {
     protected Router $router;
@@ -10,16 +12,17 @@ class App
         $this->initConfig();
         $this->router = new Router();
     }
-    public function run()
+    public function run():void
     {
-        require_once BASE_PATH . '/routes/web.php';
+//        require_once BASE_PATH . '/routes/web.php';
+//        require_once BASE_PATH . '/routes/api.php';
         $this->router->dispatch();
     }
-    protected function initConstants()
+    protected function initConstants(): void
     {
         define('BASE_PATH', dirname(__DIR__, 2));
     }
-    protected function initConfig()
+    protected function initConfig():void
     {
         require_once BASE_PATH . '/config/app.php';
         require_once BASE_PATH . '/config/database.php';

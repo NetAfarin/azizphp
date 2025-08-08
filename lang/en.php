@@ -48,6 +48,13 @@ return [
     'field_phone_number' => 'Phone number',
     'phone_invalid' => 'Invalid phone number.',
 //    'phone_invalid' => 'Phone number must be 11 digits.',
+    'user_updated' => 'The user has been successfully updated.',
 
     'is_active' => 'Active user',
+
+
+    'redis_title' => 'Rate Limit Exceeded',
+    'redis_heading' => 'Too Many Requests',
+    'redis_message' => 'Please wait a moment and try again later.',
+    'redis_retry' => 'Time remaining until reset: :rtime seconds',
 ];

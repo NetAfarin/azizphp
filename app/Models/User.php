@@ -5,9 +5,6 @@ use App\Core\Model;
 use App\Core\Database;
 use PDO;
 
-/**
- * مدل User مربوط به جدول user_table
- */
 class User extends Model
 {
     // نام جدول در دیتابیس

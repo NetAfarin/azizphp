@@ -8,14 +8,81 @@ class Router
     public function __construct()
     {
         require_once BASE_PATH . '/routes/web.php';
+        require_once BASE_PATH . '/routes/api.php';
         $this->routes = Route::all();
     }
 
-
-//    public function loadRoutes(): void
+//    public function dispatch(): void
 //    {
-//        require_once BASE_PATH . '/routes/web.php';
-//        $this->routes = Route::all();
+//        $method = $_SERVER['REQUEST_METHOD'];
+//        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+//        $uri = rtrim(str_replace('/fw/public', '', $uri), '/');
+//
+//        $route = $this->routes[$method][$uri] ?? null;
+//        $routes = $this->routes[$method] ?? [];
+//
+//        foreach ($routes as $routePattern => $handler) {
+//            $regex = preg_replace('#\{[^}]+\}#', '([^/]+)', $routePattern);
+//            $regex = '#^' . $regex . '$#';
+//
+//            if (preg_match($regex, $uri, $matches)) {
+//                array_shift($matches);
+//
+//                $controllerClass = $handler['controller'];
+//                $controllerMethod = $handler['method'];
+//                $middlewareList = $handler['middleware'] ?? [];
+//
+//                $request = $_REQUEST;
+//
+//                $finalHandler = function ($req) use ($controllerClass, $controllerMethod, $matches) {
+//                    $controller = new $controllerClass();
+//                    if (!method_exists($controller, $controllerMethod)) {
+//                        http_response_code(500);
+//                        echo "متد {$controllerMethod} در کنترلر {$controllerClass} یافت نشد.";
+//                        return;
+//                    }
+//                    return call_user_func_array([$controller, $controllerMethod], $matches);
+//                };
+//
+//                $middlewareChain = array_reverse($middlewareList);
+//
+//                foreach ($middlewareChain as $mw) {
+//                    $finalHandler = function ($req) use ($mw, $finalHandler) {
+//                        return (new $mw())->handle($req, $finalHandler);
+//                    };
+//                }
+//
+//                return $finalHandler($request);
+//            }
+//        }
+//        http_response_code(404);
+//        echo "404 - مسیر یافت نشد: $uri";
+//        vd($this->routes[$method][$uri]);
+//
+//        if (!$route) {
+//            http_response_code(404);
+//            echo "404 - مسیر یافت نشد: $uri";
+//            return;
+//        }
+//
+//        foreach ($route['middleware'] as $mw) {
+//            if (is_array($mw)) {
+//                [$class, $args] = $mw;
+//                (new $class(...$args))->handle();
+//            } else {
+//                (new $mw)->handle();
+//            }
+//        }
+//
+//        $controller = new $route['controller'];
+//        $method = $route['method'];
+//
+//        if (!method_exists($controller, $method)) {
+//            echo "متد $method در کنترلر یافت نشد.";
+//            return;
+//        }
+//
+//        $controller->$method();
 //    }
 
     public function dispatch(): void
@@ -24,99 +91,42 @@ class Router
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uri = rtrim(str_replace('/fw/public', '', $uri), '/');
 
-        $route = $this->routes[$method][$uri] ?? null;
         $routes = $this->routes[$method] ?? [];
 
         foreach ($routes as $routePattern => $handler) {
-            // تبدیل مسیر به الگوی regex: /admin/user/edit/{id} → /admin/user/edit/([^/]+)
+            // تبدیل مسیر دارای {id} به regex
             $regex = preg_replace('#\{[^}]+\}#', '([^/]+)', $routePattern);
             $regex = '#^' . $regex . '$#';
 
             if (preg_match($regex, $uri, $matches)) {
                 array_shift($matches); // حذف match کامل
 
-//                $controllerClass = $handler[0];
-                $controllerClass = $handler["controller"];
-//                $controllerMethod = $handler[1];
-                $controllerMethod = $handler["method"];
-//                $middleware = $handler[2] ?? [];
-                $middleware = $handler["middleware"] ?? [];
+                $controllerClass = $handler['controller'];
+                $controllerMethod = $handler['method'];
+                $middlewareList = $handler['middleware'] ?? [];
 
-                // اجرای Middlewareها
-                foreach ($middleware as $mw) {
-                    (new $mw)->handle();
+                $request = $_REQUEST;
+
+                $finalHandler = function ($req) use ($controllerClass, $controllerMethod, $matches) {
+                    $controller = new $controllerClass();
+                    return call_user_func_array([$controller, $controllerMethod], $matches);
+                };
+
+                foreach (array_reverse($middlewareList) as $mw) {
+                    $next = $finalHandler;
+                    $finalHandler = function ($req) use ($mw, $next) {
+                        return (new $mw())->handle($req, $next);
+                    };
                 }
 
-                $controller = new $controllerClass();
-
-                if (!method_exists($controller, $controllerMethod)) {
-                    echo "متد {$controllerMethod} در کنترلر {$controllerClass} یافت نشد.";
-                    return;
-                }
-
-                call_user_func_array([$controller, $controllerMethod], $matches);
+                 $finalHandler($request);
                 return;
             }
         }
+
+        // اگر مسیر پیدا نشد:
         http_response_code(404);
-        echo "404 - مسیر یافت نشد: $uri";
-        vd($this->routes[$method][$uri]);
-
-        if (!$route) {
-            http_response_code(404);
-            echo "404 - مسیر یافت نشد: $uri";
-            return;
-        }
-
-
-//var_dump($route['middleware']);
-//        die();
-        foreach ($route['middleware'] as $mw) {
-            if (is_array($mw)) {
-                [$class, $args] = $mw;
-                (new $class(...$args))->handle();
-            } else {
-                (new $mw)->handle();
-            }
-        }
-//        foreach ($route['middleware'] as $middlewareClass) {
-//            if (class_exists($middlewareClass)) {
-//                $middlewareClass::check();
-//            } else {
-//                echo "Middleware $middlewareClass یافت نشد.";
-//                return;
-//            }
-//        }
-
-        $controller = new $route['controller'];
-        $method = $route['method'];
-
-        if (!method_exists($controller, $method)) {
-            echo "متد $method در کنترلر یافت نشد.";
-            return;
-        }
-
-        $controller->$method();
-
-//
-//        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-//        $uri = str_replace('/fw/public', '', $uri);
-//
-//        if (!isset($this->routes[$method][$uri])) {
-//            http_response_code(404);
-//            echo "404 - مسیر یافت نشد: $uri";
-//            return;
-//        }
-//
-//        $route = $this->routes[$method][$uri];
-//        $controller = new $route['controller'];
-//        $methodName = $route['method'];
-//
-//        // اجرای middlewareها
-//        foreach ($route['middleware'] as $middleware) {
-//            (new $middleware)->handle();
-//        }
-
+        echo "404 - مسیر یافت نشد: {$uri}";
     }
 
 

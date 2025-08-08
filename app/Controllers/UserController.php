@@ -177,7 +177,6 @@ class UserController extends Controller
 
     public function edit()
     {
-        Auth::handle();
         $user = User::find($_SESSION['user_id']);
 
         $this->view('user/edit', [

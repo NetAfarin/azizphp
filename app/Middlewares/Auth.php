@@ -4,7 +4,7 @@ namespace App\Middlewares;
 
 class Auth
 {
-   public static function handle(): void
+    public function handle($request, $next)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -14,5 +14,7 @@ class Auth
             header("Location: " . BASE_URL . "/user/login");
             exit;
         }
+
+        return $next($request);  // ادامه زنجیره
     }
 }

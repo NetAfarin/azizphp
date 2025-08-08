@@ -4,9 +4,14 @@ namespace App\Middlewares;
 
 class Role
 {
-    public function __construct(protected array $allowedRoles = ['admin']) {}
+    protected array $allowedRoles;
 
-    public function handle()
+    public function __construct(array $allowedRoles = ['admin'])
+    {
+        $this->allowedRoles = $allowedRoles;
+    }
+
+    public function handle($request, $next)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -16,10 +21,13 @@ class Role
             header("Location: " . BASE_URL . "/user/login");
             exit;
         }
+
         $role = $_SESSION['user_role'] ?? '';
         if (!in_array($role, $this->allowedRoles)) {
             header('Location: ' . BASE_URL . '/forbidden');
             exit;
         }
+
+        return $next($request);
     }
 }

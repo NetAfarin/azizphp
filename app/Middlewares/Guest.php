@@ -3,7 +3,7 @@ namespace App\Middlewares;
 
 class Guest
 {
-    public static function handle(): void
+    public function handle($request, $next)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -13,5 +13,8 @@ class Guest
             header("Location: " . BASE_URL . "/home/index");
             exit;
         }
+
+        return $next($request);
     }
 }
+

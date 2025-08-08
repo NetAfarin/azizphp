@@ -4,6 +4,7 @@ use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\ErrorController;
 use App\Core\Route;
+use App\Middlewares\RateLimiterMiddleware;
 use App\Middlewares\Auth;
 use App\Middlewares\Guest;
 use App\Middlewares\RegisterValidationMiddleware;
@@ -30,7 +31,7 @@ Route::middleware([Auth::class])->group(function () {
     Route::get('/user/show/{id}', [UserController::class, 'showProfile']);
 });
 
-Route::middleware([Auth::class, Role::class])->group(function () {
+Route::middleware([Auth::class, Role::class, RateLimiterMiddleware::class])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'usersList']);
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser']);
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
