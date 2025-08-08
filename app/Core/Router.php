@@ -90,6 +90,9 @@ class Router
         $method = $_SERVER['REQUEST_METHOD'];
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uri = rtrim(str_replace('/fw/public', '', $uri), '/');
+        if (preg_match('/\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/i', $uri)) {
+            return;
+        }
 
         $routes = $this->routes[$method] ?? [];
 

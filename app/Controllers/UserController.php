@@ -5,8 +5,8 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Validator;
 use App\Models\User;
-use App\Middlewares\Role;
-use App\Middlewares\Auth;
+use App\Middlewares\RoleMiddleware;
+use App\Middlewares\AuthMiddleware;
 
 
 class UserController extends Controller
@@ -14,7 +14,7 @@ class UserController extends Controller
     public function show($id): void
     {
 
-        Role::allow(['admin', 'operator']);
+        RoleMiddleware::allow(['admin', 'operator']);
 
         $user = User::find((int)$id);
 
@@ -158,7 +158,7 @@ class UserController extends Controller
     public function panel()
     {
 //        AdminOnly::check();
-        \App\Middlewares\Role::allow(['admin', 'operator']);
+        \App\Middlewares\RoleMiddleware::allow(['admin', 'operator']);
         $this->view('admin/panel', ['title' => 'پنل مدیریت']);
     }
 
@@ -188,7 +188,7 @@ class UserController extends Controller
 
     public function update()
     {
-        Role::allow(['admin', 'operator']);
+        RoleMiddleware::allow(['admin', 'operator']);
 
         $errors = [];
         $user = User::find($_SESSION['user_id']);

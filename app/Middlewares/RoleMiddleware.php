@@ -2,7 +2,7 @@
 
 namespace App\Middlewares;
 
-class Role
+class RoleMiddleware
 {
     protected array $allowedRoles;
 

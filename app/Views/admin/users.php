@@ -1,6 +1,11 @@
 <?= flash('success') ?>
 <?= flash('error') ?>
-
+<div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
+    <a href="<?= BASE_URL ?>/home/index" class="btn btn-outline-primary">
+        <span style="display:inline-block; transform: rotate(<?= $dir === 'rtl' ? '180' : '0' ?>deg);">⬅️</span>
+        <?= __('back_to_dashboard') ?>
+    </a>
+</div>
 <h2><?= __('users_list') ?></h2>
 
 <table class="table table-bordered table-striped">

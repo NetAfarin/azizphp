@@ -2,8 +2,11 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Models\Service;
 use App\Models\User;
-use App\Middlewares\Role;
+use App\Middlewares\RoleMiddleware;
+use App\Models\UserType;
+
 class AdminController extends Controller
 {
     public function panel()
@@ -26,9 +29,6 @@ class AdminController extends Controller
 
     public function editUser($id)
     {
-
-//        Role::allow(['admin', 'operator']);
-
         $user = User::find((int)$id);
 
         if (!$user) {
@@ -37,9 +37,25 @@ class AdminController extends Controller
             exit;
         }
 
+        $userTypes = UserType::all();
+
+        $employeeServices = Service::all();
+        $selectedServiceIds = [];
+
+        if ($user->user_type == UserType::EMPLOYEE) {
+            $employeeServiceModels = $user->getEmployeeServices();
+
+            // استخراج آیدی خدمات انتخاب شده
+            foreach ($employeeServiceModels as $empService) {
+                $selectedServiceIds[] = $empService->service_id;
+            }
+        }
         $this->view('admin/editUser', [
             'title' => __('edit_user'),
-            'user' => $user
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'employeeServices' => $employeeServices,
+            'selectedServiceIds' => $selectedServiceIds
         ]);
     }
 

@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Middlewares;
 
-class Auth
+class GuestMiddleware
 {
     public function handle($request, $next)
     {
@@ -10,11 +9,12 @@ class Auth
             session_start();
         }
 
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: " . BASE_URL . "/user/login");
+        if (isset($_SESSION['user_id'])) {
+            header("Location: " . BASE_URL . "/home/index");
             exit;
         }
 
-        return $next($request);  // ادامه زنجیره
+        return $next($request);
     }
 }
+

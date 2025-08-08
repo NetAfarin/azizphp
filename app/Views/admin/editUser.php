@@ -11,6 +11,29 @@
 
 <form method="post" action="">
     <?= csrf_field() ?>
+
+    <div class="mb-3">
+        <label class="form-label"><?= __('user_type') ?></label>
+        <select name="user_type" id="user_type_select" class="form-select">
+            <?php foreach ($userTypes as $type): ?>
+                <option value="<?= $type->id ?>" <?= ($user->user_type == $type->id) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($type->title) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="mb-3" id="employee_services_section" style="display: none;">
+        <label class="form-label"><?= __('employee_service_list') ?></label>
+        <select name="employee_services[]" multiple class="form-select"  data-mdb-filter="true">
+            <?php foreach ($employeeServices as $service): ?>
+                <option value="<?= $service->id ?>" <?= in_array($service->id, $selectedServiceIds) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($service->fa_title) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <small class="form-text text-muted"><?= __('select_services_for_employee') ?></small>
+    </div>
+
     <div class="mb-3">
         <label class="form-label"><?= __('first_name') ?></label>
         <input type="text" name="first_name" class="form-control"
@@ -35,3 +58,20 @@
     </div>
     <button class="btn btn-primary"><?= __('save_changes') ?></button>
 </form>
+
+<script>
+    const userTypeSelect = document.getElementById('user_type_select');
+    const employeeServicesSection = document.getElementById('employee_services_section');
+
+    function toggleEmployeeServices() {
+        const selectedType = userTypeSelect.options[userTypeSelect.selectedIndex].text.toLowerCase();
+        if (selectedType.includes('کارمند') || selectedType.includes('employee')) {
+            employeeServicesSection.style.display = 'block';
+        } else {
+            employeeServicesSection.style.display = 'none';
+        }
+    }
+
+    userTypeSelect.addEventListener('change', toggleEmployeeServices);
+    toggleEmployeeServices();
+</script>

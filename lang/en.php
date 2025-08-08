@@ -36,6 +36,9 @@ return [
 
     'users_list' => 'User List',
     'user_type' => 'Role',
+    'employee_service_list' => 'Employee Service',
+    'select_services_for_employee' => 'Select Services',
+
     'active' => 'Active',
     'inactive' => 'Inactive',
     'edit' => 'Edit',
@@ -57,4 +60,6 @@ return [
     'redis_heading' => 'Too Many Requests',
     'redis_message' => 'Please wait a moment and try again later.',
     'redis_retry' => 'Time remaining until reset: :rtime seconds',
+    'back_to_dashboard' => 'Back',
+    'my_profile' => 'my profile',
 ];

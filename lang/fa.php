@@ -36,6 +36,9 @@ return [
 
     'users_list' => 'لیست کاربران',
     'user_type' => 'نقش',
+    'employee_service_list' => 'لیست خدمات',
+    'select_services_for_employee' => 'سرویس های مورد نطر را انتخاب کنید',
+
     'active' => 'فعال',
     'inactive' => 'غیرفعال',
     'edit' => 'ویرایش',
@@ -58,4 +61,8 @@ return [
     'redis_heading' => 'تعداد درخواست‌ها بیش از حد مجاز است',
     'redis_message' => 'لطفاً کمی صبر کنید و بعداً دوباره تلاش کنید.',
     'redis_retry' => 'زمان باقی‌مانده تا رفع محدودیت: :rtime ثانیه',
+
+    'back_to_dashboard' => 'بازگشت',
+    'my_profile' => 'پروفایل من',
+
 ];

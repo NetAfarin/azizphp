@@ -45,4 +45,10 @@ class User extends Model
         return $type->title ?? __('unknown');
     }
 
+    public function getEmployeeServices(): array
+    {
+        $instance = new EmployeeService();
+        return $instance->findByUserId($this->id);
+    }
+
 }
