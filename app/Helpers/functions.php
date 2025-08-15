@@ -38,13 +38,30 @@ if (!function_exists('clear_old_input')) {
 
 
 if (!function_exists('vd')) {
-    function vd($input=null,bool $jsonPretty=false): void
+    function vd($input = null, bool $jsonPretty = false): void
     {
+        $convert = function ($item) use (&$convert) {
+            if (is_array($item)) {
+                return array_map($convert, $item);
+            }
+            if (is_object($item)) {
+                if (method_exists($item, 'toArray')) {
+                    return $item->toArray();
+                }
+                return (array) $item;
+            }
+            return $item;
+        };
+
+        $data = $convert($input);
+
+        echo '<pre>';
         if ($jsonPretty) {
-            print_r(json_encode($input, JSON_PRETTY_PRINT));
-        }else{
-            var_dump($input);
+            echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        } else {
+            var_dump($data);
         }
+        echo '</pre>';
         die();
     }
 }

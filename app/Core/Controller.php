@@ -3,6 +3,8 @@ namespace App\Core;
 
 class Controller
 {
+    use Loggable;
+
     protected function view(string $view, array $data = []): void
     {
         extract($data);
@@ -17,5 +19,4 @@ class Controller
 
         include BASE_PATH . '/app/Views/layout/footer.php';
     }
-
 }

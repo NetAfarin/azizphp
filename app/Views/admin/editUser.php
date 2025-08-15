@@ -14,7 +14,7 @@
 
     <div class="mb-3">
         <label class="form-label"><?= __('user_type') ?></label>
-        <select name="user_type" id="user_type_select" class="form-select">
+        <select name="user_type" id="user_type_select" class="form-select" >
             <?php foreach ($userTypes as $type): ?>
                 <option value="<?= $type->id ?>" <?= ($user->user_type == $type->id) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($type->title) ?>
@@ -24,16 +24,22 @@
     </div>
     <div class="mb-3" id="employee_services_section" style="display: none;">
         <label class="form-label"><?= __('employee_service_list') ?></label>
-        <select name="employee_services[]" multiple class="form-select"  data-mdb-filter="true">
-            <?php foreach ($employeeServices as $service): ?>
-                <option value="<?= $service->id ?>" <?= in_array($service->id, $selectedServiceIds) ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($service->fa_title) ?>
-                </option>
+        <select name="employee_services[]"
+                class="form-select js-example-basic-multiple"
+                multiple="multiple"
+                data-mdb-filter="true">
+            <?php foreach ($groupedServices as $group): ?>
+                <optgroup label="<?= htmlspecialchars($group['parent']->fa_title) ?>">
+                    <?php foreach ($group['children'] as $service): ?>
+                        <option value="<?= $service->id ?>" <?= in_array($service->id, $selectedServiceIds) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($service->fa_title) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </optgroup>
             <?php endforeach; ?>
         </select>
         <small class="form-text text-muted"><?= __('select_services_for_employee') ?></small>
     </div>
-
     <div class="mb-3">
         <label class="form-label"><?= __('first_name') ?></label>
         <input type="text" name="first_name" class="form-control"
@@ -74,4 +80,8 @@
 
     userTypeSelect.addEventListener('change', toggleEmployeeServices);
     toggleEmployeeServices();
+
+    $(document).ready(function() {
+        $('.js-example-basic-multiple').select2();
+    });
 </script>

@@ -4,23 +4,18 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Models\Service;
 use App\Models\User;
-use App\Middlewares\RoleMiddleware;
 use App\Models\UserType;
 
 class AdminController extends Controller
 {
     public function panel()
     {
-//        Role::allow(['admin', 'operator']);
         $this->view('admin/panel', ['title' => __('admin_panel')]);
     }
 
     public function usersList()
     {
-//        Role::allow(['admin', 'operator']);
-
-        $users = User::where('deleted', 0);
-
+        $users = User::all();
         $this->view('admin/users', [
             'title' => __('users_list'),
             'users' => $users
@@ -38,14 +33,11 @@ class AdminController extends Controller
         }
 
         $userTypes = UserType::all();
-
-        $employeeServices = Service::all();
+        $groupedServices =  Service::groupedForSelect();
         $selectedServiceIds = [];
 
         if ($user->user_type == UserType::EMPLOYEE) {
             $employeeServiceModels = $user->getEmployeeServices();
-
-            // استخراج آیدی خدمات انتخاب شده
             foreach ($employeeServiceModels as $empService) {
                 $selectedServiceIds[] = $empService->service_id;
             }
@@ -54,15 +46,13 @@ class AdminController extends Controller
             'title' => __('edit_user'),
             'user' => $user,
             'userTypes' => $userTypes,
-            'employeeServices' => $employeeServices,
+            'groupedServices' => $groupedServices,
             'selectedServiceIds' => $selectedServiceIds
         ]);
     }
 
     public function updateUser($id)
     {
-//        Role::allow(['admin', 'operator']);
-
         $user = User::find((int)$id);
 
         if (!$user) {
@@ -103,24 +93,17 @@ class AdminController extends Controller
 
     public function deleteUser($id)
     {
-//        Role::allow(['admin']);
-
         $user = User::find((int)$id);
-
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
             header("Location: " . BASE_URL . "/admin/users");
             exit;
         }
-
-        $user->deleted = 1;
-
-        if ($user->save()) {
+        if ($user->delete()) {
             $_SESSION['flash_success'] = __('user_deleted');
         } else {
             $_SESSION['flash_error'] = __('delete_failed');
         }
-
         header("Location: " . BASE_URL . "/admin/users");
         exit;
     }

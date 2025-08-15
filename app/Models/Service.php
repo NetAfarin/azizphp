@@ -20,20 +20,40 @@ class Service extends Model
         'updated_at',
         'deleted',
     ];
-
-    public static function findById(int $id): ?Service
+    public static function parentServices(): array
     {
-        $instance = new static();
-        $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE id = ?");
-        $stmt->execute([$id]);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
-        return $stmt->fetch() ?: null;
+        return (new static())
+            ->where('parent_id', '=', 0)
+            ->get();
     }
 
-    public static function all(): array
+    public static function servicesByParentId(int $parentId): array
     {
-        $instance = new static();
-        $stmt = Database::pdo()->query("SELECT * FROM {$instance->table} WHERE deleted = 0");
-        return $stmt->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        return (new static())
+            ->where('parent_id', '=', $parentId)
+            ->get();
+    }
+    public static function groupByParentId(): array
+    {
+        return (new static())
+            ->groupBy('parent_id')
+            ->get();
+    }
+    public static function groupedForSelect(): array
+    {
+        $parents = static::parentServices();
+        $result = [];
+
+        foreach ($parents as $parent) {
+            $children = static::servicesByParentId($parent->id);
+            if (!empty($children)) {
+                $result[] = [
+                    'parent' => $parent,
+                    'children' => $children
+                ];
+            }
+        }
+
+        return $result;
     }
 }

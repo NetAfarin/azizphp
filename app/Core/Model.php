@@ -4,17 +4,214 @@ namespace App\Core;
 use App\Core\Database;
 use PDO;
 
+//abstract class Model
+//{
+//    protected string $table;
+//    protected array $attributes = [];
+//    protected array $fillable = [];
+//    protected array $wheres = [];
+//    protected ?string $groupBy = null;
+//    protected ?string $orderBy = null;
+//    protected ?int $limit = null;
+////    protected ?int $offset = null;
+//    public function __construct(array $data = [])
+//    {
+//        if (!empty($data)) {
+//            $this->fill($data);
+//        }
+//    }
+//
+//    public function fill(array $data): void
+//    {
+//        foreach ($this->fillable as $key) {
+//            if (isset($data[$key])) {
+//                $this->attributes[$key] = $data[$key];
+//            }
+//        }
+//    }
+//
+//
+//
+//    public function __set($name, $value)
+//    {
+//        if (in_array($name, $this->fillable)) {
+//            $this->attributes[$name] = $value;
+//        }
+//    }
+//
+//    public static function all(): array
+//    {
+//        $instance = new static();
+//        $stmt = Database::pdo()->query("SELECT * FROM {$instance->table}");
+//        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//        return array_map(fn($row) => new static($row), $results);
+//    }
+//
+//    public static function find(int $id): ?static
+//    {
+//        $instance = new static();
+//        $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE id = ?");
+//        $stmt->execute([$id]);
+//        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+//        return $data ? new static($data) : null;
+//    }
+//
+//
+//
+//    public function save(): bool
+//    {
+//        if (isset($this->attributes['id'])) {
+//            return $this->update();
+//        }
+//
+//        $columns = implode(',', $this->fillable);
+//        $placeholders = implode(',', array_fill(0, count($this->fillable), '?'));
+//        $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
+//
+//        $stmt = Database::pdo()->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
+//        $success = $stmt->execute($values);
+//
+//        if ($success) {
+//            $this->attributes['id'] = Database::pdo()->lastInsertId();
+//        }
+//
+//        return $success;
+//    }
+//
+//    protected function update(): bool
+//    {
+//        $set = implode(', ', array_map(fn($col) => "$col = ?", $this->fillable));
+//        $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
+//        $values[] = $this->attributes['id'];
+//
+//        $stmt = Database::pdo()->prepare("UPDATE {$this->table} SET $set WHERE id = ?");
+//        return $stmt->execute($values);
+//    }
+//
+//    public function delete(): bool
+//    {
+//        if (!isset($this->attributes['id'])) return false;
+//
+//        $stmt = Database::pdo()->prepare("DELETE FROM {$this->table} WHERE id = ?");
+//        return $stmt->execute([$this->attributes['id']]);
+//    }
+//
+//
+//
+//
+//
+//
+//    public function where(string $column, string $operator, $value): static
+//    {
+//        $this->wheres[] = compact('column', 'operator', 'value');
+//        return $this;
+//    }
+//
+//    public function groupBy(string $column): static
+//    {
+//        $this->groupBy = $column;
+//        return $this;
+//    }
+//
+//    public function orderBy(string $column, string $direction = 'ASC'): static
+//    {
+//        $direction = strtoupper($direction);
+//        if (!in_array($direction, ['ASC', 'DESC'])) {
+//            $direction = 'ASC';
+//        }
+//        $this->orderBy = "$column $direction";
+//        return $this;
+//    }
+//
+//
+//    public function limit(int $limit): static
+//    {
+//        $this->limit = $limit;
+//        return $this;
+//    }
+//    public function __get($name)
+//    {
+//        return $this->attributes[$name] ?? null;
+//    }
+//
+//    public function get(): array
+//    {
+//        $sql = "SELECT * FROM {$this->table}";
+//
+//        if (!empty($this->wheres)) {
+//            $conditions = [];
+//            foreach ($this->wheres as $where) {
+//                $conditions[] = "{$where['column']} {$where['operator']} ?";
+//            }
+//            $sql .= " WHERE " . implode(' AND ', $conditions);
+//        }
+//
+//        if ($this->groupBy) {
+//            $sql .= " GROUP BY {$this->groupBy}";
+//        }
+//
+//        if ($this->orderBy) {
+//            $sql .= " ORDER BY {$this->orderBy}";
+//        }
+//
+//        if ($this->limit !== null) {
+//            $sql .= " LIMIT {$this->limit}";
+//        }
+//        $stmt = Database::pdo()->prepare($sql);
+//
+//        $values = array_map(fn($w) => $w['value'], $this->wheres);
+//
+//        $stmt->execute($values);
+//
+//        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//
+//        return array_map(fn($row) => new static($row), $results);
+//    }
+//
+//    public function first(): ?static
+//    {
+//        return $this->limit(1)->get()[0] ?? null;
+//    }
+//
+//
+//}
+
 abstract class Model
 {
     protected string $table;
     protected array $attributes = [];
     protected array $fillable = [];
+    protected array $wheres = [];
+    protected ?string $groupBy = null;
+    protected ?string $orderBy = null;
+    protected ?int $limit = null;
+    protected ?int $offset = null;
 
     public function __construct(array $data = [])
     {
         if (!empty($data)) {
             $this->fill($data);
         }
+    }
+
+    public static function query(): static
+    {
+        return new static();
+    }
+
+    public function beginTransaction(): bool
+    {
+        return Database::pdo()->beginTransaction();
+    }
+
+    public function commit(): bool
+    {
+        return Database::pdo()->commit();
+    }
+
+    public function rollBack(): bool
+    {
+        return Database::pdo()->rollBack();
     }
 
     public function fill(array $data): void
@@ -26,17 +223,18 @@ abstract class Model
         }
     }
 
-    public function __get($name)
-    {
-        return $this->attributes[$name] ?? null;
-    }
-
     public function __set($name, $value)
     {
         if (in_array($name, $this->fillable)) {
             $this->attributes[$name] = $value;
         }
     }
+
+    public function __get($name)
+    {
+        return $this->attributes[$name] ?? null;
+    }
+
 
     public static function all(): array
     {
@@ -55,15 +253,6 @@ abstract class Model
         return $data ? new static($data) : null;
     }
 
-    public static function where(string $column, $value): array
-    {
-        $instance = new static();
-        $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE {$column} = ?");
-        $stmt->execute([$value]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($row) => new static($row), $rows);
-    }
-
     public function save(): bool
     {
         if (isset($this->attributes['id'])) {
@@ -73,15 +262,13 @@ abstract class Model
         $columns = implode(',', $this->fillable);
         $placeholders = implode(',', array_fill(0, count($this->fillable), '?'));
         $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
-//vd($values);
-//vd($columns);
+
         $stmt = Database::pdo()->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
         $success = $stmt->execute($values);
 
         if ($success) {
             $this->attributes['id'] = Database::pdo()->lastInsertId();
         }
-
         return $success;
     }
 
@@ -95,12 +282,198 @@ abstract class Model
         return $stmt->execute($values);
     }
 
-
     public function delete(): bool
     {
         if (!isset($this->attributes['id'])) return false;
-
+        if (isset($this->attributes['deleted'])) {
+            $this->attributes['deleted'] = 1;
+            return $this->save();
+        }
         $stmt = Database::pdo()->prepare("DELETE FROM {$this->table} WHERE id = ?");
         return $stmt->execute([$this->attributes['id']]);
+    }
+
+    public function where(string $column, string $operator, $value): static
+    {
+        $this->wheres[] = compact('column', 'operator', 'value');
+        return $this;
+    }
+
+    public function whereIn(string $column, array $values): static
+    {
+        $this->wheres[] = ['column' => $column, 'operator' => 'IN', 'value' => $values];
+        return $this;
+    }
+
+
+    public function whereLike(string $column, string $value): static
+    {
+        $this->wheres[] = ['column' => $column, 'operator' => 'LIKE', 'value' => "%$value%"];
+        return $this;
+    }
+
+
+    public function whereNotLike(string $column, string $value): static
+    {
+        $this->wheres[] = ['column' => $column, 'operator' => 'NOT LIKE', 'value' => "%$value%"];
+        return $this;
+    }
+    public function orWhere(string $column, string $operator, $value): static
+    {
+        $this->wheres[] = ['type' => 'OR', 'column' => $column, 'operator' => $operator, 'value' => $value];
+        return $this;
+    }
+
+    public function groupBy(string $column): static
+    {
+        $this->groupBy = $column;
+        return $this;
+    }
+
+    public function orderBy(string $column, string $direction = 'ASC'): static
+    {
+        $direction = strtoupper($direction);
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        $this->orderBy = "$column $direction";
+        return $this;
+    }
+
+    public function limit(int $limit): static
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function offset(int $offset): static
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
+    protected function buildWhereClauseAndParams(): array
+    {
+        $params = [];
+        if (empty($this->wheres)) {
+            return ['', $params];
+        }
+        $parts = [];
+        foreach ($this->wheres as $w) {
+            $parts[] = "{$w['column']} {$w['operator']} ?";
+            $params[] = $w['value'];
+        }
+        return [' WHERE ' . implode(' AND ', $parts), $params];
+    }
+
+    protected function buildSelectSql(array &$params): string
+    {
+        [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
+        $params = array_merge($params, $whereParams);
+
+        $sql = "SELECT * FROM {$this->table}";
+
+        if (!empty($this->joins)) {
+            $sql .= ' ' . implode(' ', $this->joins);
+        }
+
+        $sql .= $whereClause;
+
+        if ($this->groupBy) {
+            $sql .= " GROUP BY {$this->groupBy}";
+        }
+        if ($this->orderBy) {
+            $sql .= " ORDER BY {$this->orderBy}";
+        }
+        if ($this->limit !== null) {
+            $sql .= " LIMIT ?";
+            $params[] = (int)$this->limit;
+            if ($this->offset !== null) {
+                $sql .= " OFFSET ?";
+                $params[] = (int)$this->offset;
+            }
+        }
+        return $sql;
+    }
+    public function join(string $table, string $first, string $operator, string $second, string $type = 'INNER'): static
+    {
+        $this->joins[] = strtoupper($type) . " JOIN {$table} ON {$first} {$operator} {$second}";
+        return $this;
+    }
+    protected function buildCountSql(array &$params): string
+    {
+        [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
+        $params = array_merge($params, $whereParams);
+        if ($this->groupBy) {
+            return "SELECT COUNT(*) AS aggregate FROM (SELECT 1 FROM {$this->table}{$whereClause} GROUP BY {$this->groupBy}) AS sub";
+        }
+        return "SELECT COUNT(*) AS aggregate FROM {$this->table}{$whereClause}";
+    }
+
+    public function get(): array
+    {
+        $params = [];
+        $sql = $this->buildSelectSql($params);
+        $stmt = Database::pdo()->prepare($sql);
+
+        $i = 1;
+        foreach ($params as $val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindValue($i++, $val, $type);
+        }
+        $stmt->execute();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn($row) => new static($row), $rows);
+    }
+
+    public function first(): ?static
+    {
+        return $this->limit(1)->get()[0] ?? null;
+    }
+
+    public function paginate(int $page = 1, int $perPage = 15): array
+    {
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+
+        // 1) total
+        $countParams = [];
+        $countSql = $this->buildCountSql($countParams);
+        $countStmt = Database::pdo()->prepare($countSql);
+
+        $i = 1;
+        foreach ($countParams as $val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $countStmt->bindValue($i++, $val, $type);
+        }
+        $countStmt->execute();
+        $total = (int)($countStmt->fetch(PDO::FETCH_ASSOC)['aggregate'] ?? 0);
+
+        $lastPage = max(1, (int)ceil($total / $perPage));
+        if ($page > $lastPage) {
+            $page = $lastPage;
+        }
+
+        $this->limit($perPage)->offset(($page - 1) * $perPage);
+
+        // 2) data
+        $data = $this->get();
+
+        $from = $total === 0 ? 0 : (($page - 1) * $perPage) + 1;
+        $to = $total === 0 ? 0 : $from + count($data) - 1;
+
+        return [
+            'data' => $data,          // array<static>
+            'total' => $total,         // کل رکوردها (با درنظرگرفتن groupBy)
+            'per_page' => $perPage,
+            'current_page' => $page,
+            'last_page' => $lastPage,
+            'from' => $from,
+            'to' => $to,
+        ];
+    }
+    public function toArray(): array
+    {
+        return $this->attributes;
     }
 }

@@ -2,7 +2,7 @@
 namespace App\Core;
 
 use App\Middleware\RateLimiterMiddleware;
-use Redis;
+
 class App
 {
     protected Router $router;
@@ -14,8 +14,6 @@ class App
     }
     public function run():void
     {
-//        require_once BASE_PATH . '/routes/web.php';
-//        require_once BASE_PATH . '/routes/api.php';
         $this->router->dispatch();
     }
     protected function initConstants(): void

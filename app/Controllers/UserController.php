@@ -87,6 +87,7 @@ class UserController extends Controller
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
         if (isset($_SESSION['user_id'])) {
             $redirect = ($_SESSION['is_admin'] ?? false) ? '/admin/panel' : '/home/index';
             header("Location: " . BASE_URL . $redirect);
@@ -95,7 +96,6 @@ class UserController extends Controller
 
         $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
             if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
                 http_response_code(403);
                 echo "درخواست نامعتبر (CSRF)";
@@ -108,11 +108,9 @@ class UserController extends Controller
             if (strlen($phone) !== 11 || !ctype_digit($phone)) {
                 $errors[] = __('phone_invalid');
             }
-
             if (empty($password)) {
                 $errors[] = __('password_required');
             }
-
 
             if (empty($errors)) {
                 $user = \App\Models\User::where('phone_number', $phone)[0] ?? null;
@@ -120,7 +118,8 @@ class UserController extends Controller
                     $_SESSION['user_id'] = $user->id;
                     $_SESSION['user_name'] = $user->first_name;
                     $_SESSION['is_admin'] = $user->is_admin;
-                    $_SESSION['flash_success'] = __('login_success');
+                    $this->info('User logged in', ['user_id' => $user->id, 'ip' => $_SERVER['REMOTE_ADDR'] ?? null]);
+
                     $user_type = \App\Models\UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                     $redirect = $user->is_admin ? '/admin/panel' : '/home/index';
@@ -129,12 +128,14 @@ class UserController extends Controller
                     exit;
                 } else {
                     $errors[] = __('login_failed');
+                    $this->warning('Failed login attempt', ['phone_number' => $phone, 'ip' => $_SERVER['REMOTE_ADDR'] ?? null]);
                 }
             }
         }
 
         $this->view('user/login', ['title' => __('login'), 'errors' => $errors]);
     }
+
 
 
     public function logout()
@@ -198,16 +199,6 @@ class UserController extends Controller
             echo "درخواست نامعتبر (CSRF)";
             exit;
         }
-
-//        $validator = new Validator($_POST, [
-//            'first_name'    => 'required|min:2',
-//            'phone_number'  => 'required|phone',
-//            'password'      => 'required|min:6'
-//        ]);
-//
-//        if ($validator->fails()) {
-//            $errors = $validator->errors();
-//        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = $_POST['first_name'] ?? '';

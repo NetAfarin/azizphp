@@ -1,12 +1,13 @@
 <?php
-
 namespace App\Middlewares;
 
-use App\Exceptions\RateLimitExceededException;
+use App\Core\Loggable;
 use Redis;
 
 class RateLimiterMiddleware
 {
+    use Loggable;
+
     protected int $maxRequests = 10;
     protected int $decaySeconds = 30;
     protected Redis $redis;
@@ -27,9 +28,14 @@ class RateLimiterMiddleware
         }
 
         if (!$this->allowRequest($key)) {
+            $this->warning('Rate limit exceeded', [
+                'key' => $key,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? null
+            ]);
             return $this->tooManyRequestsResponse($key);
         }
 
+        $this->info('Rate limit allowed', ['key' => $key]);
         return $next($request);
     }
 
@@ -50,7 +56,7 @@ class RateLimiterMiddleware
         $count = $this->redis->get($key);
 
         if ($count === false) {
-            $this->redis->set($key, 1, $this->decaySeconds); // expire after decaySeconds
+            $this->redis->set($key, 1, $this->decaySeconds);
             return true;
         }
 
@@ -65,13 +71,12 @@ class RateLimiterMiddleware
     protected function tooManyRequestsResponse(string $key)
     {
         $ttl = $this->redis->ttl($key);
+        if ($ttl < 0) $ttl = 0;
 
-        if ($ttl < 0) {
-            $ttl = 0;
-        }
         http_response_code(429);
         header("Retry-After: $ttl");
-        $lang = $_SESSION['lang'];
+
+        $lang = $_SESSION['lang'] ?? 'fa';
         $isApiRequest = isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false;
 
         if ($isApiRequest) {
@@ -83,7 +88,6 @@ class RateLimiterMiddleware
             ]);
         } else {
             header('Content-Type: text/html; charset=utf-8');
-
             $t = [
                 'title' => __('redis_title'),
                 'heading' => __('redis_heading'),
@@ -107,14 +111,4 @@ HTML;
         }
         exit;
     }
-
-    protected function unauthorizedResponse()
-    {
-        http_response_code(401); // Unauthorized
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'Authorization token required']);
-        exit;
-    }
 }
-
-
