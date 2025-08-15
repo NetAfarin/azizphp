@@ -26,17 +26,24 @@ class User extends Model
     ];
 
 
-    public static function findByMobile(string $mobile): ?User
+    public static function findByPhone(string $phone): ?self
     {
-        $instance = new static();
-        $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE mobile = ?");
-        $stmt->execute([$mobile]);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, get_called_class());
-        return $stmt->fetch() ?: null;
+        return (new static())
+            ->where('phone_number', '=', $phone)
+            ->first();
     }
     public function getUserType(): ?UserType
     {
         return UserType::find($this->user_type);
+    }
+    public function isAdmin(): bool
+    {
+        return $this->user_type === UserType::ADMIN;
+    }
+
+    public function isOperator(): bool
+    {
+        return $this->user_type === UserType::OPERATOR;
     }
 
     public function getRoleTitle(): string
@@ -44,11 +51,12 @@ class User extends Model
         $type = $this->getUserType();
         return $type->title ?? __('unknown');
     }
-
+    public function fullName(): string
+    {
+        return trim("{$this->first_name} {$this->last_name}");
+    }
     public function getEmployeeServices(): array
     {
-        $instance = new EmployeeService();
-        return $instance->findByUserId($this->id);
+        return EmployeeService::where('user_id', $this->id)->get();
     }
-
 }

@@ -7,6 +7,7 @@ use App\Core\Validator;
 use App\Models\User;
 use App\Middlewares\RoleMiddleware;
 use App\Middlewares\AuthMiddleware;
+use App\Models\UserType;
 
 
 class UserController extends Controller
@@ -37,11 +38,7 @@ class UserController extends Controller
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
-                http_response_code(403);
-                echo "درخواست نامعتبر (CSRF)";
-                exit;
-            }
+            $this->checkCsrf();
 
             $first_name = $_POST['first_name'] ?? '';
             $last_name = $_POST['last_name'] ?? '';
@@ -89,19 +86,14 @@ class UserController extends Controller
         }
 
         if (isset($_SESSION['user_id'])) {
-            $redirect = ($_SESSION['is_admin'] ?? false) ? '/admin/panel' : '/home/index';
+            $redirect = (($_SESSION['is_admin']||$_SESSION['is_operator']) ?? false) ? '/admin/panel' : '/home/index';
             header("Location: " . BASE_URL . $redirect);
             exit;
         }
 
         $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
-                http_response_code(403);
-                echo "درخواست نامعتبر (CSRF)";
-                exit;
-            }
-
+           $this->checkCsrf();
             $phone = $_POST['phone_number'] ?? '';
             $password = $_POST['password'] ?? '';
 
@@ -113,16 +105,17 @@ class UserController extends Controller
             }
 
             if (empty($errors)) {
-                $user = \App\Models\User::where('phone_number', $phone)[0] ?? null;
+                $user = User::findByPhone($phone);
                 if ($user && password_verify($password, $user->password)) {
                     $_SESSION['user_id'] = $user->id;
                     $_SESSION['user_name'] = $user->first_name;
-                    $_SESSION['is_admin'] = $user->is_admin;
+                    $_SESSION['is_admin'] = $user->isAdmin();
+                    $_SESSION['is_operator'] = $user->isOperator();
                     $this->info('User logged in', ['user_id' => $user->id, 'ip' => $_SERVER['REMOTE_ADDR'] ?? null]);
 
-                    $user_type = \App\Models\UserType::find($user->user_type);
+                    $user_type = UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
-                    $redirect = $user->is_admin ? '/admin/panel' : '/home/index';
+                    $redirect = ($user->isAdmin()||$user->isOperator()) ? '/admin/panel' : '/home/index';
                     clear_old_input();
                     header("Location: " . BASE_URL . $redirect);
                     exit;
@@ -135,8 +128,6 @@ class UserController extends Controller
 
         $this->view('user/login', ['title' => __('login'), 'errors' => $errors]);
     }
-
-
 
     public function logout()
     {
@@ -158,8 +149,6 @@ class UserController extends Controller
 
     public function panel()
     {
-//        AdminOnly::check();
-        \App\Middlewares\RoleMiddleware::allow(['admin', 'operator']);
         $this->view('admin/panel', ['title' => 'پنل مدیریت']);
     }
 
@@ -186,7 +175,14 @@ class UserController extends Controller
         ]);
     }
 
-
+    protected function checkCsrf(): void
+    {
+        if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
+            http_response_code(403);
+            echo "درخواست نامعتبر (CSRF)";
+            exit;
+        }
+    }
     public function update()
     {
         RoleMiddleware::allow(['admin', 'operator']);
@@ -194,11 +190,7 @@ class UserController extends Controller
         $errors = [];
         $user = User::find($_SESSION['user_id']);
 
-        if (!isset($_POST['_csrf']) || $_POST['_csrf'] !== ($_SESSION['_csrf_token'] ?? '')) {
-            http_response_code(403);
-            echo "درخواست نامعتبر (CSRF)";
-            exit;
-        }
+        $this->checkCsrf();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = $_POST['first_name'] ?? '';

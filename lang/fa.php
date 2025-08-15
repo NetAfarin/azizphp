@@ -64,5 +64,6 @@ return [
 
     'back_to_dashboard' => 'بازگشت',
     'my_profile' => 'پروفایل من',
+    'admin_panel' => 'پنل مدیریت',
 
 ];

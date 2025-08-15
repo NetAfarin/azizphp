@@ -54,6 +54,7 @@ return [
     'user_updated' => 'The user has been successfully updated.',
 
     'is_active' => 'Active user',
+    'admin_panel' => 'Admin Panel',
 
 
     'redis_title' => 'Rate Limit Exceeded',
