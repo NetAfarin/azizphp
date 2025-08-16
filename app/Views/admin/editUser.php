@@ -40,6 +40,46 @@
         </select>
         <small class="form-text text-muted"><?= __('select_services_for_employee') ?></small>
     </div>
+
+    <div id="services_table_wrapper" class="mb-3" style="display:<?=sizeof($employeeServicesData)>0?"block":"none" ?>;">
+        <label class="form-label">سرویس‌ها، قیمت و مدت زمان</label>
+        <table class="table table-bordered" id="services_table">
+            <thead>
+
+            <tr>
+                <th>نام سرویس</th>
+                <th>قیمت</th>
+                <th>مدت زمان</th>
+                <th>حذف</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($employeeServices as $es): ?>
+                <tr id="row-<?= $es->service_id ?>">
+                    <td><?= htmlspecialchars($es->title) ?></td>
+                    <td>
+                        <input type="number" step="0.01" min="0"
+                               class="form-control"
+                               name="service_prices[<?= $es->service_id ?>]"
+                               value="<?= htmlspecialchars($es->price) ?>"
+                               required>
+                    </td>
+                    <td>
+                        <select name="service_durations[<?= $es->service_id ?>]" class="form-select" required>
+                            <?php foreach ($durations as $d): ?>
+                                <option value="<?= $d->id ?>" <?= $d->id == $es->estimated_duration ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($d->title) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-row" data-id="<?= $es->service_id ?>">✖</button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>            </tbody>
+        </table>
+    </div>
     <div class="mb-3">
         <label class="form-label"><?= __('first_name') ?></label>
         <input type="text" name="first_name" class="form-control"
@@ -84,4 +124,74 @@
     $(document).ready(function() {
         $('.js-example-basic-multiple').select2();
     });
+</script>
+<script>
+    $(document).ready(function() {
+        const serviceSelect = $('.js-example-basic-multiple');
+        const tableWrapper = $('#services_table_wrapper');
+        const tbody = $('#services_table tbody');
+
+
+
+        serviceSelect.on('select2:select', function(e) {
+            tableWrapper.show();
+
+            const serviceId = e.params.data.id;
+            const serviceText = e.params.data.text;
+
+            if ($('#row-' + serviceId).length === 0) {
+                const durationOptions = `
+    <?php foreach ($durations as $d): ?>
+        <option value="<?= $d->id ?>"><?= htmlspecialchars($d->title) ?></option>
+    <?php endforeach; ?>
+`;
+
+                const row = `
+    <tr id="row-${serviceId}">
+        <td>${serviceText}</td>
+        <td>
+            <input type="number" step="0.01" min="0"
+                   class="form-control"
+                   name="service_prices[${serviceId}]"
+                   required>
+        </td>
+        <td>
+            <select name="service_durations[${serviceId}]" class="form-select" required>
+                ${durationOptions}
+            </select>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm remove-row" data-id="${serviceId}">✖</button>
+        </td>
+    </tr>`;
+                tbody.append(row);
+            }
+        });
+
+        // وقتی سرویس حذف شد (از select2)
+        serviceSelect.on('select2:unselect', function(e) {
+            const serviceId = e.params.data.id;
+            $('#row-' + serviceId).remove();
+
+            if (tbody.children().length === 0) {
+                tableWrapper.hide();
+            }
+        });
+
+        // وقتی روی دکمه حذف کلیک شد
+        $(document).on('click', '.remove-row', function() {
+            const serviceId = $(this).data('id');
+
+            // از select2 هم حذف بشه
+            serviceSelect.val(serviceSelect.val().filter(id => id != serviceId)).trigger('change');
+
+            // ردیف جدول حذف بشه
+            $('#row-' + serviceId).remove();
+
+            if (tbody.children().length === 0) {
+                tableWrapper.hide();
+            }
+        });
+    });
+
 </script>

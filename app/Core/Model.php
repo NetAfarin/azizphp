@@ -1,180 +1,7 @@
 <?php
 namespace App\Core;
 
-use App\Core\Database;
 use PDO;
-
-//abstract class Model
-//{
-//    protected string $table;
-//    protected array $attributes = [];
-//    protected array $fillable = [];
-//    protected array $wheres = [];
-//    protected ?string $groupBy = null;
-//    protected ?string $orderBy = null;
-//    protected ?int $limit = null;
-////    protected ?int $offset = null;
-//    public function __construct(array $data = [])
-//    {
-//        if (!empty($data)) {
-//            $this->fill($data);
-//        }
-//    }
-//
-//    public function fill(array $data): void
-//    {
-//        foreach ($this->fillable as $key) {
-//            if (isset($data[$key])) {
-//                $this->attributes[$key] = $data[$key];
-//            }
-//        }
-//    }
-//
-//
-//
-//    public function __set($name, $value)
-//    {
-//        if (in_array($name, $this->fillable)) {
-//            $this->attributes[$name] = $value;
-//        }
-//    }
-//
-//    public static function all(): array
-//    {
-//        $instance = new static();
-//        $stmt = Database::pdo()->query("SELECT * FROM {$instance->table}");
-//        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//        return array_map(fn($row) => new static($row), $results);
-//    }
-//
-//    public static function find(int $id): ?static
-//    {
-//        $instance = new static();
-//        $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE id = ?");
-//        $stmt->execute([$id]);
-//        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-//        return $data ? new static($data) : null;
-//    }
-//
-//
-//
-//    public function save(): bool
-//    {
-//        if (isset($this->attributes['id'])) {
-//            return $this->update();
-//        }
-//
-//        $columns = implode(',', $this->fillable);
-//        $placeholders = implode(',', array_fill(0, count($this->fillable), '?'));
-//        $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
-//
-//        $stmt = Database::pdo()->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
-//        $success = $stmt->execute($values);
-//
-//        if ($success) {
-//            $this->attributes['id'] = Database::pdo()->lastInsertId();
-//        }
-//
-//        return $success;
-//    }
-//
-//    protected function update(): bool
-//    {
-//        $set = implode(', ', array_map(fn($col) => "$col = ?", $this->fillable));
-//        $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
-//        $values[] = $this->attributes['id'];
-//
-//        $stmt = Database::pdo()->prepare("UPDATE {$this->table} SET $set WHERE id = ?");
-//        return $stmt->execute($values);
-//    }
-//
-//    public function delete(): bool
-//    {
-//        if (!isset($this->attributes['id'])) return false;
-//
-//        $stmt = Database::pdo()->prepare("DELETE FROM {$this->table} WHERE id = ?");
-//        return $stmt->execute([$this->attributes['id']]);
-//    }
-//
-//
-//
-//
-//
-//
-//    public function where(string $column, string $operator, $value): static
-//    {
-//        $this->wheres[] = compact('column', 'operator', 'value');
-//        return $this;
-//    }
-//
-//    public function groupBy(string $column): static
-//    {
-//        $this->groupBy = $column;
-//        return $this;
-//    }
-//
-//    public function orderBy(string $column, string $direction = 'ASC'): static
-//    {
-//        $direction = strtoupper($direction);
-//        if (!in_array($direction, ['ASC', 'DESC'])) {
-//            $direction = 'ASC';
-//        }
-//        $this->orderBy = "$column $direction";
-//        return $this;
-//    }
-//
-//
-//    public function limit(int $limit): static
-//    {
-//        $this->limit = $limit;
-//        return $this;
-//    }
-//    public function __get($name)
-//    {
-//        return $this->attributes[$name] ?? null;
-//    }
-//
-//    public function get(): array
-//    {
-//        $sql = "SELECT * FROM {$this->table}";
-//
-//        if (!empty($this->wheres)) {
-//            $conditions = [];
-//            foreach ($this->wheres as $where) {
-//                $conditions[] = "{$where['column']} {$where['operator']} ?";
-//            }
-//            $sql .= " WHERE " . implode(' AND ', $conditions);
-//        }
-//
-//        if ($this->groupBy) {
-//            $sql .= " GROUP BY {$this->groupBy}";
-//        }
-//
-//        if ($this->orderBy) {
-//            $sql .= " ORDER BY {$this->orderBy}";
-//        }
-//
-//        if ($this->limit !== null) {
-//            $sql .= " LIMIT {$this->limit}";
-//        }
-//        $stmt = Database::pdo()->prepare($sql);
-//
-//        $values = array_map(fn($w) => $w['value'], $this->wheres);
-//
-//        $stmt->execute($values);
-//
-//        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//
-//        return array_map(fn($row) => new static($row), $results);
-//    }
-//
-//    public function first(): ?static
-//    {
-//        return $this->limit(1)->get()[0] ?? null;
-//    }
-//
-//
-//}
 
 abstract class Model
 {
@@ -182,10 +9,12 @@ abstract class Model
     protected array $attributes = [];
     protected array $fillable = [];
     protected array $wheres = [];
+    protected array $joins = [];
     protected ?string $groupBy = null;
     protected ?string $orderBy = null;
-    protected ?int $limit = null;
+    protected ?int $limitCount = null;
     protected ?int $offset = null;
+    protected ?string $selectArr = null;
 
     public function __construct(array $data = [])
     {
@@ -235,22 +64,20 @@ abstract class Model
         return $this->attributes[$name] ?? null;
     }
 
+    public function select(array $columns): static
+    {
+        $this->selectArr = implode(', ', $columns);
+        return $this;
+    }
 
     public static function all(): array
     {
-        $instance = new static();
-        $stmt = Database::pdo()->query("SELECT * FROM {$instance->table}");
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($row) => new static($row), $results);
+        return static::query()->get();
     }
 
     public static function find(int $id): ?static
     {
-        $instance = new static();
-        $stmt = Database::pdo()->prepare("SELECT * FROM {$instance->table} WHERE id = ?");
-        $stmt->execute([$id]);
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $data ? new static($data) : null;
+        return static::query()->where('id', '=', $id)->first();
     }
 
     public function save(): bool
@@ -258,11 +85,9 @@ abstract class Model
         if (isset($this->attributes['id'])) {
             return $this->update();
         }
-
         $columns = implode(',', $this->fillable);
         $placeholders = implode(',', array_fill(0, count($this->fillable), '?'));
         $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
-
         $stmt = Database::pdo()->prepare("INSERT INTO {$this->table} ($columns) VALUES ($placeholders)");
         $success = $stmt->execute($values);
 
@@ -274,9 +99,18 @@ abstract class Model
 
     protected function update(): bool
     {
-        $set = implode(', ', array_map(fn($col) => "$col = ?", $this->fillable));
-        $values = array_map(fn($key) => $this->attributes[$key] ?? null, $this->fillable);
+        $setParts = [];
+        $values = [];
+
+        foreach ($this->fillable as $col) {
+            if (array_key_exists($col, $this->attributes)) {
+                $setParts[] = "$col = ?";
+                $values[] = $this->attributes[$col];
+            }
+        }
+
         $values[] = $this->attributes['id'];
+        $set = implode(', ', $setParts);
 
         $stmt = Database::pdo()->prepare("UPDATE {$this->table} SET $set WHERE id = ?");
         return $stmt->execute($values);
@@ -285,7 +119,7 @@ abstract class Model
     public function delete(): bool
     {
         if (!isset($this->attributes['id'])) return false;
-        if (isset($this->attributes['deleted'])) {
+        if (in_array('deleted', $this->fillable)) {
             $this->attributes['deleted'] = 1;
             return $this->save();
         }
@@ -304,7 +138,6 @@ abstract class Model
         $this->wheres[] = ['column' => $column, 'operator' => 'IN', 'value' => $values];
         return $this;
     }
-
 
     public function whereLike(string $column, string $value): static
     {
@@ -342,7 +175,7 @@ abstract class Model
 
     public function limit(int $limit): static
     {
-        $this->limit = $limit;
+        $this->limitCount = $limit;
         return $this;
     }
 
@@ -360,19 +193,23 @@ abstract class Model
         }
         $parts = [];
         foreach ($this->wheres as $w) {
-            $parts[] = "{$w['column']} {$w['operator']} ?";
+            $type = $w['type'] ?? 'AND';
+            $clause = "{$w['column']} {$w['operator']} ?";
+            if (!empty($parts)) {
+                $parts[] = $type . ' ' . $clause;
+            } else {
+                $parts[] = $clause;
+            }
             $params[] = $w['value'];
         }
-        return [' WHERE ' . implode(' AND ', $parts), $params];
+        return [' WHERE ' . implode(' ', $parts), $params];
     }
-
     protected function buildSelectSql(array &$params): string
     {
         [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
         $params = array_merge($params, $whereParams);
 
-        $sql = "SELECT * FROM {$this->table}";
-
+        $sql = "SELECT " . ($this->selectArr ?? '*') . " FROM {$this->table}";
         if (!empty($this->joins)) {
             $sql .= ' ' . implode(' ', $this->joins);
         }
@@ -385,9 +222,9 @@ abstract class Model
         if ($this->orderBy) {
             $sql .= " ORDER BY {$this->orderBy}";
         }
-        if ($this->limit !== null) {
+        if ($this->limitCount !== null) {
             $sql .= " LIMIT ?";
-            $params[] = (int)$this->limit;
+            $params[] = (int)$this->limitCount;
             if ($this->offset !== null) {
                 $sql .= " OFFSET ?";
                 $params[] = (int)$this->offset;
@@ -395,6 +232,7 @@ abstract class Model
         }
         return $sql;
     }
+
     public function join(string $table, string $first, string $operator, string $second, string $type = 'INNER'): static
     {
         $this->joins[] = strtoupper($type) . " JOIN {$table} ON {$first} {$operator} {$second}";
@@ -423,6 +261,15 @@ abstract class Model
         }
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->wheres = [];
+        $this->joins = [];
+        $this->selectArr = null;
+        $this->groupBy = null;
+        $this->orderBy = null;
+        $this->limitCount = null;
+        $this->offset = null;
+
         return array_map(fn($row) => new static($row), $rows);
     }
 
@@ -436,7 +283,6 @@ abstract class Model
         $page = max(1, $page);
         $perPage = max(1, $perPage);
 
-        // 1) total
         $countParams = [];
         $countSql = $this->buildCountSql($countParams);
         $countStmt = Database::pdo()->prepare($countSql);
@@ -456,15 +302,14 @@ abstract class Model
 
         $this->limit($perPage)->offset(($page - 1) * $perPage);
 
-        // 2) data
         $data = $this->get();
 
         $from = $total === 0 ? 0 : (($page - 1) * $perPage) + 1;
         $to = $total === 0 ? 0 : $from + count($data) - 1;
 
         return [
-            'data' => $data,          // array<static>
-            'total' => $total,         // کل رکوردها (با درنظرگرفتن groupBy)
+            'data' => $data,
+            'total' => $total,
             'per_page' => $perPage,
             'current_page' => $page,
             'last_page' => $lastPage,
@@ -472,8 +317,31 @@ abstract class Model
             'to' => $to,
         ];
     }
+
     public function toArray(): array
     {
         return $this->attributes;
+    }
+    public function deleteWhere(array $conditions): bool
+    {
+        $clauses = [];
+        $params = [];
+
+        foreach ($conditions as $col => $val) {
+            if (is_array($val)) {
+                $placeholders = implode(',', array_fill(0, count($val), '?'));
+                $clauses[] = "$col IN ($placeholders)";
+                $params = array_merge($params, $val);
+            } else {
+                $clauses[] = "$col = ?";
+                $params[] = $val;
+            }
+        }
+
+        $where = implode(' AND ', $clauses);
+        $sql = "DELETE FROM {$this->table} WHERE $where";
+
+        $stmt = Database::pdo()->prepare($sql);
+        return $stmt->execute($params);
     }
 }

@@ -8,8 +8,8 @@ class RateLimiterMiddleware
 {
     use Loggable;
 
-    protected int $maxRequests = 10;
-    protected int $decaySeconds = 30;
+    protected int $maxRequests = 15;
+    protected int $decaySeconds = 20;
     protected Redis $redis;
 
     public function __construct()

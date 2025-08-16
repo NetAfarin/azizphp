@@ -3,7 +3,6 @@ namespace App\Models;
 
 use App\Core\Database;
 use App\Core\Model;
-use App\Models\Service;
 use PDO;
 
 class EmployeeService extends Model
@@ -17,9 +16,12 @@ class EmployeeService extends Model
         'price',
         'free_hour',
         'estimated_duration',
-        'deleted'
     ];
 
+    public function service(): ?Service
+    {
+        return Service::find($this->service_id);
+    }
 
     public function findByUserId(int $userId): array
     {
@@ -29,8 +31,4 @@ class EmployeeService extends Model
     }
 
 
-    public function getService(): ?Service
-    {
-        return Service::findById($this->service_id);
-    }
 }

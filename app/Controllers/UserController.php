@@ -15,7 +15,7 @@ class UserController extends Controller
     public function show($id): void
     {
 
-        RoleMiddleware::allow(['admin', 'operator']);
+//        RoleMiddleware::allow(['admin', 'operator']);
 
         $user = User::find((int)$id);
 

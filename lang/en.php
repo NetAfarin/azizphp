@@ -27,6 +27,7 @@ return [
 
     'edit_profile' => 'Edit Profile',
     'first_name_short' => 'The first name is too short.',
+    'price_required_for_service' => 'Price required for service.',
     'save_changes' => 'Save Changes',
     'profile_updated' => 'Your profile has been successfully updated.',
     'save_error' => 'There was an error saving your information.',

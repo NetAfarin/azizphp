@@ -2,15 +2,11 @@
 namespace App\Models;
 
 use App\Core\Model;
-use App\Core\Database;
-use PDO;
 
 class User extends Model
 {
-    // نام جدول در دیتابیس
     protected string $table = 'user_table';
 
-    // ستون‌هایی که مجاز به fill شدن هستند
 
     protected array $fillable = [
         'id',
@@ -57,6 +53,60 @@ class User extends Model
     }
     public function getEmployeeServices(): array
     {
-        return EmployeeService::where('user_id', $this->id)->get();
+        return EmployeeService::query()
+            ->join('service_table', 'service_table.id', '=', 'employee_service_table.service_id')
+            ->where('employee_service_table.user_id', '=', $this->id)
+            ->get();
     }
+    public function syncEmployeeServicesWithDetails(array $newServiceIds, array $prices, array $durations): void
+    {
+        $userId = $this->id;
+
+        $current = EmployeeService::query()
+            ->where('user_id', '=', $userId)
+            ->get();
+
+        $currentMap = [];
+        foreach ($current as $es) {
+            $currentMap[$es->service_id] = $es;
+        }
+
+        // حذف سرویس‌های غیر انتخابی
+        foreach ($currentMap as $sid => $es) {
+            if (!in_array($sid, $newServiceIds)) {
+                $es->delete();
+            }
+        }
+
+        foreach ($newServiceIds as $sid) {
+            $price = $prices[$sid] ?? null;
+            $durationId = $durations[$sid] ?? null;
+
+            if (isset($currentMap[$sid])) {
+                $changed = false;
+                if ($currentMap[$sid]->price != $price) {
+                    $currentMap[$sid]->price = $price;
+                    $changed = true;
+                }
+                if ($currentMap[$sid]->estimated_duration_id != $durationId) {
+                    $currentMap[$sid]->estimated_duration_id = $durationId;
+                    $changed = true;
+                }
+                if ($changed) {
+                    $currentMap[$sid]->save();
+                }
+            } else {
+                $es = new EmployeeService([
+                    'user_id' => $userId,
+                    'service_id' => $sid,
+                    'price' => $price,
+                    'estimated_duration' => $durationId,
+                ]);
+                $es->save();
+            }
+        }
+    }
+
+
+
 }

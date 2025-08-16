@@ -24,6 +24,7 @@ return [
 
     'edit_profile' => 'ویرایش پروفایل',
     'first_name_short' => 'نام خیلی کوتاه است.',
+    'price_required_for_service' => 'قیمت برای سرویس لازم است',
     'save_changes' => 'ذخیره تغییرات',
     'profile_updated' => 'پروفایل با موفقیت به‌روزرسانی شد.',
     'save_error' => 'ذخیره اطلاعات با خطا مواجه شد.',
