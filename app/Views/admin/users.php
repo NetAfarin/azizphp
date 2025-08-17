@@ -33,7 +33,7 @@
                 <?php if ($user->getUserType()->en_title === 'employee'): ?>
                     <?php foreach ($user->getEmployeeServices() as $service): ?>
                         <span class="badge bg-info text-dark">
-                            <?= htmlspecialchars($service->fa_title ?? $service->title ?? '-') ?>
+                            <?= htmlspecialchars((APP_LANG == 'fa' ?$service->fa_title : $service->title) ?? '-') ?>
                         </span>
                     <?php endforeach; ?>
                 <?php else: ?>

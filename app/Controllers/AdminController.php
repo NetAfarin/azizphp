@@ -41,15 +41,20 @@ class AdminController extends Controller
 
         if ($user->user_type == UserType::EMPLOYEE) {
             $employeeServiceModels = $user->getEmployeeServices();
+            $lang = $_SESSION['lang'] ?? 'fa';
             foreach ($employeeServiceModels as $empService) {
-                $selectedServiceIds[] = $empService->service_id;
                 $service = Service::find($empService->service_id);
                 if ($service) {
-                    $employeeServicesData[] = [
-                        'id'       => $service->id,
-                        'title'    => $service->fa_title,
-                        'price'    => $empService->price,
-                        'duration' => $empService->duration_id
+                    $title = ($lang === 'fa') ? $service->fa_title : $service->en_title;
+                    $selectedServiceIds[] = $empService->service_id;
+                    $employeeServicesData[] = (object)[
+                        'id'                 => $empService->id,
+                        'service_id'         => $empService->service_id,
+                        'user_id'            => $empService->user_id,
+                        'price'              => $empService->price,
+                        'free_hour'          => $empService->free_hour,
+                        'estimated_duration' => $empService->estimated_duration,
+                        'title'              => $title,
                     ];
                 }
             }
@@ -81,7 +86,10 @@ class AdminController extends Controller
             $last_name  = $_POST['last_name'] ?? '';
             $is_active  = isset($_POST['is_active']) ? 1 : 0;
 
-            $newServices = $_POST['employee_services'] ?? [];
+            $newServices = [];
+            if ($_POST['user_type'] == UserType::EMPLOYEE){
+                $newServices = $_POST['employee_services'] ?? [];
+            }
             $servicePrices = $_POST['service_prices'] ?? [];
 
             $serviceDurations = $_POST['service_durations'] ?? [];

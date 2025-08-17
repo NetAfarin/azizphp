@@ -54,6 +54,7 @@ class User extends Model
     public function getEmployeeServices(): array
     {
         return EmployeeService::query()
+            ->select(['employee_service_table.*','service_table.fa_title','service_table.en_title'])
             ->join('service_table', 'service_table.id', '=', 'employee_service_table.service_id')
             ->where('employee_service_table.user_id', '=', $this->id)
             ->get();
@@ -71,7 +72,6 @@ class User extends Model
             $currentMap[$es->service_id] = $es;
         }
 
-        // حذف سرویس‌های غیر انتخابی
         foreach ($currentMap as $sid => $es) {
             if (!in_array($sid, $newServiceIds)) {
                 $es->delete();
@@ -84,14 +84,16 @@ class User extends Model
 
             if (isset($currentMap[$sid])) {
                 $changed = false;
+
                 if ($currentMap[$sid]->price != $price) {
                     $currentMap[$sid]->price = $price;
                     $changed = true;
                 }
-                if ($currentMap[$sid]->estimated_duration_id != $durationId) {
-                    $currentMap[$sid]->estimated_duration_id = $durationId;
+                if ($currentMap[$sid]->estimated_duration != $durationId) {
+                    $currentMap[$sid]->estimated_duration = $durationId;
                     $changed = true;
                 }
+
                 if ($changed) {
                     $currentMap[$sid]->save();
                 }
@@ -106,6 +108,7 @@ class User extends Model
             }
         }
     }
+
 
 
 

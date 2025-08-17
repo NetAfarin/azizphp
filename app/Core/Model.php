@@ -8,6 +8,7 @@ abstract class Model
     protected string $table;
     protected array $attributes = [];
     protected array $fillable = [];
+    protected array $virtual = [];
     protected array $wheres = [];
     protected array $joins = [];
     protected ?string $groupBy = null;
@@ -50,18 +51,25 @@ abstract class Model
                 $this->attributes[$key] = $data[$key];
             }
         }
+        foreach ($data as $key => $val) {
+            if (!in_array($key, $this->fillable)) {
+                $this->virtual[$key] = $val;
+            }
+        }
     }
 
     public function __set($name, $value)
     {
         if (in_array($name, $this->fillable)) {
             $this->attributes[$name] = $value;
+        } else {
+            $this->virtual[$name] = $value;
         }
     }
 
     public function __get($name)
     {
-        return $this->attributes[$name] ?? null;
+        return $this->attributes[$name] ?? $this->virtual[$name] ?? null;
     }
 
     public function select(array $columns): static
@@ -213,7 +221,9 @@ abstract class Model
         if (!empty($this->joins)) {
             $sql .= ' ' . implode(' ', $this->joins);
         }
-
+//        if ($this->table=="employee_service_table") {
+//            vd($sql);
+//        }
         $sql .= $whereClause;
 
         if ($this->groupBy) {

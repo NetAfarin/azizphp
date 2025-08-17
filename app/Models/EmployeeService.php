@@ -17,6 +17,10 @@ class EmployeeService extends Model
         'free_hour',
         'estimated_duration',
     ];
+    protected array $virtual = [
+        'en_title',
+        'fa_title',
+    ];
 
     public function service(): ?Service
     {

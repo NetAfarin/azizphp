@@ -42,19 +42,16 @@
     </div>
 
     <div id="services_table_wrapper" class="mb-3" style="display:<?=sizeof($employeeServicesData)>0?"block":"none" ?>;">
-        <label class="form-label">سرویس‌ها، قیمت و مدت زمان</label>
+        <label class="form-label"><?= __('services_price_duration') ?></label>
         <table class="table table-bordered" id="services_table">
             <thead>
-
-            <tr>
-                <th>نام سرویس</th>
-                <th>قیمت</th>
-                <th>مدت زمان</th>
-                <th>حذف</th>
-            </tr>
+            <th><?= __('service_name') ?></th>
+            <th><?= __('price') ?></th>
+            <th><?= __('duration') ?></th>
+            <th><?= __('delete') ?></th>
             </thead>
             <tbody>
-            <?php foreach ($employeeServices as $es): ?>
+            <?php foreach ($employeeServicesData as $es): ?>
                 <tr id="row-<?= $es->service_id ?>">
                     <td><?= htmlspecialchars($es->title) ?></td>
                     <td>
@@ -103,18 +100,37 @@
         </label>
     </div>
     <button class="btn btn-primary"><?= __('save_changes') ?></button>
+    <a href="<?= BASE_URL ?>/admin/users" class="btn btn-danger"><?= __('cancel') ?></a>
 </form>
 
 <script>
     const userTypeSelect = document.getElementById('user_type_select');
     const employeeServicesSection = document.getElementById('employee_services_section');
+    const services_table_wrapper = document.getElementById('services_table_wrapper');
+    const services_table = document.getElementById('services_table');
+    const serviceSelectJs = document.querySelector('.js-example-basic-multiple');
 
     function toggleEmployeeServices() {
         const selectedType = userTypeSelect.options[userTypeSelect.selectedIndex].text.toLowerCase();
         if (selectedType.includes('کارمند') || selectedType.includes('employee')) {
             employeeServicesSection.style.display = 'block';
+            services_table_wrapper.style.display = 'block';
         } else {
             employeeServicesSection.style.display = 'none';
+            services_table_wrapper.style.display = 'none';
+            const tbody = services_table.querySelector('tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+            }
+            if (serviceSelectJs) {
+                for (let i = 0; i < serviceSelectJs.options.length; i++) {
+                    serviceSelectJs.options[i].selected = false;
+                }
+
+                if (typeof $ !== 'undefined' && $(serviceSelectJs).hasClass("select2-hidden-accessible")) {
+                    $(serviceSelectJs).val(null).trigger('change');
+                }
+            }
         }
     }
 
@@ -168,7 +184,7 @@
             }
         });
 
-        // وقتی سرویس حذف شد (از select2)
+
         serviceSelect.on('select2:unselect', function(e) {
             const serviceId = e.params.data.id;
             $('#row-' + serviceId).remove();
@@ -178,14 +194,12 @@
             }
         });
 
-        // وقتی روی دکمه حذف کلیک شد
+
         $(document).on('click', '.remove-row', function() {
             const serviceId = $(this).data('id');
 
-            // از select2 هم حذف بشه
             serviceSelect.val(serviceSelect.val().filter(id => id != serviceId)).trigger('change');
 
-            // ردیف جدول حذف بشه
             $('#row-' + serviceId).remove();
 
             if (tbody.children().length === 0) {

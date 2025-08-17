@@ -64,4 +64,10 @@ return [
     'redis_retry' => 'Time remaining until reset: :rtime seconds',
     'back_to_dashboard' => 'Back',
     'my_profile' => 'my profile',
+    'cancel' => 'cancel',
+    'service_name' => 'Service Name',
+    'price' => 'Price',
+    'duration' => 'Duration',
+    'services_price_duration' => 'Services, Price and Duration',
+
 ];
