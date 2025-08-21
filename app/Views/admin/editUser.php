@@ -115,6 +115,7 @@
         if (selectedType.includes('کارمند') || selectedType.includes('employee')) {
             employeeServicesSection.style.display = 'block';
             services_table_wrapper.style.display = 'block';
+            $('.js-example-basic-multiple').select2();
         } else {
             employeeServicesSection.style.display = 'none';
             services_table_wrapper.style.display = 'none';
@@ -147,21 +148,16 @@
         const tableWrapper = $('#services_table_wrapper');
         const tbody = $('#services_table tbody');
 
-
-
         serviceSelect.on('select2:select', function(e) {
             tableWrapper.show();
-
             const serviceId = e.params.data.id;
             const serviceText = e.params.data.text;
-
             if ($('#row-' + serviceId).length === 0) {
                 const durationOptions = `
     <?php foreach ($durations as $d): ?>
         <option value="<?= $d->id ?>"><?= htmlspecialchars($d->title) ?></option>
     <?php endforeach; ?>
 `;
-
                 const row = `
     <tr id="row-${serviceId}">
         <td>${serviceText}</td>

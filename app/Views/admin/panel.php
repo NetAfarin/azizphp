@@ -5,11 +5,14 @@
         <nav class="col-md-2 col-lg-2 d-md-block sidebar py-3">
             <h4 class="px-3 mb-4">مدیریت</h4>
             <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link active" href="<?= BASE_URL ?>/admin/panel">داشبورد</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/users">مدیریت کاربران</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/services">مدیریت سرویس‌ها</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/settings">تنظیمات</a></li>
-                <li class="nav-item"><a class="nav-link text-danger" href="<?= BASE_URL ?>/user/logout">خروج</a></li>
+                <li class="nav-item"><a class="nav-link active" href="<?= BASE_URL ?>/admin/panel"><?= __('dashboard') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/users"><?= __('manage_users') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/services"><?= __('manage_services') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/bookings"><?= __('booking_list') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/bookings/new"><?= __('new_booking') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/settings"><?= __('settings') ?></a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="<?= BASE_URL ?>/user/logout"><?= __('logout') ?></a></li>
+
             </ul>
         </nav>
 

@@ -1,7 +1,7 @@
 <?php
 const APP_NAME = 'MyFramework';
 const APP_DEBUG = true;
-const BASE_URL = 'http://localhost/fw/public';
+const BASE_URL = 'http://localhost/fw';
 
 const LOGGER_CONFIG = [
     'separate_levels' => ['ERROR', 'CRITICAL'],

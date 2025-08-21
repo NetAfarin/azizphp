@@ -9,14 +9,6 @@
         </ul>
     </div>
 <?php endif; ?>
-
-<?php if (!empty($_SESSION['flash_success'])): ?>
-    <div class="alert alert-success">
-        <?= $_SESSION['flash_success'] ?>
-        <?php unset($_SESSION['flash_success']); ?>
-    </div>
-<?php endif; ?>
-
 <form method="post" class="row g-3">
     <?= csrf_field() ?>
     <div class="mb-3">
@@ -27,6 +19,5 @@
         <label for="password"><?= __('password') ?></label>
         <input type="password" class="form-control" name="password" id="password">
     </div>
-
     <button type="submit" class="btn btn-primary"><?= __('submit') ?></button>
 </form>

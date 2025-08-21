@@ -27,15 +27,10 @@ $bootstrapCss = $dir === 'rtl'
 </head>
 <body class="container mt-4">
 
-<!--<div class="text-end mb-2">-->
-<!--    <a href="?lang=fa" class="btn btn-sm btn-outline-primary">🇮🇷 فارسی</a>-->
-<!--    <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>-->
-<!--</div>-->
-
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <span class="navbar-text">
-            <?= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ?? 'مهمان')]) ?>
+            <?= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ??  __('guest'))]) ?>
         </span>
 
         <div class="d-flex align-items-center gap-2">
@@ -51,3 +46,19 @@ $bootstrapCss = $dir === 'rtl'
         </div>
     </div>
 </nav>
+
+<?php if (!empty($_SESSION['flash_success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= htmlspecialchars($_SESSION['flash_success']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php unset($_SESSION['flash_success']); ?>
+<?php endif; ?>
+
+<?php if (!empty($_SESSION['flash_error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= htmlspecialchars($_SESSION['flash_error']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php unset($_SESSION['flash_error']); ?>
+<?php endif; ?>

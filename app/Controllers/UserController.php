@@ -152,16 +152,17 @@ class UserController extends Controller
         $this->view('admin/panel', ['title' => 'پنل مدیریت']);
     }
 
-
-    public function showProfile($id)
+    public function profile()
     {
-        $user = User::find((int)$id);
+        $userId = (int) $_SESSION['user_id'];  // middleware تضمین کرده که وجود داره
+        $user   = User::find($userId);
+
         if (!$user) {
-            echo __('user_not_found');
+            $this->view('errors/404', ['message' => __('user_not_found')]);
             return;
         }
 
-        $this->view('user/show', ['user' => $user, 'title' => __('user_profile')]);
+        $this->view('user/show', ['user'  => $user, 'title' => __('user_profile')]);
     }
 
 

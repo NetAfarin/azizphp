@@ -11,6 +11,8 @@ abstract class Model
     protected array $virtual = [];
     protected array $wheres = [];
     protected array $joins = [];
+    protected array $with = [];
+
     protected ?string $groupBy = null;
     protected ?string $orderBy = null;
     protected ?int $limitCount = null;
@@ -272,6 +274,16 @@ abstract class Model
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $this->resetQuery();
+
+
+//comment after add eager load relations
+//        return array_map(fn($row) => new static($row), $rows);
+        $models = array_map(fn($row) => new static($row), $rows);
+        return $this->eagerLoadRelations($models);
+    }
+    protected function resetQuery(): void
+    {
         $this->wheres = [];
         $this->joins = [];
         $this->selectArr = null;
@@ -279,8 +291,6 @@ abstract class Model
         $this->orderBy = null;
         $this->limitCount = null;
         $this->offset = null;
-
-        return array_map(fn($row) => new static($row), $rows);
     }
 
     public function first(): ?static
@@ -353,5 +363,63 @@ abstract class Model
 
         $stmt = Database::pdo()->prepare($sql);
         return $stmt->execute($params);
+    }
+    public function belongsTo(string $related, string $foreignKey, string $ownerKey = 'id'): ?Model
+    {
+        $instance = new $related();
+        return $instance->where($ownerKey, '=', $this->$foreignKey)->first();
+    }
+
+    public function hasMany(string $related, string $foreignKey, string $localKey = 'id'): array
+    {
+        $instance = new $related();
+        return $instance->where($foreignKey, '=', $this->$localKey)->get();
+    }
+
+    public function with(array $relations): static
+    {
+        $this->with = $relations;
+        return $this;
+    }
+    protected function eagerLoadRelations(array $models): array
+    {
+        if (empty($this->with)) {
+            return $models;
+        }
+
+        foreach ($models as $model) {
+            foreach ($this->with as $relation) {
+                //comment after add loadRelation
+//                if (method_exists($model, $relation)) {
+//                    $model->$relation = $model->$relation();
+//                }
+                $this->loadRelation($model, $relation);
+            }
+        }
+
+        return $models;
+    }
+    protected function loadRelation($model, string $relation): void
+    {
+        $parts = explode('.', $relation);
+        $current = array_shift($parts);
+
+        if (method_exists($model, $current)) {
+            $related = $model->$current();
+
+            if ($related) {
+                $model->$current = $related;
+
+                if (!empty($parts)) {
+                    if (is_array($related)) {
+                        foreach ($related as $item) {
+                            $this->loadRelation($item, implode('.', $parts));
+                        }
+                    } else {
+                        $this->loadRelation($related, implode('.', $parts));
+                    }
+                }
+            }
+        }
     }
 }
