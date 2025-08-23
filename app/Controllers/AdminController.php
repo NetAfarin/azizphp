@@ -16,11 +16,12 @@ class AdminController extends Controller
 
     public function usersList()
     {
-        $users = User::all();
-        $this->view('admin/users', [
-            'title' => __('users_list'),
-            'users' => $users
-        ]);
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+
+        $pagination = User::query()->paginate($page, 1);
+
+        $this->view('admin/users', ['title' => __('users_list'),
+            'users' => $pagination['data'], 'pagination' => $pagination]);
     }
 
     public function editUser($id)

@@ -94,5 +94,6 @@ return [
     'yes' => 'بله',
     'no' => 'خیر',
     'register_datetime' => 'تاریخ عضویت',
+    'profile' => 'پروفایل',
 
 ];

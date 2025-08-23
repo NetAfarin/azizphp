@@ -55,3 +55,12 @@
     <?php endforeach; ?>
     </tbody>
 </table>
+<nav>
+    <ul class="pagination">
+        <?php for ($i = 1; $i <= $pagination['last_page']; $i++): ?>
+            <li class="page-item <?= $i === $pagination['current_page'] ? 'active' : '' ?>">
+                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+            </li>
+        <?php endfor; ?>
+    </ul>
+</nav>

@@ -38,6 +38,7 @@ $bootstrapCss = $dir === 'rtl'
             <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="<?= BASE_URL ?>/user/profile" class="btn btn-sm btn-outline-primary">👤 <?= __('profile') ?></a>
                 <a href="<?= BASE_URL ?>/user/logout" class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
             <?php else: ?>
                 <a href="<?= BASE_URL ?>/user/login" class="btn btn-sm btn-outline-success">🔐 <?= __('login') ?></a>
