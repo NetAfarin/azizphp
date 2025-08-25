@@ -92,5 +92,6 @@ return [
     'no' => 'No',
     'register_datetime' => 'Registration Date',
     'profile' => 'Profile',
+    'add_user' => 'Add User',
 
 ];

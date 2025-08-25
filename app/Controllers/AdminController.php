@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Core\Controller;
@@ -17,11 +18,21 @@ class AdminController extends Controller
     public function usersList()
     {
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            header("Location: ?page=1&per_page=10");
+            exit;
+        }
+        $pagination = User::query()->paginate($page, $perPage);
 
-        $pagination = User::query()->paginate($page, 1);
-
-        $this->view('admin/users', ['title' => __('users_list'),
-            'users' => $pagination['data'], 'pagination' => $pagination]);
+        $this->view('admin/users',
+            ['title' => __('users_list'),
+                'users' => $pagination['data'],
+                'pagination' => $pagination,
+                'per_page' => $perPage,
+                'allowedPerPage' => $allowedPerPage
+            ]);
     }
 
     public function editUser($id)
@@ -35,7 +46,7 @@ class AdminController extends Controller
         }
 
         $userTypes = UserType::all();
-        $groupedServices =  Service::groupedForSelect();
+        $groupedServices = Service::groupedForSelect();
         $selectedServiceIds = [];
         $employeeServicesData = [];
         $durations = Duration::all();
@@ -49,13 +60,13 @@ class AdminController extends Controller
                     $title = ($lang === 'fa') ? $service->fa_title : $service->en_title;
                     $selectedServiceIds[] = $empService->service_id;
                     $employeeServicesData[] = (object)[
-                        'id'                 => $empService->id,
-                        'service_id'         => $empService->service_id,
-                        'user_id'            => $empService->user_id,
-                        'price'              => $empService->price,
-                        'free_hour'          => $empService->free_hour,
+                        'id' => $empService->id,
+                        'service_id' => $empService->service_id,
+                        'user_id' => $empService->user_id,
+                        'price' => $empService->price,
+                        'free_hour' => $empService->free_hour,
                         'estimated_duration' => $empService->estimated_duration,
-                        'title'              => $title,
+                        'title' => $title,
                     ];
                 }
             }
@@ -66,7 +77,7 @@ class AdminController extends Controller
             'userTypes' => $userTypes,
             'groupedServices' => $groupedServices,
             'selectedServiceIds' => $selectedServiceIds,
-            'employeeServicesData'=> $employeeServicesData,
+            'employeeServicesData' => $employeeServicesData,
             'durations' => $durations,
         ]);
     }
@@ -84,11 +95,11 @@ class AdminController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = $_POST['first_name'] ?? '';
-            $last_name  = $_POST['last_name'] ?? '';
-            $is_active  = isset($_POST['is_active']) ? 1 : 0;
+            $last_name = $_POST['last_name'] ?? '';
+            $is_active = isset($_POST['is_active']) ? 1 : 0;
 
             $newServices = [];
-            if ($_POST['user_type'] == UserType::EMPLOYEE){
+            if ($_POST['user_type'] == UserType::EMPLOYEE) {
                 $newServices = $_POST['employee_services'] ?? [];
             }
             $servicePrices = $_POST['service_prices'] ?? [];
@@ -117,11 +128,11 @@ class AdminController extends Controller
 
             if (empty($errors)) {
                 $user->first_name = $first_name;
-                $user->last_name  = $last_name;
-                $user->is_active  = $is_active;
+                $user->last_name = $last_name;
+                $user->is_active = $is_active;
 
                 if ($user->save()) {
-                    $user->syncEmployeeServicesWithDetails($newServices, $servicePrices,$serviceDurations);
+                    $user->syncEmployeeServicesWithDetails($newServices, $servicePrices, $serviceDurations);
 
                     $_SESSION['flash_success'] = __('user_updated');
                     header("Location: " . BASE_URL . "/admin/users");
@@ -133,8 +144,8 @@ class AdminController extends Controller
 
             $this->view('admin/edit_user', [
                 'title' => __('edit_user'),
-                'user'  => $user,
-                'errors'=> $errors
+                'user' => $user,
+                'errors' => $errors
             ]);
         }
     }

@@ -95,5 +95,7 @@ return [
     'no' => 'خیر',
     'register_datetime' => 'تاریخ عضویت',
     'profile' => 'پروفایل',
-
+    'add_user' => 'افزودن کاربر',
+    'per_page' => 'تعداد در هر صفحه',
+    'apply' => 'اعمال',
 ];
