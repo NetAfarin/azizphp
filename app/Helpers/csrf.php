@@ -22,3 +22,21 @@ if (!function_exists('csrf_field')) {
         return '<input type="hidden" name="_csrf" value="' . htmlspecialchars($token) . '">';
     }
 }
+if (!function_exists('check_csrf')) {
+
+function check_csrf(): void
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $token = $_POST['_csrf'] ?? '';
+        $sessionToken = $_SESSION['_csrf_token'] ?? '';
+
+        if (!$token || !$sessionToken || !hash_equals($sessionToken, $token)) {
+            http_response_code(403);
+            echo "درخواست نامعتبر (CSRF)";
+            exit;
+        }
+
+         unset($_SESSION['_csrf_token']);
+    }
+}
+}

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Logger;
 use App\Models\Duration;
 use App\Models\Service;
 use App\Models\User;
@@ -153,18 +154,45 @@ class AdminController extends Controller
 
     public function deleteUser($id)
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit('Method Not Allowed');
+        }
+
         $user = User::find((int)$id);
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
             header("Location: " . BASE_URL . "/admin/users");
             exit;
         }
-        if ($user->delete()) {
+
+        if ($user->id == $_SESSION['user_id']) {
+            $_SESSION['flash_error'] = __('cannot_delete_self');
+            header("Location: " . BASE_URL . "/admin/users");
+            exit;
+        }
+        if ($user->user_type == UserType::ADMIN) {
+            $_SESSION['flash_error'] = __('cannot_delete_admin');
+            header("Location: " . BASE_URL . "/admin/users");
+            exit;
+        }
+
+        if (property_exists($user, 'deleted')) {
+            $user->deleted = 1;
+            $success = $user->save();
+        } else {
+            $success = $user->delete();
+        }
+
+        if ($success) {
             $_SESSION['flash_success'] = __('user_deleted');
+             Logger::info("User {$user->id} deleted by admin {$_SESSION['user_id']}");
         } else {
             $_SESSION['flash_error'] = __('delete_failed');
         }
+
         header("Location: " . BASE_URL . "/admin/users");
         exit;
     }
+
 }
