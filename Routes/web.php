@@ -11,11 +11,13 @@ use App\Middlewares\GuestMiddleware;
 use App\Middlewares\RoleMiddleware;
 use App\Middlewares\CsrfMiddleware;
 
-Route::middleware([GuestMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+Route::middleware([GuestMiddleware::class])->group(function () {
     Route::get('/user/login', [UserController::class, 'login']);
-    Route::post('/user/login', [UserController::class, 'login']);
-
     Route::get('/user/register', [UserController::class, 'register']);
+});
+
+Route::middleware([GuestMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+    Route::post('/user/login', [UserController::class, 'login']);
     Route::post('/user/register', [UserController::class, 'register']);
 });
 

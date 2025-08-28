@@ -100,4 +100,9 @@ return [
     'apply' => 'اعمال',
     'cannot_delete_self' => 'شما نمی‌توانید حساب خودتان را حذف کنید.',
     'cannot_delete_admin' => 'شما نمی‌توانید حساب مدیر را حذف کنید.',
+    'password_confirmation' => 'تایید رمز عبور',
+    'success' => 'با موفقیت انجام شد',
+    'register_success' => 'کاربر با موفقیت',
+    'forbidden_title'   => '⛔ دسترسی غیرمجاز',
+    'forbidden_message' => 'شما اجازه ورود به این صفحه را ندارید.',
 ];

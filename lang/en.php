@@ -93,5 +93,9 @@ return [
     'register_datetime' => 'Registration Date',
     'profile' => 'Profile',
     'add_user' => 'Add User',
-
+    'password_confirmation' => 'Confirm Password',
+    'success' => 'Success',
+    'register_success' => 'User registered successfully.',
+    'forbidden_title'   => '⛔ Unauthorized Access',
+    'forbidden_message' => 'You are not allowed to access this page.',
 ];
