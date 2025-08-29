@@ -12,23 +12,43 @@ class AdminBookingController extends Controller
 {
     public function index()
     {
+//        $bookings = Booking::query()
+//            ->select([
+//                'visit_table.id',
+//                'user_table.first_name AS customer_first_name',
+//                'user_table.last_name AS customer_last_name',
+//                'employee.first_name AS employee_first_name',
+//                'employee.last_name AS employee_last_name',
+//                'service_table.fa_title AS service_title',
+//                'visit_table.visit_datetime',
+//                'visit_table.visit_status'
+//            ])
+//            ->join('user_table', 'visit_table.registrant_user_id', '=', 'user_table.id')
+//            ->join('user_table AS employee', 'visit_table.employee_id', '=', 'employee.id')
+//            ->join('service_table', 'visit_table.service_id', '=', 'service_table.id')
+//            ->join('service_visit_relation_table AS serv', 'serv.visit_id', '=', 'visit_table.id')
+//            ->orderBy('visit_table.start_time', 'DESC')
+//            ->get();
         $bookings = Booking::query()
             ->select([
-                'visit_table.id',
-                'user_table.first_name AS customer_first_name',
-                'user_table.last_name AS customer_last_name',
-                'employee.first_name AS employee_first_name',
-                'employee.last_name AS employee_last_name',
-                'service_table.fa_title AS service_title',
+                'visit_table.id AS visit_id',
+                'cu.first_name AS customer_first_name',
+                'cu.last_name AS customer_last_name',
+                'e.first_name AS employee_first_name',
+                'e.last_name AS employee_last_name',
+                's.fa_title AS service_title',
                 'visit_table.visit_datetime',
-                'visit_table.visit_datetime',
-                'visit_table.status'
+                'vs.fa_title AS visit_status'
             ])
-            ->join('user_table', 'visit_table.user_id', '=', 'user_table.id')
-            ->join('user_table AS employee', 'visit_table.employee_id', '=', 'employee.id')
-            ->join('service_table', 'visit_table.service_id', '=', 'service_table.id')
-            ->orderBy('visit_table.start_time', 'DESC')
+            ->join('user_table AS cu', 'visit_table.customer_id', '=', 'cu.id')
+            ->join('service_visit_relation_table AS svr', 'svr.visit_id', '=', 'visit_table.id')
+            ->join('user_table AS e', 'svr.employee_id', '=', 'e.id')
+            ->join('service_table AS s', 'svr.service_id', '=', 's.id')
+            ->join('visit_status_table AS vs', 'svr.visit_status', '=', 'vs.id')
+            ->orderBy('visit_table.visit_datetime', 'DESC')
             ->get();
+
+
 
         $this->view('admin/booking/index', [
             'title' => __('booking_list'),

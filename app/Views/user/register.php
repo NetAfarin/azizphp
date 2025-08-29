@@ -75,7 +75,19 @@ if (!empty($publicErrors)): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['birth_date'][0]) ?></div>
         <?php endif; ?>
     </div>
-
+    <div class="mb-3">
+        <label for="captcha"><?= __('captcha') ?></label>
+        <div class="d-flex align-items-center">
+            <img src="<?= BASE_URL ?>/captcha.php" alt="<?= __('captcha') ?>" class="me-2 border rounded">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="this.previousElementSibling.src='<?= BASE_URL ?>/captcha.php?'+Date.now();">
+                <?= __('refresh_captcha') ?>
+            </button>
+        </div>
+        <input type="text" class="form-control mt-2" name="captcha" id="captcha" required>
+        <?php if (!empty($errors['captcha'])): ?>
+            <div class="text-danger small"><?= htmlspecialchars($errors['captcha'][0]) ?></div>
+        <?php endif; ?>
+    </div>
     <button type="submit" class="btn btn-primary"><?= __('submit') ?></button>
 </form>
 <script src="<?= BASE_URL ?>/js/register-user.js"></script>

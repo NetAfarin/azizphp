@@ -102,7 +102,12 @@ return [
     'cannot_delete_admin' => 'شما نمی‌توانید حساب مدیر را حذف کنید.',
     'password_confirmation' => 'تایید رمز عبور',
     'success' => 'با موفقیت انجام شد',
-    'register_success' => 'کاربر با موفقیت',
+    'register_success' => 'کاربر با موفقیت ثبت شد!',
     'forbidden_title'   => '⛔ دسترسی غیرمجاز',
     'forbidden_message' => 'شما اجازه ورود به این صفحه را ندارید.',
+    'captcha_invalid'  => 'کد امنیتی اشتباه است.',
+    'captcha'          => 'کد امنیتی',
+    'refresh_captcha'  => 'بارگذاری مجدد کد',
+    'captcha_expired' => 'کد امنیتی منقضی شده است، لطفاً دوباره تلاش کنید.',
+
 ];

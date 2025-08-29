@@ -42,6 +42,19 @@ class UserController extends Controller
             $password = $_POST['password'] ?? '';
             $password_confirmation = $_POST['password_confirmation'] ?? '';
 
+            $userCaptcha = $_POST['captcha'] ?? '';
+            $sessionCaptcha = $_SESSION['captcha'] ?? '';
+
+            $captcha = $_SESSION['captcha'] ?? null;
+            $userCaptcha = $_POST['captcha'] ?? '';
+
+            if (!$captcha || time() - $captcha['time'] > 120) {
+                $errors[] = __('captcha_expired');
+            } elseif ($userCaptcha !== $captcha['code']) {
+                $errors[] = __('captcha_invalid');
+            }
+
+
             $validator = new Validator($_POST, [
                 'first_name' => 'required|min:2',
                 'last_name' => 'required|min:2',
@@ -52,7 +65,7 @@ class UserController extends Controller
             ]);
 
             if ($validator->fails()) {
-                $errors = $validator->errors();
+                $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
 

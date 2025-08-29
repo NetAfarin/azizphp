@@ -98,4 +98,9 @@ return [
     'register_success' => 'User registered successfully.',
     'forbidden_title'   => '⛔ Unauthorized Access',
     'forbidden_message' => 'You are not allowed to access this page.',
+    'captcha_invalid'  => 'Invalid captcha code.',
+    'captcha'          => 'Captcha',
+    'refresh_captcha'  => 'Refresh Captcha',
+    'captcha_expired' => 'Captcha code has expired, please try again.',
+
 ];
