@@ -36,6 +36,8 @@ return [
 
     'user_not_found' => 'کاربر پیدا نشد.',
     'user_profile' => 'پروفایل کاربر',
+    'duration_required_for_service' => 'مدت زمان برای سرویس %s الزامی است',
+    'edit_user' => 'ویرایش کاربر',
 
     'user_deleted' => 'کاربر با موفقیت حذف شد.',
     'delete_failed' => 'حذف کاربر با خطا مواجه شد.',
@@ -109,5 +111,6 @@ return [
     'captcha'          => 'کد امنیتی',
     'refresh_captcha'  => 'بارگذاری مجدد کد',
     'captcha_expired' => 'کد امنیتی منقضی شده است، لطفاً دوباره تلاش کنید.',
+
 
 ];

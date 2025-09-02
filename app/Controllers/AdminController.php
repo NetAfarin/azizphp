@@ -98,9 +98,10 @@ class AdminController extends Controller
             $first_name = $_POST['first_name'] ?? '';
             $last_name = $_POST['last_name'] ?? '';
             $is_active = isset($_POST['is_active']) ? 1 : 0;
+            $user_type  = $_POST['user_type'] ?? $user->user_type;
 
             $newServices = [];
-            if ($_POST['user_type'] == UserType::EMPLOYEE) {
+            if ($user_type == UserType::EMPLOYEE) {
                 $newServices = $_POST['employee_services'] ?? [];
             }
             $servicePrices = $_POST['service_prices'] ?? [];
@@ -109,10 +110,10 @@ class AdminController extends Controller
 
             foreach ($newServices as $sid) {
                 if (!isset($servicePrices[$sid]) || !is_numeric($servicePrices[$sid])) {
-                    $errors[] = "قیمت برای سرویس $sid الزامی است.";
+                    $errors[] = sprintf(__('price_required_for_service'), $sid);
                 }
                 if (!isset($serviceDurations[$sid]) || !is_numeric($serviceDurations[$sid])) {
-                    $errors[] = "مدت زمان برای سرویس $sid الزامی است.";
+                    $errors[] = sprintf(__('duration_required_for_service'), $sid);
                 }
             }
 
@@ -131,6 +132,7 @@ class AdminController extends Controller
                 $user->first_name = $first_name;
                 $user->last_name = $last_name;
                 $user->is_active = $is_active;
+                $user->user_type  = $user_type;
 
                 if ($user->save()) {
                     $user->syncEmployeeServicesWithDetails($newServices, $servicePrices, $serviceDurations);

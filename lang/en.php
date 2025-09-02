@@ -29,6 +29,8 @@ return [
 
     'user_not_found' => 'User not found.',
     'user_profile' => 'User Profile',
+    'duration_required_for_service' => 'Duration for service %s is required',
+    'edit_user' => 'Edit User',
 
     'edit_profile' => 'Edit Profile',
     'first_name_short' => 'The first name is too short.',

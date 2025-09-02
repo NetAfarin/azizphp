@@ -14,7 +14,7 @@
 
     <div class="mb-3">
         <label class="form-label"><?= __('user_type') ?></label>
-        <select name="user_type" id="user_type_select" class="form-select">
+            <select name="user_type" id="user_type_select" class="form-select">
             <?php foreach ($userTypes as $type): ?>
                 <option value="<?= $type->id ?>" <?= ($user->user_type == $type->id) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($type->title) ?>
