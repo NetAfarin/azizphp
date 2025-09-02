@@ -14,7 +14,7 @@
 
     <div class="mb-3">
         <label class="form-label"><?= __('user_type') ?></label>
-        <select name="user_type" id="user_type_select" class="form-select" >
+        <select name="user_type" id="user_type_select" class="form-select">
             <?php foreach ($userTypes as $type): ?>
                 <option value="<?= $type->id ?>" <?= ($user->user_type == $type->id) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($type->title) ?>
@@ -41,7 +41,8 @@
         <small class="form-text text-muted"><?= __('select_services_for_employee') ?></small>
     </div>
 
-    <div id="services_table_wrapper" class="mb-3" style="display:<?=sizeof($employeeServicesData)>0?"block":"none" ?>;">
+    <div id="services_table_wrapper" class="mb-3"
+         style="display:<?= sizeof($employeeServicesData) > 0 ? "block" : "none" ?>;">
         <label class="form-label"><?= __('services_price_duration') ?></label>
         <table class="table table-bordered" id="services_table">
             <thead>
@@ -71,7 +72,9 @@
                         </select>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-danger btn-sm remove-row" data-id="<?= $es->service_id ?>">✖</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-row" data-id="<?= $es->service_id ?>">
+                            ✖
+                        </button>
                     </td>
                 </tr>
             <?php endforeach; ?>            </tbody>
@@ -94,7 +97,7 @@
     </div>
     <div class="form-check form-switch mb-3">
         <input class="form-check-input" type="checkbox" name="is_active" id="is_active"
-            <?= ( $user->is_active == 1) ? 'checked' : '' ?>>
+            <?= ($user->is_active == 1) ? 'checked' : '' ?>>
         <label class="form-check-label" for="is_active">
             <?= __('is_active') ?>
         </label>
@@ -102,4 +105,7 @@
     <button class="btn btn-primary"><?= __('save_changes') ?></button>
     <a href="<?= BASE_URL ?>/admin/users" class="btn btn-danger"><?= __('cancel') ?></a>
 </form>
-<script src="<?= BASE_URL ?>/js/edit-user.js"></script>
+<script>
+    window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;
+</script>
+<script src="<?= asset('js/edit-user.js') ?>"></script>

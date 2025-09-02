@@ -1,9 +1,11 @@
 <?php
 
 if (!function_exists('asset')) {
-    function asset(string $path): string
+    function asset(string $relativePath): string
     {
-        return rtrim(BASE_URL, '/') . '/' . ltrim($path, '/');
+        $fullPath = BASE_PATH . '/public/' . ltrim($relativePath, '/');
+        $version = file_exists($fullPath) ? filemtime($fullPath) : time();
+        return BASE_URL . '/' . ltrim($relativePath, '/') . '?v=' . $version;
     }
 }
 
