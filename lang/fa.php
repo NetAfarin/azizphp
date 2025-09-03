@@ -122,6 +122,7 @@ return [
     'service_count' => 'تعداد سرویس های زیرمجموعه',
     'actions' => 'عملیات',
     'add_category_message' => 'دسته بندی با موفقیت اضافه شد!',
+    'add_service_message' => 'خدمت با موفقیت اضافه شد!',
     'delete_category_message' => 'دسته بندی حذف شد!',
     'delete_sub_category_message' => 'خدمات مورد نظر حذف شد!',
     "confirm_delete_category" => "آیا مطمئن هستید که می‌خواهید این دسته بندی را حذف کنید؟",
@@ -131,5 +132,4 @@ return [
     'service_save_error' => 'ذخیره خدمات با خطا مواجه شد.',
     'service_title_fa' => 'عنوان خدمت به فارسی',
     'service_title_en' => 'عنوان خدمت به انگلیسی',
-
 ];
