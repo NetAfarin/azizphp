@@ -90,4 +90,4 @@ if (!empty($publicErrors)): ?>
     </div>
     <button type="submit" class="btn btn-primary"><?= __('submit') ?></button>
 </form>
-<script src="<?= BASE_URL ?>/js/register-user.js"></script>
+<script src="<?= asset('/js/register-user.js') ?>"></script>

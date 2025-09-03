@@ -145,7 +145,7 @@ class AdminController extends Controller
                 }
             }
 
-            $this->view('admin/edit_user', [
+            $this->view('admin/editUser', [
                 'title' => __('edit_user'),
                 'user' => $user,
                 'errors' => $errors

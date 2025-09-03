@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\AdminBookingController;
+use App\Controllers\ServiceController;
 use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\ErrorController;
@@ -33,6 +34,11 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware:
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
     Route::post('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
     Route::post('/admin/bookings/store', [AdminBookingController::class, 'store']);
+    Route::post('/admin/services/category/create', [ServiceController::class, 'addCategory']);
+    Route::post('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
+    Route::post('/admin/services/category/delete/{id}', [ServiceController::class, 'deleteCategory']);
+    Route::post('/admin/services/sub-category/create', [ServiceController::class, 'addService']);
+    Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
 });
 
 // Admin GET routes
@@ -41,10 +47,18 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(functio
     Route::get('/admin/users', [AdminController::class, 'usersList']);
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser']);
     Route::get('/admin/bookings', [AdminBookingController::class, 'index']);
-    Route::get('/admin/bookings/new', [AdminBookingController::class, 'create']);
     Route::get('/admin/booking/getServices/{employeeId}', [AdminController::class, 'getEmployeeServices']);
     Route::get('/admin/booking/getServiceDuration/{employeeId}/{serviceId}', [AdminController::class, 'getServiceDuration']);
+    Route::get('/admin/services/management', [ServiceController::class, 'management']);
+    Route::get('/admin/services/categories', [ServiceController::class, 'categories']);
+    Route::get('/admin/services', [ServiceController::class, 'services']);
+    Route::get('/admin/bookings/new', [AdminBookingController::class, 'create']);
+    Route::get('/admin/services/category/create', [ServiceController::class, 'addCategory']);
+    Route::get('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
+    Route::get('/admin/services/sub-category/create', [ServiceController::class, 'addService']);
+    Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
 });
+
 
 // Errors
 Route::get('/forbidden', [ErrorController::class, 'forbidden']);
