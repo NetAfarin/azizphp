@@ -37,8 +37,9 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware:
     Route::post('/admin/services/category/create', [ServiceController::class, 'addCategory']);
     Route::post('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
     Route::post('/admin/services/category/delete/{id}', [ServiceController::class, 'deleteCategory']);
-    Route::post('/admin/services/sub-category/create', [ServiceController::class, 'addService']);
+    Route::post('/admin/services/create', [ServiceController::class, 'addService']);
     Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
+    Route::post('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
 });
 
 // Admin GET routes
@@ -55,7 +56,7 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(functio
     Route::get('/admin/bookings/new', [AdminBookingController::class, 'create']);
     Route::get('/admin/services/category/create', [ServiceController::class, 'addCategory']);
     Route::get('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
-    Route::get('/admin/services/sub-category/create', [ServiceController::class, 'addService']);
+    Route::get('/admin/services/create', [ServiceController::class, 'addService']);
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
 });
 

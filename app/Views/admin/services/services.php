@@ -19,7 +19,7 @@
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><?= __('services') ?></h4>
-        <a href="<?= BASE_URL ?>/admin/services/sub-category/create" class="btn btn-light btn-sm">➕ <?= __('add_service') ?></a>
+        <a href="<?= BASE_URL ?>/admin/services/create" class="btn btn-light btn-sm">➕ <?= __('add_service') ?></a>
     </div>
     <div class="card-body">
 
@@ -31,8 +31,7 @@
                     <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
-                        <th class="text-center"><?= __('service_title_fa') ?></th>
-                        <th class="text-center"><?= __('service_title_en') ?></th>
+                        <th class="text-center"><?= __('service_title') ?></th>
                         <th class="text-center"><?= __('service_key') ?></th>
                         <th class="text-center"><?= __('actions') ?></th>
                     </tr>
@@ -45,8 +44,7 @@
                     <?php foreach ($services as $sub): ?>
                         <tr>
                             <td class="text-center"><?= htmlspecialchars($count) ?></td>
-                            <td class="text-center"><?= htmlspecialchars($sub->fa_title) ?></td>
-                            <td class="text-center"><?= htmlspecialchars($sub->en_title) ?></td>
+                            <td class="text-center"><?= htmlspecialchars($lang === 'fa' ? $sub->fa_title : $sub->en_title) ?></td>
                             <td class="text-center"><?= htmlspecialchars($sub->service_key) ?></td>
                             <td class="text-center">
                                 <a href="<?= BASE_URL ?>/admin/services/edit/<?= $sub->id ?>" class="btn btn-sm btn-warning">
@@ -54,7 +52,7 @@
                                 </a>
 
                                 <form action="<?= BASE_URL ?>/admin/services/delete/<?= $sub->id ?>" method="post" class="d-inline"
-                                      onsubmit="return confirm('<?= __('confirm_delete_sub_category') ?>')">
+                                      onsubmit="return confirm('<?= __('confirm_delete_service') ?>')">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-danger">
                                         🗑️ <?= __('delete') ?>

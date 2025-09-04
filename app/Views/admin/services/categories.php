@@ -22,7 +22,10 @@
         <a href="<?= BASE_URL ?>/admin/services/category/create" class="btn btn-light btn-sm">➕ <?= __('add_category') ?></a>
     </div>
     <div class="card-body">
-
+        <?php
+        $startNumber = (($pagination['current_page'] - 1) * $per_page) + 1;
+        $count = $startNumber;
+        ?>
         <?php if (empty($categories)): ?>
             <div class="alert alert-info"><?= __('category_not_found') ?></div>
         <?php else: ?>
@@ -31,7 +34,7 @@
                     <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
-                        <th class="text-center"><?= __('category_title_fa') ?></th>
+                        <th class="text-center"><?= __('category_title') ?></th>
                         <th class="text-center"><?= __('service_count') ?></th>
                         <th class="text-center"><?= __('service_key') ?></th>
                         <th class="text-center"><?= __('actions') ?></th>
@@ -41,7 +44,7 @@
                     <?php foreach ($categories as $cat): ?>
                         <tr>
                             <td class="text-center"><?= htmlspecialchars($cat->id) ?></td>
-                            <td class="text-center"><?= htmlspecialchars($cat->fa_title) ?></td>
+                            <td class="text-center"><?= htmlspecialchars($lang === 'fa' ? $cat->fa_title : $cat->en_title) ?></td>
                             <td class="text-center"><?= htmlspecialchars($cat->subCategoriesCount) ?></td>
                             <td class="text-center"><?= htmlspecialchars($cat->service_key) ?></td>
                             <td class="text-center">
@@ -58,6 +61,7 @@
                                 </form>
                             </td>
                         </tr>
+                        <?php $count++ ?>
                     <?php endforeach; ?>
                     </tbody>
                 </table>

@@ -7,7 +7,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item"><a class="nav-link active" href="<?= BASE_URL ?>/admin/panel"><?= __('dashboard') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/users"><?= __('manage_users') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/services"><?= __('manage_services') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/services/management"><?= __('manage_services') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/bookings"><?= __('booking_list') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/bookings/new"><?= __('new_booking') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/admin/settings"><?= __('settings') ?></a></li>

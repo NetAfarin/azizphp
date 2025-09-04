@@ -35,7 +35,7 @@ class ServiceController extends Controller
             header("Location: ?page=1&per_page=10");
             exit;
         }
-        $pagination = Service::query()->where('parent_id', '=', 0)->paginate($page, $perPage);
+        $pagination = Service::query()->where('parent_id', '=', 0)->where('deleted', '=', 0)->paginate($page, $perPage);
 
         $categories = $pagination['data'];
 
@@ -43,7 +43,7 @@ class ServiceController extends Controller
             $category->subCategoriesCount = sizeof(Service::query()->where('parent_id', '=', $category->id)->get());
         }
 
-        $this->view('admin/services/categoriesList', [
+        $this->view('admin/services/categories', [
             'title' => __('services'),
             'categories' => $categories,
             'pagination' => $pagination,
@@ -88,7 +88,8 @@ class ServiceController extends Controller
                     $errors[] = __('user_save_error');
                 }
             }
-        } else {
+        }
+        else {
             clear_old_input();
         }
         $this->view('admin/services/addCategory', [
@@ -99,13 +100,29 @@ class ServiceController extends Controller
 
     public function editCategory($id)
     {
-
+        $errors = [];
         $service = Service::find((int)$id);
+//        $categories = Service::query()->where("id", "=", $id)->first();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $fa_title = trim($_POST['fa_title'] ?? '');
+            $en_title = trim($_POST['en_title'] ?? '');
+            $service_key = trim($_POST['service_key'] ?? '');
+            $validator = new Validator($_POST, [
+                'fa_title' => 'required|min:2|max:40',
+                'en_title' => 'required|min:2|max:40',
+                'service_key' => 'required|min:2|max:40',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
+
             if (empty($errors)) {
-                $service->fa_title = $_POST['fa_title'];
-                $service->en_title = $_POST['en_title'];
-                $service->service_key = $_POST['service_key'];
+                $service->fa_title = $fa_title;
+                $service->en_title = $en_title;
+                $service->service_key = $service_key;
 
                 if ($service->save()) {
                     $_SESSION['flash_success'] = __('category_update');
@@ -116,12 +133,16 @@ class ServiceController extends Controller
                 }
             }
         } else {
-            $categories = Service::query()->where("id", "=", $id)->first();
-            $this->view('admin/services/editCategories', [
-                'title' => __('edit_user'),
-                'categories' => $categories
-            ]);
+            clear_old_input();
         }
+
+        $this->view('admin/services/editCategory', [
+            'title' => __('edit_user'),
+            'categories' => $service,
+            'errors' => $errors,
+
+
+        ]);
 
     }
 
@@ -138,8 +159,12 @@ class ServiceController extends Controller
             header("Location: " . BASE_URL . "/admin/services/categories");
             exit;
         }
-
-
+         $stmt = Service::query()->where("parent_id" , "=" , $category->id)->get();
+        if(sizeof($stmt) > 0){
+            $_SESSION['flash_error'] =  sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
+            header("Location: " . BASE_URL . "/admin/services/categories");
+            exit;
+        }
         if (property_exists($category, 'deleted')) {
             $category->deleted = 1;
             $success = $category->save();
@@ -176,7 +201,7 @@ class ServiceController extends Controller
 
         $services = $pagination['data'];
 
-        $this->view('admin/services/subCategoriesList', [
+        $this->view('admin/services/services', [
             'title' => __('services'),
             'services' => $services,
             'pagination' => $pagination,
@@ -187,65 +212,102 @@ class ServiceController extends Controller
 
     public function addService()
     {
+
         $services = Service::query()->where("parent_id", "=", 0)->get();
+        $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fa_title = $_POST['fa_title'];
             $en_title = $_POST['en_title'];
             $service_key = $_POST['service_key'];
-            $categoryId = $_POST['categoryId'];
+            $categoryId= $_POST['parent_id'];
+            $service = new Validator($_POST, [
+                'service_key' => "required|min:2|max:40",
+                'fa_title' => "required|min:2|max:40",
+                'en_title' => "required|min:2|max:40",
+                'parent_id' => "required|not:0",
+            ]);
+            if ($service->fails()) {
+                $errors = array_merge($errors, $service->errors());
+                save_old_input();
+            }
             $category = new Service([
                 'service_key' => $service_key,
                 'fa_title' => $fa_title,
                 'en_title' => $en_title,
                 'parent_id' => $categoryId,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
                 'deleted' => 0,
-
             ]);
-            if ($category->save()) {
-                clear_old_input();
-                $_SESSION['flash_success'] = __('add_category_message');
-                header("Location: " . BASE_URL . "/admin/services");
-                exit;
-            } else {
-                $errors[] = __('sub_save_error');
+            if (empty($errors)) {
+
+                if ($category->save()) {
+
+                    clear_old_input();
+                    $_SESSION['flash_success'] = __('add_service_message');
+                    header("Location: " . BASE_URL . "/admin/services");
+                    exit;
+                } else {
+                    $errors[] = __('user_save_error');
+                }
             }
-            vd($category);
-        } else {
-            $this->view('admin/services/addSubCategory', [
-                'title' => __('services'),
-                'services' => $services,
-
-            ]);
         }
+        else {
+            clear_old_input();
+        }
+        $this->view('admin/services/addService', [
+            'errors' => $errors,
+            'title' => __('services'),
+            "services" => $services
+        ]);
+
     }
 
     public function editService($id)
     {
-
         $service = Service::find((int)$id);
+        $errors=[];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty($errors)) {
-                $service->fa_title = $_POST['fa_title'];
-                $service->en_title = $_POST['en_title'];
-                $service->service_key = $_POST['service_key'];
+                $fa_title = trim($_POST['fa_title'] ?? '');
+                $en_title = trim($_POST['en_title'] ?? '');
+                $service_key = trim($_POST['service_key'] ?? '');
+                $parent_id = trim($_POST['parent_id'] ?? '');
+                $validator = new Validator($_POST, [
+                    'fa_title' => 'required|min:2|max:40',
+                    'en_title' => 'required|min:2|max:40',
+                    'service_key' => 'required|min:2|max:40',
+                    'parent_id' => 'required|min:1',
+                ]);
 
+                if ($validator->fails()) {
+                    $errors = array_merge($errors, $validator->errors());
+                    save_old_input();
+                }
+            if (empty($errors)) {
+                $service->fa_title = $fa_title;
+                $service->en_title = $en_title;
+                $service->service_key = $service_key;
+                $service->parent_id = $parent_id;
                 if ($service->save()) {
-                    $_SESSION['flash_success'] = __('category_update');
-                    header("Location: " . BASE_URL . "/admin/services/categories");
+                    $_SESSION['flash_success'] = __('service_update');
+                    header("Location: " . BASE_URL . "/admin/services");
                     exit;
                 } else {
                     $errors[] = __('save_error');
                 }
             }
-        } else {
-            $categories = Service::query()->where("id", "=", $id)->first();
-            $this->view('admin/services/editCategories', [
-                'title' => __('edit_user'),
-                'categories' => $categories
-            ]);
+        }else {
+            clear_old_input();
         }
+
+            $allCategory = Service::query()
+                ->where("parent_id", "=", 0)
+                ->get();
+
+            $this->view('admin/services/editService', [
+                'title' => __('edit_user'),
+                'categories' => $allCategory,
+                'service' => $service,
+                'errors' => $errors,
+            ]);
 
     }
 
