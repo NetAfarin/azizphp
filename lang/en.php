@@ -139,6 +139,11 @@ return [
     "service_update" => "Service updated successfully!",
     "select_category" => "Select Category",
     'service_title' => 'Service Title',
-
+    'choose_employee' => 'choose employee',
+    'choose_customer' => 'choose customer',
+    'choose_customer_placeholder' => 'Enter customer',
+    'choose_employee_placeholder' => 'Enter employee',
+    'choose_service' => 'choose service',
+    'choose_duration' => 'duration',
 
 ];

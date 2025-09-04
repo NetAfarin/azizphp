@@ -3,8 +3,9 @@
 
 
     <div class="mb-3">
-        <label class="form-label">انتخاب مشتری</label>
+        <label class="form-label"><?=__("choose_customer")?></label>
         <select name="user_id"  id="customer_select"  class="form-select" required>
+        <option value="0"><?=__("choose_customer_placeholder")?></option>
             <?php foreach ($customers as $u): ?>
                 <option value="<?= $u->id ?>">
                     <?= htmlspecialchars($u->first_name . ' ' . $u->last_name) ?>
@@ -15,8 +16,9 @@
 
 
     <div class="mb-3">
-        <label class="form-label">انتخاب کارمند</label>
+        <label class="form-label"><?=__("choose_employee")?></label>
         <select name="employee_id" id="employee_select" class="form-select" required>
+        <option value="0"><?=__("choose_employee_placeholder")?></option>
             <?php foreach ($employees as $e): ?>
                 <option value="<?= $e->id ?>">
                     <?= htmlspecialchars($e->first_name . ' ' . $e->last_name) ?>
@@ -27,26 +29,14 @@
 
 
     <div class="mb-3">
-        <label class="form-label">انتخاب سرویس</label>
-        <select name="service_id" id="service_select" class="form-select" required>
-            <?php foreach ($services as $s): ?>
-                <option value="<?= $s->id ?>">
-                    <?= htmlspecialchars($s->fa_title) ?>
-                </option>
-            <?php endforeach; ?>
+        <label class="form-label"><?=__("choose_service")?></label>
+        <select name="service_id" id="service_select" class="form-select" required disabled>
         </select>
     </div>
-
-
     <div class="mb-3">
-        <label>مدت زمان سرویس</label>
-        <input type="time" name="service_time" id="service_time" value="01:30" step="1800">
-<!--        <label class="form-label">مدت زمان</label>-->
-<!--        <select name="duration_id" class="form-select" required>-->
-<!--            --><?php //foreach ($durations as $d): ?>
-<!--                <option value="--><?php //= $d->id ?><!--">--><?php //= htmlspecialchars($d->title) ?><!--</option>-->
-<!--            --><?php //endforeach; ?>
-<!--        </select>-->
+        <label class="form-label" for=""><?=__("choose_duration")?></label>
+        <select name="duration" class="form-select" id="duration_select" required disabled>
+        </select>
     </div>
 
 

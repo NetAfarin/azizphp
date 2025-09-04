@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\Booking;
+use App\Models\Duration;
 use App\Models\EmployeeService;
 use App\Models\User;
 use App\Models\Service;
@@ -62,12 +63,13 @@ class AdminBookingController extends Controller
         $customers = User::query()->where('user_type', '=', UserType::CUSTOMER)->get();
         $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
         $services  = Service::all();
-
+        $durations = Duration::all();
         $this->view('admin/booking/new', [
             'title' => __('new_booking'),
             'customers' => $customers,
             'employees' => $employees,
             'services' => $services,
+            'durations' => $durations,
         ]);
     }
 
@@ -208,6 +210,8 @@ class AdminBookingController extends Controller
     }
     public function getServiceDuration($employeeId, $serviceId)
     {
+
+
         $employee = User::query()
             ->where('id', '=', $employeeId)
             ->where('user_type', '=', UserType::EMPLOYEE)
@@ -217,6 +221,7 @@ class AdminBookingController extends Controller
             http_response_code(403);
             echo json_encode(['error' => 'invalid employee']);
             exit;
+
         }
 
         $es = EmployeeService::query()

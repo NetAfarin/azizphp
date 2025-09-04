@@ -147,5 +147,12 @@ return [
     "service_update" => "خدمت با موفقیت بروزرسانی شد.",
     "select_category" => "عنوان دسته بندی را انتخاب کنید",
     'service_title' => 'عنوان خدمت',
+    'choose_employee' => 'انتخاب کارمند',
+    'choose_customer' => 'انتخاب مشتری',
+    'choose_customer_placeholder' => 'مشتری را وارد کنید',
+    'choose_employee_placeholder' => 'کارمند را وارد کنید',
+    'choose_service' => 'انتخاب سرویس',
+    'choose_duration' => 'مدت زمان انجام',
+
 
 ];
