@@ -1,5 +1,3 @@
-const BASE_URL = "<?= BASE_URL ?>";
-
 document.getElementById('employee_select').addEventListener('change', function () {
     const employeeId = this.value;
     if (!employeeId) return;

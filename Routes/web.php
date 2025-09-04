@@ -47,8 +47,8 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(functio
     Route::get('/admin/users', [AdminController::class, 'usersList']);
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser']);
     Route::get('/admin/bookings', [AdminBookingController::class, 'index']);
-    Route::get('/admin/booking/getServices/{employeeId}', [AdminController::class, 'getEmployeeServices']);
-    Route::get('/admin/booking/getServiceDuration/{employeeId}/{serviceId}', [AdminController::class, 'getServiceDuration']);
+    Route::get('/admin/booking/getServices/{employeeId}', [AdminBookingController::class, 'getEmployeeServices']);
+    Route::get('/admin/booking/getServiceDuration/{employeeId}/{serviceId}', [AdminBookingController::class, 'getServiceDuration']);
     Route::get('/admin/services/management', [ServiceController::class, 'management']);
     Route::get('/admin/services/categories', [ServiceController::class, 'categories']);
     Route::get('/admin/services', [ServiceController::class, 'services']);

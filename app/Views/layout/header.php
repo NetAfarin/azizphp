@@ -66,3 +66,4 @@ $bootstrapCss = $dir === 'rtl'
     </div>
     <?php unset($_SESSION['flash_error']); ?>
 <?php endif; ?>
+<script> const BASE_URL = "<?= BASE_URL ?>";</script>
