@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 06, 2025 at 07:10 AM
+-- Generation Time: Sep 06, 2025 at 08:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -84,6 +84,7 @@ CREATE TABLE `employee_service_table` (
   `id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
+  `salon_id` int(11) DEFAULT NULL,
   `price` bigint(20) NOT NULL,
   `free_hour` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `estimated_duration` int(11) NOT NULL,
@@ -94,11 +95,11 @@ CREATE TABLE `employee_service_table` (
 -- Dumping data for table `employee_service_table`
 --
 
-INSERT INTO `employee_service_table` (`id`, `service_id`, `user_id`, `price`, `free_hour`, `estimated_duration`, `deleted`) VALUES
-(135, 10, 93, 2500, '2025-09-02 15:53:26', 1, 0),
-(137, 16, 93, 4500, '2025-09-02 15:53:26', 3, 0),
-(145, 11, 98, 222, '2025-09-02 16:17:35', 1, 0),
-(146, 19, 98, 333, '2025-09-02 16:17:35', 5, 0);
+INSERT INTO `employee_service_table` (`id`, `service_id`, `user_id`, `salon_id`, `price`, `free_hour`, `estimated_duration`, `deleted`) VALUES
+(135, 10, 93, NULL, 2500, '2025-09-02 15:53:26', 1, 0),
+(137, 16, 93, NULL, 4500, '2025-09-02 15:53:26', 3, 0),
+(145, 11, 98, NULL, 222, '2025-09-02 16:17:35', 1, 0),
+(146, 19, 98, NULL, 333, '2025-09-02 16:17:35', 5, 0);
 
 -- --------------------------------------------------------
 
@@ -168,12 +169,33 @@ INSERT INTO `quality_score_table` (`id`, `fa_name`, `en_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `salon_table`
+--
+
+CREATE TABLE `salon_table` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `avatar` varchar(50) NOT NULL,
+  `manager` varchar(100) NOT NULL,
+  `manager_mobile` varchar(11) NOT NULL,
+  `manager_email` varchar(50) NOT NULL,
+  `plan_id` int(11) NOT NULL,
+  `created_datetime` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_datetime` datetime NOT NULL DEFAULT current_timestamp(),
+  `active` tinyint(4) NOT NULL DEFAULT 0,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `service_table`
 --
 
 CREATE TABLE `service_table` (
   `id` int(11) NOT NULL,
   `service_key` varchar(50) NOT NULL,
+  `salon_id` int(11) DEFAULT NULL,
   `fa_title` varchar(100) NOT NULL,
   `en_title` varchar(100) NOT NULL,
   `parent_id` int(11) DEFAULT 0,
@@ -186,111 +208,111 @@ CREATE TABLE `service_table` (
 -- Dumping data for table `service_table`
 --
 
-INSERT INTO `service_table` (`id`, `service_key`, `fa_title`, `en_title`, `parent_id`, `created_at`, `updated_at`, `deleted`) VALUES
-(1, 'hair_services', 'خدمات مو', 'Hair Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(2, 'eyebrow_lash', 'خدمات ابرو و مژه', 'Eyebrow & Eyelash Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(3, 'nail_services', 'خدمات ناخن', 'Nail Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(4, 'skin_care', 'خدمات پوست و صورت', 'Skin & Facial Care', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(5, 'makeup', 'خدمات آرایش', 'Makeup Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(6, 'repair', 'خدمات ترمیم و کاشت', 'Repair & Enhancement Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(7, 'laser', 'خدمات لیزر و اپیلاسیون', 'Laser & Hair Removal', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(8, 'massage', 'خدمات ماساژ و ریلکسیشن', 'Massage & Relaxation', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(9, 'haircut', 'کوتاهی مو', 'Haircut', 1, '2025-06-20 10:50:29', '2025-07-08 11:58:54', 0),
-(10, 'hair_coloring', 'رنگ مو', 'Hair Coloring', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(11, 'highlight_bleach', 'هایلایت و بلیچ', 'Highlighting & Bleaching', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(12, 'balayage_ombre', 'مش و بالیاژ', 'Balayage & Ombre', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(13, 'perm_waving', 'تافت و فر مو', 'Perm & Hair Waving', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(14, 'hair_straightening', 'صاف کردن مو', 'Hair Straightening', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(15, 'keratin_treatment', 'کراتین مو', 'Keratin Treatment', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(16, 'hair_botox', 'بوتاکس مو', 'Hair Botox', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(17, 'hair_extensions', 'اکستنشن مو', 'Hair Extensions', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(18, 'braiding', 'بافت مو', 'Braiding', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(19, 'updo_styling', 'شینیون و آرایش مو', 'Updo & Styling', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(20, 'hair_mask', 'ماسک مو', 'Hair Mask Treatment', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(21, 'light_ombre_balayage', 'لایت + آمبره + بالیاژ', 'Light + Ombre + Balayage', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(22, 'scalp_scrub', 'اسکراپ اسکالپ', 'Scalp Scrub', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(23, 'eyebrow_shaping', 'طراحی ابرو', 'Eyebrow Shaping', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(24, 'microblading', 'میکروبلیدینگ ابرو', 'Microblading', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(25, 'eyebrow_tinting', 'رنگ ابرو', 'Eyebrow Tinting', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(26, 'eyebrow_lamination', 'لمینیت ابرو', 'Eyebrow Lamination', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(27, 'lash_extensions', 'اکستنشن مژه', 'Eyelash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(28, 'lash_lift', 'لیفت مژه', 'Eyelash Lift', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(29, 'lash_tinting', 'رنگ مژه', 'Eyelash Tinting', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(30, 'lash_extension_L', 'اکستنشن مژه L', 'Lash Extension - L Style', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(31, 'spiky_lash', 'اکستنشن مژه اسپایکی', 'Spiky Lash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(32, 'colored_lash', 'اکستنشن مژه رنگی', 'Colored Lash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(33, 'mega_volume_lash', 'اکستنشن مژه مگاوالیوم', 'Mega Volume Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(34, 'volume_lash', 'اکستنشن مژه والیوم', 'Volume Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(35, 'classic_lash', 'اکستنشن مژه کلاسیک', 'Classic Lash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(36, 'lash_tinting2', 'بن مژه', 'Lash Tinting', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(37, 'spiky_colored_L_refill', 'ترمیم مژه اسپایکی + رنگی + L', 'Spiky + Colored + L Lash Refill', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(38, 'volume_lash_refill', 'ترمیم مژه والیوم', 'Volume Lash Refill', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(39, 'classic_lash_refill', 'ترمیم مژه کلاسیک', 'Classic Lash Refill', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(40, 'temp_lashes', 'مژه موقت معمولی', 'Temporary Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(41, 'kylie_temp_lashes', 'مژه موقت کایلی', 'Kylie Temporary Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(42, 'eyebrow_fibrosis', 'فیبروز ابرو', 'Eyebrow Fibrosis Treatment', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(43, 'eyebrow_lift_botox', 'لیفت ابرو + بوتاکس', 'Eyebrow Lift + Botox', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(44, 'manicure', 'مانیکور', 'Manicure', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(45, 'pedicure', 'پدیکور', 'Pedicure', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(46, 'gel_nails', 'ناخن ژله‌ای', 'Gel Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(47, 'acrylic_nails', 'ناخن اکریلیک', 'Acrylic Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(48, 'dip_powder', 'ناخن دیپاوکس', 'Dip Powder Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(49, 'nail_art', 'طراحی ناخن', 'Nail Art', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(50, 'podology', 'پدولوژی', 'Podology - Advanced Foot Care', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(51, 'pedicure_callus', 'پدیکور و کفسابی', 'Pedicure & Callus Removal', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(52, 'polygel_repair', 'ترمیم پلی ژل', 'Polygel Nail Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(53, 'polygel_toe_repair', 'ترمیم پلی ژل پا', 'Polygel Toe Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(54, 'powder_dip_repair', 'ترمیم ناخن پودر ساده', 'Powder Dip Nail Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(55, 'peach_repair', 'ترمیم هلویی', 'Peach Nail Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(56, 'full_foot_repair', 'ترمیم کل پا ساده', 'Full Foot Basic Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(57, 'russian_gel', 'ژل پولیش روسی', 'Russian Gel Manicure', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(58, 'nail_strengthening', 'استحکام‌سازی و حجیم‌سازی ناخن', 'Nail Strengthening & Thickening', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(59, 'foot_filing', 'سوهان کشی پا', 'Foot Filing', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(60, 'polygel_application', 'کاشت پلی ژل', 'Polygel Nail Application', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(61, 'polygel_toe_application', 'کاشت پلی ژل پا', 'Polygel Toe Application', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(62, 'basic_toe_extension', 'کاشت شصت پا ساده', 'Basic Toe Extension', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(63, 'hand_lamination', 'کاشت لمینیت دست', 'Hand Lamination', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(64, 'toe_lamination', 'کاشت لمینیت شصت پا', 'Toe Lamination', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(65, 'full_foot_lamination', 'کاشت لمینیت کل پا', 'Full Foot Lamination', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(66, 'basic_powder_dip', 'کاشت ناخن پودر ساده', 'Basic Powder Dip Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(67, 'peach_powder_dip', 'کاشت ناخن پودر هلویی', 'Peach Powder Dip Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(68, 'full_foot_basic', 'کاشت کل پا ساده', 'Full Foot Basic Application', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(69, 'peach_powder_overlay', 'کاور ناخن پودر هلویی', 'Peach Powder Dip Overlay', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(70, 'basic_powder_overlay', 'کاور ناخن پودر ساده', 'Basic Powder Dip Overlay', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(71, 'facial_cleansing', 'پاکسازی پوست', 'Facial Cleansing', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(72, 'microdermabrasion', 'میکرودرم ابریژن', 'Microdermabrasion', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(73, 'thread_lift', 'لیفت صورت با نخ', 'Thread Lift', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(74, 'facial_mask', 'ماسک صورت', 'Facial Mask', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(75, 'skin_rejuvenation', 'جوانسازی پوست', 'Skin Rejuvenation', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(76, 'hydrafacial', 'هایدرافیشیال', 'Hydrafacial', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(77, 'mesotherapy', 'مزوتراپی صورت', 'Mesotherapy', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(78, 'skin_treatments', 'پوست', 'Skin Treatments', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(79, 'bridal_makeup', 'آرایش عروس', 'Bridal Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(80, 'daily_makeup', 'آرایش روزانه', 'Daily Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(81, 'evening_makeup', 'آرایش ویژه مراسم', 'Evening/Party Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(82, 'permanent_makeup', 'آرایش دائم', 'Permanent Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(83, 'contouring', 'کانتورینگ صورت', 'Contouring & Highlighting', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(84, 'eyeliner', 'خط چشم', 'Eyeliner', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(85, 'lip_liner', 'خط لب', 'Lip Liner', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(86, 'tinting', 'رنگ', 'Tinting', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(87, 'tattoo_removal', 'ریموو تتو', 'Tattoo Removal', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(88, 'lip_shading', 'شیدینگ لب', 'Lip Shading', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(89, 'basic_toe_repair', 'ترمیم شصت پا ساده', 'Basic Toe Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(90, 'fibrosis_repair', 'ترمیم فیبروز', 'Fibrosis Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(91, 'lamination_repair', 'ترمیم لمینیت', 'Lamination Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(92, 'toe_lamination_repair', 'ترمیم لمینیت شصت پا', 'Toe Lamination Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(93, 'full_foot_lamination_repair', 'ترمیم لمینیت کل پا', 'Full Foot Lamination Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(94, 'laser_hair_removal', 'لیزر موهای زائد', 'Laser Hair Removal', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(95, 'waxing', 'اپیلاسیون با موم', 'Waxing', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(96, 'threading', 'اپیلاسیون با نخ', 'Threading', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(97, 'sugaring', 'اپیلاسیون شمع', 'Sugaring', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(98, 'facial_massage', 'ماساژ صورت', 'Facial Massage', 8, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(99, 'body_massage', 'ماساژ بدن', 'Body Massage', 8, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(100, 'aromatherapy', 'ماساژ آروماتراپی', 'Aromatherapy Massage', 8, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
-(104, 'kkk', 'سلام', 'salam', 0, '2025-09-03 10:23:06', '2025-09-03 10:23:06', 0),
-(105, '', '', '', 0, '2025-09-03 11:11:19', '2025-09-03 11:11:19', 0),
-(106, '', '', '', 0, '2025-09-03 12:21:10', '2025-09-03 12:21:10', 0),
-(107, '', '22222222222222222222222222342wrergdfgdfgdfgdfgdfg22222222222222222222222222', '', 0, '2025-09-03 12:37:13', '2025-09-03 12:37:13', 0);
+INSERT INTO `service_table` (`id`, `service_key`, `salon_id`, `fa_title`, `en_title`, `parent_id`, `created_at`, `updated_at`, `deleted`) VALUES
+(1, 'hair_services', NULL, 'خدمات مو', 'Hair Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(2, 'eyebrow_lash', NULL, 'خدمات ابرو و مژه', 'Eyebrow & Eyelash Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(3, 'nail_services', NULL, 'خدمات ناخن', 'Nail Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(4, 'skin_care', NULL, 'خدمات پوست و صورت', 'Skin & Facial Care', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(5, 'makeup', NULL, 'خدمات آرایش', 'Makeup Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(6, 'repair', NULL, 'خدمات ترمیم و کاشت', 'Repair & Enhancement Services', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(7, 'laser', NULL, 'خدمات لیزر و اپیلاسیون', 'Laser & Hair Removal', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(8, 'massage', NULL, 'خدمات ماساژ و ریلکسیشن', 'Massage & Relaxation', 0, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(9, 'haircut', NULL, 'کوتاهی مو', 'Haircut', 1, '2025-06-20 10:50:29', '2025-07-08 11:58:54', 0),
+(10, 'hair_coloring', NULL, 'رنگ مو', 'Hair Coloring', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(11, 'highlight_bleach', NULL, 'هایلایت و بلیچ', 'Highlighting & Bleaching', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(12, 'balayage_ombre', NULL, 'مش و بالیاژ', 'Balayage & Ombre', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(13, 'perm_waving', NULL, 'تافت و فر مو', 'Perm & Hair Waving', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(14, 'hair_straightening', NULL, 'صاف کردن مو', 'Hair Straightening', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(15, 'keratin_treatment', NULL, 'کراتین مو', 'Keratin Treatment', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(16, 'hair_botox', NULL, 'بوتاکس مو', 'Hair Botox', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(17, 'hair_extensions', NULL, 'اکستنشن مو', 'Hair Extensions', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(18, 'braiding', NULL, 'بافت مو', 'Braiding', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(19, 'updo_styling', NULL, 'شینیون و آرایش مو', 'Updo & Styling', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(20, 'hair_mask', NULL, 'ماسک مو', 'Hair Mask Treatment', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(21, 'light_ombre_balayage', NULL, 'لایت + آمبره + بالیاژ', 'Light + Ombre + Balayage', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(22, 'scalp_scrub', NULL, 'اسکراپ اسکالپ', 'Scalp Scrub', 1, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(23, 'eyebrow_shaping', NULL, 'طراحی ابرو', 'Eyebrow Shaping', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(24, 'microblading', NULL, 'میکروبلیدینگ ابرو', 'Microblading', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(25, 'eyebrow_tinting', NULL, 'رنگ ابرو', 'Eyebrow Tinting', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(26, 'eyebrow_lamination', NULL, 'لمینیت ابرو', 'Eyebrow Lamination', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(27, 'lash_extensions', NULL, 'اکستنشن مژه', 'Eyelash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(28, 'lash_lift', NULL, 'لیفت مژه', 'Eyelash Lift', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(29, 'lash_tinting', NULL, 'رنگ مژه', 'Eyelash Tinting', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(30, 'lash_extension_L', NULL, 'اکستنشن مژه L', 'Lash Extension - L Style', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(31, 'spiky_lash', NULL, 'اکستنشن مژه اسپایکی', 'Spiky Lash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(32, 'colored_lash', NULL, 'اکستنشن مژه رنگی', 'Colored Lash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(33, 'mega_volume_lash', NULL, 'اکستنشن مژه مگاوالیوم', 'Mega Volume Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(34, 'volume_lash', NULL, 'اکستنشن مژه والیوم', 'Volume Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(35, 'classic_lash', NULL, 'اکستنشن مژه کلاسیک', 'Classic Lash Extensions', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(36, 'lash_tinting2', NULL, 'بن مژه', 'Lash Tinting', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(37, 'spiky_colored_L_refill', NULL, 'ترمیم مژه اسپایکی + رنگی + L', 'Spiky + Colored + L Lash Refill', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(38, 'volume_lash_refill', NULL, 'ترمیم مژه والیوم', 'Volume Lash Refill', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(39, 'classic_lash_refill', NULL, 'ترمیم مژه کلاسیک', 'Classic Lash Refill', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(40, 'temp_lashes', NULL, 'مژه موقت معمولی', 'Temporary Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(41, 'kylie_temp_lashes', NULL, 'مژه موقت کایلی', 'Kylie Temporary Lashes', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(42, 'eyebrow_fibrosis', NULL, 'فیبروز ابرو', 'Eyebrow Fibrosis Treatment', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(43, 'eyebrow_lift_botox', NULL, 'لیفت ابرو + بوتاکس', 'Eyebrow Lift + Botox', 2, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(44, 'manicure', NULL, 'مانیکور', 'Manicure', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(45, 'pedicure', NULL, 'پدیکور', 'Pedicure', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(46, 'gel_nails', NULL, 'ناخن ژله‌ای', 'Gel Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(47, 'acrylic_nails', NULL, 'ناخن اکریلیک', 'Acrylic Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(48, 'dip_powder', NULL, 'ناخن دیپاوکس', 'Dip Powder Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(49, 'nail_art', NULL, 'طراحی ناخن', 'Nail Art', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(50, 'podology', NULL, 'پدولوژی', 'Podology - Advanced Foot Care', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(51, 'pedicure_callus', NULL, 'پدیکور و کفسابی', 'Pedicure & Callus Removal', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(52, 'polygel_repair', NULL, 'ترمیم پلی ژل', 'Polygel Nail Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(53, 'polygel_toe_repair', NULL, 'ترمیم پلی ژل پا', 'Polygel Toe Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(54, 'powder_dip_repair', NULL, 'ترمیم ناخن پودر ساده', 'Powder Dip Nail Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(55, 'peach_repair', NULL, 'ترمیم هلویی', 'Peach Nail Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(56, 'full_foot_repair', NULL, 'ترمیم کل پا ساده', 'Full Foot Basic Repair', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(57, 'russian_gel', NULL, 'ژل پولیش روسی', 'Russian Gel Manicure', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(58, 'nail_strengthening', NULL, 'استحکام‌سازی و حجیم‌سازی ناخن', 'Nail Strengthening & Thickening', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(59, 'foot_filing', NULL, 'سوهان کشی پا', 'Foot Filing', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(60, 'polygel_application', NULL, 'کاشت پلی ژل', 'Polygel Nail Application', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(61, 'polygel_toe_application', NULL, 'کاشت پلی ژل پا', 'Polygel Toe Application', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(62, 'basic_toe_extension', NULL, 'کاشت شصت پا ساده', 'Basic Toe Extension', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(63, 'hand_lamination', NULL, 'کاشت لمینیت دست', 'Hand Lamination', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(64, 'toe_lamination', NULL, 'کاشت لمینیت شصت پا', 'Toe Lamination', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(65, 'full_foot_lamination', NULL, 'کاشت لمینیت کل پا', 'Full Foot Lamination', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(66, 'basic_powder_dip', NULL, 'کاشت ناخن پودر ساده', 'Basic Powder Dip Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(67, 'peach_powder_dip', NULL, 'کاشت ناخن پودر هلویی', 'Peach Powder Dip Nails', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(68, 'full_foot_basic', NULL, 'کاشت کل پا ساده', 'Full Foot Basic Application', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(69, 'peach_powder_overlay', NULL, 'کاور ناخن پودر هلویی', 'Peach Powder Dip Overlay', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(70, 'basic_powder_overlay', NULL, 'کاور ناخن پودر ساده', 'Basic Powder Dip Overlay', 3, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(71, 'facial_cleansing', NULL, 'پاکسازی پوست', 'Facial Cleansing', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(72, 'microdermabrasion', NULL, 'میکرودرم ابریژن', 'Microdermabrasion', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(73, 'thread_lift', NULL, 'لیفت صورت با نخ', 'Thread Lift', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(74, 'facial_mask', NULL, 'ماسک صورت', 'Facial Mask', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(75, 'skin_rejuvenation', NULL, 'جوانسازی پوست', 'Skin Rejuvenation', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(76, 'hydrafacial', NULL, 'هایدرافیشیال', 'Hydrafacial', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(77, 'mesotherapy', NULL, 'مزوتراپی صورت', 'Mesotherapy', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(78, 'skin_treatments', NULL, 'پوست', 'Skin Treatments', 4, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(79, 'bridal_makeup', NULL, 'آرایش عروس', 'Bridal Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(80, 'daily_makeup', NULL, 'آرایش روزانه', 'Daily Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(81, 'evening_makeup', NULL, 'آرایش ویژه مراسم', 'Evening/Party Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(82, 'permanent_makeup', NULL, 'آرایش دائم', 'Permanent Makeup', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(83, 'contouring', NULL, 'کانتورینگ صورت', 'Contouring & Highlighting', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(84, 'eyeliner', NULL, 'خط چشم', 'Eyeliner', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(85, 'lip_liner', NULL, 'خط لب', 'Lip Liner', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(86, 'tinting', NULL, 'رنگ', 'Tinting', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(87, 'tattoo_removal', NULL, 'ریموو تتو', 'Tattoo Removal', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(88, 'lip_shading', NULL, 'شیدینگ لب', 'Lip Shading', 5, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(89, 'basic_toe_repair', NULL, 'ترمیم شصت پا ساده', 'Basic Toe Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(90, 'fibrosis_repair', NULL, 'ترمیم فیبروز', 'Fibrosis Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(91, 'lamination_repair', NULL, 'ترمیم لمینیت', 'Lamination Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(92, 'toe_lamination_repair', NULL, 'ترمیم لمینیت شصت پا', 'Toe Lamination Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(93, 'full_foot_lamination_repair', NULL, 'ترمیم لمینیت کل پا', 'Full Foot Lamination Repair', 6, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(94, 'laser_hair_removal', NULL, 'لیزر موهای زائد', 'Laser Hair Removal', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(95, 'waxing', NULL, 'اپیلاسیون با موم', 'Waxing', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(96, 'threading', NULL, 'اپیلاسیون با نخ', 'Threading', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(97, 'sugaring', NULL, 'اپیلاسیون شمع', 'Sugaring', 7, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(98, 'facial_massage', NULL, 'ماساژ صورت', 'Facial Massage', 8, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(99, 'body_massage', NULL, 'ماساژ بدن', 'Body Massage', 8, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(100, 'aromatherapy', NULL, 'ماساژ آروماتراپی', 'Aromatherapy Massage', 8, '2025-06-20 10:50:29', '2025-06-20 10:50:29', 0),
+(104, 'kkk', NULL, 'سلام', 'salam', 0, '2025-09-03 10:23:06', '2025-09-03 10:23:06', 0),
+(105, '', NULL, '', '', 0, '2025-09-03 11:11:19', '2025-09-03 11:11:19', 0),
+(106, '', NULL, '', '', 0, '2025-09-03 12:21:10', '2025-09-03 12:21:10', 0),
+(107, '', NULL, '22222222222222222222222222342wrergdfgdfgdfgdfgdfg22222222222222222222222222', '', 0, '2025-09-03 12:37:13', '2025-09-03 12:37:13', 0);
 
 -- --------------------------------------------------------
 
@@ -302,6 +324,7 @@ CREATE TABLE `service_visit_relation_table` (
   `id` int(11) NOT NULL,
   `visit_id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
+  `salon_id` int(11) DEFAULT NULL,
   `price` bigint(20) NOT NULL,
   `initial_payment` bigint(20) NOT NULL,
   `payment_status` int(11) NOT NULL,
@@ -314,9 +337,9 @@ CREATE TABLE `service_visit_relation_table` (
 -- Dumping data for table `service_visit_relation_table`
 --
 
-INSERT INTO `service_visit_relation_table` (`id`, `visit_id`, `service_id`, `price`, `initial_payment`, `payment_status`, `visit_status`, `employee_id`, `deleted`) VALUES
-(32, 54, 82, 650, 100, 1, 1, 93, 0),
-(33, 55, 82, 650, 100, 1, 1, 93, 0);
+INSERT INTO `service_visit_relation_table` (`id`, `visit_id`, `service_id`, `salon_id`, `price`, `initial_payment`, `payment_status`, `visit_status`, `employee_id`, `deleted`) VALUES
+(32, 54, 82, NULL, 650, 100, 1, 1, 93, 0),
+(33, 55, 82, NULL, 650, 100, 1, 1, 93, 0);
 
 -- --------------------------------------------------------
 
@@ -327,6 +350,7 @@ INSERT INTO `service_visit_relation_table` (`id`, `visit_id`, `service_id`, `pri
 CREATE TABLE `surveys_table` (
   `id` int(11) NOT NULL,
   `service_visit_relation_id` int(11) NOT NULL,
+  `salon_id` int(11) DEFAULT NULL,
   `quality_score_id` int(11) NOT NULL,
   `behavior_score` int(11) NOT NULL,
   `onTime_score` int(11) NOT NULL,
@@ -351,6 +375,7 @@ CREATE TABLE `surveys_table` (
 
 CREATE TABLE `user_table` (
   `id` int(11) NOT NULL,
+  `salon_id` int(11) DEFAULT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `birth_date` datetime NOT NULL,
@@ -366,18 +391,18 @@ CREATE TABLE `user_table` (
 -- Dumping data for table `user_table`
 --
 
-INSERT INTO `user_table` (`id`, `first_name`, `last_name`, `birth_date`, `phone_number`, `register_datetime`, `user_type`, `password`, `is_active`, `deleted`) VALUES
-(23, 'مدیر', 'محمدپور', '2005-05-04 00:00:00', '09928896128', '2025-07-02 09:44:51', 4, '$2y$10$YScAjNkNhGvpuYW7oT0m4ei3cFr0.wNtRWyEoXdYe.3P1EG1YVnL6', 1, 0),
-(92, 'ستایش', 'اپراتور', '2025-07-09 00:00:00', '09217447961', '2025-07-08 09:08:47', 3, '$2y$10$Egp/gaMb2vMxnBtTAwEsPOcV.I0Wbzbv2Fom6rrft0drc2ZCGHFke', 1, 0),
-(93, 'ستی کارمند', 'mp', '2025-07-25 00:00:00', '09217447980', '2025-07-08 09:10:22', 1, '$2y$10$wwUfQl1rXu0y0JsEQNUBFuJqMEt82hVyZ/XuWLyNWYViuMaavNyhC', 1, 0),
-(94, 'مشتری', 'محمدی', '2005-05-06 00:00:00', '09928896125', '2025-07-08 10:22:27', 2, '$2y$10$8thUT7et3xy1Bg7T9DBvdeGa8C5WuIuH3YifRqBKBFWrp3M9RmObm', 1, 0),
-(95, 'hamed', 'soltani', '2000-01-01 00:00:00', '09351602513', '2025-07-19 21:34:36', 4, '$2y$10$bxJmRFsLe1UuvoIdghBKTuGjSTvhEmBPxdklFaQJosSNf.Yn0KC1e', 1, 0),
-(97, 'jhamed', 'soltan', '2000-01-01 00:00:00', '09351602514', '2025-07-19 21:47:56', 2, '$2y$10$VwNMZ4HmhutZvJFCrOflnuusP2AZyExrV/.DTEW9pp3.K5ulx3LAu', 0, 0),
-(98, 'هومن', 'سیدی', '2000-01-01 00:00:00', '09928896129', '2025-07-20 09:28:10', 1, '$2y$10$1UqGNtu5z.gGf4BxXMxyJu5EU0TqDv71zpYTJdzZ1O1XKq3VEO9MS', 1, 1),
-(99, 'hamed 55', 'soltanifar', '2000-01-01 00:00:00', '09351602515', '2025-07-25 21:22:52', 2, '$2y$10$s8NZAOWkPFcyKJEKQuvwR.eqUHYhw1.n.JaJiF0jRGW8U.Mpxs8l6', 1, 1),
-(100, 'hamed', 'soltani', '2000-01-01 00:00:00', '09351602516', '2025-08-01 21:23:59', 2, '$2y$10$tyKnn.u.hmJytAeQG5zOMu.ye58ypy8Bb8qxgMq6HyaLqed8qglMC', 0, 0),
-(103, 'ghasem', 'soltan', '0000-00-00 00:00:00', '09351602519', '2025-08-26 09:27:19', 2, '$2y$10$R/dAfo2iodl//enJ46JybeJF1XpZVBANEncwJG4htboGjl8UmjC8q', 1, 0),
-(104, 'مجتبی', 'فnbvg', '0000-00-00 00:00:00', '09351602529', '2025-08-28 16:18:25', 2, '$2y$10$T12.8hS/yySgjvumGSyH1eqTJCigTInD6uTo82j6K922fjK2XsYVW', 1, 0);
+INSERT INTO `user_table` (`id`, `salon_id`, `first_name`, `last_name`, `birth_date`, `phone_number`, `register_datetime`, `user_type`, `password`, `is_active`, `deleted`) VALUES
+(23, NULL, 'مدیر', 'محمدپور', '2005-05-04 00:00:00', '09928896128', '2025-07-02 09:44:51', 4, '$2y$10$YScAjNkNhGvpuYW7oT0m4ei3cFr0.wNtRWyEoXdYe.3P1EG1YVnL6', 1, 0),
+(92, NULL, 'ستایش', 'اپراتور', '2025-07-09 00:00:00', '09217447961', '2025-07-08 09:08:47', 3, '$2y$10$Egp/gaMb2vMxnBtTAwEsPOcV.I0Wbzbv2Fom6rrft0drc2ZCGHFke', 1, 0),
+(93, NULL, 'ستی کارمند', 'mp', '2025-07-25 00:00:00', '09217447980', '2025-07-08 09:10:22', 1, '$2y$10$wwUfQl1rXu0y0JsEQNUBFuJqMEt82hVyZ/XuWLyNWYViuMaavNyhC', 1, 0),
+(94, NULL, 'مشتری', 'محمدی', '2005-05-06 00:00:00', '09928896125', '2025-07-08 10:22:27', 2, '$2y$10$8thUT7et3xy1Bg7T9DBvdeGa8C5WuIuH3YifRqBKBFWrp3M9RmObm', 1, 0),
+(95, NULL, 'hamed', 'soltani', '2000-01-01 00:00:00', '09351602513', '2025-07-19 21:34:36', 4, '$2y$10$bxJmRFsLe1UuvoIdghBKTuGjSTvhEmBPxdklFaQJosSNf.Yn0KC1e', 1, 0),
+(97, NULL, 'jhamed', 'soltan', '2000-01-01 00:00:00', '09351602514', '2025-07-19 21:47:56', 2, '$2y$10$VwNMZ4HmhutZvJFCrOflnuusP2AZyExrV/.DTEW9pp3.K5ulx3LAu', 0, 0),
+(98, NULL, 'هومن', 'سیدی', '2000-01-01 00:00:00', '09928896129', '2025-07-20 09:28:10', 1, '$2y$10$1UqGNtu5z.gGf4BxXMxyJu5EU0TqDv71zpYTJdzZ1O1XKq3VEO9MS', 1, 1),
+(99, NULL, 'hamed 55', 'soltanifar', '2000-01-01 00:00:00', '09351602515', '2025-07-25 21:22:52', 2, '$2y$10$s8NZAOWkPFcyKJEKQuvwR.eqUHYhw1.n.JaJiF0jRGW8U.Mpxs8l6', 1, 1),
+(100, NULL, 'hamed', 'soltani', '2000-01-01 00:00:00', '09351602516', '2025-08-01 21:23:59', 2, '$2y$10$tyKnn.u.hmJytAeQG5zOMu.ye58ypy8Bb8qxgMq6HyaLqed8qglMC', 0, 0),
+(103, NULL, 'ghasem', 'soltan', '0000-00-00 00:00:00', '09351602519', '2025-08-26 09:27:19', 2, '$2y$10$R/dAfo2iodl//enJ46JybeJF1XpZVBANEncwJG4htboGjl8UmjC8q', 1, 0),
+(104, NULL, 'مجتبی', 'فnbvg', '0000-00-00 00:00:00', '09351602529', '2025-08-28 16:18:25', 2, '$2y$10$T12.8hS/yySgjvumGSyH1eqTJCigTInD6uTo82j6K922fjK2XsYVW', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -438,6 +463,7 @@ CREATE TABLE `visit_table` (
   `id` int(11) NOT NULL,
   `registrant_user_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
+  `salon_id` int(11) DEFAULT NULL,
   `visit_datetime` datetime NOT NULL,
   `register_datetime` datetime NOT NULL,
   `note` text NOT NULL,
@@ -448,9 +474,9 @@ CREATE TABLE `visit_table` (
 -- Dumping data for table `visit_table`
 --
 
-INSERT INTO `visit_table` (`id`, `registrant_user_id`, `customer_id`, `visit_datetime`, `register_datetime`, `note`, `deleted`) VALUES
-(54, 94, 94, '2025-07-07 12:00:00', '2025-07-08 13:59:06', '', 0),
-(55, 94, 94, '2025-07-08 12:00:00', '2025-07-08 14:03:07', '', 0);
+INSERT INTO `visit_table` (`id`, `registrant_user_id`, `customer_id`, `salon_id`, `visit_datetime`, `register_datetime`, `note`, `deleted`) VALUES
+(54, 94, 94, NULL, '2025-07-07 12:00:00', '2025-07-08 13:59:06', '', 0),
+(55, 94, 94, NULL, '2025-07-08 12:00:00', '2025-07-08 14:03:07', '', 0);
 
 --
 -- Indexes for dumped tables
@@ -497,10 +523,17 @@ ALTER TABLE `quality_score_table`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `salon_table`
+--
+ALTER TABLE `salon_table`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `service_table`
 --
 ALTER TABLE `service_table`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `salon_id` (`salon_id`);
 
 --
 -- Indexes for table `service_visit_relation_table`
@@ -511,7 +544,8 @@ ALTER TABLE `service_visit_relation_table`
   ADD KEY `service_key` (`service_id`),
   ADD KEY `visit_status_key` (`visit_status`),
   ADD KEY `payment_status_key` (`payment_status`),
-  ADD KEY `employee_key` (`employee_id`);
+  ADD KEY `employee_key` (`employee_id`),
+  ADD KEY `salon_id` (`salon_id`);
 
 --
 -- Indexes for table `surveys_table`
@@ -520,7 +554,8 @@ ALTER TABLE `surveys_table`
   ADD PRIMARY KEY (`id`),
   ADD KEY `service_visit_relation_key` (`service_visit_relation_id`),
   ADD KEY `employee_survay_id` (`employee_id`),
-  ADD KEY `quality_score_id_key` (`quality_score_id`);
+  ADD KEY `quality_score_id_key` (`quality_score_id`),
+  ADD KEY `salon_key` (`salon_id`);
 
 --
 -- Indexes for table `user_table`
@@ -589,6 +624,12 @@ ALTER TABLE `payment_status_table`
 --
 ALTER TABLE `quality_score_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `salon_table`
+--
+ALTER TABLE `salon_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `service_table`
@@ -660,6 +701,7 @@ ALTER TABLE `service_visit_relation_table`
 ALTER TABLE `surveys_table`
   ADD CONSTRAINT `employee_survay_id` FOREIGN KEY (`employee_id`) REFERENCES `user_table` (`id`),
   ADD CONSTRAINT `quality_score_id_key` FOREIGN KEY (`quality_score_id`) REFERENCES `quality_score_table` (`id`),
+  ADD CONSTRAINT `salon_key` FOREIGN KEY (`salon_id`) REFERENCES `salon_table` (`id`),
   ADD CONSTRAINT `service_visit_relation_key` FOREIGN KEY (`service_visit_relation_id`) REFERENCES `service_visit_relation_table` (`id`);
 
 --
