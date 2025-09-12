@@ -1,9 +1,11 @@
 <?php
 namespace App\Middlewares;
 
+use App\Core\Request;
+
 class CsrfMiddleware
 {
-    public function handle($request, $next)
+    public function handle(Request $request, $next)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return;

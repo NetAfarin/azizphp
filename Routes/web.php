@@ -6,12 +6,20 @@ use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\ErrorController;
 use App\Core\Route;
+use App\Middlewares\InstanceMiddleware;
 use App\Middlewares\RateLimiterMiddleware;
 use App\Middlewares\AuthMiddleware;
 use App\Middlewares\GuestMiddleware;
 use App\Middlewares\RoleMiddleware;
 use App\Middlewares\CsrfMiddleware;
 
+//Route::middleware([InstanceMiddleware::class])->group(function () {
+
+//    Route::get('{SALON_ID}/user/login', [UserController::class, 'login']);
+//    Route::middleware([GuestMiddleware::class])->group(function () {
+//        Route::get('{SALON_ID}/user/login', [UserController::class, 'login']);
+//        Route::get('{SALON_ID}/user/register', [UserController::class, 'register']);
+//    });
 Route::middleware([GuestMiddleware::class])->group(function () {
     Route::get('/user/login', [UserController::class, 'login']);
     Route::get('/user/register', [UserController::class, 'register']);
@@ -60,6 +68,7 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(functio
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
 });
 
+//});
 
 // Errors
 Route::get('/forbidden', [ErrorController::class, 'forbidden']);

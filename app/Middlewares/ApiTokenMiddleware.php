@@ -1,11 +1,12 @@
 <?php
 namespace App\Middlewares;
 
+use App\Core\Request;
 use App\Models\User;
 
 class ApiTokenMiddleware
 {
-    public function handle($request, $next)
+    public function handle(Request $request, $next)
     {
         $headers = getallheaders();
         $token = $headers['Authorization'] ?? '';

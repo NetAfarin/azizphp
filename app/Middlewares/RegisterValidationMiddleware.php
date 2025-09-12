@@ -2,11 +2,12 @@
 
 namespace App\Middlewares;
 
+use App\Core\Request;
 use App\Core\Validator;
 
 class RegisterValidationMiddleware
 {
-    public function handle($request, $next)
+    public function handle(Request $request, $next)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (session_status() === PHP_SESSION_NONE) {

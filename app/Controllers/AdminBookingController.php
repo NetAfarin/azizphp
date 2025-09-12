@@ -199,7 +199,7 @@ class AdminBookingController extends Controller
         }
 
         $services = Service::query()
-            ->select(['service_table.id', 'service_table.fa_title'])
+            ->select(['service_table.id', 'service_table.fa_title','employee_service_table.estimated_duration'])
             ->join('employee_service_table', 'employee_service_table.service_id', '=', 'service_table.id')
             ->where('employee_service_table.user_id', '=', $employeeId)
             ->get();

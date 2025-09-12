@@ -3,7 +3,7 @@
 if (!function_exists('asset')) {
     function asset(string $relativePath): string
     {
-        $fullPath = BASE_PATH . '/public/' . ltrim($relativePath, '/');
+        $fullPath = BASE_PATH . '\public\\' . ltrim($relativePath, '/');
         $version = file_exists($fullPath) ? filemtime($fullPath) : time();
         return BASE_URL . '/' . ltrim($relativePath, '/') . '?v=' . $version;
     }

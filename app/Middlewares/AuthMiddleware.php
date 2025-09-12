@@ -2,12 +2,13 @@
 namespace App\Middlewares;
 
 use App\Core\Loggable;
+use App\Core\Request;
 
 class AuthMiddleware
 {
     use Loggable;
 
-    public function handle($request, $next)
+    public function handle(Request $request, $next)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();

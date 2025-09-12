@@ -2,6 +2,7 @@
 namespace App\Middlewares;
 
 use App\Core\Loggable;
+use App\Core\Request;
 use Redis;
 
 class RateLimiterMiddleware
@@ -18,7 +19,7 @@ class RateLimiterMiddleware
         $this->redis->connect('127.0.0.1', 6379);
     }
 
-    public function handle($request, $next)
+    public function handle(Request $request, $next)
     {
         if (isset($_SESSION['user_id'])) {
             $key = 'rate_limit:user:' . $_SESSION['user_id'];

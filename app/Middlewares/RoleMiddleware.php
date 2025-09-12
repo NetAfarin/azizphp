@@ -2,6 +2,8 @@
 
 namespace App\Middlewares;
 
+use App\Core\Request;
+
 class RoleMiddleware
 {
     protected array $allowedRoles;
@@ -11,7 +13,7 @@ class RoleMiddleware
         $this->allowedRoles = $allowedRoles;
     }
 
-    public function handle($request, $next)
+    public function handle(Request $request, $next)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
