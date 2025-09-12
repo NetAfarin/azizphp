@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2025 at 11:28 PM
+-- Generation Time: Sep 12, 2025 at 11:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -104,10 +104,10 @@ INSERT INTO `employee_service_table` (`id`, `service_id`, `user_id`, `salon_id`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `holidays`
+-- Table structure for table `holidays_table`
 --
 
-CREATE TABLE `holidays` (
+CREATE TABLE `holidays_table` (
   `id` int(11) NOT NULL,
   `day` date NOT NULL,
   `day_shamsi` varchar(10) NOT NULL,
@@ -115,10 +115,10 @@ CREATE TABLE `holidays` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Dumping data for table `holidays`
+-- Dumping data for table `holidays_table`
 --
 
-INSERT INTO `holidays` (`id`, `day`, `day_shamsi`, `description`) VALUES
+INSERT INTO `holidays_table` (`id`, `day`, `day_shamsi`, `description`) VALUES
 (1, '2025-03-22', '1404/01/02', 'عید نوروز'),
 (2, '2025-03-23', '1404/01/03', 'عید نوروز'),
 (3, '2025-03-24', '1404/01/04', 'عید نوروز'),
@@ -564,9 +564,9 @@ ALTER TABLE `employee_service_table`
   ADD KEY `duration_key` (`estimated_duration`);
 
 --
--- Indexes for table `holidays`
+-- Indexes for table `holidays_table`
 --
-ALTER TABLE `holidays`
+ALTER TABLE `holidays_table`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -675,9 +675,9 @@ ALTER TABLE `employee_service_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
 
 --
--- AUTO_INCREMENT for table `holidays`
+-- AUTO_INCREMENT for table `holidays_table`
 --
-ALTER TABLE `holidays`
+ALTER TABLE `holidays_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
