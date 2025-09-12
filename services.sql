@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 06, 2025 at 08:33 AM
+-- Generation Time: Sep 12, 2025 at 11:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -96,10 +96,48 @@ CREATE TABLE `employee_service_table` (
 --
 
 INSERT INTO `employee_service_table` (`id`, `service_id`, `user_id`, `salon_id`, `price`, `free_hour`, `estimated_duration`, `deleted`) VALUES
-(135, 10, 93, NULL, 2500, '2025-09-02 15:53:26', 1, 0),
-(137, 16, 93, NULL, 4500, '2025-09-02 15:53:26', 3, 0),
-(145, 11, 98, NULL, 222, '2025-09-02 16:17:35', 1, 0),
-(146, 19, 98, NULL, 333, '2025-09-02 16:17:35', 5, 0);
+(135, 10, 93, 0, 2500, '2025-09-02 15:53:26', 1, 0),
+(137, 16, 93, 0, 4500, '2025-09-02 15:53:26', 3, 0),
+(145, 11, 98, 0, 222, '2025-09-02 16:17:35', 1, 0),
+(146, 19, 98, 0, 333, '2025-09-02 16:17:35', 5, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `holidays`
+--
+
+CREATE TABLE `holidays` (
+  `id` int(11) NOT NULL,
+  `day` date NOT NULL,
+  `day_shamsi` varchar(10) NOT NULL,
+  `description` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `holidays`
+--
+
+INSERT INTO `holidays` (`id`, `day`, `day_shamsi`, `description`) VALUES
+(1, '2025-03-22', '1404/01/02', 'عید نوروز'),
+(2, '2025-03-23', '1404/01/03', 'عید نوروز'),
+(3, '2025-03-24', '1404/01/04', 'عید نوروز'),
+(4, '2025-03-31', '1404/01/11', 'عید سعید فطر'),
+(5, '2025-04-01', '1404/01/12', 'روز جمهوری اسلامی ایران'),
+(6, '2025-04-02', '1404/01/13', 'روز طبیعت'),
+(7, '2025-06-04', '1404/03/14', 'رحلت امام خمینی (ره)'),
+(8, '2025-06-14', '1404/03/24', 'عید سعید غدیر خم'),
+(9, '2025-07-05', '1404/04/14', 'تاسوعای حسینی'),
+(10, '2025-07-06', '1404/04/15', 'عاشورای حسینی'),
+(11, '2025-08-24', '1404/06/02', 'شهادت امام رضا (ع)'),
+(12, '2025-09-01', '1404/06/10', 'شهادت امام حسن عسکری (ع)'),
+(13, '2025-09-10', '1404/06/19', 'ولادت حضرت رسول اکرم (ص) و ولا'),
+(14, '2025-11-24', '1404/09/03', 'شهادت حضرت زهرا (س)'),
+(15, '2026-01-03', '1404/10/13', 'ولادت امام علی (ع) - روز پدر'),
+(16, '2026-01-17', '1404/10/27', 'مبعث حضرت رسول اکرم (ص)'),
+(17, '2026-02-04', '1404/11/15', 'ولادت حضرت قائم (عج)'),
+(18, '2026-02-11', '1404/11/22', 'پیروزی انقلاب اسلامی'),
+(19, '2026-03-11', '1404/12/20', 'شهادت حضرت علی (ع)');
 
 -- --------------------------------------------------------
 
@@ -175,16 +213,38 @@ INSERT INTO `quality_score_table` (`id`, `fa_name`, `en_name`) VALUES
 CREATE TABLE `salon_table` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  `link_name` varchar(30) NOT NULL,
   `avatar` varchar(50) NOT NULL,
   `manager` varchar(100) NOT NULL,
   `manager_mobile` varchar(11) NOT NULL,
   `manager_email` varchar(50) NOT NULL,
   `plan_id` int(11) NOT NULL,
+  `postal_address` varchar(150) NOT NULL,
+  `latitude` decimal(9,6) DEFAULT NULL,
+  `longitude` decimal(9,6) DEFAULT NULL,
+  `start_time` time NOT NULL DEFAULT '08:00:00',
+  `end_time` time NOT NULL DEFAULT '20:00:00',
+  `start_time_5` time NOT NULL DEFAULT '08:00:00',
+  `end_time_5` time NOT NULL DEFAULT '20:00:00',
+  `start_time_6` time NOT NULL DEFAULT '08:00:00',
+  `end_time_6` time NOT NULL DEFAULT '20:00:00',
+  `start_time_h` time NOT NULL DEFAULT '08:00:00',
+  `end_time_h` time NOT NULL DEFAULT '20:00:00',
+  `max_reserve_day` int(2) NOT NULL,
   `created_datetime` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_datetime` datetime NOT NULL DEFAULT current_timestamp(),
   `active` tinyint(4) NOT NULL DEFAULT 0,
   `deleted` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `salon_table`
+--
+
+INSERT INTO `salon_table` (`id`, `name`, `username`, `link_name`, `avatar`, `manager`, `manager_mobile`, `manager_email`, `plan_id`, `postal_address`, `latitude`, `longitude`, `start_time`, `end_time`, `start_time_5`, `end_time_5`, `start_time_6`, `end_time_6`, `start_time_h`, `end_time_h`, `max_reserve_day`, `created_datetime`, `updated_datetime`, `active`, `deleted`) VALUES
+(1, 'نت آفرین', 'netafarin', 'administrator', 'avatar-netafarin.png', 'مجتبی سلطانی فر', '09351602513', 'netafarin@gmail.com', 1, 'Tehran', 35.680000, 51.380000, '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', 0, '2025-09-06 14:00:06', '2025-09-06 14:00:06', 1, 0),
+(2, 'دلا رز', 'delarose', 'delarose', 'avatar-delaroze.png', 'خانم ابهت', '09121234567', 'rose@gamil.com', 1, 'سر کوچه عزیزی', 35.689200, 51.389000, '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', 0, '2025-09-06 13:23:13', '2025-09-06 13:23:13', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -504,6 +564,12 @@ ALTER TABLE `employee_service_table`
   ADD KEY `duration_key` (`estimated_duration`);
 
 --
+-- Indexes for table `holidays`
+--
+ALTER TABLE `holidays`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `logs`
 --
 ALTER TABLE `logs`
@@ -526,7 +592,8 @@ ALTER TABLE `quality_score_table`
 -- Indexes for table `salon_table`
 --
 ALTER TABLE `salon_table`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `service_table`
@@ -608,6 +675,12 @@ ALTER TABLE `employee_service_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
 
 --
+-- AUTO_INCREMENT for table `holidays`
+--
+ALTER TABLE `holidays`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
@@ -629,7 +702,7 @@ ALTER TABLE `quality_score_table`
 -- AUTO_INCREMENT for table `salon_table`
 --
 ALTER TABLE `salon_table`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `service_table`
