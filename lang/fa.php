@@ -43,6 +43,8 @@ return [
     'delete_failed' => 'حذف کاربر با خطا مواجه شد.',
 
     'users_list' => 'لیست کاربران',
+    'no_users_found' => 'کاربری یافت نشد',
+
     'user_type' => 'نقش',
     'employee_service_list' => 'لیست خدمات',
     'select_services_for_employee' => 'سرویس های مورد نطر را انتخاب کنید',
@@ -155,6 +157,11 @@ return [
     'choose_duration' => 'مدت زمان انجام',
     'manage_salons' => 'مدیریت سالن ها',
     'tickets' => 'تیکت ها',
-    'new_tickets' => 'ایجاد تیکت',
+    'create_new_ticket' => 'ایجاد تیکت جدید',
+    'add_salon' => 'افزودن سالن',
+    'manager_name' => 'نام مدیر',
+    'link' => 'لینک',
+    'salon_list' => 'لیست سالن ها',
+    'name' => 'نام',
 
 ];

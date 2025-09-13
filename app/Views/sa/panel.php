@@ -7,7 +7,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item"><a class="nav-link active" href="<?= BASE_URL ?>/sa/panel"><?= __('dashboard') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL?>/sa/users"><?= __('manage_users') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/users"><?= __('manage_salons') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/salons"><?= __('manage_salons') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/ticket"><?= __('tickets') ?></a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/settings"><?= __('settings') ?></a></li>
                 <li class="nav-item"><a class="nav-link text-danger" href="<?= BASE_URL ?>/user/logout"><?= __('logout') ?></a></li>

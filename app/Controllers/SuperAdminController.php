@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Logger;
 use App\Models\Duration;
+use App\Models\Salon;
 use App\Models\Service;
 use App\Models\User;
 use App\Models\UserType;
@@ -50,11 +51,11 @@ class SuperAdminController extends Controller
             header("Location: ?page=1&per_page=10");
             exit;
         }
-        $pagination = User::query()->paginate($page, $perPage);
+        $pagination = Salon::query()->paginate($page, $perPage);
 
-        $this->view('admin/users',
-            ['title' => __('users_list'),
-                'users' => $pagination['data'],
+        $this->view('sa/salons',
+            ['title' => __('salon_list'),
+                'salons' => $pagination['data'],
                 'pagination' => $pagination,
                 'per_page' => $perPage,
                 'allowedPerPage' => $allowedPerPage

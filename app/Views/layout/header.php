@@ -21,7 +21,7 @@ $dir = APP_DIRECTION;
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($title) ?></title>
-    <link href="<?= asset($dir === 'rtl' ?"css/bootstrap5.3.8.rtl.min.css":"css/bootstrap.min.css"); ?>" rel="stylesheet">
+    <link href="<?= asset($dir === 'rtl' ?"css/bootstrap5.3.8.rtl.min.css":"css/bootstrap5.3.8.min.css"); ?>" rel="stylesheet">
     <link href="<?= asset('css/select2.min.css')?>" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">

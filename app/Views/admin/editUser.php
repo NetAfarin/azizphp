@@ -16,7 +16,7 @@
         <label class="form-label"><?= __('user_type') ?></label>
         <select name="user_type" id="user_type_select" class="form-select" >
             <?php foreach ($userTypes as $type): ?>
-                <option value="<?= $type->id ?>" <?= ($user->user_type == $type->id) ? 'selected' : '' ?>>
+                <option value="<?= $type->id ?>" <?= ($salon->user_type == $type->id) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($type->title) ?>
                 </option>
             <?php endforeach; ?>
@@ -81,21 +81,21 @@
     <div class="mb-3">
         <label class="form-label"><?= __('first_name') ?></label>
         <input type="text" name="first_name" class="form-control"
-               value="<?= htmlspecialchars($user->first_name ?? '') ?>">
+               value="<?= htmlspecialchars($salon->first_name ?? '') ?>">
     </div>
     <div class="mb-3">
         <label class="form-label"><?= __('last_name') ?></label>
         <input type="text" name="last_name" class="form-control"
-               value="<?= htmlspecialchars($user->last_name ?? '') ?>">
+               value="<?= htmlspecialchars($salon->last_name ?? '') ?>">
     </div>
     <div class="mb-3">
         <label class="form-label"><?= __('phone_number') ?></label>
         <input type="text" name="phone_number" class="form-control"
-               value="<?= htmlspecialchars($user->phone_number ?? '') ?>">
+               value="<?= htmlspecialchars($salon->phone_number ?? '') ?>">
     </div>
     <div class="form-check form-switch mb-3">
         <input class="form-check-input" type="checkbox" name="is_active" id="is_active"
-            <?= ( $user->is_active == 1) ? 'checked' : '' ?>>
+            <?= ( $salon->is_active == 1) ? 'checked' : '' ?>>
         <label class="form-check-label" for="is_active">
             <?= __('is_active') ?>
         </label>

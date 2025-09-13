@@ -46,6 +46,7 @@ return [
     'user_type' => 'Role',
     'employee_service_list' => 'Employee Service',
     'select_services_for_employee' => 'Select Services',
+    'no_users_found' => 'No Users Found.',
 
     'active' => 'Active',
     'inactive' => 'Inactive',
@@ -147,6 +148,12 @@ return [
     'choose_duration' => 'duration',
     'manage_salons' => 'Manage Salons',
     'tickets' => 'Tickets',
-    'new_tickets' => 'New Tickets',
+    'create_new_ticket' => 'Create New Ticket',
+    'add_salon' => 'Add Salon',
+    'manager_name' => 'Manager Name',
+    'link' => 'Link',
+    'salon_list' => 'Salon List',
+    'name' => 'Name',
+
 
 ];

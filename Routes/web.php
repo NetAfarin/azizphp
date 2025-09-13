@@ -78,7 +78,7 @@ Route::middleware([AuthMiddleware::class, SaRoleMiddleware::class])->group(funct
     Route::get('/sa/dashboard', [SuperAdminController::class, 'panel']);
     Route::get('/sa/users', [SuperAdminController::class, 'userList']);
     Route::get('/sa/user/edit/{id}', [SuperAdminController::class, 'editUser']);
-    Route::get('/sa/salons', [SuperAdminController::class, 'salonsList']);
+    Route::get('/sa/salons', [SuperAdminController::class, 'salonList']);
     Route::get('/sa/salons/edit/{id}', [SuperAdminController::class, 'editSalon']);
 });
 
