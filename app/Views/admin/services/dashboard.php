@@ -1,5 +1,5 @@
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
-    <a href="<?= BASE_URL ?>/admin/panel" class="btn btn-outline-primary">
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/panel" class="btn btn-outline-primary">
         <span style="display:inline-block; transform: rotate(<?= $dir === 'rtl' ? '180' : '0' ?>deg);">⬅️</span>
         <?= __('back_to_dashboard') ?>
     </a>
@@ -13,7 +13,7 @@
 
             <div class="row g-4 mb-4">
                 <div class="col-md-3">
-                  <a href="<?= BASE_URL ?>/admin/services/categories" class="text-decoration-none">
+                  <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/categories" class="text-decoration-none">
                       <div class="card card-stats text-bg-primary">
                           <div class="card-body">
                               <h5 class="card-title"><?= __('categories') ?></h5>
@@ -23,7 +23,7 @@
                   </a>
                 </div>
                 <div class="col-md-3">
-                    <a href="<?= BASE_URL ?>/admin/services" class="text-decoration-none">
+                    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services" class="text-decoration-none">
                     <div class="card card-stats text-bg-success">
                         <div class="card-body">
                             <h5 class="card-title"><?= __('services') ?></h5>

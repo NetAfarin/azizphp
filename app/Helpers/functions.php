@@ -10,9 +10,13 @@ if (!function_exists('asset')) {
 }
 
 if (!function_exists('redirect')) {
-    function redirect(string $url): void
+    function redirect(string $url,bool $superAdmin=false): void
     {
-        header('Location: ' . BASE_URL . $url);
+        if ($superAdmin) {
+            header('Location: ' . BASE_URL ."/sa". $url);
+        }else{
+            header('Location: ' . BASE_URL ."/".SALON_ID. $url);
+        }
         exit;
     }
 }

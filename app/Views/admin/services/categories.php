@@ -1,7 +1,7 @@
 <?= flash('success') ?>
 <?= flash('error') ?>
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
-    <a href="<?= BASE_URL ?>/admin/services/management" class="btn btn-outline-primary">
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/management" class="btn btn-outline-primary">
         <span style="display:inline-block; transform: rotate(<?= $dir === 'rtl' ? '180' : '0' ?>deg);">⬅️</span>
         <?= __('back_to_dashboard') ?>
     </a>
@@ -19,7 +19,7 @@
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><?= __('categories') ?></h4>
-        <a href="<?= BASE_URL ?>/admin/services/category/create" class="btn btn-light btn-sm">➕ <?= __('add_category') ?></a>
+        <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/category/create" class="btn btn-light btn-sm">➕ <?= __('add_category') ?></a>
     </div>
     <div class="card-body">
         <?php
@@ -48,11 +48,11 @@
                             <td class="text-center"><?= htmlspecialchars($cat->subCategoriesCount) ?></td>
                             <td class="text-center"><?= htmlspecialchars($cat->service_key) ?></td>
                             <td class="text-center">
-                                <a href="<?= BASE_URL ?>/admin/services/category/edit/<?= $cat->id ?>" class="btn btn-sm btn-warning">
+                                <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/category/edit/<?= $cat->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>
 
-                                <form action="<?= BASE_URL ?>/admin/services/category/delete/<?= $cat->id ?>" method="post" class="d-inline"
+                                <form action="<?= BASE_URL."/".SALON_ID ?>/admin/services/category/delete/<?= $cat->id ?>" method="post" class="d-inline"
                                       onsubmit="return confirm('<?= __('confirm_delete_category') ?>')">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn btn-sm btn-danger">

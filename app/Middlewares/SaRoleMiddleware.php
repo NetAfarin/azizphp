@@ -4,7 +4,7 @@ namespace App\Middlewares;
 
 use App\Core\Request;
 
-class RoleMiddleware
+class SaRoleMiddleware
 {
     protected array $allowedRoles;
 

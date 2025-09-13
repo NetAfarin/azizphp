@@ -1,51 +1,60 @@
 <?php
 namespace App\Core;
+namespace App\Core;
 
 class Request
 {
-    public static function get($key = null)
+    private $query;
+    private $post;
+    private $files;
+    private $server;
+    public function __construct()
     {
-        if ($key) {
-            return isset($_GET[$key]) ? $_GET[$key] : null;
-        }
-        return $_GET;
+        // بارگذاری مقادیر از سوپرگلوبال‌ها
+        $this->query = $_GET;
+        $this->post = $_POST;
+        $this->files = $_FILES;
+        $this->server = $_SERVER;
     }
 
-    public static function post($key = null)
+    public function get($key = null)
     {
         if ($key) {
-            return isset($_POST[$key]) ? $_POST[$key] : null;
+            return isset($this->query[$key]) ? $this->query[$key] : null;
         }
-        return $_POST;
+        return $this->query;
     }
 
-    public static function file($key = null)
+    public function post($key = null)
     {
         if ($key) {
-            return isset($_FILES[$key]) ? $_FILES[$key] : null;
+            return isset($this->post[$key]) ? $this->post[$key] : null;
         }
-        return $_FILES;
+        return $this->post;
     }
 
-    public static function segment($index)
+    public function file($key = null)
     {
-        $uri = $_SERVER['REQUEST_URI'];
+        if ($key) {
+            return isset($this->files[$key]) ? $this->files[$key] : null;
+        }
+        return $this->files;
+    }
+
+    public function segment($index)
+    {
+        $uri = $this->server['REQUEST_URI'];  // استفاده از داده‌های سوپرگلوبال $_SERVER
         $segments = explode('/', trim($uri, '/'));
         return isset($segments[$index]) ? $segments[$index] : null;
-    }
-
-    public static function all()
-    {
-        return array_merge($_GET, $_POST, $_FILES);
-    }
-
-    public static function header($key)
-    {
-        return isset($_SERVER['HTTP_' . strtoupper($key)]) ? $_SERVER['HTTP_' . strtoupper($key)] : null;
     }
 
     public static function method()
     {
         return $_SERVER['REQUEST_METHOD'];
+    }
+
+    public static function all()
+    {
+        return array_merge($_GET, $_POST, $_FILES);
     }
 }

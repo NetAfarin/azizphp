@@ -20,7 +20,7 @@ if (!empty($publicErrors)): ?>
     </div>
 <?php endif; ?>
 
-<form method="post" class="row g-3" action="<?= BASE_URL ?>/user/register">
+<form method="post" class="row g-3" action="<?= BASE_URL."/".SALON_ID ?>/user/register">
     <?= csrf_field() ?>
 
     <div class="mb-3">
@@ -78,8 +78,8 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label for="captcha"><?= __('captcha') ?></label>
         <div class="d-flex align-items-center">
-            <img src="<?= BASE_URL ?>/captcha.php" alt="<?= __('captcha') ?>" class="me-2 border rounded">
-            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="this.previousElementSibling.src='<?= BASE_URL ?>/captcha.php?'+Date.now();">
+            <img src="<?= BASE_URL."/".SALON_ID ?>/captcha.php" alt="<?= __('captcha') ?>" class="me-2 border rounded">
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="this.previousElementSibling.src='<?= BASE_URL."/".SALON_ID ?>/captcha.php?'+Date.now();">
                 <?= __('refresh_captcha') ?>
             </button>
         </div>

@@ -1,7 +1,7 @@
 <?= flash('success') ?>
 <?= flash('error') ?>
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
-    <a href="<?= BASE_URL ?>/admin/services/management" class="btn btn-outline-primary">
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/management" class="btn btn-outline-primary">
         <span style="display:inline-block; transform: rotate(<?= $dir === 'rtl' ? '180' : '0' ?>deg);">⬅️</span>
         <?= __('back_to_dashboard') ?>
     </a>
@@ -19,7 +19,7 @@
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><?= __('services') ?></h4>
-        <a href="<?= BASE_URL ?>/admin/services/create" class="btn btn-light btn-sm">➕ <?= __('add_service') ?></a>
+        <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/create" class="btn btn-light btn-sm">➕ <?= __('add_service') ?></a>
     </div>
     <div class="card-body">
 
@@ -47,7 +47,7 @@
                             <td class="text-center"><?= htmlspecialchars($lang === 'fa' ? $sub->fa_title : $sub->en_title) ?></td>
                             <td class="text-center"><?= htmlspecialchars($sub->service_key) ?></td>
                             <td class="text-center">
-                                <a href="<?= BASE_URL ?>/admin/services/edit/<?= $sub->id ?>" class="btn btn-sm btn-warning">
+                                <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services/edit/<?= $sub->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>
 

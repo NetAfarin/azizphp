@@ -1,4 +1,7 @@
 <?php
+
+use App\Models\UserType;
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -33,7 +36,7 @@ $bootstrapCss = $dir === 'rtl'
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <span class="navbar-text">
-            <?= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ??  __('guest'))]) ?>
+            <?= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ?? __('guest'))]) ?>
         </span>
 
         <div class="d-flex align-items-center gap-2">
@@ -41,16 +44,26 @@ $bootstrapCss = $dir === 'rtl'
             <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?= BASE_URL ?>/user/profile" class="btn btn-sm btn-outline-primary">👤 <?= __('profile') ?></a>
-                <a href="<?= BASE_URL ?>/user/logout" class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
+                <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/profile"
+                   class="btn btn-sm btn-outline-primary">👤 <?= __('profile') ?></a>
+                <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/logout"
+                   class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
+                <?php if (isset($_SESSION['user_role']) &&
+                    ($_SESSION['user_role'] == UserType::ADMIN ||
+                        $_SESSION['user_role'] == UserType::OPERATOR ||
+                        $_SESSION['user_role'] == UserType::SUPER_ADMIN ||
+                        $_SESSION['user_role'] == UserType::SUPPORT)): ?>
+                    <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/register"
+                       class="btn btn-sm btn-outline-primary">📝 <?= __('register') ?></a>
+                <?php endif; ?>
             <?php else: ?>
-                <a href="<?= BASE_URL ?>/user/login" class="btn btn-sm btn-outline-success">🔐 <?= __('login') ?></a>
-                <a href="<?= BASE_URL ?>/user/register" class="btn btn-sm btn-outline-primary">📝 <?= __('register') ?></a>
+                <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/login"
+                   class="btn btn-sm btn-outline-success">🔐 <?= __('login') ?></a>
+
             <?php endif; ?>
         </div>
     </div>
 </nav>
-
 <?php if (!empty($_SESSION['flash_success'])): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <?= htmlspecialchars($_SESSION['flash_success']) ?>
@@ -66,4 +79,4 @@ $bootstrapCss = $dir === 'rtl'
     </div>
     <?php unset($_SESSION['flash_error']); ?>
 <?php endif; ?>
-<script> const BASE_URL = "<?= BASE_URL ?>";</script>
+<script> const BASE_URL = "<?= BASE_URL?>";</script>

@@ -19,7 +19,7 @@ class AuthMiddleware
                 'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
                 'url' => $_SERVER['REQUEST_URI'] ?? null
             ]);
-            header("Location: " . BASE_URL . "/user/login");
+            redirect("/user/login");
             exit;
         }
 

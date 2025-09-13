@@ -1,7 +1,7 @@
 <?= flash('success') ?>
 <?= flash('error') ?>
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
-    <a href="<?= BASE_URL ?>/admin/panel" class="btn btn-outline-primary">
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/panel" class="btn btn-outline-primary">
         <span style="display:inline-block; transform: rotate(<?= $dir === 'rtl' ? '180' : '0' ?>deg);">⬅️</span>
         <?= __('back_to_dashboard') ?>
     </a>
@@ -19,7 +19,7 @@
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><?= __('users_list') ?></h4>
-        <a href="<?= BASE_URL ?>/admin/user/create" class="btn btn-light btn-sm">➕ <?= __('add_user') ?></a>
+        <a href="<?= BASE_URL."/".SALON_ID ?>/admin/user/create" class="btn btn-light btn-sm">➕ <?= __('add_user') ?></a>
     </div>
     <div class="card-body">
 
@@ -65,7 +65,7 @@
                                     </span>
                             </td>
                             <td>
-                                <a href="<?= BASE_URL ?>/admin/user/edit/<?= $user->id ?>" class="btn btn-sm btn-warning">
+                                <a href="<?= BASE_URL."/".SALON_ID ?>/admin/user/edit/<?= $user->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>
 

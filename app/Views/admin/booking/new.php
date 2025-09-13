@@ -1,4 +1,4 @@
-<form method="post" action="<?= BASE_URL ?>/admin/booking/save">
+<form method="post" action="<?= BASE_URL."/".SALON_ID ?>/admin/booking/save">
     <?= csrf_field() ?>
 
 
@@ -46,6 +46,6 @@
     </div>
 
     <button type="submit" class="btn btn-primary">ثبت رزرو</button>
-    <a href="<?= BASE_URL ?>/admin/bookings" class="btn btn-danger">انصراف</a>
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/bookings" class="btn btn-danger">انصراف</a>
 </form>
 <script src="<?= asset('/public/js/booking.js') ?>"></script>

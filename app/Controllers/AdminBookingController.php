@@ -101,14 +101,14 @@ class AdminBookingController extends Controller
 
             if ($booking->save()) {
                 $_SESSION['flash_success'] = __('booking_created');
-                header("Location: " . BASE_URL . "/admin/bookings");
+                redirect("/admin/bookings");
                 exit;
             } else {
                 $_SESSION['flash_error'] = __('save_error');
             }
         }
 
-        header("Location: " . BASE_URL . "/admin/bookings/new");
+        redirect("/admin/bookings/new");
     }
     public function storeBooking()
     {
@@ -120,7 +120,7 @@ class AdminBookingController extends Controller
 
         if (!$employeeId || !$customerId || !$serviceId || !$date || !$time) {
             $_SESSION['flash_error'] = __('fill_all_fields');
-            header("Location: " . BASE_URL . "/admin/bookings/new");
+            redirect("/admin/bookings/new");
             exit;
         }
 
@@ -131,7 +131,7 @@ class AdminBookingController extends Controller
 
         if (!$employee) {
             $_SESSION['flash_error'] = __('invalid_employee');
-            header("Location: " . BASE_URL . "/admin/bookings/new");
+            redirect("/admin/bookings/new");
             exit;
         }
 
@@ -142,7 +142,7 @@ class AdminBookingController extends Controller
 
         if (!$customer) {
             $_SESSION['flash_error'] = __('invalid_customer');
-            header("Location: " . BASE_URL . "/admin/bookings/new");
+            redirect("/admin/bookings/new");
             exit;
         }
 
@@ -153,7 +153,7 @@ class AdminBookingController extends Controller
 
         if (!$employeeService) {
             $_SESSION['flash_error'] = __('service_not_assigned_to_employee');
-            header("Location: " . BASE_URL . "/admin/bookings/new");
+            redirect("/admin/bookings/new");
             exit;
         }
 
@@ -165,7 +165,7 @@ class AdminBookingController extends Controller
 
         if ($conflict) {
             $_SESSION['flash_error'] = __('time_slot_already_reserved');
-            header("Location: " . BASE_URL . "/admin/bookings/new");
+            redirect("/admin/bookings/new");
             exit;
         }
 
@@ -182,7 +182,7 @@ class AdminBookingController extends Controller
             $_SESSION['flash_error'] = __('save_error');
         }
 
-        header("Location: " . BASE_URL . "/admin/bookings/new");
+        redirect("/admin/bookings/new");
         exit;
     }
     public function getEmployeeServices($employeeId)

@@ -1,5 +1,5 @@
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
-    <a href="<?= BASE_URL ?>/admin/services" class="btn btn-outline-primary">
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services" class="btn btn-outline-primary">
         <span style="display:inline-block; transform: rotate(<?= $dir === 'rtl' ? '180' : '0' ?>deg);">⬅️</span>
         <?= __('back_to_dashboard') ?>
     </a>
@@ -64,7 +64,7 @@ if (!empty($publicErrors)): ?>
 
 
     <button class="btn btn-primary"><?= __('save_changes') ?></button>
-    <a href="<?= BASE_URL ?>/admin/services" class="btn btn-danger"><?= __('cancel') ?></a>
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/services" class="btn btn-danger"><?= __('cancel') ?></a>
 </form>
 <script>
     const durationOptions = `
@@ -73,5 +73,5 @@ if (!empty($publicErrors)): ?>
     <?php endforeach; ?>
 `;
 </script>
-<script src="<?= BASE_URL ?>/js/edit-user.js"></script>
+<script src="<?=asset("/js/edit-user.js")?>"></script>
 

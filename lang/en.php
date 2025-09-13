@@ -145,5 +145,8 @@ return [
     'choose_employee_placeholder' => 'Enter employee',
     'choose_service' => 'choose service',
     'choose_duration' => 'duration',
+    'manage_salons' => 'Manage Salons',
+    'tickets' => 'Tickets',
+    'new_tickets' => 'New Tickets',
 
 ];

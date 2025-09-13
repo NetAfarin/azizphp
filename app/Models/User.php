@@ -41,6 +41,14 @@ class User extends Model
     {
         return $this->user_type === UserType::OPERATOR;
     }
+    public function isSuperAdmin(): bool
+    {
+        return $this->user_type === UserType::SUPER_ADMIN;
+    }
+    public function isSupport(): bool
+    {
+        return $this->user_type === UserType::SUPPORT;
+    }
 
     public function getRoleTitle(): string
     {

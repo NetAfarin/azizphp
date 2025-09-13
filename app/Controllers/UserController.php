@@ -31,7 +31,7 @@ class UserController extends Controller
         $success = false;
 
         if (isset($_SESSION['user_id'])) {
-            header("Location: " . BASE_URL . "/home");
+            redirect("/home");
             exit;
         }
 
@@ -77,6 +77,7 @@ class UserController extends Controller
                 $user = new User([
                     'first_name' => $first_name,
                     'last_name' => $last_name,
+                    'salon_id' => SALON_ID,
                     'phone_number' => $phone,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
                     'user_type' => 2,
@@ -89,7 +90,7 @@ class UserController extends Controller
                 if ($user->save()) {
                     clear_old_input();
                     $_SESSION['flash_success'] = __('register_success');
-                    header("Location: " . BASE_URL . "/user/login");
+                    redirect("/user/login");
                     exit;
                 } else {
                     $errors[] = __('user_save_error');
@@ -115,7 +116,7 @@ class UserController extends Controller
         if (isset($_SESSION['user_id'])) {
             $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
                 ? '/admin/panel' : '/home/index';
-            header("Location: " . BASE_URL . $redirect);
+            redirect( $redirect);
             exit;
         }
 
@@ -139,14 +140,15 @@ class UserController extends Controller
                     $_SESSION['user_name'] = $user->first_name;
                     $_SESSION['is_admin'] = $user->isAdmin();
                     $_SESSION['is_operator'] = $user->isOperator();
+                    $_SESSION['is_super_admin'] = $user->isSuperAdmin();
+                    $_SESSION['is_support'] = $user->isSupport();
 
                     $user_type = UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
-
                     clear_old_input();
-                    $redirect = ($user->isAdmin() || $user->isOperator())
-                        ? '/admin/panel' : '/home/index';
-                    header("Location: " . BASE_URL . $redirect);
+                    $redirect =($user->isSuperAdmin() || $user->isSupport())?"/panel":( ($user->isAdmin() || $user->isOperator())
+                        ? "/admin/panel" : "/home/index");
+                    redirect( $redirect,($user->isSuperAdmin() || $user->isSupport()));
                     exit;
                 } else {
                     $errors[] = __('login_failed');
@@ -172,7 +174,7 @@ class UserController extends Controller
         session_unset();
         session_destroy();
 
-        header("Location: " . BASE_URL . "/user/login?lang={$lang}");
+        redirect("/user/login?lang={$lang}");
         exit;
     }
 
@@ -241,7 +243,7 @@ class UserController extends Controller
                 if ($user->save()) {
                     clear_old_input();
                     $_SESSION['flash_success'] = __('profile_updated');
-                    header("Location: " . BASE_URL . "/user/edit");
+                    redirect("/user/edit");
                     exit;
                 } else {
                     $errors[] = __('save_error');

@@ -9,14 +9,14 @@ use App\Models\Service;
 use App\Models\User;
 use App\Models\UserType;
 
-class AdminController extends Controller
+class SupportController extends Controller
 {
     public function panel()
     {
-        $this->view('admin/panel', ['title' => __('admin_panel')]);
+        $this->view('sa/panel', ['title' => __('admin_panel')]);
     }
 
-    public function usersList()
+    public function userList()
     {
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $allowedPerPage = [10, 20, 50, 100];
@@ -35,13 +35,154 @@ class AdminController extends Controller
                 'allowedPerPage' => $allowedPerPage
             ]);
     }
+    public function ticketList()
+    {
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            header("Location: ?page=1&per_page=10");
+            exit;
+        }
+        $pagination = User::query()->paginate($page, $perPage);
 
-    public function editUser($id)
+        $this->view('admin/users',
+            ['title' => __('users_list'),
+                'users' => $pagination['data'],
+                'pagination' => $pagination,
+                'per_page' => $perPage,
+                'allowedPerPage' => $allowedPerPage
+            ]);
+    }
+    public function addTicket($id)
     {
         $user = User::find((int)$id);
 
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
+            redirect("/admin/users");
+            exit;
+        }
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'txt', 'zip'];
+        $fileExtension = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            // خطای نامعتبر بودن فرمت
+        }
+
+        $userTypes = UserType::all();
+        $groupedServices = Service::groupedForSelect();
+        $selectedServiceIds = [];
+        $employeeServicesData = [];
+        $durations = Duration::all();
+
+        // فایل‌هایی که می‌خواهیم اجازه بارگذاری داشته باشیم
+        $allowedMimeTypes = [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+            'application/zip'
+        ];
+
+        // مسیر ذخیره فایل‌ها
+        $uploadDirectory = 'uploads/tickets/';  // مسیر فایل‌های بارگذاری شده
+
+        // بررسی ارسال فایل
+        if (isset($_FILES['attachment'])) {
+            $file = $_FILES['attachment'];
+            $fileName = $file['name'];
+            $fileTmpPath = $file['tmp_name'];
+            $fileSize = $file['size'];
+            $fileError = $file['error'];
+
+            // بررسی اینکه فایل به درستی آپلود شده است
+            if ($fileError === UPLOAD_ERR_OK) {
+                // بررسی نوع MIME فایل
+                $fileMimeType = mime_content_type($fileTmpPath);
+                if (!in_array($fileMimeType, $allowedMimeTypes)) {
+                    $_SESSION['flash_error'] = __('invalid_file_type');
+                    redirect();
+                    exit;
+                }
+
+                // بررسی اندازه فایل (مثلاً 5MB)
+                $maxFileSize = 5 * 1024 * 1024;
+                if ($fileSize > $maxFileSize) {
+                    $_SESSION['flash_error'] = __('file_size_exceeded');
+                    redirect();
+                    exit;
+                }
+
+                // تغییر نام فایل به صورت یکتا (برای جلوگیری از تداخل)
+                $newFileName = uniqid() . '-' . basename($fileName);
+                $destination = $uploadDirectory . $newFileName;
+
+                // ایجاد دایرکتوری در صورتی که وجود نداشته باشد
+                if (!is_dir($uploadDirectory)) {
+                    mkdir($uploadDirectory, 0777, true);
+                }
+
+                // انتقال فایل به مسیر مقصد
+                if (move_uploaded_file($fileTmpPath, $destination)) {
+                    // ذخیره مسیر فایل در دیتابیس یا هر کاری که نیاز دارید
+                    // برای مثال: ذخیره در جدول tickets (یا جدول مرتبط)
+                    // Ticket::create([...]);
+
+                    $_SESSION['flash_success'] = __('file_uploaded_successfully');
+                } else {
+                    $_SESSION['flash_error'] = __('file_upload_failed');
+                    redirect();
+                    exit;
+                }
+            } else {
+                $_SESSION['flash_error'] = __('file_upload_error');
+                redirect();
+                exit;
+            }
+        }
+
+        if ($user->user_type == UserType::EMPLOYEE) {
+            $employeeServiceModels = $user->getEmployeeServices();
+            $lang = $_SESSION['lang'] ?? 'fa';
+            foreach ($employeeServiceModels as $empService) {
+                $service = Service::find($empService->service_id);
+                if ($service) {
+                    $title = ($lang === 'fa') ? $service->fa_title : $service->en_title;
+                    $selectedServiceIds[] = $empService->service_id;
+                    $employeeServicesData[] = (object)[
+                        'id' => $empService->id,
+                        'service_id' => $empService->service_id,
+                        'user_id' => $empService->user_id,
+                        'price' => $empService->price,
+                        'free_hour' => $empService->free_hour,
+                        'estimated_duration' => $empService->estimated_duration,
+                        'title' => $title,
+                    ];
+                }
+            }
+        }
+
+        $this->view('admin/editUser', [
+            'title' => __('edit_user'),
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'groupedServices' => $groupedServices,
+            'selectedServiceIds' => $selectedServiceIds,
+            'employeeServicesData' => $employeeServicesData,
+            'durations' => $durations,
+        ]);
+    }
+
+    public function editTicket($id)
+    {
+        $user = User::find((int)$id);
+
+        if (!$user) {
+            $_SESSION['flash_error'] = __('user_not_found');
+            redirect();
             redirect("/admin/users");
             exit;
         }
@@ -83,7 +224,7 @@ class AdminController extends Controller
         ]);
     }
 
-    public function updateUser($id)
+    public function updateTicket($id)
     {
         $user = User::find((int)$id);
         if (!$user) {
@@ -154,7 +295,7 @@ class AdminController extends Controller
     }
 
 
-    public function deleteUser($id)
+    public function deleteTicket($id)
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
@@ -196,5 +337,6 @@ class AdminController extends Controller
         redirect("/admin/users");
         exit;
     }
+
 
 }

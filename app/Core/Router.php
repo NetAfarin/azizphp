@@ -37,24 +37,28 @@ class Router
             $regex = preg_replace('#\{[^}]+\}#', '([^/]+)', $routePattern);
             $regex = '#^' . $regex . '$#';
             if (preg_match($regex, $uri, $matches)) {
+                if (isset($matches[1])){
+                    define('SALON_ID', $matches[1]);
+                }else{
+                    define('SALON_ID', 'sa');
+                }
                 array_shift($matches);
                 $middlewares = $handler['middleware'] ?? [];
                 $controller  = $handler['controller'];
                 $action      = $handler['method'];
-
                 $controllerInstance = new $controller();
-                $request = new Request();
+                $request = new Request($matches);
                 //TODO check kon  injaro ke request bayad chijoori bashe
-                $next = function(Request $request) use ($controllerInstance, $action, $matches) {
+
+                $next = function($request) use ($controllerInstance, $action, $matches) {
                     return call_user_func_array([$controllerInstance, $action], $matches);
                 };
-
                 foreach (array_reverse($middlewares) as $middlewareClass) {
                     $middleware = new $middlewareClass();
                     $currentNext = $next;
-                    $next = function(Request $request) use ($middleware, $currentNext) {
-                        return $middleware->handle($request, $currentNext);
-                    };
+                    $next = function($request) use ($middleware, $currentNext) {
+                            return $middleware->handle($request, $currentNext);
+                        };
                 }
                 $next($request);
                 return;

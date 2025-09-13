@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2025 at 11:35 PM
+-- Generation Time: Sep 13, 2025 at 03:29 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -430,6 +430,63 @@ CREATE TABLE `surveys_table` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tickets_table`
+--
+
+CREATE TABLE `tickets_table` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `status_id` int(11) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ticket_history_table`
+--
+
+CREATE TABLE `ticket_history_table` (
+  `id` int(11) NOT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `status_id` int(11) NOT NULL,
+  `comment` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ticket_status_table`
+--
+
+CREATE TABLE `ticket_status_table` (
+  `id` int(11) NOT NULL,
+  `fa_title` varchar(50) NOT NULL,
+  `en_title` varchar(50) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ticket_status_table`
+--
+
+INSERT INTO `ticket_status_table` (`id`, `fa_title`, `en_title`, `is_active`) VALUES
+(1, 'باز', 'Open', 1),
+(2, 'در حال پیگیری', 'In Progress', 1),
+(3, 'منتظر', 'Pending', 1),
+(4, 'بسته شده', 'Closed', 1),
+(5, 'لغو شده', 'Cancelled', 1),
+(6, 'در انتظار بازخورد', 'Awaiting Feedback', 1),
+(7, 'حل نشده', 'Unresolved', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `user_table`
 --
 
@@ -462,7 +519,8 @@ INSERT INTO `user_table` (`id`, `salon_id`, `first_name`, `last_name`, `birth_da
 (99, NULL, 'hamed 55', 'soltanifar', '2000-01-01 00:00:00', '09351602515', '2025-07-25 21:22:52', 2, '$2y$10$s8NZAOWkPFcyKJEKQuvwR.eqUHYhw1.n.JaJiF0jRGW8U.Mpxs8l6', 1, 1),
 (100, NULL, 'hamed', 'soltani', '2000-01-01 00:00:00', '09351602516', '2025-08-01 21:23:59', 2, '$2y$10$tyKnn.u.hmJytAeQG5zOMu.ye58ypy8Bb8qxgMq6HyaLqed8qglMC', 0, 0),
 (103, NULL, 'ghasem', 'soltan', '0000-00-00 00:00:00', '09351602519', '2025-08-26 09:27:19', 2, '$2y$10$R/dAfo2iodl//enJ46JybeJF1XpZVBANEncwJG4htboGjl8UmjC8q', 1, 0),
-(104, NULL, 'مجتبی', 'فnbvg', '0000-00-00 00:00:00', '09351602529', '2025-08-28 16:18:25', 2, '$2y$10$T12.8hS/yySgjvumGSyH1eqTJCigTInD6uTo82j6K922fjK2XsYVW', 1, 0);
+(104, NULL, 'مجتبی', 'فnbvg', '0000-00-00 00:00:00', '09351602529', '2025-08-28 16:18:25', 2, '$2y$10$T12.8hS/yySgjvumGSyH1eqTJCigTInD6uTo82j6K922fjK2XsYVW', 1, 0),
+(105, NULL, 'Abbas', 'Mohammadi', '2025-09-13 14:44:52', '09124362466', '2025-09-13 16:16:54', 6, '$2y$10$euqzEVCJRK6iYbQujWbYEuiLxPehX0ZWYUcim7j4KMrDrOP0g8piu', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -472,8 +530,8 @@ INSERT INTO `user_table` (`id`, `salon_id`, `first_name`, `last_name`, `birth_da
 
 CREATE TABLE `user_type_table` (
   `id` int(11) NOT NULL,
-  `title` varchar(10) NOT NULL,
-  `en_title` varchar(10) NOT NULL
+  `title` varchar(20) NOT NULL,
+  `en_title` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -485,7 +543,13 @@ INSERT INTO `user_type_table` (`id`, `title`, `en_title`) VALUES
 (2, 'مشتری', 'customer'),
 (3, 'اپراتور', 'operator'),
 (4, 'مدیر', 'admin'),
-(5, 'سیستم', 'system');
+(5, 'سیستم', 'system'),
+(6, 'ادمین سیستم', 'super_admin'),
+(7, 'پشتیبان', 'support'),
+(8, 'کارشناس مالی', 'financial_user'),
+(9, 'مدیر مالی', 'financial_manager'),
+(10, 'مدیر پشتیبانی', 'support_manager'),
+(11, 'مدیر گروه', 'group_manager');
 
 -- --------------------------------------------------------
 
@@ -625,6 +689,28 @@ ALTER TABLE `surveys_table`
   ADD KEY `salon_key` (`salon_id`);
 
 --
+-- Indexes for table `tickets_table`
+--
+ALTER TABLE `tickets_table`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `status_id` (`status_id`);
+
+--
+-- Indexes for table `ticket_history_table`
+--
+ALTER TABLE `ticket_history_table`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ticket_id` (`ticket_id`),
+  ADD KEY `status_id` (`status_id`);
+
+--
+-- Indexes for table `ticket_status_table`
+--
+ALTER TABLE `ticket_status_table`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `user_table`
 --
 ALTER TABLE `user_table`
@@ -723,16 +809,34 @@ ALTER TABLE `surveys_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tickets_table`
+--
+ALTER TABLE `tickets_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ticket_history_table`
+--
+ALTER TABLE `ticket_history_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ticket_status_table`
+--
+ALTER TABLE `ticket_status_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT for table `user_table`
 --
 ALTER TABLE `user_table`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT for table `user_type_table`
 --
 ALTER TABLE `user_type_table`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `visit_status_table`
@@ -776,6 +880,20 @@ ALTER TABLE `surveys_table`
   ADD CONSTRAINT `quality_score_id_key` FOREIGN KEY (`quality_score_id`) REFERENCES `quality_score_table` (`id`),
   ADD CONSTRAINT `salon_key` FOREIGN KEY (`salon_id`) REFERENCES `salon_table` (`id`),
   ADD CONSTRAINT `service_visit_relation_key` FOREIGN KEY (`service_visit_relation_id`) REFERENCES `service_visit_relation_table` (`id`);
+
+--
+-- Constraints for table `tickets_table`
+--
+ALTER TABLE `tickets_table`
+  ADD CONSTRAINT `tickets_table_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`),
+  ADD CONSTRAINT `tickets_table_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `ticket_status_table` (`id`);
+
+--
+-- Constraints for table `ticket_history_table`
+--
+ALTER TABLE `ticket_history_table`
+  ADD CONSTRAINT `ticket_history_table_ibfk_1` FOREIGN KEY (`ticket_id`) REFERENCES `tickets_table` (`id`),
+  ADD CONSTRAINT `ticket_history_table_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `ticket_status_table` (`id`);
 
 --
 -- Constraints for table `user_table`

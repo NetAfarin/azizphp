@@ -101,7 +101,7 @@
         </label>
     </div>
     <button class="btn btn-primary"><?= __('save_changes') ?></button>
-    <a href="<?= BASE_URL ?>/admin/users" class="btn btn-danger"><?= __('cancel') ?></a>
+    <a href="<?= BASE_URL."/".SALON_ID ?>/admin/users" class="btn btn-danger"><?= __('cancel') ?></a>
 </form>
 <script>
     window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;

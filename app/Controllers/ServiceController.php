@@ -82,7 +82,7 @@ class ServiceController extends Controller
                 if ($category->save()) {
                     clear_old_input();
                     $_SESSION['flash_success'] = __('add_category_message');
-                    header("Location: " . BASE_URL . "/admin/services/categories");
+                    redirect("/admin/services/categories");
                     exit;
                 } else {
                     $errors[] = __('user_save_error');
@@ -126,7 +126,7 @@ class ServiceController extends Controller
 
                 if ($service->save()) {
                     $_SESSION['flash_success'] = __('category_update');
-                    header("Location: " . BASE_URL . "/admin/services/categories");
+                    redirect("/admin/services/categories");
                     exit;
                 } else {
                     $errors[] = __('save_error');
@@ -156,13 +156,13 @@ class ServiceController extends Controller
         $category = Service::find((int)$id);
         if (!$category) {
             $_SESSION['flash_error'] = __('category_not_found');
-            header("Location: " . BASE_URL . "/admin/services/categories");
+            redirect("/admin/services/categories");
             exit;
         }
          $stmt = Service::query()->where("parent_id" , "=" , $category->id)->get();
         if(sizeof($stmt) > 0){
             $_SESSION['flash_error'] =  sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
-            header("Location: " . BASE_URL . "/admin/services/categories");
+            redirect("/admin/services/categories");
             exit;
         }
         if (property_exists($category, 'deleted')) {
@@ -179,7 +179,7 @@ class ServiceController extends Controller
             $_SESSION['flash_error'] = __('delete_failed');
         }
 
-        header("Location: " . BASE_URL . "/admin/services/categories");
+        redirect("/admin/services/categories");
         exit;
     }
 
@@ -243,7 +243,7 @@ class ServiceController extends Controller
 
                     clear_old_input();
                     $_SESSION['flash_success'] = __('add_service_message');
-                    header("Location: " . BASE_URL . "/admin/services");
+                    redirect("/admin/services");
                     exit;
                 } else {
                     $errors[] = __('user_save_error');
@@ -288,7 +288,7 @@ class ServiceController extends Controller
                 $service->parent_id = $parent_id;
                 if ($service->save()) {
                     $_SESSION['flash_success'] = __('service_update');
-                    header("Location: " . BASE_URL . "/admin/services");
+                    redirect("/admin/services");
                     exit;
                 } else {
                     $errors[] = __('save_error');
@@ -321,7 +321,7 @@ class ServiceController extends Controller
         $category = Service::find((int)$id);
         if (!$category) {
             $_SESSION['flash_error'] = __('category_not_found');
-            header("Location: " . BASE_URL . "/admin/services");
+            redirect("/admin/services");
             exit;
         }
 
@@ -340,7 +340,7 @@ class ServiceController extends Controller
             $_SESSION['flash_error'] = __('delete_failed');
         }
 
-        header("Location: " . BASE_URL . "/admin/services");
+        redirect("/admin/services");
         exit;
     }
 

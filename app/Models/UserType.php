@@ -15,6 +15,13 @@ class UserType extends Model
     const CUSTOMER = 2;
     const OPERATOR = 3;
     const ADMIN = 4;
+    const SYSTEM = 5;
+    const SUPER_ADMIN = 6;
+    const SUPPORT = 7;
+    const FINANCIAL_USER = 8;
+    const FINANCIAL_MANAGER = 8;
+    const SUPPORT_MANAGER = 9;
+    const GROUP_MANAGER = 10;
 
 
     public static function findByEnTitle(string $enTitle): ?self

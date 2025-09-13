@@ -5,13 +5,12 @@
         <nav class="col-md-2 col-lg-2 d-md-block sidebar py-3">
             <h4 class="px-3 mb-4">مدیریت</h4>
             <ul class="nav flex-column">
-                <li class="nav-item"><a class="nav-link active" href="<?= BASE_URL."/".SALON_ID ?>/admin/panel"><?= __('dashboard') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL."/".SALON_ID ?>/admin/users"><?= __('manage_users') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL."/".SALON_ID ?>/admin/services/management"><?= __('manage_services') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL."/".SALON_ID ?>/admin/bookings"><?= __('booking_list') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL."/".SALON_ID ?>/admin/bookings/new"><?= __('new_booking') ?></a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL."/".SALON_ID ?>/admin/settings"><?= __('settings') ?></a></li>
-                <li class="nav-item"><a class="nav-link text-danger" href="<?= BASE_URL."/".SALON_ID ?>/user/logout"><?= __('logout') ?></a></li>
+                <li class="nav-item"><a class="nav-link active" href="<?= BASE_URL ?>/sa/panel"><?= __('dashboard') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL?>/sa/users"><?= __('manage_users') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/users"><?= __('manage_salons') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/ticket"><?= __('tickets') ?></a></li>
+                <li class="nav-item"><a class="nav-link" href="<?= BASE_URL ?>/sa/settings"><?= __('settings') ?></a></li>
+                <li class="nav-item"><a class="nav-link text-danger" href="<?= BASE_URL ?>/user/logout"><?= __('logout') ?></a></li>
 
             </ul>
         </nav>

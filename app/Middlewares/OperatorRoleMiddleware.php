@@ -4,11 +4,11 @@ namespace App\Middlewares;
 
 use App\Core\Request;
 
-class RoleMiddleware
+class OperatorRoleMiddleware
 {
     protected array $allowedRoles;
 
-    public function __construct(array $allowedRoles = ['super_admin','support'])
+    public function __construct(array $allowedRoles = ['operator','admin','super_admin','support'])
     {
         $this->allowedRoles = $allowedRoles;
     }
