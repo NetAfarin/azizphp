@@ -161,6 +161,7 @@ abstract class Model
         $this->wheres[] = ['column' => $column, 'operator' => 'NOT LIKE', 'value' => "%$value%"];
         return $this;
     }
+
     public function orWhere(string $column, string $operator, $value): static
     {
         $this->wheres[] = ['type' => 'OR', 'column' => $column, 'operator' => $operator, 'value' => $value];
@@ -214,6 +215,7 @@ abstract class Model
         }
         return [' WHERE ' . implode(' ', $parts), $params];
     }
+
     protected function buildSelectSql(array &$params): string
     {
         [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
@@ -250,6 +252,7 @@ abstract class Model
         $this->joins[] = strtoupper($type) . " JOIN {$table} ON {$first} {$operator} {$second}";
         return $this;
     }
+
     protected function buildCountSql(array &$params): string
     {
         [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
@@ -282,6 +285,7 @@ abstract class Model
         $models = array_map(fn($row) => new static($row), $rows);
         return $this->eagerLoadRelations($models);
     }
+
     protected function resetQuery(): void
     {
         $this->wheres = [];
@@ -342,6 +346,7 @@ abstract class Model
     {
         return $this->attributes;
     }
+
     public function deleteWhere(array $conditions): bool
     {
         $clauses = [];
@@ -364,6 +369,7 @@ abstract class Model
         $stmt = Database::pdo()->prepare($sql);
         return $stmt->execute($params);
     }
+
     public function belongsTo(string $related, string $foreignKey, string $ownerKey = 'id'): ?Model
     {
         $instance = new $related();
@@ -381,6 +387,7 @@ abstract class Model
         $this->with = $relations;
         return $this;
     }
+
     protected function eagerLoadRelations(array $models): array
     {
         if (empty($this->with)) {
@@ -399,6 +406,7 @@ abstract class Model
 
         return $models;
     }
+
     protected function loadRelation($model, string $relation): void
     {
         $parts = explode('.', $relation);

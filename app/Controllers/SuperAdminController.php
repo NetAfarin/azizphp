@@ -25,9 +25,15 @@ class SuperAdminController extends Controller
             header("Location: ?page=1&per_page=10");
             exit;
         }
-        $pagination = User::query()->paginate($page, $perPage);
+        $pagination = User::query()
+            ->where('user_type','=', UserType::SUPER_ADMIN)
+            ->orWhere('user_type','=', UserType::SUPPORT)
+            ->orWhere('user_type','=', UserType::FINANCIAL_MANAGER)
+            ->orWhere('user_type','=', UserType::FINANCIAL_USER)
+            ->orWhere('user_type','=', UserType::SUPPORT_MANAGER)
+            ->paginate($page, $perPage);
 
-        $this->view('admin/users',
+        $this->view('sa/users',
             ['title' => __('users_list'),
                 'users' => $pagination['data'],
                 'pagination' => $pagination,

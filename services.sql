@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 13, 2025 at 03:29 PM
+-- Generation Time: Sep 13, 2025 at 05:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -184,6 +184,48 @@ INSERT INTO `payment_status_table` (`id`, `code`, `fa_title`, `en_title`, `is_ac
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `plans_table`
+--
+
+CREATE TABLE `plans_table` (
+  `id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `plan_features_table`
+--
+
+CREATE TABLE `plan_features_table` (
+  `id` int(11) NOT NULL,
+  `feature_name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `plan_feature_relation_table`
+--
+
+CREATE TABLE `plan_feature_relation_table` (
+  `id` int(11) NOT NULL,
+  `plan_id` int(11) NOT NULL,
+  `feature_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `quality_score_table`
 --
 
@@ -203,6 +245,21 @@ INSERT INTO `quality_score_table` (`id`, `fa_name`, `en_name`) VALUES
 (3, 'متوسط', 'Average'),
 (4, 'بد', 'Bad'),
 (5, 'خیلی بد', 'Very Bad');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `salon_plans_table`
+--
+
+CREATE TABLE `salon_plans_table` (
+  `id` int(11) NOT NULL,
+  `salon_id` int(11) NOT NULL,
+  `plan_id` int(11) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -243,7 +300,7 @@ CREATE TABLE `salon_table` (
 --
 
 INSERT INTO `salon_table` (`id`, `name`, `username`, `link_name`, `avatar`, `manager`, `manager_mobile`, `manager_email`, `plan_id`, `postal_address`, `latitude`, `longitude`, `start_time`, `end_time`, `start_time_5`, `end_time_5`, `start_time_6`, `end_time_6`, `start_time_h`, `end_time_h`, `max_reserve_day`, `created_datetime`, `updated_datetime`, `active`, `deleted`) VALUES
-(1, 'نت آفرین', 'netafarin', 'administrator', 'avatar-netafarin.png', 'مجتبی سلطانی فر', '09351602513', 'netafarin@gmail.com', 1, 'Tehran', 35.680000, 51.380000, '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', 0, '2025-09-06 14:00:06', '2025-09-06 14:00:06', 1, 0),
+(1, 'نت آفرین', 'netafarin', 'netafarin', 'avatar-netafarin.png', 'مجتبی سلطانی فر', '09351602513', 'netafarin@gmail.com', 1, 'Tehran', 35.680000, 51.380000, '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', 0, '2025-09-06 14:00:06', '2025-09-06 14:00:06', 1, 0),
 (2, 'دلا رز', 'delarose', 'delarose', 'avatar-delaroze.png', 'خانم ابهت', '09121234567', 'rose@gamil.com', 1, 'سر کوچه عزیزی', 35.689200, 51.389000, '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', '08:00:00', '20:00:00', 0, '2025-09-06 13:23:13', '2025-09-06 13:23:13', 1, 0);
 
 -- --------------------------------------------------------
@@ -520,7 +577,12 @@ INSERT INTO `user_table` (`id`, `salon_id`, `first_name`, `last_name`, `birth_da
 (100, NULL, 'hamed', 'soltani', '2000-01-01 00:00:00', '09351602516', '2025-08-01 21:23:59', 2, '$2y$10$tyKnn.u.hmJytAeQG5zOMu.ye58ypy8Bb8qxgMq6HyaLqed8qglMC', 0, 0),
 (103, NULL, 'ghasem', 'soltan', '0000-00-00 00:00:00', '09351602519', '2025-08-26 09:27:19', 2, '$2y$10$R/dAfo2iodl//enJ46JybeJF1XpZVBANEncwJG4htboGjl8UmjC8q', 1, 0),
 (104, NULL, 'مجتبی', 'فnbvg', '0000-00-00 00:00:00', '09351602529', '2025-08-28 16:18:25', 2, '$2y$10$T12.8hS/yySgjvumGSyH1eqTJCigTInD6uTo82j6K922fjK2XsYVW', 1, 0),
-(105, NULL, 'Abbas', 'Mohammadi', '2025-09-13 14:44:52', '09124362466', '2025-09-13 16:16:54', 6, '$2y$10$euqzEVCJRK6iYbQujWbYEuiLxPehX0ZWYUcim7j4KMrDrOP0g8piu', 1, 0);
+(105, NULL, 'Abbas', 'Mohammadi', '2025-09-13 14:44:52', '09124362466', '2025-09-13 16:16:54', 6, '$2y$10$euqzEVCJRK6iYbQujWbYEuiLxPehX0ZWYUcim7j4KMrDrOP0g8piu', 1, 0),
+(106, NULL, 'ali', 'mohammadpoor', '2025-09-13 17:29:50', '09121234567', '2025-09-13 19:01:21', 7, '$2y$10$bxJmRFsLe1UuvoIdghBKTuGjSTvhEmBPxdklFaQJosSNf.Yn0KC1e', 1, 0),
+(107, NULL, 'Pooya', 'Mohammadpoor', '2025-09-13 17:29:50', '09122345678', '2025-09-13 19:01:21', 7, '', 1, 0),
+(108, NULL, 'یوسف', 'تیموری', '2025-09-13 17:31:24', '09123456789', '2025-09-13 19:02:38', 8, '', 1, 0),
+(109, NULL, 'احسان', 'پیرپکاجکی', '2025-09-13 17:31:24', '09124567890', '2025-09-13 19:02:38', 9, '', 1, 0),
+(110, NULL, 'مهران', 'غفوریان', '2025-09-13 17:32:43', '09125678901', '2025-09-13 19:04:34', 10, '$2y$10$bxJmRFsLe1UuvoIdghBKTuGjSTvhEmBPxdklFaQJosSNf.Yn0KC1e', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -647,10 +709,38 @@ ALTER TABLE `payment_status_table`
   ADD UNIQUE KEY `code` (`code`);
 
 --
+-- Indexes for table `plans_table`
+--
+ALTER TABLE `plans_table`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `plan_features_table`
+--
+ALTER TABLE `plan_features_table`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `plan_feature_relation_table`
+--
+ALTER TABLE `plan_feature_relation_table`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `plan_id` (`plan_id`),
+  ADD KEY `feature_id` (`feature_id`);
+
+--
 -- Indexes for table `quality_score_table`
 --
 ALTER TABLE `quality_score_table`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `salon_plans_table`
+--
+ALTER TABLE `salon_plans_table`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `salon_id` (`salon_id`),
+  ADD KEY `plan_id` (`plan_id`);
 
 --
 -- Indexes for table `salon_table`
@@ -779,10 +869,34 @@ ALTER TABLE `payment_status_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `plans_table`
+--
+ALTER TABLE `plans_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `plan_features_table`
+--
+ALTER TABLE `plan_features_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `plan_feature_relation_table`
+--
+ALTER TABLE `plan_feature_relation_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `quality_score_table`
 --
 ALTER TABLE `quality_score_table`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `salon_plans_table`
+--
+ALTER TABLE `salon_plans_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `salon_table`
@@ -830,7 +944,7 @@ ALTER TABLE `ticket_status_table`
 -- AUTO_INCREMENT for table `user_table`
 --
 ALTER TABLE `user_table`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `user_type_table`
@@ -861,6 +975,20 @@ ALTER TABLE `employee_service_table`
   ADD CONSTRAINT `duration_key` FOREIGN KEY (`estimated_duration`) REFERENCES `duration_table` (`id`),
   ADD CONSTRAINT `service_table_key` FOREIGN KEY (`service_id`) REFERENCES `service_table` (`id`),
   ADD CONSTRAINT `user_key` FOREIGN KEY (`user_id`) REFERENCES `user_table` (`id`);
+
+--
+-- Constraints for table `plan_feature_relation_table`
+--
+ALTER TABLE `plan_feature_relation_table`
+  ADD CONSTRAINT `plan_feature_relation_table_ibfk_1` FOREIGN KEY (`plan_id`) REFERENCES `plans_table` (`id`),
+  ADD CONSTRAINT `plan_feature_relation_table_ibfk_2` FOREIGN KEY (`feature_id`) REFERENCES `plan_features_table` (`id`);
+
+--
+-- Constraints for table `salon_plans_table`
+--
+ALTER TABLE `salon_plans_table`
+  ADD CONSTRAINT `salon_plans_table_ibfk_1` FOREIGN KEY (`salon_id`) REFERENCES `salon_table` (`id`),
+  ADD CONSTRAINT `salon_plans_table_ibfk_2` FOREIGN KEY (`plan_id`) REFERENCES `plans_table` (`id`);
 
 --
 -- Constraints for table `service_visit_relation_table`
