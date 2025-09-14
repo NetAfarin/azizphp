@@ -104,7 +104,7 @@ if (!empty($publicErrors)): ?>
     </div>
     <div class="mb-3">
         <label class="form-label"><?= __('salon_start_day') ?></label>
-         <select class="form-select" id="daySelect" name="salon_start_day">
+         <select class="form-select" id="daySelect" name="start_day_of_week">
              <option value="1">شنبه</option>
              <option value="2">یکشنبه</option>
              <option value="3">دوشنبه</option>
