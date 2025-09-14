@@ -68,10 +68,10 @@ if (!empty($publicErrors)): ?>
     </div>
     <div class="mb-3">
         <label class="form-label"><?= __('salon_link') ?></label>
-        <input type="text" name="salon_link" class="form-control"
-               value="<?= htmlspecialchars(old('salon_link')) ?>">
-        <?php if (!empty($errors['salon_link'])): ?>
-            <div class="text-danger small"><?= htmlspecialchars($errors['salon_link'][0]) ?></div>
+        <input type="text" name="link_name" class="form-control"
+               value="<?= htmlspecialchars(old('link_name')) ?>">
+        <?php if (!empty($errors['link_name'])): ?>
+            <div class="text-danger small"><?= htmlspecialchars($errors['link_name'][0]) ?></div>
         <?php endif; ?>
     </div>
     <div class="mb-3">
@@ -138,12 +138,12 @@ if (!empty($publicErrors)): ?>
     </div>
     <div class="row mb-3">
         <div class="form-check form-switch mb-3">
-            <input class="form-check-input" type="checkbox" id="is_active3" name="active_weekend_1">
-            <label class="form-check-label" for="is_active" id="status_label3">تعطیل</label>
+            <input class="form-check-input" type="checkbox" id="is_active" name="active_weekend_1">
+            <label class="form-check-label" for="is_active" id="status_label">تعطیل</label>
         </div>
         <div class="col-6">
             <label for="start_time_weekend_1" class="form-label" id="start_time_weekend_1"></label>
-            <input type="time" name="start_time_weekend_1" class="form-control" id="start_time_weekend_1"
+            <input type="time" name="start_time_weekend_1" class="form-control" id="start_time_weekend_1 aa"
                    value="<?= htmlspecialchars(old('start_time_weekend_1')) ?>">
             <?php if (!empty($errors['start_time_weekend_1'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['start_time_weekend_1'][0]) ?></div>
@@ -187,20 +187,20 @@ if (!empty($publicErrors)): ?>
         </div>
             <div class="col-6">
                 <label class="form-label"><?= __('start_time_holiday') ?></label>
-                <input type="time" name="start_time_holiday" class="form-control"
-                       value="<?= htmlspecialchars(old('start_time_holiday')) ?>">
-                <?php if (!empty($errors['start_time_holiday'])): ?>
+                <input type="time" name="start_time_holidays" class="form-control"
+                       value="<?= htmlspecialchars(old('start_time_holidays')) ?>">
+                <?php if (!empty($errors['start_time_holidays'])): ?>
                     <div class="text-danger small">
-    <?= htmlspecialchars($errors['start_time_holiday'][0]) ?></div>
+    <?= htmlspecialchars($errors['start_time_holidays'][0]) ?></div>
                 <?php endif; ?>
             </div>
             <div class="col-6">
                 <label class="form-label"><?= __('end_time_holiday') ?></label>
-                <input type="time" name="end_time_holiday" class="form-control"
-                       value="<?= htmlspecialchars(old('end_time_holiday')) ?>">
-                <?php if (!empty($errors['end_time_holiday'])): ?>
+                <input type="time" name="end_time_holidays" class="form-control"
+                       value="<?= htmlspecialchars(old('end_time_holidays')) ?>">
+                <?php if (!empty($errors['end_time_holidays'])): ?>
                     <div class="text-danger small">
-    <?= htmlspecialchars($errors['end_time_holiday'][0]) ?></div>
+    <?= htmlspecialchars($errors['end_time_holidays'][0]) ?></div>
                 <?php endif; ?>
             </div>
 
@@ -250,12 +250,18 @@ if (!empty($publicErrors)): ?>
     const label2 = document.getElementById('status_label2');
     const checkbox3 = document.getElementById('is_active3');
     const label3 = document.getElementById('status_label3');
+    const timeInput = document.getElementById("start_time_weekend_1");
+
     checkbox.addEventListener('change', function() {
         if (this.checked) {
             label.textContent = 'باز';
             label.textContent = 'باز';
+            document.getElementById("start_time_weekend_1").disabled = false;
+
         } else {
             label.textContent = 'تعطیل';
+            document.getElementById("start_time_weekend_1").disabled = true;
+
         }
     });
     checkbox2.addEventListener('change', function() {
@@ -274,4 +280,5 @@ if (!empty($publicErrors)): ?>
             label3.textContent = 'تعطیل';
         }
     });
+
 </script>

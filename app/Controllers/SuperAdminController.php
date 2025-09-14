@@ -391,10 +391,10 @@ class SuperAdminController extends Controller
             $manager_mobile = $_POST['manager_mobile'];
             $salon_username = $_POST['username'];
             $postal_address = $_POST['postal_address'];
-            $salon_link = $_POST['salon_link'];
+            $salon_link = $_POST['link_name'];
             $plan = $_POST['plan'];
             $about_us = $_POST['about_us'];
-            $salon_start_day = $_POST['salon_start_day'];
+            $start_day_of_week = $_POST['start_day_of_week'];
             $start_time = $_POST['start_time'];
             $end_time = $_POST['end_time'];
             $start_time_weekend_1 = $_POST['start_time_weekend_1'];
@@ -402,8 +402,8 @@ class SuperAdminController extends Controller
             $start_time_weekend_2 = $_POST['start_time_weekend_2'];
             $end_time_weekend_2 = $_POST['end_time_weekend_2'];
             $max_reserve_day = $_POST['max_reserve_day'];
-            $start_time_holiday = $_POST['start_time_holiday'];
-            $end_time_holiday = $_POST['end_time_holiday'];
+            $start_time_holiday = $_POST['start_time_holidays'];
+            $end_time_holiday = $_POST['end_time_holidays'];
             $activeHolidays = $_POST['active_holidays'] ?? 0;
             $active_weekend_2 = $_POST['active_weekend_2'] ?? 0;
             $active_weekend_1 = $_POST['active_weekend_1'] ?? 0;
@@ -414,10 +414,10 @@ class SuperAdminController extends Controller
                 'manager_mobile' => 'required|min:2|max:100',
                 'username' => 'required|min:2|max:100',
                 'postal_address' => 'required|min:2|max:100',
-                'salon_link' => 'required|min:2|max:100',
+                'link_name' => 'required|min:2|max:100',
                 'plan' => 'required|min:1|max:100',
                 'about_us' => 'required|min:2|max:100',
-                'salon_start_day' => 'required|min:1|max:100',
+                'start_day_of_week' => 'required|min:1|max:100',
                 'start_time' => 'required|min:2|max:100',
                 'end_time' => 'required|min:2|max:100',
                 'start_time_weekend_1' => 'required|min:2|max:100',
@@ -425,19 +425,17 @@ class SuperAdminController extends Controller
                 'start_time_weekend_2' => 'required|min:2|max:100',
                 'end_time_weekend_2' => 'required|min:2|max:100',
                 'max_reserve_day' => 'required|min:2|max:100',
-                'start_time_holiday' => 'required|min:2|max:100',
-                'end_time_holiday' => 'required|min:2|max:100',
+                'start_time_holidays' => 'required|min:2|max:100',
+                'end_time_holidays' => 'required|min:2|max:100',
 //                'active_holidays' => 'required|min:0|max:100',
 //                'active_weekend_2' => 'required|min:0|max:100',
 //                'active_weekend_1' => 'required|min:0|max:100',
                 'manager_email' => 'required|min:2|max:100',
             ]);
-
             if ($validator->fails()) {
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
-
             $salon = new Salon([
                 'name' => $salon_name,
                 'manager_email' => $manager_email,
@@ -446,10 +444,10 @@ class SuperAdminController extends Controller
                 'avatar' => "?",
                 'manager' => $manager,
                 'username' => $salon_username,
-                'salon_link' => $salon_link,
+                'link_name' => $salon_link,
                 'plan_id' => (int)$plan,
                 'about_us' => $about_us,
-                'salon_start_day' => $salon_start_day,
+                'start_day_of_week' => (int)$start_day_of_week,
                 'start_time' => $start_time,
                 'end_time' => $end_time,
                 'start_time_weekend_1' => $start_time_weekend_1,
@@ -457,8 +455,8 @@ class SuperAdminController extends Controller
                 'start_time_weekend_2' => $start_time_weekend_2,
                 'end_time_weekend_2' => $end_time_weekend_2,
                 'max_reserve_day' => $max_reserve_day,
-                'start_time_holiday' => $start_time_holiday,
-                'end_time_holiday' => $end_time_holiday,
+                'start_time_holidays' => $start_time_holiday,
+                'end_time_holidays' => $end_time_holiday,
                 'active_holidays' => $activeHolidays,
                 'active_weekend_2' => $active_weekend_2,
                 'active_weekend_1' => $active_weekend_1,
