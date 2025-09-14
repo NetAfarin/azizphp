@@ -52,6 +52,8 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware:
     Route::post('/{SALON_ID}/admin/services/create', [ServiceController::class, 'addService']);
     Route::post('/{SALON_ID}/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
     Route::post('/{SALON_ID}/admin/services/edit/{id}', [ServiceController::class, 'editService']);
+    Route::post('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
+
 });
 
 // Admin GET routes
@@ -79,6 +81,7 @@ Route::middleware([AuthMiddleware::class, SaRoleMiddleware::class])->group(funct
     Route::get('/sa/users', [SuperAdminController::class, 'userList']);
     Route::get('/sa/user/edit/{id}', [SuperAdminController::class, 'editUser']);
     Route::get('/sa/salons', [SuperAdminController::class, 'salonList']);
+    Route::get('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
     Route::get('/sa/salons/edit/{id}', [SuperAdminController::class, 'editSalon']);
 });
 
