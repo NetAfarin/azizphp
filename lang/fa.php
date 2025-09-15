@@ -187,4 +187,7 @@ return [
     'manager_email' => 'ایمیل مدیر',
     'manager_mobile' => 'شماره موبایل مدیر',
     'plan_type' => 'نوع اکانت',
+    'salon_not_found' => 'سالن مورد نظر یافت نشد!',
+    'edit_salon' => 'ویرایش سالن',
+    'salon_update' => 'سالن مورد نظر با موفقیت آپدیت شد',
 ];

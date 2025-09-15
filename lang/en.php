@@ -178,4 +178,7 @@ return [
     'manager_email' => 'Manager Email',
     'manager_mobile' => 'Manager Mobile Number',
     'plan_type' => 'Account Type',
+    'salon_not_found' => 'salon not found!',
+    'edit_salon' => 'edit salon',
+    'salon_update' => 'salon updated successfully!',
 ];

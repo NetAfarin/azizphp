@@ -53,6 +53,7 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware:
     Route::post('/{SALON_ID}/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
     Route::post('/{SALON_ID}/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::post('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
+    Route::post('/sa/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
 
 });
 
@@ -73,6 +74,7 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(functio
     Route::get('/{SALON_ID}/admin/services/create', [ServiceController::class, 'addService']);
     Route::get('/{SALON_ID}/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::get('/{SALON_ID}/user/register', [UserController::class, 'register']);
+
 });
 
 // Admin GET routes
@@ -82,7 +84,8 @@ Route::middleware([AuthMiddleware::class, SaRoleMiddleware::class])->group(funct
     Route::get('/sa/user/edit/{id}', [SuperAdminController::class, 'editUser']);
     Route::get('/sa/salons', [SuperAdminController::class, 'salonList']);
     Route::get('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
-    Route::get('/sa/salons/edit/{id}', [SuperAdminController::class, 'editSalon']);
+    Route::get('/sa/salon/edit/{id}', [SuperAdminController::class, 'editSalon']);
+
 });
 
 });

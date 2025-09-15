@@ -29,7 +29,7 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('salon_name') ?></label>
         <input type="text" name="salon_name" class="form-control"
-               value="<?= htmlspecialchars(old('salon_name')) ?>">
+               value="<?= htmlspecialchars($salon->name) ?>">
         <?php if (!empty($errors['salon_name'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['salon_name'][0]) ?></div>
         <?php endif; ?>
@@ -37,7 +37,7 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('manager_name') ?></label>
         <input type="text" name="manager" class="form-control"
-               value="<?= htmlspecialchars(old('manager')) ?>">
+               value="<?= htmlspecialchars($salon->manager) ?>">
         <?php if (!empty($errors['manager'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['manager'][0]) ?></div>
         <?php endif; ?>
@@ -45,7 +45,7 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('username') ?></label>
         <input type="text" name="username" class="form-control"
-               value="<?= htmlspecialchars(old('username')) ?>">
+               value="<?= htmlspecialchars($salon->username ) ?>">
         <?php if (!empty($errors['username'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['username'][0]) ?></div>
         <?php endif; ?>
@@ -53,7 +53,7 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('manager_email') ?></label>
         <input type="text" name="manager_email" class="form-control"
-               value="<?= htmlspecialchars(old('manager_email')) ?>">
+               value="<?= htmlspecialchars($salon->manager_email) ?>">
         <?php if (!empty($errors['manager_email'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['manager_email'][0]) ?></div>
         <?php endif; ?>
@@ -61,7 +61,7 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('manager_mobile') ?></label>
         <input type="text" name="manager_mobile" class="form-control"
-               value="<?= htmlspecialchars(old('manager_mobile')) ?>">
+               value="<?= htmlspecialchars($salon->manager_mobile) ?>">
         <?php if (!empty($errors['manager_mobile'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['manager_mobile'][0]) ?></div>
         <?php endif; ?>
@@ -69,19 +69,21 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('salon_link') ?></label>
         <input type="text" name="link_name" class="form-control"
-               value="<?= htmlspecialchars(old('link_name')) ?>">
+               value="<?= htmlspecialchars($salon->link_name) ?>">
         <?php if (!empty($errors['link_name'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['link_name'][0]) ?></div>
         <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label"><?= __('plan_type') ?></label>
-        <select class="form-select" name="plan">
-            <option>نوع پلن را انتخاب کنید</option>
-            <?php foreach ($planeType as $p): ?>
-                <option value="<?= $p->id ?>"><?= $p->title ?></option>
-            <?php endforeach; ?>
-        </select>
+            <select class="form-select" name="plan">
+                <option>نوع پلن را انتخاب کنید</option>
+                <?php foreach ($planeType as $p): ?>
+                    <option value="<?= $p->id ?>" <?= ($salon->plan_id == $p->id) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($p->title) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         <?php if (!empty($errors['salon_plane'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['salon_plane'][0]) ?></div>
         <?php endif; ?>
@@ -89,7 +91,7 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('salon_address') ?></label>
         <input type="text" name="postal_address" class="form-control"
-               value="<?= htmlspecialchars(old('postal_address')) ?>">
+               value="<?= htmlspecialchars($salon->postal_address) ?>">
         <?php if (!empty($errors['postal_address'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['postal_address'][0]) ?></div>
         <?php endif; ?>
@@ -97,27 +99,29 @@ if (!empty($publicErrors)): ?>
     <div class="mb-3">
         <label class="form-label"><?= __('about_us') ?></label>
         <input type="text" name="about_us" class="form-control"
-               value="<?= htmlspecialchars(old('about_us')) ?>">
+               value="<?= htmlspecialchars($salon->about_us) ?>">
         <?php if (!empty($errors['about_us'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['about_us'][0]) ?></div>
         <?php endif; ?>
     </div>
     <div class="mb-3">
         <label class="form-label"><?= __('salon_start_day') ?></label>
-         <select class="form-select" id="daySelect" name="start_day_of_week">
-             <?php foreach ($dayWeek as  $key => $value): ?>
-             <option value=<?= $key ?>><?=  htmlspecialchars(($value)) ?></option>
-             <?php endforeach; ?>
-         </select>
-        <?php if (!empty($errors['about_us'])): ?>
-            <div class="text-danger small"><?= htmlspecialchars($errors['about_us'][0]) ?></div>
+        <select class="form-select" id="daySelect" name="start_day_of_week">
+            <?php foreach ($dayWeek as  $key => $value): ?>
+            <option value="<?= $key ?>" <?= (htmlspecialchars($salon->start_day_of_week) == $key) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($value) ?>
+            </option>
+            <?php endforeach; ?>
+        </select>
+        <?php if (!empty($errors['salon_start_day'])): ?>
+            <div class="text-danger small"><?= htmlspecialchars($errors['salon_start_day'][0]) ?></div>
         <?php endif; ?>
     </div>
     <div class="row mb-3"  >
         <div class="col-6">
             <label class="form-label"><?= __('start_time') ?></label>
             <input type="time" name="start_time" class="form-control"
-                   value="<?= htmlspecialchars(old('weekend')) ?>">
+                   value="<?= htmlspecialchars(($salon->start_time)) ?>">
             <?php if (!empty($errors['start_time'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['start_time'][0]) ?></div>
             <?php endif; ?>
@@ -125,7 +129,7 @@ if (!empty($publicErrors)): ?>
         <div class="col-6">
             <label class="form-label"><?= __('end_time') ?></label>
             <input type="time" name="end_time" class="form-control"
-                   value="<?= htmlspecialchars(old('weekend')) ?>">
+                   value="<?= htmlspecialchars($salon->end_time) ?>">
             <?php if (!empty($errors['end_time'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['end_time'][0]) ?></div>
             <?php endif; ?>
@@ -140,7 +144,7 @@ if (!empty($publicErrors)): ?>
         <div class="col-6">
             <label for="start_time_weekend_1" class="form-label" id="start_time_weekend_1"></label>
             <input type="time" name="start_time_weekend_1" class="form-control" id="start_time_weekend_1"
-                   value="<?= htmlspecialchars(old('start_time_weekend_1')) ?>">
+                   value="<?= htmlspecialchars($salon->start_time_weekend_1) ?>">
             <?php if (!empty($errors['start_time_weekend_1'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['start_time_weekend_1'][0]) ?></div>
             <?php endif; ?>
@@ -148,7 +152,7 @@ if (!empty($publicErrors)): ?>
         <div class="col-6">
             <label for="end_time_weekend_1" class="form-label" id="end_time_weekend_1"></label>
             <input type="time" name="end_time_weekend_1" class="form-control" id="end_time_weekend_1"
-                   value="<?= htmlspecialchars(old('end_time_weekend_1')) ?>">
+                   value="<?= htmlspecialchars($salon->end_time_weekend_1) ?>">
             <?php if (!empty($errors['end_time_weekend_1'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['end_time_weekend_1'][0]) ?></div>
             <?php endif; ?>
@@ -162,7 +166,7 @@ if (!empty($publicErrors)): ?>
         <div class="col-6">
             <label for="start_time_weekend_2" class="form-label" id="start_time_weekend_2"></label>
             <input type="time" name="start_time_weekend_2" class="form-control" id="start_time_weekend_2"
-                   value="<?= htmlspecialchars(old('start_time_weekend_2')) ?>">
+                   value="<?= htmlspecialchars($salon->start_time_weekend_2) ?>">
             <?php if (!empty($errors['start_time_weekend_2'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['start_time_weekend_1'][0]) ?></div>
             <?php endif; ?>
@@ -170,7 +174,7 @@ if (!empty($publicErrors)): ?>
         <div class="col-6">
             <label for="end_time_weekend_2" class="form-label" id="end_time_weekend_2"></label>
             <input type="time" name="end_time_weekend_2" class="form-control" id="end_time_weekend_2"
-                   value="<?= htmlspecialchars(old('end_time_weekend_2')) ?>">
+                   value="<?= htmlspecialchars($salon->end_time_weekend_2) ?>">
             <?php if (!empty($errors['end_time_weekend_2'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['end_time_weekend_2'][0]) ?></div>
             <?php endif; ?>
@@ -181,30 +185,30 @@ if (!empty($publicErrors)): ?>
             <input class="form-check-input" type="checkbox" id="is_active3" name="active_holidays">
             <label class="form-check-label" for="is_active" id="status_label3">تعطیل</label>
         </div>
-            <div class="col-6">
-                <label class="form-label"><?= __('start_time_holiday') ?></label>
-                <input type="time" name="start_time_holidays" class="form-control"
-                       value="<?= htmlspecialchars(old('start_time_holidays')) ?>">
-                <?php if (!empty($errors['start_time_holidays'])): ?>
-                    <div class="text-danger small">
-    <?= htmlspecialchars($errors['start_time_holidays'][0]) ?></div>
-                <?php endif; ?>
-            </div>
-            <div class="col-6">
-                <label class="form-label"><?= __('end_time_holiday') ?></label>
-                <input type="time" name="end_time_holidays" class="form-control"
-                       value="<?= htmlspecialchars(old('end_time_holidays')) ?>">
-                <?php if (!empty($errors['end_time_holidays'])): ?>
-                    <div class="text-danger small">
-    <?= htmlspecialchars($errors['end_time_holidays'][0]) ?></div>
-                <?php endif; ?>
-            </div>
-
+        <div class="col-6">
+            <label class="form-label"><?= __('start_time_holiday') ?></label>
+            <input type="time" name="start_time_holidays" class="form-control"
+                   value="<?= htmlspecialchars($salon->start_time_holidays) ?>">
+            <?php if (!empty($errors['start_time_holidays'])): ?>
+                <div class="text-danger small">
+                    <?= htmlspecialchars($errors['start_time_holidays'][0]) ?></div>
+            <?php endif; ?>
         </div>
+        <div class="col-6">
+            <label class="form-label"><?= __('end_time_holiday') ?></label>
+            <input type="time" name="end_time_holidays" class="form-control"
+                   value="<?= htmlspecialchars($salon->end_time_holidays) ?>">
+            <?php if (!empty($errors['end_time_holidays'])): ?>
+                <div class="text-danger small">
+                    <?= htmlspecialchars($errors['end_time_holidays'][0]) ?></div>
+            <?php endif; ?>
+        </div>
+
+    </div>
     <div class="mb-3">
         <label for="max_reserve_day" class="form-label"><?= __("max_reserve_day")?></label>
         <input type="text" name="max_reserve_day" class="form-control" id="	max_reserve_day"
-               value="<?= htmlspecialchars(old('max_reserve_day')) ?>">
+               value="<?= htmlspecialchars($salon->max_reserve_day) ?>">
         <?php if (!empty($errors['end_time_weekend_1'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['end_time_weekend_1'][0]) ?></div>
         <?php endif; ?>

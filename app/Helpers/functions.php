@@ -79,4 +79,16 @@ function json_response($data, $status = 200)
     echo json_encode($data);
     exit;
 }
+function weekDay()
+{
+   return [
+       "1" => "شنبه",
+       "2" => "یک شنبه",
+       "3" => "دو شنبه",
+       "4" => "سه شنبه",
+       "5" => "چهارشنبه",
+       "6" => "پنج شنبه",
+       "7" => "جمعه",
+   ];
+}
 
