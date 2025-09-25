@@ -6,4 +6,7 @@ Database::initialize([
     'dbname' => 'services_14040428',
     'username' => 'root',
     'password' => '',
+//    'dbname' => 'kamtoo_salon_db',
+//    'username' => 'kamtoo_salon_user',
+//    'password' => 'Z3mUVtaqxvYrafV4jWnt',
 ]);
