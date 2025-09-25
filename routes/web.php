@@ -8,9 +8,9 @@ use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\ErrorController;
 use App\Core\Route;
-use App\Middlewares\AuthMiddleware;
 use App\Middlewares\InstanceMiddleware;
 use App\Middlewares\RateLimiterMiddleware;
+use App\Middlewares\AuthMiddleware;
 use App\Middlewares\GuestMiddleware;
 use App\Middlewares\RoleMiddleware;
 use App\Middlewares\CsrfMiddleware;
@@ -53,6 +53,9 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/{SALON_ID}/admin/services/create', [ServiceController::class, 'addService']);
     Route::post('/{SALON_ID}/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
     Route::post('/{SALON_ID}/admin/services/edit/{id}', [ServiceController::class, 'editService']);
+    Route::post('/{SALON_ID}/admin/salon/create', [SuperAdminController::class, 'createSalon']);
+    Route::post('/{SALON_ID}/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
+
 });
 
 // Admin GET routes
@@ -80,8 +83,10 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, SaRoleMiddle
     Route::get('/sa/users', [SuperAdminController::class, 'userList']);
     Route::get('/sa/user/edit/{id}', [SuperAdminController::class, 'editUser']);
     Route::get('/sa/salons', [SuperAdminController::class, 'salonList']);
-    Route::get('/sa/salons/edit/{id}', [SuperAdminController::class, 'editSalon']);
     Route::get('/sa/tickets', [SuperAdminController::class, 'tickets']);
+    Route::get('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
+    Route::get('/sa/salon/edit/{id}', [SuperAdminController::class, 'editSalon']);
+
 });
 
 //});
