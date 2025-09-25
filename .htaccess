@@ -1,6 +1,7 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /fw/
+#    RewriteBase /salon/
 
     Options -Indexes
     DirectoryIndex public/index.php

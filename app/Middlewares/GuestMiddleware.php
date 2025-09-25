@@ -11,10 +11,10 @@ class GuestMiddleware
             session_start();
         }
 
-        if (isset($_SESSION['user_id'])) {
-            redirect("/home/index");
-            exit;
-        }
+//        if (isset($_SESSION['user_id'])) {
+//            redirect("/home/index");
+//            exit;
+//        }
 
         return $next($request);
     }

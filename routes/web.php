@@ -8,32 +8,33 @@ use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\ErrorController;
 use App\Core\Route;
+use App\Middlewares\AuthMiddleware;
 use App\Middlewares\InstanceMiddleware;
 use App\Middlewares\RateLimiterMiddleware;
-use App\Middlewares\AuthMiddleware;
 use App\Middlewares\GuestMiddleware;
 use App\Middlewares\RoleMiddleware;
 use App\Middlewares\CsrfMiddleware;
 use App\Middlewares\SaRoleMiddleware;
 
-Route::middleware([InstanceMiddleware::class])->group(function () {
+//Route::middleware([InstanceMiddleware::class])->group(function () {
 
 //    Route::get('/{SALON_ID}/user/login', [UserController::class, 'login']);
-    Route::middleware([GuestMiddleware::class])->group(function () {
+    Route::middleware([InstanceMiddleware::class,GuestMiddleware::class])->group(function () {
         Route::get('/{SALON_ID}/user/login', [UserController::class, 'login']);
+        Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
 //    Route::get('/user/login', [UserController::class, 'login']);
 //    Route::get('/user/register', [UserController::class, 'register']);
 //});
 
-Route::middleware([GuestMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
     Route::post('/{SALON_ID}/user/login', [UserController::class, 'login']);
     Route::post('/{SALON_ID}/user/register', [UserController::class, 'register']);
 });
 
 // User routes
-Route::middleware([AuthMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(function () {
     Route::get('/{SALON_ID}/', [HomeController::class, 'index']);
     Route::get('/{SALON_ID}/home', [HomeController::class, 'index']);
     Route::get('/{SALON_ID}/user/profile', [UserController::class, 'profile']);
@@ -42,7 +43,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 });
 
 // Admin POST routes (CSRF + RateLimit)
-Route::middleware([AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
     Route::post('/{SALON_ID}/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
     Route::post('/{SALON_ID}/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
     Route::post('/{SALON_ID}/admin/bookings/store', [AdminBookingController::class, 'store']);
@@ -55,7 +56,7 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware:
 });
 
 // Admin GET routes
-Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class])->group(function () {
     Route::get('/{SALON_ID}/admin/panel', [AdminController::class, 'panel']);
     Route::get('/{SALON_ID}/admin/users', [AdminController::class, 'usersList']);
     Route::get('/{SALON_ID}/admin/user/edit/{id}', [AdminController::class, 'editUser']);
@@ -74,15 +75,17 @@ Route::middleware([AuthMiddleware::class, RoleMiddleware::class])->group(functio
 });
 
 // Admin GET routes
-Route::middleware([AuthMiddleware::class, SaRoleMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, SaRoleMiddleware::class])->group(function () {
     Route::get('/sa/dashboard', [SuperAdminController::class, 'panel']);
     Route::get('/sa/users', [SuperAdminController::class, 'userList']);
     Route::get('/sa/user/edit/{id}', [SuperAdminController::class, 'editUser']);
     Route::get('/sa/salons', [SuperAdminController::class, 'salonList']);
     Route::get('/sa/salons/edit/{id}', [SuperAdminController::class, 'editSalon']);
+    Route::get('/sa/tickets', [SuperAdminController::class, 'tickets']);
 });
 
-});
+//});
 
 // Errors
 Route::get('/forbidden', [ErrorController::class, 'forbidden']);
+//Route::get('/404', [ErrorController::class, 'notFound']);

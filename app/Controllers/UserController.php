@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Validator;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Middlewares\RoleMiddleware;
 use App\Models\UserType;
@@ -53,7 +54,6 @@ class UserController extends Controller
             } elseif ($userCaptcha !== $captcha['code']) {
                 $errors[] = __('captcha_invalid');
             }
-
 
             $validator = new Validator($_POST, [
                 'first_name' => 'required|min:2',
@@ -112,7 +112,6 @@ class UserController extends Controller
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
         if (isset($_SESSION['user_id'])) {
             $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
                 ? '/admin/panel' :((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false)?'/sa/dashboard': '/home/index');
@@ -136,20 +135,32 @@ class UserController extends Controller
             if (empty($errors)) {
                 $user = User::findByPhone($phone);
                 if ($user && password_verify($password, $user->password)) {
-                    $_SESSION['user_id'] = $user->id;
-                    $_SESSION['user_name'] = $user->first_name;
-                    $_SESSION['is_admin'] = $user->isAdmin();
-                    $_SESSION['is_operator'] = $user->isOperator();
-                    $_SESSION['is_super_admin'] = $user->isSuperAdmin();
-                    $_SESSION['is_support'] = $user->isSupport();
+//                    if (!empty($user->salon_id)){
+//                        $salon = Salon::find($user->salon_id);
+//                        if (!empty($salon)&&!empty($salon->link)) {
+//                            if (!defined('SALON_ID')) {
+//                            define('SALON_ID', $salon->link);}
+//                        }else{
+//                            $errors[] = __('user_data_error');
+//                        }
+//                    }else{
+//                        if (!defined('SALON_ID')) {
+//                        define('SALON_ID', 'sa');}
+//                    }
+                        $_SESSION['user_id'] = $user->id;
+                        $_SESSION['user_name'] = $user->first_name;
+                        $_SESSION['is_admin'] = $user->isAdmin();
+                        $_SESSION['is_operator'] = $user->isOperator();
+                        $_SESSION['is_super_admin'] = $user->isSuperAdmin();
+                        $_SESSION['is_support'] = $user->isSupport();
 
-                    $user_type = UserType::find($user->user_type);
-                    $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
-                    clear_old_input();
-                    $redirect =($user->isSuperAdmin() || $user->isSupport())?"/dashboard":( ($user->isAdmin() || $user->isOperator())
-                        ? "/admin/panel" : "/home/index");
-                    redirect( $redirect,($user->isSuperAdmin() || $user->isSupport()));
-                    exit;
+                        $user_type = UserType::find($user->user_type);
+                        $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
+                        clear_old_input();
+                        $redirect =($user->isSuperAdmin() || $user->isSupport())?"/dashboard":( ($user->isAdmin() || $user->isOperator())
+                            ? "/admin/panel" : "/home/index");
+                        redirect( $redirect,($user->isSuperAdmin() || $user->isSupport()));
+                        exit;
                 } else {
                     $errors[] = __('login_failed');
                 }
@@ -220,7 +231,6 @@ class UserController extends Controller
 
     public function update(): void
     {
-        RoleMiddleware::allow(['admin', 'operator']);
 
         $errors = [];
         $user = User::find($_SESSION['user_id']);
@@ -256,6 +266,25 @@ class UserController extends Controller
             'user' => $user,
             'errors' => $errors
         ]);
+    }
+    public function tickets()
+    {
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            header("Location: ?page=1&per_page=10");
+            exit;
+        }
+        $pagination = Ticket::query()->where('user_id','=',$user->id)->paginate($page, $perPage);
+
+        $this->view('user/tickets',
+            ['title' => __('ticket_list'),
+                'salons' => $pagination['data'],
+                'pagination' => $pagination,
+                'per_page' => $perPage,
+                'allowedPerPage' => $allowedPerPage
+            ]);
     }
 }
 

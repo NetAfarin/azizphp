@@ -8,7 +8,7 @@ class RoleMiddleware
 {
     protected array $allowedRoles;
 
-    public function __construct(array $allowedRoles = ['super_admin','support'])
+    public function __construct(array $allowedRoles = ['super_admin','support','admin'])
     {
         $this->allowedRoles = $allowedRoles;
     }
@@ -18,7 +18,6 @@ class RoleMiddleware
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
         if (!isset($_SESSION['user_id'])) {
             redirect("/user/login");
             exit;

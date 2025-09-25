@@ -15,11 +15,16 @@ class InstanceMiddleware
         }
         $instance = Salon::query()->where('username','=', $instanceName)->first();
         //TODO az in middleware be dorosti bayad estedfade konam, felan estefadeye khasi nadare
-        if (!$instance) {
+        if (!$instanceName){
+            define('SALON_ID', "");
+        }else if (!$instance) {
+//            define('SALON_ID', $instanceName);
             redirect('/404');
+            exit();
+        }else{
+            define('SALON_ID', $instance->username);
         }
 
-//        define('SALON_ID', $instance->id);
 
         return $next($request);
     }

@@ -12,7 +12,10 @@ if (!function_exists('asset')) {
 if (!function_exists('redirect')) {
     function redirect(string $url,bool $superAdmin=false): void
     {
-        if ($superAdmin) {
+        if (!SALON_ID) {
+//            $uri =getUrl();
+            header('Location: ' . BASE_URL ."/". $url);
+        }else if ($superAdmin) {
             header('Location: ' . BASE_URL ."/sa". $url);
         }else{
             header('Location: ' . BASE_URL ."/".SALON_ID. $url);
@@ -71,7 +74,25 @@ if (!function_exists('vd')) {
         die();
     }
 }
+if (!function_exists('getUrl')) {
+    function getUrl(): string
+    {
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $scriptName = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        if (str_ends_with($scriptName, '/public')) {
+            $scriptName = substr($scriptName, 0, -7);
+        }
+        if ($scriptName !== '/' && str_starts_with($uri, $scriptName)) {
+            $uri = substr($uri, strlen($scriptName));
+        }
 
+        $uri = rtrim($uri, '/');
+        if ($uri === '') {
+            $uri = '/';
+        }
+        return $uri;
+    }
+}
 function json_response($data, $status = 200)
 {
     http_response_code($status);

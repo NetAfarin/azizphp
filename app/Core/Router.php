@@ -15,40 +15,21 @@ class Router
     public function dispatch(): void
     {
         $method = Request::method();
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $scriptName = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        if (str_ends_with($scriptName, '/public')) {
-            $scriptName = substr($scriptName, 0, -7);
-        }
-        if ($scriptName !== '/' && strpos($uri, $scriptName) === 0) {
-            $uri = substr($uri, strlen($scriptName));
-        }
-
-        $uri = rtrim($uri, '/');
-        if ($uri === '') {
-            $uri = '/';
-        }
+        $uri = getUrl();
         if (preg_match('/\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/i', $uri)) {
             return;
         }
-
         $routes = $this->routes[$method] ?? [];
         foreach ($routes as $routePattern => $handler) {
             $regex = preg_replace('#\{[^}]+\}#', '([^/]+)', $routePattern);
             $regex = '#^' . $regex . '$#';
             if (preg_match($regex, $uri, $matches)) {
-                if (isset($matches[1])){
-                    define('SALON_ID', $matches[1]);
-                }else{
-                    define('SALON_ID', 'sa');
-                }
                 array_shift($matches);
                 $middlewares = $handler['middleware'] ?? [];
-                $controller  = $handler['controller'];
-                $action      = $handler['method'];
+                $controller = $handler['controller'];
+                $action = $handler['method'];
                 $controllerInstance = new $controller();
                 $request = new Request($matches);
-                //TODO check kon  injaro ke request bayad chijoori bashe
 
                 $next = function($request) use ($controllerInstance, $action, $matches) {
                     return call_user_func_array([$controllerInstance, $action], $matches);
@@ -57,8 +38,8 @@ class Router
                     $middleware = new $middlewareClass();
                     $currentNext = $next;
                     $next = function($request) use ($middleware, $currentNext) {
-                            return $middleware->handle($request, $currentNext);
-                        };
+                    return $middleware->handle($request, $currentNext);
+                };
                 }
                 $next($request);
                 return;

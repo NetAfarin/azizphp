@@ -62,6 +62,8 @@ return [
     'phone_invalid' => 'Invalid phone number.',
 //    'phone_invalid' => 'Phone number must be 11 digits.',
     'user_updated' => 'The user has been successfully updated.',
+    'user_data_error' => 'There’s an issue with your user settings. Please contact support',
+
 
     'is_active' => 'Active user',
     'admin_panel' => 'Admin Panel',
@@ -154,6 +156,20 @@ return [
     'link' => 'Link',
     'salon_list' => 'Salon List',
     'name' => 'Name',
+    'ticket_list' => 'Ticket List',
+    'no_tickets_found' => 'No Tickets found!',
+    'app_name' => 'Nobatdehi Syatem',
+    'home_page' => 'Home Page',
+    'home_description_title' => 'Beauty · Quality · Comfort',
+    'home_description' => 'We can help your beauty salon to',
+    'home_description_2' => 'improve your services and customer experience',
+    'salons' => 'Salons',
+    'page_not_found' => 'Page Not Found',
+    'link_changed' => 'The link may have changed or been removed.',
+    'redirecting' => 'redirecting...',
+    'redirecting_message' => 'You are being redirected to the home page...',
+    'seconds_left' => 'seconds remaining...',
+    'home' => 'Home Page',
 
 
 ];

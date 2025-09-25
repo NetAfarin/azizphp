@@ -35,14 +35,10 @@ class HomeController extends Controller
             ];
         }
 
-        $sections['dashboard_info'] = [
-            'title' => __('dashboard'),
-            'description' => __('dashboard_description')
-        ];
 
         $this->view('home/index', [
             'user' => $user,
-            'sections' => $sections
+            'title' =>  __('home'),
         ]);
     }
 }

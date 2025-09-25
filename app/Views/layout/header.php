@@ -23,14 +23,14 @@ $dir = APP_DIRECTION;
     <title><?= htmlspecialchars($title) ?></title>
     <link href="<?= asset($dir === 'rtl' ?"css/bootstrap5.3.8.rtl.min.css":"css/bootstrap5.3.8.min.css"); ?>" rel="stylesheet">
     <link href="<?= asset('css/select2.min.css')?>" rel="stylesheet" />
+    <link href="<?= asset('css/style.css')?>" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
 
 </head>
-<body class="container mt-4">
-
+<body class="container mt-4 d-flex flex-column h-100">
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <span class="navbar-text">
@@ -47,10 +47,10 @@ $dir = APP_DIRECTION;
                 <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/logout"
                    class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
                 <?php if (isset($_SESSION['user_role']) &&
-                    ($_SESSION['user_role'] == UserType::ADMIN ||
-                        $_SESSION['user_role'] == UserType::OPERATOR ||
-                        $_SESSION['user_role'] == UserType::SUPER_ADMIN ||
-                        $_SESSION['user_role'] == UserType::SUPPORT)): ?>
+                        ($_SESSION['user_role'] == UserType::ADMIN ||
+                                $_SESSION['user_role'] == UserType::OPERATOR ||
+                                $_SESSION['user_role'] == UserType::SUPER_ADMIN ||
+                                $_SESSION['user_role'] == UserType::SUPPORT)): ?>
                     <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/register"
                        class="btn btn-sm btn-outline-primary">📝 <?= __('register') ?></a>
                 <?php endif; ?>

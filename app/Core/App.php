@@ -1,7 +1,6 @@
 <?php
 namespace App\Core;
 
-use App\Middleware\RateLimiterMiddleware;
 
 class App
 {

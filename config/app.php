@@ -2,6 +2,7 @@
 const APP_NAME = 'MyFramework';
 const APP_DEBUG = true;
 const BASE_URL = 'http://localhost/fw';
+//const BASE_URL = 'https://kamtool.ir/salon';
 
 const LOGGER_CONFIG = [
     'separate_levels' => ['ERROR', 'CRITICAL'],

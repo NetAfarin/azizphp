@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Logger;
 use App\Models\Duration;
 use App\Models\Service;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UserType;
 
@@ -195,6 +196,27 @@ class AdminController extends Controller
 
         redirect("/admin/users");
         exit;
+    }
+    public function tickets()
+    {
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            header("Location: ?page=1&per_page=10");
+            exit;
+        }
+
+        $user = User::find((int)$_SESSION['user_id']);
+        $pagination = Ticket::query()->where('salon_id','=',$user->salon_id)->paginate($page, $perPage);
+
+        $this->view('sa/tickets',
+            ['title' => __('ticket_list'),
+                'salons' => $pagination['data'],
+                'pagination' => $pagination,
+                'per_page' => $perPage,
+                'allowedPerPage' => $allowedPerPage
+            ]);
     }
 
 }

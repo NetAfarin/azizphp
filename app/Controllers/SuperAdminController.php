@@ -7,6 +7,7 @@ use App\Core\Logger;
 use App\Models\Duration;
 use App\Models\Salon;
 use App\Models\Service;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UserType;
 
@@ -61,13 +62,31 @@ class SuperAdminController extends Controller
                 'allowedPerPage' => $allowedPerPage
             ]);
     }
+    public function tickets()
+    {
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            header("Location: ?page=1&per_page=10");
+            exit;
+        }
+        $pagination = Ticket::query()->paginate($page, $perPage);
+
+        $this->view('sa/tickets',
+            ['title' => __('ticket_list'),
+                'salons' => $pagination['data'],
+                'pagination' => $pagination,
+                'per_page' => $perPage,
+                'allowedPerPage' => $allowedPerPage
+            ]);
+    }
     public function editUser($id)
     {
         $user = User::find((int)$id);
 
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
-            redirect();
             redirect("/admin/users");
             exit;
         }
@@ -114,7 +133,6 @@ class SuperAdminController extends Controller
 
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
-            redirect();
             redirect("/admin/users");
             exit;
         }
