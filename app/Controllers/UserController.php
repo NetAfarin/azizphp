@@ -77,7 +77,6 @@ class UserController extends Controller
                 $user = new User([
                     'first_name' => $first_name,
                     'last_name' => $last_name,
-                    'salon_id' => SALON_ID,
                     'phone_number' => $phone,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
                     'user_type' => 2,

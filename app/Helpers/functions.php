@@ -10,16 +10,9 @@ if (!function_exists('asset')) {
 }
 
 if (!function_exists('redirect')) {
-    function redirect(string $url,bool $superAdmin=false): void
+    function redirect(string $url, bool $superAdmin = false): void
     {
-        if (!SALON_ID) {
-//            $uri =getUrl();
-            header('Location: ' . BASE_URL ."/". $url);
-        }else if ($superAdmin) {
-            header('Location: ' . BASE_URL ."/sa". $url);
-        }else{
-            header('Location: ' . BASE_URL ."/".SALON_ID. $url);
-        }
+        header('Location: ' . BASE_URL . $url);
         exit;
     }
 }
@@ -57,7 +50,7 @@ if (!function_exists('vd')) {
                 if (method_exists($item, 'toArray')) {
                     return $item->toArray();
                 }
-                return (array) $item;
+                return (array)$item;
             }
             return $item;
         };
@@ -100,16 +93,17 @@ function json_response($data, $status = 200)
     echo json_encode($data);
     exit;
 }
+
 function weekDay()
 {
-   return [
-       "1" => "شنبه",
-       "2" => "یک شنبه",
-       "3" => "دو شنبه",
-       "4" => "سه شنبه",
-       "5" => "چهارشنبه",
-       "6" => "پنج شنبه",
-       "7" => "جمعه",
-   ];
+    return [
+        "1" => "شنبه",
+        "2" => "یک شنبه",
+        "3" => "دو شنبه",
+        "4" => "سه شنبه",
+        "5" => "چهارشنبه",
+        "6" => "پنج شنبه",
+        "7" => "جمعه",
+    ];
 }
 
