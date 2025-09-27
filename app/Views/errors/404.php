@@ -56,7 +56,7 @@ $dir = APP_DIRECTION;
             document.getElementById("timer").textContent = redirectText + " (" + countdown + ") ";
             countdown--;
             if (countdown < 0) {
-                window.location.href = "<?= BASE_URL . '/' . (defined('SALON_ID') ? SALON_ID . '/' : '') ?>user/login" + "?lang=<?=  APP_LANG ?>";
+                window.location.href = "<?= BASE_URL  ?>/user/login" + "?lang=<?=  APP_LANG ?>";
             }
         }
 

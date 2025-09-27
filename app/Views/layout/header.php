@@ -42,20 +42,20 @@ $dir = APP_DIRECTION;
             <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/profile"
+                <a href="<?= BASE_URL  ?>/user/profile"
                    class="btn btn-sm btn-outline-primary">👤 <?= __('profile') ?></a>
-                <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/logout"
+                <a href="<?= BASE_URL  ?>/user/logout"
                    class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
                 <?php if (isset($_SESSION['user_role']) &&
                         ($_SESSION['user_role'] == UserType::ADMIN ||
                                 $_SESSION['user_role'] == UserType::OPERATOR ||
                                 $_SESSION['user_role'] == UserType::SUPER_ADMIN ||
                                 $_SESSION['user_role'] == UserType::SUPPORT)): ?>
-                    <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/register"
+                    <a href="<?= BASE_URL  ?>/user/register"
                        class="btn btn-sm btn-outline-primary">📝 <?= __('register') ?></a>
                 <?php endif; ?>
             <?php else: ?>
-                <a href="<?= BASE_URL . "/" . SALON_ID ?>/user/login"
+                <a href="<?= BASE_URL  ?>/user/login"
                    class="btn btn-sm btn-outline-success">🔐 <?= __('login') ?></a>
 
             <?php endif; ?>
