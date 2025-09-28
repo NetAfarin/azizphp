@@ -98,7 +98,10 @@ return [
     'no' => 'No',
     'register_datetime' => 'Registration Date',
     'profile' => 'Profile',
-    'add_user' => 'Add User',
+    'add_customer' => 'Add Customer',
+    'add_employee' => 'Add Employee',
+    'add_operator' => 'Add Operator',
+    'add_admin' => 'Add Admin User',
     'password_confirmation' => 'Confirm Password',
     'success' => 'Success',
     'register_success' => 'User registered successfully.',
@@ -197,6 +200,11 @@ return [
     'redirecting_message' => 'You are being redirected to the home page...',
     'seconds_left' => 'seconds remaining...',
     'home' => 'Home Page',
+    'invalid_user_type' => 'Invalid user type',
+    'search' => 'Search',
+    'search_users' => 'Search by Name and Mobile Number',
+    'add' => 'Add %s',
+
 
 
 ];

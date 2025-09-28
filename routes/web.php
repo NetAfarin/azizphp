@@ -21,6 +21,7 @@ use App\Middlewares\SaRoleMiddleware;
 //    Route::get('/user/login', [UserController::class, 'login']);
     Route::middleware([InstanceMiddleware::class,GuestMiddleware::class])->group(function () {
         Route::get('/user/login', [UserController::class, 'login']);
+        Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
 //    Route::get('/user/login', [UserController::class, 'login']);
@@ -34,7 +35,7 @@ Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddlew
 
 // User routes
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(function () {
-    Route::get('/', [HomeController::class, 'index']);
+//    Route::get('/', [HomeController::class, 'index']);
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::get('/user/logout', [UserController::class, 'logout']);
@@ -69,11 +70,12 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/services/categories', [ServiceController::class, 'categories']);
     Route::get('/admin/services', [ServiceController::class, 'services']);
     Route::get('/admin/bookings/new', [AdminBookingController::class, 'create']);
+    Route::get('/admin/employee/{employeeId}/schedule', [AdminBookingController::class, 'weeklySchedule']);
     Route::get('/admin/services/category/create', [ServiceController::class, 'addCategory']);
     Route::get('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
     Route::get('/admin/services/create', [ServiceController::class, 'addService']);
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
-    Route::get('/user/register', [UserController::class, 'register']);
+    Route::get('/admin/user/register/{userType}', [adminController::class, 'addUser']);
 });
 
 // Admin GET routes

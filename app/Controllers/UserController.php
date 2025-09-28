@@ -31,27 +31,19 @@ class UserController extends Controller
         $errors = [];
         $success = false;
 
-        if (isset($_SESSION['user_id'])) {
-            redirect("/home");
-            exit;
-        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = trim($_POST['first_name'] ?? '');
             $last_name = trim($_POST['last_name'] ?? '');
             $phone = trim($_POST['phone_number'] ?? '');
             $password = $_POST['password'] ?? '';
-            $password_confirmation = $_POST['password_confirmation'] ?? '';
-
-            $userCaptcha = $_POST['captcha'] ?? '';
-            $sessionCaptcha = $_SESSION['captcha'] ?? '';
+//            $password_confirmation = $_POST['password_confirmation'] ?? '';
 
             $captcha = $_SESSION['captcha'] ?? null;
             $userCaptcha = $_POST['captcha'] ?? '';
-
-            if (!$captcha || time() - $captcha['time'] > 120) {
+            if (!$captcha ||(( time() - $captcha['time'] )> 120)) {
                 $errors[] = __('captcha_expired');
-            } elseif ($userCaptcha !== $captcha['code']) {
+            } elseif ($userCaptcha != $captcha['code']) {
                 $errors[] = __('captcha_invalid');
             }
 

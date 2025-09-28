@@ -6,6 +6,8 @@
         <?= __('back_to_dashboard') ?>
     </a>
 </div>
+<div class="d-flex justify-content-between align-items-center">
+
 <form method="get" class="mb-3 d-flex align-items-center gap-2">
     <label for="per_page" class="form-label mb-0"><?= __('per_page') ?>:</label>
     <select name="per_page" id="per_page" class="form-select w-auto" onchange="this.form.submit()">
@@ -15,11 +17,30 @@
     </select>
     <noscript><button type="submit" class="btn btn-primary btn-sm"><?= __('apply') ?></button></noscript>
 </form>
+    <form method="get" class="d-flex align-items-center gap-2 mb-2">
+        <label for="search" class="form-label mb-0"><?= __('search') ?>:</label>
+        <input type="text" id="search" name="search" class="form-control"
+               value="<?= htmlspecialchars($search) ?>" placeholder="<?= __('search_users') ?>">
+        <button type="submit" class="btn btn-primary btn-sm">🔍 <?= __('apply') ?></button>
 
+        <!-- Preserve per_page if exists -->
+        <?php if (!empty($per_page)): ?>
+            <input type="hidden" name="per_page" value="<?= $per_page ?>">
+        <?php endif; ?>
+        <?php if (!empty($search)): ?>
+            <a href="?page=1&per_page=<?= $per_page ?>" class="btn btn-outline-secondary btn-sm">✖ <?= __('clear') ?></a>
+        <?php endif; ?>
+    </form>
+</div>
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><?= __('users_list') ?></h4>
-        <a href="<?= BASE_URL ?>/admin/user/create" class="btn btn-light btn-sm">➕ <?= __('add_user') ?></a>
+        <div class="d-flex gap-2">
+        <a href="<?= BASE_URL ?>/admin/user/register/customer" class="btn btn-light btn-sm">➕ <?= __('add_customer') ?></a>
+        <a href="<?= BASE_URL ?>/admin/user/register/employee" class="btn btn-light btn-sm">➕ <?= __('add_employee') ?></a>
+        <a href="<?= BASE_URL ?>/admin/user/register/operator" class="btn btn-light btn-sm">➕ <?= __('add_operator') ?></a>
+        <a href="<?= BASE_URL ?>/admin/user/register/admin" class="btn btn-light btn-sm">➕ <?= __('add_admin') ?></a>
+        </div>
     </div>
     <div class="card-body">
 
