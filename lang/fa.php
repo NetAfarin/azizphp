@@ -205,4 +205,13 @@ return [
     'redirecting' => 'درحال انتقال...',
     'redirecting_message' => 'شما در حال هدایت به صفحه اصلی هستید...',
     'home' => 'صفحه اصلی',
+    'reserve_not_found' => 'رزرو پیدا نشد',
+    'customer_first_name' => 'نام مشتری',
+    'customer_last_name' => 'نام خانوادگی مشتری',
+    'visit_time' => 'ساعت نوبت',
+    'visit_date' => 'تاریخ نوبت',
+    'visit_status' => 'وضعیت',
+    'employee_name' => 'نام و نام خانوادگی کارمند',
+    'customer_name' => 'نام و نام خانوادگی مشتری',
+    'add_reserve' => 'ایجاد رزرو جدید',
 ];
