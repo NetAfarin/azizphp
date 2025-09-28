@@ -36,6 +36,7 @@ class AdminBookingController extends Controller
                 'cu.first_name AS customer_first_name',
                 'cu.last_name AS customer_last_name',
                 'e.first_name AS employee_first_name',
+                'cu.phone_number AS phone_number',
                 'e.last_name AS employee_last_name',
                 's.fa_title AS service_title',
                 'visit_table.visit_datetime',
@@ -51,7 +52,7 @@ class AdminBookingController extends Controller
 
 
 
-        $this->view('admin/booking/index', [
+        $this->view('admin/booking/list', [
             'title' => __('booking_list'),
             'bookings' => $bookings
         ]);

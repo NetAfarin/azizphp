@@ -14,7 +14,7 @@ return [
     'logout' => 'Logout',
     'manage_users' => 'manage_users',
     'manage_services' => 'manage_services',
-    'booking_list' => 'booking_list',
+    'booking_list' => 'Booking list',
     'new_booking' => 'new_booking',
     'settings' => 'settings',
     'hello_user' => 'Hello, :name',
@@ -206,5 +206,14 @@ return [
     'add' => 'Add %s',
 
 
+    'reserve_not_found' => 'Reservation not found',
+    'customer_first_name' => 'Customer First Name',
+    'customer_last_name' => 'Customer Last Name',
+    'visit_time' => 'Appointment Time',
+    'visit_date' => 'Appointment Date',
+    'visit_status' => 'Status',
+    'employee_name' => 'Employee Full Name',
+    'customer_name' => 'Customer Full Name',
+    'add_reserve' => 'Add New Reservation',
 
 ];
