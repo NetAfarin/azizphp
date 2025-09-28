@@ -245,5 +245,29 @@ class AdminBookingController extends Controller
         echo json_encode($result);
         exit;
     }
+    public function weeklySchedule($employeeId)
+    {
+        $startDate = $_GET['start'] ?? date('Y-m-d');
 
+        $employee = User::query()
+            ->where('id', '=', $employeeId)
+            ->where('user_type', '=', UserType::EMPLOYEE)
+            ->first();
+
+        if (!$employee) {
+            http_response_code(403);
+            echo json_encode(['error' => 'invalid employee']);
+            exit;
+        }
+
+        $services = Service::query()
+            ->select(['service_table.id', 'service_table.fa_title','employee_service_table.estimated_duration'])
+            ->join('employee_service_table', 'employee_service_table.service_id', '=', 'service_table.id')
+            ->where('employee_service_table.user_id', '=', $employeeId)
+            ->get();
+
+        header('Content-Type: application/json');
+        echo json_encode(array_map(fn($s) => $s->toArray(), $services));
+        exit;
+    }
 }
