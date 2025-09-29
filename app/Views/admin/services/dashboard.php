@@ -57,18 +57,18 @@ use App\Models\Service;
                             <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-dark">
                                 <?= __('category_title').($sortBy=='title'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
                                 <?php if ($sortBy === 'title'): ?>
-                                    <!-- Icon نشان دهنده جهت -->
                                     <?php if ($sortOrder === 'asc'): ?>
-                                        <i class="fas fa-sort-up"></i> <!-- FontAwesome -->
+                                        <i class="fas fa-sort-up"></i>
                                     <?php else: ?>
                                         <i class="fas fa-sort-down"></i>
                                     <?php endif; ?>
                                 <?php else: ?>
-                                    <i class="fas fa-sort"></i> <!-- unsorted -->
+                                    <i class="fas fa-sort"></i>
                                 <?php endif; ?>
                             </a>
                         </th>
-<!--                        <th class="text-center">--><?php //= __('category_title') ?><!--<span></span></th>-->
+                        <th class="text-center"><?= __('service_title') ?></th>
+                        <th class="text-center"><?= __('service_count') ?></th>
                         <th class="text-center"><?= __('actions') ?></th>
                     </tr>
                     </thead>
@@ -76,19 +76,23 @@ use App\Models\Service;
                     <?php foreach ($services as $ser): ?>
                         <tr>
                             <td class="text-center"><?= htmlspecialchars($ser->id) ?></td>
-                            <?php if ($ser->parent_id == 0): ?>
-                                <td class="text-center">
-                                    <?= htmlspecialchars($lang === 'fa' ? $ser->fa_title : $ser->en_title) ?>
-                                    <?php
-                                    $childCount = Service::query()->where('parent_id', "=" , $ser->id)->get();
-                                    ?>
-                                    <span class="badge bg-secondary"><?= sizeof($childCount) ?></span>
-                                </td>
-                            <?php else: ?>
                                 <td class="text-center" style="padding-right: 30px;">
                                     <?= htmlspecialchars($lang === 'fa' ? $ser->fa_title : $ser->en_title) ?>
                                 </td>
-                            <?php endif ?>
+                            <td class="text-center" style="padding-right: 30px;">
+
+
+                            </td>
+                            <?php if ($ser->parent_id == 0): ?>
+                                <td class="text-center">
+                                    <?php
+                                    $childCount = Service::query()->where('parent_id', "=" , $ser->id)->where("deleted" , "=" ,"0")->get();
+                                    ?>
+                                    <?= sizeof(($childCount)) ?>
+                                </td>
+                            <?php else: ?>
+                                <td class="text-center">-</td>
+                            <?php endif; ?>
                             <td class="text-center">
                                 <a href="<?= BASE_URL ?>/admin/services/category/edit/<?= $ser->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
