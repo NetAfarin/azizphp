@@ -110,7 +110,7 @@
                 <ul class="pagination justify-content-center">
                     <?php for ($i = 1; $i <= $pagination['last_page']; $i++): ?>
                         <li class="page-item <?= $i === $pagination['current_page'] ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i ?>&per_page=<?= $per_page ?>">
+                            <a class="page-link" href="?page=<?= $i ?>&per_page=<?= $per_page ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>">
                                 <?= $i ?>
                             </a>
                         </li>

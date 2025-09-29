@@ -15,13 +15,39 @@ class ServiceController extends Controller
 {
     public function management()
     {
-        $services = Service::query()->where("parent_id", "<>", 0)->get();
-        $categories = Service::query()->where("parent_id", "=", 0)->get();
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        $search = trim($_GET['search'] ?? '');
+        $lang = $_SESSION['lang'] ?? 'fa';
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            $redirectUrl = '?page=1&per_page=10';
+            if ($search !== '') {
+                $redirectUrl .= '&search=' . urlencode($search);
+            }
+            header("Location: " . $redirectUrl);
+            exit;
+        }
+        if (isset($_GET['search']) && empty($search)) {
+            header("Location: " . "?page=$page&per_page=$perPage");
+        }
+        $services = Service::query()->where("deleted" , "=" , 0);
+        if ($search !== '') {
+            if($lang == "fa"){
+                $services->whereLike('fa_title', $search);
+            }else{
+                $services->whereLike('en_title', $search);
+            }
+        }
 
+        $pagination = $services->paginate($page, $perPage);
         $this->view('admin/services/dashboard', [
             'title' => __('manage_services'),
-            'categoryCount' => sizeof($categories),
-            'services' => sizeof($services)
+            'services' => $pagination['data'],
+            'pagination' => $pagination,
+            'per_page' => $perPage,
+            'allowedPerPage' => $allowedPerPage,
+            'search' => $search
         ]);
     }
 
@@ -82,7 +108,7 @@ class ServiceController extends Controller
                 if ($category->save()) {
                     clear_old_input();
                     $_SESSION['flash_success'] = __('add_category_message');
-                    redirect("/admin/services/categories");
+                    redirect("/admin/services/management");
                     exit;
                 } else {
                     $errors[] = __('user_save_error');
@@ -126,7 +152,7 @@ class ServiceController extends Controller
 
                 if ($service->save()) {
                     $_SESSION['flash_success'] = __('category_update');
-                    redirect("/admin/services/categories");
+                    redirect("/admin/services/management");
                     exit;
                 } else {
                     $errors[] = __('save_error');
@@ -156,13 +182,13 @@ class ServiceController extends Controller
         $category = Service::find((int)$id);
         if (!$category) {
             $_SESSION['flash_error'] = __('category_not_found');
-            redirect("/admin/services/categories");
+            redirect("/admin/services/management");
             exit;
         }
          $stmt = Service::query()->where("parent_id" , "=" , $category->id)->get();
         if(sizeof($stmt) > 0){
             $_SESSION['flash_error'] =  sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
-            redirect("/admin/services/categories");
+            redirect("/admin/services/management");
             exit;
         }
         if (property_exists($category, 'deleted')) {
@@ -179,7 +205,7 @@ class ServiceController extends Controller
             $_SESSION['flash_error'] = __('delete_failed');
         }
 
-        redirect("/admin/services/categories");
+        redirect("/admin/services/management");
         exit;
     }
 
@@ -243,7 +269,7 @@ class ServiceController extends Controller
 
                     clear_old_input();
                     $_SESSION['flash_success'] = __('add_service_message');
-                    redirect("/admin/services");
+                    redirect("/admin/services/management");
                     exit;
                 } else {
                     $errors[] = __('user_save_error');
@@ -288,7 +314,7 @@ class ServiceController extends Controller
                 $service->parent_id = $parent_id;
                 if ($service->save()) {
                     $_SESSION['flash_success'] = __('service_update');
-                    redirect("/admin/services");
+                    redirect("/admin/services/management");
                     exit;
                 } else {
                     $errors[] = __('save_error');
@@ -321,7 +347,7 @@ class ServiceController extends Controller
         $category = Service::find((int)$id);
         if (!$category) {
             $_SESSION['flash_error'] = __('category_not_found');
-            redirect("/admin/services");
+            redirect("/admin/services/management");
             exit;
         }
 
