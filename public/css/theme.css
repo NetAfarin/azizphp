@@ -1,0 +1,45 @@
+:root {
+    --bs-primary:   #e83e8c;   /* صورتی */
+    --bs-secondary: #6c757d;   /* خاکستری */
+    --bs-success:   #28a745;   /* سبز */
+    --bs-danger:    #dc3545;   /* قرمز */
+    --bs-warning:   #ffc107;   /* زرد */
+    --bs-info:      #17a2b8;   /* آبی فیروزه‌ای */
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: #fff;
+}
+.btn-primary:hover {
+    background-color: darken(var(--bs-primary), 10%);
+    border-color: darken(var(--bs-primary), 10%);
+}
+
+.btn-primary:disabled {
+    background-color: #e9ecef;
+    border-color: #e9ecef;
+    color: #6c757d;
+}
+
+/* Outline */
+.btn-outline-primary {
+    color: var(--bs-primary);
+    border: 1px solid var(--bs-primary);
+    background: transparent;
+}
+.btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    color: #fff;
+}
+.btn-outline-primary:disabled {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+.btn {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
