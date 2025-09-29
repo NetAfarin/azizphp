@@ -8,6 +8,8 @@ use App\Models\Service;
         <?= __('back_to_dashboard') ?>
     </a>
 </div>
+<div class="d-flex justify-content-between align-items-center">
+
 <form method="get" class="mb-3 d-flex align-items-center gap-2">
     <label for="per_page" class="form-label mb-0"><?= __('per_page') ?>:</label>
     <select name="per_page" id="per_page" class="form-select w-auto" onchange="this.form.submit()">
@@ -29,7 +31,7 @@ use App\Models\Service;
         <a href="?page=1&per_page=<?= $per_page ?>" class="btn btn-outline-secondary btn-sm">✖ <?= __('clear') ?></a>
     <?php endif; ?>
 </form>
-
+</div>
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
         <h4 class="mb-0"><?= __('categories') ?></h4>
@@ -51,7 +53,22 @@ use App\Models\Service;
                     <thead class="table-light">
                     <tr>
                         <th class="text-center">#</th>
-                        <th class="text-center"><?= __('category_title') ?><span></span></th>
+                        <th class="text-center">
+                            <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-dark">
+                                <?= __('category_title').($sortBy=='title'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?php if ($sortBy === 'title'): ?>
+                                    <!-- Icon نشان دهنده جهت -->
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fas fa-sort-up"></i> <!-- FontAwesome -->
+                                    <?php else: ?>
+                                        <i class="fas fa-sort-down"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-sort"></i> <!-- unsorted -->
+                                <?php endif; ?>
+                            </a>
+                        </th>
+<!--                        <th class="text-center">--><?php //= __('category_title') ?><!--<span></span></th>-->
                         <th class="text-center"><?= __('actions') ?></th>
                     </tr>
                     </thead>
@@ -98,7 +115,7 @@ use App\Models\Service;
                 <ul class="pagination justify-content-center">
                     <?php for ($i = 1; $i <= $pagination['last_page']; $i++): ?>
                         <li class="page-item <?= $i === $pagination['current_page'] ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i ?>&per_page=<?= $per_page ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>&per_page=<?= $per_page ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= !empty($sortBy) ? '&sortby=' . urlencode($sortBy).('&sortorder='.$sortOrder) : '' ?>">
                                 <?= $i ?>
                             </a>
                         </li>

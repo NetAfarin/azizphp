@@ -16,6 +16,11 @@ class ServiceController extends Controller
     public function management()
     {
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
+        $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
+
+        $sortTitleUrl = (BASE_URL . '/admin/services/management?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
         $search = trim($_GET['search'] ?? '');
@@ -31,15 +36,18 @@ class ServiceController extends Controller
         if (isset($_GET['search']) && empty($search)) {
             header("Location: " . "?page=$page&per_page=$perPage");
         }
-        $services = Service::query()->where("deleted" , "=" , 0);
+        $services = Service::query()->where("deleted", "=", 0);
+        $column = $lang == "fa" ? 'fa_title' : 'en_title';
         if ($search !== '') {
-            if($lang == "fa"){
-                $services->whereLike('fa_title', $search);
-            }else{
-                $services->whereLike('en_title', $search);
+            $services->whereLike($column, $search);
+        }
+        if (!empty($sortBy)) {
+            if ($sortBy == 'title') {
+                $services->orderBy($column, $sortOrder);
+            } else {
+                $services->orderBy($sortBy, $sortOrder);
             }
         }
-
         $pagination = $services->paginate($page, $perPage);
         $this->view('admin/services/dashboard', [
             'title' => __('manage_services'),
@@ -47,7 +55,10 @@ class ServiceController extends Controller
             'pagination' => $pagination,
             'per_page' => $perPage,
             'allowedPerPage' => $allowedPerPage,
-            'search' => $search
+            'search' => $search,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+            'sortTitleUrl' => $sortTitleUrl,
         ]);
     }
 
@@ -114,8 +125,7 @@ class ServiceController extends Controller
                     $errors[] = __('user_save_error');
                 }
             }
-        }
-        else {
+        } else {
             clear_old_input();
         }
         $this->view('admin/services/addCategory', [
@@ -185,9 +195,9 @@ class ServiceController extends Controller
             redirect("/admin/services/management");
             exit;
         }
-         $stmt = Service::query()->where("parent_id" , "=" , $category->id)->get();
-        if(sizeof($stmt) > 0){
-            $_SESSION['flash_error'] =  sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
+        $stmt = Service::query()->where("parent_id", "=", $category->id)->get();
+        if (sizeof($stmt) > 0) {
+            $_SESSION['flash_error'] = sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
             redirect("/admin/services/management");
             exit;
         }
@@ -245,7 +255,7 @@ class ServiceController extends Controller
             $fa_title = $_POST['fa_title'];
             $en_title = $_POST['en_title'];
             $service_key = $_POST['service_key'];
-            $categoryId= $_POST['parent_id'];
+            $categoryId = $_POST['parent_id'];
             $service = new Validator($_POST, [
                 'service_key' => "required|min:2|max:40",
                 'fa_title' => "required|min:2|max:40",
@@ -275,8 +285,7 @@ class ServiceController extends Controller
                     $errors[] = __('user_save_error');
                 }
             }
-        }
-        else {
+        } else {
             clear_old_input();
         }
         $this->view('admin/services/addService', [
@@ -290,23 +299,23 @@ class ServiceController extends Controller
     public function editService($id)
     {
         $service = Service::find((int)$id);
-        $errors=[];
+        $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $fa_title = trim($_POST['fa_title'] ?? '');
-                $en_title = trim($_POST['en_title'] ?? '');
-                $service_key = trim($_POST['service_key'] ?? '');
-                $parent_id = trim($_POST['parent_id'] ?? '');
-                $validator = new Validator($_POST, [
-                    'fa_title' => 'required|min:2|max:40',
-                    'en_title' => 'required|min:2|max:40',
-                    'service_key' => 'required|min:2|max:40',
-                    'parent_id' => 'required|min:1',
-                ]);
+            $fa_title = trim($_POST['fa_title'] ?? '');
+            $en_title = trim($_POST['en_title'] ?? '');
+            $service_key = trim($_POST['service_key'] ?? '');
+            $parent_id = trim($_POST['parent_id'] ?? '');
+            $validator = new Validator($_POST, [
+                'fa_title' => 'required|min:2|max:40',
+                'en_title' => 'required|min:2|max:40',
+                'service_key' => 'required|min:2|max:40',
+                'parent_id' => 'required|min:1',
+            ]);
 
-                if ($validator->fails()) {
-                    $errors = array_merge($errors, $validator->errors());
-                    save_old_input();
-                }
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
             if (empty($errors)) {
                 $service->fa_title = $fa_title;
                 $service->en_title = $en_title;
@@ -320,20 +329,20 @@ class ServiceController extends Controller
                     $errors[] = __('save_error');
                 }
             }
-        }else {
+        } else {
             clear_old_input();
         }
 
-            $allCategory = Service::query()
-                ->where("parent_id", "=", 0)
-                ->get();
+        $allCategory = Service::query()
+            ->where("parent_id", "=", 0)
+            ->get();
 
-            $this->view('admin/services/editService', [
-                'title' => __('edit_user'),
-                'categories' => $allCategory,
-                'service' => $service,
-                'errors' => $errors,
-            ]);
+        $this->view('admin/services/editService', [
+            'title' => __('edit_user'),
+            'categories' => $allCategory,
+            'service' => $service,
+            'errors' => $errors,
+        ]);
 
     }
 
