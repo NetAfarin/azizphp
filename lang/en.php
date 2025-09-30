@@ -216,5 +216,6 @@ return [
     'customer_name' => 'Customer Full Name',
     'add_reserve' => 'Add New Reservation',
     'search_services' => 'Search by Service title',
+    'title' => 'title',
 
 ];
