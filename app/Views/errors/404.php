@@ -49,18 +49,18 @@ $dir = APP_DIRECTION;
 
     </style>
     <script>
-        var countdown = 9;
-        var redirectText = "<?= __('redirecting'); ?>";
-
-        function updateCountdown() {
-            document.getElementById("timer").textContent = redirectText + " (" + countdown + ") ";
-            countdown--;
-            if (countdown < 0) {
-                window.location.href = "<?= BASE_URL  ?>/user/login" + "?lang=<?=  APP_LANG ?>";
-            }
-        }
-
-        setInterval(updateCountdown, 1000);
+        //var countdown = 9;
+        //var redirectText = "<?php //= __('redirecting'); ?>//";
+        //
+        //function updateCountdown() {
+        //    document.getElementById("timer").textContent = redirectText + " (" + countdown + ") ";
+        //    countdown--;
+        //    if (countdown < 0) {
+        //        window.location.href = "<?php //= BASE_URL  ?>///user/login" + "?lang=<?php //=  APP_LANG ?>//";
+        //    }
+        //}
+        //
+        //setInterval(updateCountdown, 1000);
     </script>
 </head>
 <body>

@@ -46,6 +46,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(func
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
     Route::post('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
+    Route::post('/admin/user/register/{userType}', [AdminController::class, 'addUser']);
     Route::post('/admin/bookings/store', [AdminBookingController::class, 'store']);
     Route::post('/admin/services/category/create', [ServiceController::class, 'addCategory']);
     Route::post('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);

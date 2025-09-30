@@ -164,7 +164,29 @@ class AdminController extends Controller
 //        }
         $errors = [];
         $success = false;
-
+        switch ($userType) {
+            case 'user':
+            case 'operator':
+            case 'employee':
+            case 'customer':
+            case 'admin':
+                $userTypeInstance = UserType::query()->where('en_title', '=', $userType)->first();
+                if (!$userTypeInstance) {
+                    $_SESSION['flash_error'] = __('invalid_user_type');
+                    redirect("/admin/users");
+                    exit;
+                }
+                break;
+            default:
+                $_SESSION['flash_error'] = __('invalid_user_type');
+                redirect("/admin/users");
+                exit();
+        }
+        $userTypes = UserType::all();
+        $groupedServices = Service::groupedForSelect();
+        $selectedServiceIds = [];
+        $employeeServicesData = [];
+        $durations = Duration::all();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = trim($_POST['first_name'] ?? '');
@@ -173,13 +195,13 @@ class AdminController extends Controller
             $password = $_POST['password'] ?? '';
 //            $password_confirmation = $_POST['password_confirmation'] ?? '';
 
-            $captcha = $_SESSION['captcha'] ?? null;
-            $userCaptcha = $_POST['captcha'] ?? '';
-            if (!$captcha || ((time() - $captcha['time']) > 120)) {
-                $errors[] = __('captcha_expired');
-            } elseif ($userCaptcha != $captcha['code']) {
-                $errors[] = __('captcha_invalid');
-            }
+//            $captcha = $_SESSION['captcha'] ?? null;
+//            $userCaptcha = $_POST['captcha'] ?? '';
+//            if (!$captcha || ((time() - $captcha['time']) > 120)) {
+//                $errors[] = __('captcha_expired');
+//            } elseif ($userCaptcha != $captcha['code']) {
+//                $errors[] = __('captcha_invalid');
+//            }
 
             $validator = new Validator($_POST, [
                 'first_name' => 'required|min:2',
@@ -197,6 +219,7 @@ class AdminController extends Controller
 
             if (User::query()->where('phone_number', '=', $phone)->first()) {
                 $errors[] = __('phone_taken');
+                save_old_input();
             }
 
             if (empty($errors)) {
@@ -223,29 +246,6 @@ class AdminController extends Controller
             }
         } else {
             clear_old_input();
-            $userTypes = UserType::all();
-            $groupedServices = Service::groupedForSelect();
-            $selectedServiceIds = [];
-            $employeeServicesData = [];
-            $durations = Duration::all();
-            switch ($userType) {
-                case 'user':
-                case 'operator':
-                case 'employee':
-                case 'customer':
-                case 'admin':
-                    $userTypeInstance = UserType::query()->where('en_title', '=', $userType)->first();
-                    if (!$userTypeInstance) {
-                        $_SESSION['flash_error'] = __('invalid_user_type');
-                        redirect("/admin/users");
-                        exit;
-                    }
-                    break;
-                default:
-                    $_SESSION['flash_error'] = __('invalid_user_type');
-                    redirect("/admin/users");
-                    exit();
-            }
         }
         $userTypeTitle = APP_LANG === 'fa' ? $userTypeInstance->title : $userTypeInstance->en_title;
         $this->view('admin/addUser', [

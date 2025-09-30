@@ -148,7 +148,7 @@ class UserController extends Controller
                         $user_type = UserType::find($user->user_type);
                         $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                         clear_old_input();
-                        $redirect =($user->isSuperAdmin() || $user->isSupport())?"/dashboard":( ($user->isAdmin() || $user->isOperator())
+                        $redirect =($user->isSuperAdmin() || $user->isSupport())?"/sa/dashboard":( ($user->isAdmin() || $user->isOperator())
                             ? "/admin/panel" : "/home/index");
                         redirect( $redirect,($user->isSuperAdmin() || $user->isSupport()));
                         exit;
