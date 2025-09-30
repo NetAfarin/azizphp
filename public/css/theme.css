@@ -1,5 +1,6 @@
 :root {
     --bs-primary:   #e83e8c;   /* صورتی */
+    --bs-primary-hover:   #D4417C;   /* صورتی */
     --bs-secondary: #6c757d;   /* خاکستری */
     --bs-success:   #28a745;   /* سبز */
     --bs-danger:    #dc3545;   /* قرمز */
@@ -13,8 +14,8 @@
     color: #fff;
 }
 .btn-primary:hover {
-    background-color: darken(var(--bs-primary), 10%);
-    border-color: darken(var(--bs-primary), 10%);
+    background-color: var(--bs-primary-hover);
+    border-color: var(--bs-primary);
 }
 
 .btn-primary:disabled {
@@ -31,7 +32,8 @@
 }
 .btn-outline-primary:hover {
     background-color: var(--bs-primary);
-    color: #fff;
+    color: #ffffff;
+    border: 1px solid var(--bs-primary);
 }
 .btn-outline-primary:disabled {
     color: #6c757d;

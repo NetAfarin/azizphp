@@ -49,15 +49,16 @@ class ServiceController extends Controller
                 'p.fa_title as parent_fa_title',
                 'p.en_title as parent_en_title'
             ])
-            ->Join('service_table AS p', 'service_table.parent_id', '=', 'p.id')
+            ->leftJoin('service_table AS p', 'service_table.parent_id', '=', 'p.id')
             ->where('service_table.deleted', '=', 0);
 
-        $column = $lang == "fa" ? 'fa_title' : 'en_title';
+        $column = $lang == "fa" ? "service_table.fa_title" : 'en_title';
         if ($search !== '') {
             $services->whereLike($column, $search);
         }
         if (!empty($sortBy)) {
             if ($sortBy == 'title') {
+
                 $services->orderBy($column, $sortOrder);
             } else {
                 $services->orderBy($sortBy, $sortOrder);
