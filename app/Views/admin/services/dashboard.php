@@ -76,11 +76,11 @@ use App\Models\Service;
                         <tr>
                             <td class="text-center"><?= htmlspecialchars($ser->id) ?></td>
                                 <td class="text-center" style="padding-right: 30px;">
-                                    <?= htmlspecialchars($lang === 'fa' ? $ser->fa_title : $ser->en_title) ?>
+                                    <?= htmlspecialchars($ser->title) ?>
                                 </td>
                             <td class="text-center" style="padding-right: 30px;">
                                    <?php if($ser->parent_id !=0 ):?>
-                                       <?= htmlspecialchars($lang === 'fa' ? $ser->parent_fa_title : $ser->parent_en_title) ?>
+                                       <?= htmlspecialchars( $ser->parent_title) ?>
                                 <?php else:?>
                                 <?php endif;?>
                             </td>

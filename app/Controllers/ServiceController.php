@@ -41,8 +41,7 @@ class ServiceController extends Controller
             ->select([
                 'service_table.id',
                 'service_table.service_key',
-                'service_table.fa_title ',
-                'service_table.en_title',
+                ($lang === 'fa' ? 'service_table.fa_title ' :'service_table.en_title').' AS title',
                 'service_table.parent_id',
                 'service_table.created_at',
                 'service_table.updated_at',
