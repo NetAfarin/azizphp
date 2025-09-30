@@ -1,6 +1,5 @@
 <?php
 use App\Models\Service;
-
 ?>
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
     <a href="<?= BASE_URL ?>/admin/panel" class="btn btn-outline-primary">
@@ -67,7 +66,7 @@ use App\Models\Service;
                                 <?php endif; ?>
                             </a>
                         </th>
-                        <th class="text-center"><?= __('service_title') ?></th>
+                        <th class="text-center"><?= __('category') ?></th>
                         <th class="text-center"><?= __('service_count') ?></th>
                         <th class="text-center"><?= __('actions') ?></th>
                     </tr>
@@ -80,8 +79,10 @@ use App\Models\Service;
                                     <?= htmlspecialchars($lang === 'fa' ? $ser->fa_title : $ser->en_title) ?>
                                 </td>
                             <td class="text-center" style="padding-right: 30px;">
-
-
+                                   <?php if($ser->parent_id !=0 ):?>
+                                       <?= htmlspecialchars($lang === 'fa' ? $ser->parent_fa_title : $ser->parent_en_title) ?>
+                                <?php else:?>
+                                <?php endif;?>
                             </td>
                             <?php if ($ser->parent_id == 0): ?>
                                 <td class="text-center">

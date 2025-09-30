@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
+use App\Models\Booking;
 use App\Models\Duration;
 use App\Models\Service;
 use App\Models\User;
@@ -36,7 +37,21 @@ class ServiceController extends Controller
         if (isset($_GET['search']) && empty($search)) {
             header("Location: " . "?page=$page&per_page=$perPage");
         }
-        $services = Service::query()->where("deleted", "=", 0);
+        $services = Service::query()
+            ->select([
+                'service_table.id',
+                'service_table.service_key',
+                'service_table.fa_title ',
+                'service_table.en_title',
+                'service_table.parent_id',
+                'service_table.created_at',
+                'service_table.updated_at',
+                'p.fa_title as parent_fa_title',
+                'p.en_title as parent_en_title'
+            ])
+            ->Join('service_table AS p', 'service_table.parent_id', '=', 'p.id')
+            ->where('service_table.deleted', '=', 0);
+
         $column = $lang == "fa" ? 'fa_title' : 'en_title';
         if ($search !== '') {
             $services->whereLike($column, $search);
@@ -48,6 +63,7 @@ class ServiceController extends Controller
                 $services->orderBy($sortBy, $sortOrder);
             }
         }
+
         $pagination = $services->paginate($page, $perPage);
         $this->view('admin/services/dashboard', [
             'title' => __('manage_services'),
