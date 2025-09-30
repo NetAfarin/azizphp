@@ -252,11 +252,6 @@ abstract class Model
         $this->joins[] = strtoupper($type) . " JOIN {$table} ON {$first} {$operator} {$second}";
         return $this;
     }
-    public function leftJoin(string $table, string $first, string $operator, string $second): static
-    {
-        $this->joins[] = "LEFT JOIN {$table} ON {$first} {$operator} {$second}";
-        return $this;
-    }
 
     protected function buildCountSql(array &$params): string
     {
