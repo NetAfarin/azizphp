@@ -51,8 +51,8 @@ use App\Models\Service;
                 <table class="table table-striped table-hover align-middle">
                     <thead class="table-light">
                     <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-center">
+                        <th >#</th>
+                        <th >
                             <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-dark">
                                 <?= __('title').($sortBy=='title'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
                                 <?php if ($sortBy === 'title'): ?>
@@ -66,19 +66,32 @@ use App\Models\Service;
                                 <?php endif; ?>
                             </a>
                         </th>
-                        <th class="text-center"><?= __('category') ?></th>
-                        <th class="text-center"><?= __('service_count') ?></th>
-                        <th class="text-center"><?= __('actions') ?></th>
+                        <th >
+                            <a href="<?= $sortCategoryUrl ?>" class="text-decoration-none text-dark">
+                                <?= __('category').($sortBy=='category'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?php if ($sortBy === 'category'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fas fa-sort-up"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-sort-down"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-sort"></i>
+                                <?php endif; ?>
+                            </a>
+                        </th>
+                        <th ><?= __('service_count') ?></th>
+                        <th ><?= __('actions') ?></th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($services as $ser): ?>
                         <tr>
-                            <td class="text-center"><?= htmlspecialchars($count) ?></td>
-                                <td class="text-center" style="padding-right: 30px;">
+                            <td ><?= htmlspecialchars($count) ?></td>
+                                <td  style="padding-right: 30px;">
                                     <?= htmlspecialchars($ser->title) ?>
                                 </td>
-                            <td class="text-center" style="padding-right: 30px;">
+                            <td  style="padding-right: 30px;">
                                    <?php if($ser->parent_id !=0 ):?>
                                        <?= htmlspecialchars( $ser->parent_title) ?>
                                 <?php else:?>
@@ -86,16 +99,16 @@ use App\Models\Service;
                                 <?php endif;?>
                             </td>
                             <?php if ($ser->parent_id == 0): ?>
-                                <td class="text-center">
+                                <td >
                                     <?php
                                     $childCount = Service::query()->where('parent_id', "=" , $ser->id)->where("deleted" , "=" ,"0")->get();
                                     ?>
                                     <?= sizeof(($childCount)) ?>
                                 </td>
                             <?php else: ?>
-                                <td class="text-center">-</td>
+                                <td >-</td>
                             <?php endif; ?>
-                            <td class="text-center">
+                            <td >
                                 <a href="<?= BASE_URL ?>/admin/services/category/edit/<?= $ser->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>

@@ -21,6 +21,7 @@ class ServiceController extends Controller
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
 
         $sortTitleUrl = (BASE_URL . '/admin/services/management?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortCategoryUrl = (BASE_URL . '/admin/services/management?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
 
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
@@ -55,7 +56,11 @@ class ServiceController extends Controller
             $services->whereLike($column, $search);
         }
         if (!empty($sortBy)) {
+            if ($sortBy == 'title') {
                 $services->orderBy($sortBy, $sortOrder);
+            }else if ($sortBy == 'category') {
+                $services->orderBy('parent_title', $sortOrder);
+            }
         }
 
         $pagination = $services->paginate($page, $perPage);
@@ -69,6 +74,7 @@ class ServiceController extends Controller
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
             'sortTitleUrl' => $sortTitleUrl,
+            'sortCategoryUrl' => $sortCategoryUrl,
         ]);
     }
 

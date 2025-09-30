@@ -21,6 +21,12 @@ class AdminController extends Controller
     public function usersList()
     {
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
+        $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
+
+        $sortUrl = (BASE_URL . '/admin/users?sortby=%s&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        //TODO handle e per page dar link haye sort va pagination
+
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
         $search = trim($_GET['search'] ?? '');
@@ -36,21 +42,29 @@ class AdminController extends Controller
             header("Location: " . "?page=$page&per_page=$perPage");
         }
 
-        $query = User::query();
+        $query = User::query()->select(['user_table.*','ut.title AS role'])->join('user_type_table ut', 'user_table.user_type', '=', 'ut.id');
 
         if ($search !== '') {
             $query->whereLike('first_name', $search)
                 ->orWhere('last_name', 'LIKE', "%{$search}%")
                 ->orWhere('phone_number', 'LIKE', "%{$search}%");
         }
+        if (!empty($sortBy)) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
         $pagination = $query->paginate($page, $perPage);
+//        vd($pagination);
         $this->view('admin/users',
             ['title' => __('users_list'),
                 'users' => $pagination['data'],
                 'pagination' => $pagination,
                 'per_page' => $perPage,
                 'allowedPerPage' => $allowedPerPage,
-                'search' => $search
+                'search' => $search,
+                'sortBy' => $sortBy,
+                'sortOrder' => $sortOrder,
+                'sortUrl' => $sortUrl,
+
             ]);
     }
 
