@@ -327,4 +327,10 @@ class AdminController extends Controller
             ]);
     }
 
+    public function components()
+    {
+        $this->view('user/components', ['title' => __('admin_panel')]);
+
+    }
+
 }

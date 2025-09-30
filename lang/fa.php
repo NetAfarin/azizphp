@@ -223,4 +223,5 @@ return [
     'customer_name' => 'نام و نام خانوادگی مشتری',
     'add_reserve' => 'ایجاد رزرو جدید',
     'search_services' => 'جستجو بر اساس نام خدمات',
+    'title' => 'عنوان',
 ];
