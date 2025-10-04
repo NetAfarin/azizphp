@@ -29,7 +29,7 @@ class Service extends Model
 
     public static function servicesByParentId(int $parentId): array
     {
-        return (new static())
+        return (new static())::query()->select(['service_table.*',(APP_LANG === 'fa' ?'service_table.fa_title':'service_table.en_title' ).' AS title'])
             ->where('parent_id', '=', $parentId)
             ->get();
     }

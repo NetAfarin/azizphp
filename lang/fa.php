@@ -49,7 +49,7 @@ return [
 
     'user_type' => 'نقش',
     'employee_service_list' => 'لیست خدمات',
-    'select_services_for_employee' => 'سرویس های مورد نطر را انتخاب کنید',
+    'select_services_for_employee' => 'سرویس های مورد نظر را انتخاب کنید',
 
     'active' => 'فعال',
     'inactive' => 'غیرفعال',

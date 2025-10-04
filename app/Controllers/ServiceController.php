@@ -5,12 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
-use App\Models\Booking;
-use App\Models\Duration;
 use App\Models\Service;
-use App\Models\User;
-use App\Models\UserType;
-use http\Exception\UnexpectedValueException;
 
 class ServiceController extends Controller
 {

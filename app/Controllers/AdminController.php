@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\Duration;
+use App\Models\EmployeeService;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
@@ -42,7 +43,7 @@ class AdminController extends Controller
             header("Location: " . "?page=$page&per_page=$perPage");
         }
 
-        $query = User::query()->select(['user_table.*','ut.title AS role'])->join('user_type_table ut', 'user_table.user_type', '=', 'ut.id');
+        $query = User::query()->select(['user_table.*', 'ut.title AS role'])->join('user_type_table ut', 'user_table.user_type', '=', 'ut.id');
 
         if ($search !== '') {
             $query->whereLike('first_name', $search)
@@ -80,10 +81,13 @@ class AdminController extends Controller
 
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
-        $selectedServiceIds = [];
-        $employeeServicesData = [];
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $selectedServiceIds =[];
         $durations = Duration::all();
 
+        foreach ($employeeServicesData as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
 
         $this->view('admin/editUser', [
             'title' => __('edit_user'),
@@ -198,8 +202,6 @@ class AdminController extends Controller
         }
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
-        $selectedServiceIds = [];
-        $employeeServicesData = [];
         $durations = Duration::all();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -242,7 +244,7 @@ class AdminController extends Controller
                     'last_name' => $last_name,
                     'phone_number' => $phone,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
-                    'user_type' => 2,
+                    'user_type' => $userTypeInstance->id,
                     'birth_date' => $_POST['birth_date'],
                     'register_datetime' => date('Y-m-d H:i:s'),
                     'is_active' => 1,
@@ -261,6 +263,22 @@ class AdminController extends Controller
         } else {
             clear_old_input();
         }
+        $selectedServiceIds = old('employee_services') ?? [];
+        $prices = old('service_prices') ?? [];
+        $employeeServicesData = [];
+        if (empty($selectedServiceIds)) {
+            $selectedServiceIds = [];
+        }
+        foreach ($selectedServiceIds as $serviceId) {
+            foreach ($groupedServices as $duration_item) {
+                foreach ($duration_item['children'] as $service) {
+                    if ($service->id == $serviceId) {
+                        $employeeServicesData [] = $service;
+                    }
+                }
+            }
+        }
+
         $userTypeTitle = APP_LANG === 'fa' ? $userTypeInstance->title : $userTypeInstance->en_title;
         $this->view('admin/addUser', [
             'title' => __('register') . ' ' . __($userTypeTitle),
@@ -273,6 +291,8 @@ class AdminController extends Controller
             'groupedServices' => $groupedServices,
             'selectedServiceIds' => $selectedServiceIds,
             'employeeServicesData' => $employeeServicesData,
+            'durations' => $durations,
+            'prices' => $prices,
         ]);
     }
 
