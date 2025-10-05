@@ -123,7 +123,7 @@
                             <td><?= htmlspecialchars($user->id) ?></td>
                             <td><?= htmlspecialchars($user->first_name) ?></td>
                             <td><?= htmlspecialchars($user->last_name) ?></td>
-                            <td><?= htmlspecialchars($user->phone_number) ?></td>
+                            <td><?= htmlspecialchars($user->phone_number) ?><?=$user->id==$_SESSION['user_id']?'<span class="badge bg-success mx-2">'.__('you').'</span><br>':''; ?></td>
                             <td><?= htmlspecialchars($user->getRoleTitle()) ?></td>
                             <td>
                                 <?php if ($user->getUserType()->en_title === 'employee'): ?>
@@ -145,7 +145,7 @@
                                 <a href="<?= BASE_URL ?>/admin/user/edit/<?= $user->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>
-
+                                <?php if ():?>
                                 <form action="<?= BASE_URL ?>/admin/user/delete/<?= $user->id ?>" method="post" class="d-inline"
                                       onsubmit="return confirm('<?= __('confirm_delete') ?>')">
                                     <?= csrf_field() ?>
@@ -153,6 +153,7 @@
                                         🗑️ <?= __('delete') ?>
                                     </button>
                                 </form>
+                               <?php  endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

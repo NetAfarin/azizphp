@@ -217,5 +217,6 @@ return [
     'add_reserve' => 'Add New Reservation',
     'search_services' => 'Search by Service title',
     'title' => 'title',
+    'you' => 'you',
 
 ];
