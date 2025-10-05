@@ -52,10 +52,66 @@
                     <thead class="table-light">
                     <tr>
                         <th>#</th>
-                        <th><?= __('first_name') ?></th>
-                        <th><?= __('last_name') ?></th>
-                        <th><?= __('phone_number') ?></th>
-                        <th><?= __('role') ?></th>
+<!--                        <th>--><?php //= __('first_name') ?><!--</th>-->
+                        <th>
+                            <a href="<?= sprintf($sortUrl,'first_name') ?>" class="text-decoration-none text-dark">
+                                <?= __('first_name').($sortBy=='first_name'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?php if ($sortBy === 'first_name'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fas fa-sort-up"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-sort-down"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-sort"></i>
+                                <?php endif; ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?= sprintf($sortUrl,'last_name') ?>" class="text-decoration-none text-dark">
+                                <?= __('last_name').($sortBy=='last_name'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?php if ($sortBy === 'last_name'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fas fa-sort-up"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-sort-down"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-sort"></i>
+                                <?php endif; ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?= sprintf($sortUrl,'phone_number') ?>" class="text-decoration-none text-dark">
+                                <?= __('phone_number').($sortBy=='phone_number'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?php if ($sortBy === 'phone_number'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fas fa-sort-up"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-sort-down"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-sort"></i>
+                                <?php endif; ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?= sprintf($sortUrl,'role') ?>" class="text-decoration-none text-dark">
+                                <?= __('role').($sortBy=='role'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?php if ($sortBy === 'role'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fas fa-sort-up"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-sort-down"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-sort"></i>
+                                <?php endif; ?>
+                            </a>
+                        </th>
+<!--                        <th>--><?php //= __('last_name') ?><!--</th>-->
+<!--                        <th>--><?php //= __('phone_number') ?><!--</th>-->
+<!--                        <th>--><?php //= __('role') ?><!--</th>-->
                         <th><?= __('services') ?></th>
                         <th><?= __('active') ?></th>
                         <th><?= __('actions') ?></th>

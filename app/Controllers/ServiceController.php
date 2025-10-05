@@ -5,12 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
-use App\Models\Booking;
-use App\Models\Duration;
 use App\Models\Service;
-use App\Models\User;
-use App\Models\UserType;
-use http\Exception\UnexpectedValueException;
 
 class ServiceController extends Controller
 {
@@ -21,6 +16,7 @@ class ServiceController extends Controller
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
 
         $sortTitleUrl = (BASE_URL . '/admin/services/management?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortCategoryUrl = (BASE_URL . '/admin/services/management?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
 
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
@@ -41,15 +37,13 @@ class ServiceController extends Controller
             ->select([
                 'service_table.id',
                 'service_table.service_key',
-                'service_table.fa_title ',
-                'service_table.en_title',
+                ($lang === 'fa' ? 'service_table.fa_title ' :'service_table.en_title').' AS title',
                 'service_table.parent_id',
                 'service_table.created_at',
                 'service_table.updated_at',
-                'p.fa_title as parent_fa_title',
-                'p.en_title as parent_en_title'
+                ($lang === 'fa' ? 'p.fa_title ' :'p.en_title').' AS parent_title'
             ])
-            ->leftJoin('service_table AS p', 'service_table.parent_id', '=', 'p.id')
+            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id','LEFT')
             ->where('service_table.deleted', '=', 0);
 
         $column = $lang == "fa" ? "service_table.fa_title" : 'en_title';
@@ -58,10 +52,9 @@ class ServiceController extends Controller
         }
         if (!empty($sortBy)) {
             if ($sortBy == 'title') {
-
-                $services->orderBy($column, $sortOrder);
-            } else {
                 $services->orderBy($sortBy, $sortOrder);
+            }else if ($sortBy == 'category') {
+                $services->orderBy('parent_title', $sortOrder);
             }
         }
 
@@ -76,6 +69,7 @@ class ServiceController extends Controller
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
             'sortTitleUrl' => $sortTitleUrl,
+            'sortCategoryUrl' => $sortCategoryUrl,
         ]);
     }
 

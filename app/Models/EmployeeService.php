@@ -22,17 +22,4 @@ class EmployeeService extends Model
         'fa_title',
     ];
 
-    public function service(): ?Service
-    {
-        return Service::find($this->service_id);
-    }
-
-    public function findByUserId(int $userId): array
-    {
-        $stmt = Database::pdo()->prepare("SELECT * FROM {$this->table} WHERE user_id = ? AND deleted = 0");
-        $stmt->execute([$userId]);
-        return $stmt->fetchAll(PDO::FETCH_CLASS, get_class($this));
-    }
-
-
 }

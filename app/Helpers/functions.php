@@ -18,7 +18,7 @@ if (!function_exists('redirect')) {
 }
 
 if (!function_exists('old')) {
-    function old(string $key, string $default = ''): string
+    function old(string $key, string $default = '')
     {
         return $_SESSION['_old'][$key] ?? $default;
     }

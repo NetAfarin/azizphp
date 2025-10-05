@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\Duration;
+use App\Models\EmployeeService;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
@@ -21,6 +22,12 @@ class AdminController extends Controller
     public function usersList()
     {
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
+        $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
+
+        $sortUrl = (BASE_URL . '/admin/users?sortby=%s&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        //TODO handle e per page dar link haye sort va pagination
+
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
         $search = trim($_GET['search'] ?? '');
@@ -36,21 +43,29 @@ class AdminController extends Controller
             header("Location: " . "?page=$page&per_page=$perPage");
         }
 
-        $query = User::query();
+        $query = User::query()->select(['user_table.*', 'ut.title AS role'])->join('user_type_table ut', 'user_table.user_type', '=', 'ut.id');
 
         if ($search !== '') {
             $query->whereLike('first_name', $search)
                 ->orWhere('last_name', 'LIKE', "%{$search}%")
                 ->orWhere('phone_number', 'LIKE', "%{$search}%");
         }
+        if (!empty($sortBy)) {
+            $query->orderBy($sortBy, $sortOrder);
+        }
         $pagination = $query->paginate($page, $perPage);
+//        vd($pagination);
         $this->view('admin/users',
             ['title' => __('users_list'),
                 'users' => $pagination['data'],
                 'pagination' => $pagination,
                 'per_page' => $perPage,
                 'allowedPerPage' => $allowedPerPage,
-                'search' => $search
+                'search' => $search,
+                'sortBy' => $sortBy,
+                'sortOrder' => $sortOrder,
+                'sortUrl' => $sortUrl,
+
             ]);
     }
 
@@ -66,10 +81,13 @@ class AdminController extends Controller
 
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
-        $selectedServiceIds = [];
-        $employeeServicesData = [];
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $selectedServiceIds =[];
         $durations = Duration::all();
 
+        foreach ($employeeServicesData as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
 
         $this->view('admin/editUser', [
             'title' => __('edit_user'),
@@ -164,7 +182,27 @@ class AdminController extends Controller
 //        }
         $errors = [];
         $success = false;
-
+        switch ($userType) {
+            case 'user':
+            case 'operator':
+            case 'employee':
+            case 'customer':
+            case 'admin':
+                $userTypeInstance = UserType::query()->where('en_title', '=', $userType)->first();
+                if (!$userTypeInstance) {
+                    $_SESSION['flash_error'] = __('invalid_user_type');
+                    redirect("/admin/users");
+                    exit;
+                }
+                break;
+            default:
+                $_SESSION['flash_error'] = __('invalid_user_type');
+                redirect("/admin/users");
+                exit();
+        }
+        $userTypes = UserType::all();
+        $groupedServices = Service::groupedForSelect();
+        $durations = Duration::all();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = trim($_POST['first_name'] ?? '');
@@ -173,13 +211,13 @@ class AdminController extends Controller
             $password = $_POST['password'] ?? '';
 //            $password_confirmation = $_POST['password_confirmation'] ?? '';
 
-            $captcha = $_SESSION['captcha'] ?? null;
-            $userCaptcha = $_POST['captcha'] ?? '';
-            if (!$captcha || ((time() - $captcha['time']) > 120)) {
-                $errors[] = __('captcha_expired');
-            } elseif ($userCaptcha != $captcha['code']) {
-                $errors[] = __('captcha_invalid');
-            }
+//            $captcha = $_SESSION['captcha'] ?? null;
+//            $userCaptcha = $_POST['captcha'] ?? '';
+//            if (!$captcha || ((time() - $captcha['time']) > 120)) {
+//                $errors[] = __('captcha_expired');
+//            } elseif ($userCaptcha != $captcha['code']) {
+//                $errors[] = __('captcha_invalid');
+//            }
 
             $validator = new Validator($_POST, [
                 'first_name' => 'required|min:2',
@@ -197,6 +235,7 @@ class AdminController extends Controller
 
             if (User::query()->where('phone_number', '=', $phone)->first()) {
                 $errors[] = __('phone_taken');
+                save_old_input();
             }
 
             if (empty($errors)) {
@@ -205,7 +244,7 @@ class AdminController extends Controller
                     'last_name' => $last_name,
                     'phone_number' => $phone,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
-                    'user_type' => 2,
+                    'user_type' => $userTypeInstance->id,
                     'birth_date' => $_POST['birth_date'],
                     'register_datetime' => date('Y-m-d H:i:s'),
                     'is_active' => 1,
@@ -223,30 +262,23 @@ class AdminController extends Controller
             }
         } else {
             clear_old_input();
-            $userTypes = UserType::all();
-            $groupedServices = Service::groupedForSelect();
+        }
+        $selectedServiceIds = old('employee_services') ?? [];
+        $prices = old('service_prices') ?? [];
+        $employeeServicesData = [];
+        if (empty($selectedServiceIds)) {
             $selectedServiceIds = [];
-            $employeeServicesData = [];
-            $durations = Duration::all();
-            switch ($userType) {
-                case 'user':
-                case 'operator':
-                case 'employee':
-                case 'customer':
-                case 'admin':
-                    $userTypeInstance = UserType::query()->where('en_title', '=', $userType)->first();
-                    if (!$userTypeInstance) {
-                        $_SESSION['flash_error'] = __('invalid_user_type');
-                        redirect("/admin/users");
-                        exit;
+        }
+        foreach ($selectedServiceIds as $serviceId) {
+            foreach ($groupedServices as $duration_item) {
+                foreach ($duration_item['children'] as $service) {
+                    if ($service->id == $serviceId) {
+                        $employeeServicesData [] = $service;
                     }
-                    break;
-                default:
-                    $_SESSION['flash_error'] = __('invalid_user_type');
-                    redirect("/admin/users");
-                    exit();
+                }
             }
         }
+
         $userTypeTitle = APP_LANG === 'fa' ? $userTypeInstance->title : $userTypeInstance->en_title;
         $this->view('admin/addUser', [
             'title' => __('register') . ' ' . __($userTypeTitle),
@@ -259,6 +291,8 @@ class AdminController extends Controller
             'groupedServices' => $groupedServices,
             'selectedServiceIds' => $selectedServiceIds,
             'employeeServicesData' => $employeeServicesData,
+            'durations' => $durations,
+            'prices' => $prices,
         ]);
     }
 
