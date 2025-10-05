@@ -15,6 +15,7 @@ return [
     'manage_services' => 'مدیریت سرویس‌ها',
     'booking_list' => 'لیست رزروها',
     'new_booking' => 'رزرو جدید',
+    'booking_settings' => 'تنظیمات رزرو',
     'settings' => 'تنظیمات',
     'logout' => 'خروج',
     'hello_user' => 'سلام، :name',

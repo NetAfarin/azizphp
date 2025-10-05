@@ -145,7 +145,7 @@
                                 <a href="<?= BASE_URL ?>/admin/user/edit/<?= $user->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>
-                                <?php if ():?>
+                                <?php if ($user->id!=$_SESSION['user_id']):?>
                                 <form action="<?= BASE_URL ?>/admin/user/delete/<?= $user->id ?>" method="post" class="d-inline"
                                       onsubmit="return confirm('<?= __('confirm_delete') ?>')">
                                     <?= csrf_field() ?>

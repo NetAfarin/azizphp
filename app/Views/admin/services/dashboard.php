@@ -52,7 +52,7 @@ use App\Models\Service;
                     <thead class="table-light">
                     <tr>
                         <th >#</th>
-                        <th >
+                        <th class="text-center" >
                             <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-dark">
                                 <?= __('category_title').($sortBy=='title'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
                                 <?php if ($sortBy === 'title'): ?>
@@ -89,7 +89,11 @@ use App\Models\Service;
                         <tr>
                             <td ><?= htmlspecialchars($count) ?></td>
                                 <td  style="padding-right: 30px;">
-                                    <?= htmlspecialchars($ser->title) ?>
+                                    <?php if ($ser->parent_id == 0): ?>
+                                    <div class="d-flex justify-content-between"> <p></p><?=  htmlspecialchars($ser->title).($ser->parent_id == 0 ? ' <span class="badge bg-success">دسته بندی</span>' : '');  ?></div>
+                                    <?php else: ?>
+                                    <div class="d-flex justify-content-center"><?=  htmlspecialchars($ser->title)?></div>
+                                    <?php endif; ?>
                                 </td>
                             <td  style="padding-right: 30px;">
                                    <?php if($ser->parent_id !=0 ):?>
