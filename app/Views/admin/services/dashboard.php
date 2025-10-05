@@ -42,7 +42,7 @@ use App\Models\Service;
     <div class="card-body">
         <?php
         $startNumber = (($pagination['current_page'] - 1) * $per_page) + 1;
-            $count = $startNumber;
+        $count = $startNumber;
         ?>
         <?php if (empty($services)): ?>
             <div class="alert alert-info"><?= __('category_not_found') ?></div>
@@ -54,7 +54,7 @@ use App\Models\Service;
                         <th >#</th>
                         <th >
                             <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-dark">
-                                <?= __('title').($sortBy=='title'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
+                                <?= __('category_title').($sortBy=='title'?($sortOrder=='desc'?'⬇️': '⬆️'):'') ?>
                                 <?php if ($sortBy === 'title'): ?>
                                     <?php if ($sortOrder === 'asc'): ?>
                                         <i class="fas fa-sort-up"></i>
@@ -95,7 +95,6 @@ use App\Models\Service;
                                    <?php if($ser->parent_id !=0 ):?>
                                        <?= htmlspecialchars( $ser->parent_title) ?>
                                 <?php else:?>
-                                   -
                                 <?php endif;?>
                             </td>
                             <?php if ($ser->parent_id == 0): ?>

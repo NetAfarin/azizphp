@@ -77,6 +77,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/services/create', [ServiceController::class, 'addService']);
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::get('/admin/user/register/{userType}', [adminController::class, 'addUser']);
+    Route::get('/admin/components', [AdminController::class, 'components']);
+
 });
 
 // Admin GET routes
