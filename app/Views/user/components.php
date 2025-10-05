@@ -132,3 +132,8 @@
 
 
 </div>
+
+<div>
+    <h4 class="mt-5">input</h4>
+        <input type="text" class="form-control" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+</div>
