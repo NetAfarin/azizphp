@@ -1,7 +1,4 @@
-
-
-
-<body >
+<div  class="bg-dark">
 <div class="row">
     <div class="col-2">
         <button class="btn btn-primary"  >
@@ -134,4 +131,4 @@
 </div>
 
 
-</body>
+</div>
