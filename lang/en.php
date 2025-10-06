@@ -219,5 +219,6 @@ return [
     'search_services' => 'Search by Service title',
     'title' => 'title',
     'you' => 'you',
+    'reserve_settings' => 'Reserve Settings',
 
 ];

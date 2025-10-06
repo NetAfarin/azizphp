@@ -226,4 +226,5 @@ return [
     'search_services' => 'جستجو بر اساس نام خدمات',
     'title' => 'عنوان',
     'you' => 'شما',
+    'reserve_settings' => 'تنظیمات رزرو',
 ];

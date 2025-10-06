@@ -78,6 +78,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::get('/admin/user/register/{userType}', [adminController::class, 'addUser']);
     Route::get('/admin/components', [AdminController::class, 'components']);
+    Route::get('/admin/bookings/settings', [AdminController::class, 'bookingSettings']);
+    Route::get('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
 
 });
 
