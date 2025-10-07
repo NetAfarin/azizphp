@@ -1,3 +1,5 @@
+
+
 <div  class="bg-dark">
 <div class="row">
     <div class="col-2">
@@ -132,3 +134,95 @@
 
 
 </div>
+
+<div>
+        <h6 class="mt-5">default and hover</h6>
+        <input type="text" class="left-form-control is-invalid" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+        <h6 class="mt-5">danger</h6>
+        <input type="text" class="left-form-control mt-1" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+        <h6 class="mt-5">success</h6>
+        <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example">
+       <div class="bg-secondary mt-5 p-2">
+           <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
+       </div>
+    <div class="input-with-icon mt-5">
+        <input type="password" class="left-form-control" id="password" placeholder="رمز عبور خود را وارد کنید">
+        <button type="button" class="password-toggle" id="togglePassword">
+            <span>👁️</span>
+        </button>
+    </div>
+
+    <div class="bg-secondary mt-5 position-relative" style="width: 100px; height: 100px;">
+        <div class="centered-element">
+            <span class="icon-color icon-on-bg" >@️</span>
+        </div>
+
+
+    </div>
+    <div class="bg-secondary mt-5 d-flex justify-content-center align-items-center" style="height: 100px;">
+        <div class="profile-details">
+            <div class="icon-color">#</div>
+            <div class="icon-color">هانیه محمدپور</div>
+            <div class="icon-color">!</div>
+        </div>
+    </div>
+
+    <div class=" mt-5 ">
+        <select class="form-select" id="multiple-select-field"  multiple>
+            <option>Christmas Island</option>
+            <option>South Sudan</option>
+            <option>United States</option>
+            <option>Canada</option>
+        </select>
+    </div>
+
+    <div class="form-check form-switch mt-5">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+    </div>
+    <button type="button" class="btn-open-modal btn btn-primary" data-bs-toggle="modal" data-bs-target="#borderlessModal">
+        باز کردن مودال
+    </button>
+    <div class="modal fade borderless-modal" id="borderlessModal" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content ">
+                <div class="modal-body custom-modal-body">
+                    <h4 class="fw-bold">آیا از حذف کاربر مطمعن هستید؟</h4>
+                    <div class="d-flex gap-4">
+                        <button type="button" class="btn btn-primary btn-modal">بله</button>
+                        <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">خیر</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="input-with-icon mt-5">
+        <input type="text" class="search-bar" id="search" placeholder="جستجوی کاربر">
+
+        <span class="icon-in-input">
+        🔍
+    </span>
+    </div>
+</div>
+<!-- اول jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+
+<!-- سپس Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- در آخر Select2 -->
+
+<script>
+    $(document).ready(function () {
+        $('#multiple-select-field').select2()
+    })
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    togglePassword.addEventListener('click', function() {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.innerHTML = type === 'password' ? '<span>👁️</span>' : '<span>🔒</span>';
+    });
+</script>
