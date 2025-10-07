@@ -29,6 +29,12 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
     gridContainer.innerHTML = '';
     tmpstart = minStart;
     cellnumber = 1;
+
+    console.log("minStart->",minStart)
+    console.log("maxEnd->",maxEnd)
+    console.log("maxDiff->",maxDiff)
+    console.log("rows->",rows)
+
     let cc = 1;
     for (let i = 1; i <= (rows * 2); i++) {
         gridContainer.appendChild(createBox(i + 1, 1, i, ` ${i} `, 'box2'));
@@ -77,8 +83,8 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
             if (hasLaunchTime && startLaunch >= startUnit6 && startLaunch < endUnit6) {
                 gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox"));
             }
+            startOfOffForEnd = endUnit6 - minStart + 2;
             if ((endUnit6) < maxEnd) {
-                startOfOffForEnd = endUnit6 - minStart + 2;
                 gridContainer.appendChild(createBox(endOfOffForEnd, gridColumn, startOfOffForEnd, "", "disabledBox"));
             }
             workRange = endUnit6 - startUnit6
@@ -91,8 +97,8 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
             if (hasLaunchTime && startLaunch >= startUnit5 && startLaunch < endUnit5) {
                 gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox"));
             }
+            startOfOffForEnd = endUnit5 - minStart + 2;
             if ((endUnit5) < maxEnd) {
-                startOfOffForEnd = endUnit5 - minStart + 2;
                 gridContainer.appendChild(createBox(endOfOffForEnd, gridColumn, startOfOffForEnd, "", "disabledBox"));
             }
             workRange = endUnit5 - startUnit5
@@ -120,8 +126,8 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
                 if (hasLaunchTime && startLaunch >= startUnit && startLaunch < endUnit) {
                     gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox"));
                 }
+                startOfOffForEnd = endUnit - minStart + 2;
                 if ((endUnit) < maxEnd) {
-                    startOfOffForEnd = endUnit - minStart + 2;
                     gridContainer.appendChild(createBox(endOfOffForEnd, gridColumn, startOfOffForEnd, "", "disabledBox"));
                 }
                 workRange = endUnit - startUnit
@@ -221,14 +227,5 @@ const {
     launchTime
 } = window.scheduleConfig;
 
-// let startTime = "09:00:00";
-// let endTime = "19:30:00";
-// let startTimeW1 = "08:30:00";
-// let endTimeW1 = "15:00:00";
-// let startTimeW2 = "10:00:00";
-// let endTimeW2 = "16:30:00";
-// let startTimeH = "06:30:00";
-// let endTimeH = "21:30:00";
-// let hasLaunchTime = true;
-// let launchTIme = "12:00:00";
+
 generateGrid(8, startTime, endTime, startTimeW1, endTimeW1, startTimeW2, endTimeW2, startTimeH, endTimeH, hasLaunchTime, launchTime);
