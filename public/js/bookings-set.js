@@ -1,30 +1,15 @@
-$(document).ready(function () {
 
-    $("#reserveBtn").on("click", function () {
-        let selectedSlots = [];
-        $(".cell.selected").each(function () {
-            let day = $(this).data("day");
-            let hour = $(this).data("hour");
-            selectedSlots.push({day, hour});
-        });
-        if (selectedSlots.length > 0) {
-            console.log("رزروهای انتخاب شده: ", selectedSlots);
-        } else {
-            alert("لطفاً یک یا چند زمان را انتخاب کنید.");
-        }
-    });
-});
 
-function generateGrid(columns, startTime, endTime, startTime5, endTime5, startTime6, endTime6, startTimeh, endTimeh, hasLaunchTime, launchTIme, offTimes, reservedTime, prereservedTime) {
+function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, startTimeW2, endTimeW2, startTimeH, endTimeH, hasLaunchTime, launchTIme) {
     const gridContainer = document.getElementById('grid-container');
     let startUnit = timeToUnits(startTime);
     let endUnit = timeToUnits(endTime);
-    let startUnit5 = timeToUnits(startTime5);
-    let endUnit5 = timeToUnits(endTime5);
-    let startUnit6 = timeToUnits(startTime6);
-    let endUnit6 = timeToUnits(endTime6);
-    let startUnith = timeToUnits(startTimeh);
-    let endUnith = timeToUnits(endTimeh);
+    let startUnit5 = timeToUnits(startTimeW1);
+    let endUnit5 = timeToUnits(endTimeW1);
+    let startUnit6 = timeToUnits(startTimeW2);
+    let endUnit6 = timeToUnits(endTimeW2);
+    let startUnith = timeToUnits(startTimeH);
+    let endUnith = timeToUnits(endTimeH);
     let startLaunch = timeToUnits(launchTIme);
 
     let minStart = Math.min(startUnit, startUnit5, startUnit6, startUnith);
@@ -71,7 +56,7 @@ function generateGrid(columns, startTime, endTime, startTime5, endTime5, startTi
             continue;
         }
 
-        gridContainer.appendChild(createBox(rend, columnStart, rstart, text));
+        gridContainer.appendChild(createBox(rend, columnStart, rstart, text,'box','checkAll-col-'+i));
     }
     duration = 90
     tmpstart = minStart;
@@ -147,26 +132,12 @@ function generateGrid(columns, startTime, endTime, startTime5, endTime5, startTi
             if (hasLaunchTime && j < startOfLaunchTime && (j + (duration / 30)) >= startOfLaunchTime) {
                 j = startOfLaunchTime
             } else {
-                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, "کاشت ناخن" + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}`, ["box", "cell"]));
+                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, "کاشت ناخن" + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}`+ "<br>", ["box", "cell"],'col-'+i+'_row-'+j));
                 j += (duration / 30)
             }
         }
-    }
-    $(".cell").on("click", function () {
-        if ($(this).hasClass("resereved")) {
-            alert("این نوبت رزرو شده است.")
-        } else if ($(this).hasClass("preresereved")) {
-            alert("این نوبت در حالت رزرو موقت میباشد لطفا دقایقی دیگر دوباره تلاش کنید.")
-        } else {
-            if ($(this).hasClass("selected")) {
-                $(this).removeClass("selected");
-            } else {
-                $(".cell").removeClass("selected");
-                $(this).addClass("selected");
-            }
-        }
 
-    });
+    }
 }
 
 function timeToUnits(timeString, roundToEven) {
@@ -182,18 +153,82 @@ function unitsToTime(unit) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-function createBox(end, gridColumn, gridRowStart, text, classnames = "box") {
+function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null) {
     const box = document.createElement('div');
     if (Array.isArray(classnames)) {
         classnames.forEach(cls => box.classList.add(cls));
     } else {
         box.classList.add(classnames);
     }
+
     box.innerHTML = text;
     box.style.gridColumnStart = gridColumn;
     box.style.gridRowStart = gridRowStart;
     box.style.gridRowEnd = end;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+
+    if (checkboxId && gridColumn!==1) {
+        checkbox.id = checkboxId;
+        box.appendChild(checkbox);
+        checkbox.addEventListener('change', function() {
+            if (this.id.startsWith('checkAll-col-')) {
+                const colNumber = this.id.split('-')[2];
+                const checkboxes = document.querySelectorAll(`input[id^="col-${colNumber}_row-"]`);
+
+                checkboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                });
+            }
+        });
+
+        box.addEventListener('click', function(event) {
+            if (event.target.type === 'checkbox') {
+                return;
+            }
+
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+        });
+
+        box.getCheckbox = function() {
+            return checkbox;
+        };
+
+        box.setChecked = function(checked) {
+            checkbox.checked = checked;
+            checkbox.dispatchEvent(new Event('change'));
+        };
+
+        box.isChecked = function() {
+            return checkbox.checked;
+        };
+
+    }
     return box;
 }
+const {
+    startTime,
+    endTime,
+    startTimeW1,
+    endTimeW1,
+    startTimeW2,
+    endTimeW2,
+    startTimeH,
+    endTimeH,
+    hasLaunchTime,
+    launchTime
+} = window.scheduleConfig;
 
-generateGrid(8, "09:00:00", "19:30:00", "08:30:00", "15:00:00", "10:00:00", "16:30:00", "06:30:00", "21:30:00", true, "12:00:00");
+// let startTime = "09:00:00";
+// let endTime = "19:30:00";
+// let startTimeW1 = "08:30:00";
+// let endTimeW1 = "15:00:00";
+// let startTimeW2 = "10:00:00";
+// let endTimeW2 = "16:30:00";
+// let startTimeH = "06:30:00";
+// let endTimeH = "21:30:00";
+// let hasLaunchTime = true;
+// let launchTIme = "12:00:00";
+generateGrid(8, startTime, endTime, startTimeW1, endTimeW1, startTimeW2, endTimeW2, startTimeH, endTimeH, hasLaunchTime, launchTime);
