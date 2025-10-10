@@ -137,11 +137,11 @@
 
 <div>
         <h6 class="mt-5">default and hover</h6>
-        <input type="text" class="left-form-control is-invalid" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+        <input type="text" class="left-form-control " placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
         <h6 class="mt-5">danger</h6>
-        <input type="text" class="left-form-control mt-1" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+    <input type="text" class="form-control is-invalid ltr-input" placeholder="شماره موبایل">
         <h6 class="mt-5">success</h6>
-        <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example">
+        <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example" readonly>
        <div class="bg-secondary mt-5 p-2">
            <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
        </div>
@@ -205,14 +205,114 @@
         🔍
     </span>
     </div>
+    <table class="table mt-5  table-bordered custom-rounded-table">
+        <thead class="table-primary">
+        <tr>
+            <th>روز</th>
+            <th>شروع کار</th>
+            <th>پایان کار</th>
+            <th>وضعیت</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>شنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td>یکشنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>دوشنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>سه شنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>چهارشنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>پنج شنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>جمعه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-<!-- اول jQuery -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 
-<!-- سپس Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- در آخر Select2 -->
 
 <script>
     $(document).ready(function () {
