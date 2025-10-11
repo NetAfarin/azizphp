@@ -23,6 +23,7 @@ $dir = APP_DIRECTION;
     <title><?= htmlspecialchars($title) ?></title>
     <link href="<?= asset($dir === 'rtl' ?"css/bootstrap5.3.8.rtl.min.css":"css/bootstrap5.3.8.min.css"); ?>" rel="stylesheet">
     <link href="<?= asset('css/select2.min.css')?>" rel="stylesheet" />
+    <link href="<?= asset('css/FontAwesomePro/css/all.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/style.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/theme.css')?>" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
