@@ -1,150 +1,150 @@
 
 
 <div  class="bg-dark">
-<div class="row">
-    <div class="col-2">
-        <button class="btn btn-primary"  >
-            hey man
-        </button>
+    <div class="row">
+        <div class="col-2">
+            <button class="btn btn-primary"  >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-secondary" >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-danger" >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-warning" >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-success" >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-info" >
+                hey man
+            </button>
+        </div>
     </div>
-    <div class="col-2">
-        <button class="btn btn-secondary" >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-danger" >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-warning" >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-success" >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-info" >
-            hey man
-        </button>
-    </div>
-</div>
 
 
-<div class="row mt-5">
-    <div class="col-2">
-        <button class="btn btn-primary " disabled>
-            hey man
-        </button>
+    <div class="row mt-5">
+        <div class="col-2">
+            <button class="btn btn-primary " disabled>
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-secondary" disabled>
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-danger" disabled>
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-warning" disabled >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-success" disabled >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-info" disabled>
+                hey man
+            </button>
+        </div>
     </div>
-    <div class="col-2">
-        <button class="btn btn-secondary" disabled>
-            hey man
-        </button>
+    <div class="row mt-5">
+        <div class="col-2">
+            <button class="btn btn-outline-primary " >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-secondary" >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-danger" >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-warning"  >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-success"  >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-info" >
+                hey man
+            </button>
+        </div>
     </div>
-    <div class="col-2">
-        <button class="btn btn-danger" disabled>
-            hey man
-        </button>
+    <div class="row mt-5">
+        <div class="col-2">
+            <button class="btn btn-outline-primary " disabled>
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-secondary" disabled>
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-danger"disabled >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-warning" disabled >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-success" disabled >
+                hey man
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-outline-info"  disabled>
+                hey man
+            </button>
+        </div>
     </div>
-    <div class="col-2">
-        <button class="btn btn-warning" disabled >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-success" disabled >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-info" disabled>
-            hey man
-        </button>
-    </div>
-</div>
-<div class="row mt-5">
-    <div class="col-2">
-        <button class="btn btn-outline-primary " >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-secondary" >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-danger" >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-warning"  >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-success"  >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-info" >
-            hey man
-        </button>
-    </div>
-</div>
-<div class="row mt-5">
-    <div class="col-2">
-        <button class="btn btn-outline-primary " disabled>
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-secondary" disabled>
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-danger"disabled >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-warning" disabled >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-success" disabled >
-            hey man
-        </button>
-    </div>
-    <div class="col-2">
-        <button class="btn btn-outline-info"  disabled>
-            hey man
-        </button>
-    </div>
-</div>
 
 
 </div>
 
 <div>
-        <h6 class="mt-5">default and hover</h6>
-        <input type="text" class="left-form-control " placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
-        <h6 class="mt-5">danger</h6>
+    <h6 class="mt-5">default and hover</h6>
+    <input type="text" class="left-form-control " placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+    <h6 class="mt-5">danger</h6>
     <input type="text" class="form-control is-invalid ltr-input" placeholder="شماره موبایل">
-        <h6 class="mt-5">success</h6>
-        <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example" readonly>
-       <div class="bg-secondary mt-5 p-2">
-           <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
-       </div>
+    <h6 class="mt-5">success</h6>
+    <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example" readonly>
+    <div class="bg-secondary mt-5 p-2">
+        <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
+    </div>
     <div class="input-with-icon mt-5">
         <input type="password" class="left-form-control" id="password" placeholder="رمز عبور خود را وارد کنید">
         <button type="button" class="password-toggle" id="togglePassword">
@@ -205,6 +205,110 @@
         🔍
     </span>
     </div>
+    <table class="table mt-5  table-bordered custom-rounded-table">
+        <thead class="table-primary">
+        <tr>
+            <th>روز</th>
+            <th>شروع کار</th>
+            <th>پایان کار</th>
+            <th>وضعیت</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>شنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td>یکشنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>دوشنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>سه شنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>چهارشنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>پنج شنبه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>جمعه</td>
+            <td>🕒 8:00</td>
+            <td>🕒 17:00</td>
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        تعطیل
+                    </label>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 
