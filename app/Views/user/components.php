@@ -137,7 +137,7 @@
 
 <div>
     <h6 class="mt-5">default and hover</h6>
-    <input type="text" class="left-form-control " placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+    <input type="text" class="form-control ltr-input" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
     <h6 class="mt-5">danger</h6>
     <input type="text" class="form-control is-invalid ltr-input" placeholder="شماره موبایل">
     <h6 class="mt-5">success</h6>
@@ -146,7 +146,7 @@
         <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
     </div>
     <div class="input-with-icon mt-5">
-        <input type="password" class="left-form-control" id="password" placeholder="رمز عبور خود را وارد کنید">
+        <input type="password" class="form-control ltr-input" id="password" placeholder="رمز عبور خود را وارد کنید">
         <button type="button" class="password-toggle" id="togglePassword">
             <span>👁️</span>
         </button>
