@@ -205,110 +205,132 @@
         🔍
     </span>
     </div>
-    <table class="table mt-5  table-bordered custom-rounded-table">
-        <thead class="table-primary">
-        <tr>
-            <th>روز</th>
-            <th>شروع کار</th>
-            <th>پایان کار</th>
-            <th>وضعیت</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>شنبه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
+    <div class="row d-flex justify-content-center bg-danger ">
+        <table class="table mt-5  table-bordered table-rounded">
+            <thead class="table-primary ">
+            <tr>
+                <th>روز</th>
+                <th>شروع کار</th>
+                <th>پایان کار</th>
+                <th>وضعیت</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>شنبه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
 
-        </tr>
-        <tr>
-            <td>یکشنبه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>دوشنبه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>سه شنبه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>چهارشنبه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>پنج شنبه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>جمعه</td>
-            <td>🕒 8:00</td>
-            <td>🕒 17:00</td>
-            <td>
-                <div class="form-check">
-                    <label class="form-check-label" for="flexCheckDefault">
-                        تعطیل
-                    </label>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+                </td>
+
+            </tr>
+            <tr>
+                <td>یکشنبه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>دوشنبه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>سه شنبه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>چهارشنبه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>پنج شنبه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr class="rounded-bottom-2">
+                <td>جمعه</td>
+                <td>🕒 8:00</td>
+                <td>🕒 17:00</td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="form-check">
+                            <label class="form-check-label" for="flexCheckDefault">
+                                تعطیل
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+        <p>خروج</p>
+
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 

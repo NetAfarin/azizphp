@@ -675,7 +675,7 @@
 .table-primary {
     --bs-table-color: #fff;
     --bs-table-bg: var( --bs-primary);
-    --bs-table-border-color: #a6b5cc;
+    --bs-table-border-color: transparent;
 
     --bs-table-active-bg: #bacbe6;
     --bs-table-active-color: #000;
@@ -699,17 +699,34 @@
     --bs-table-active-bg: rgba(var(--bs-emphasis-color-rgb), 0.1);
     --bs-table-hover-color: var(--bs-emphasis-color);
     --bs-table-hover-bg: rgba(var(--bs-emphasis-color-rgb), 0.075);
-    width: 100%;
-    margin-bottom: 1rem;
-    vertical-align: top;
-    border-color: var(--bs-table-border-color);
-    border-radius: 8px;
-    border-spacing: 0;
+    width: 994px;
+    height: 540px;
+    /*border-radius: 8px;*/
+    /*margin-bottom: 1rem;*/
+    /*vertical-align: top;*/
+    /*border-color: var(--bs-table-border-color);*/
+    /*overflow: hidden;*/
+}
+.table-rounded {
+    border-radius: 1rem;
     overflow: hidden;
 }
-
+thead,
+tbody,
+tfoot,
+tr,
+td,
+th {
+    border-style: solid;
+    border-color: inherit;
+    border-width: 0;
+    text-align: center;
+}
+.table-bordered > :not(caption) > * {
+    border-width: var(--bs-border-width) 0;
+}
 .form-check-input {
-    --bs-form-check-bg: var(--bs-black);
+    --bs-form-check-bg: var(--bs-success);
     flex-shrink: 0;
     width: 1em;
     height: 1em;
