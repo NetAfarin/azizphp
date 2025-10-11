@@ -206,14 +206,8 @@
     </span>
     </div>
 </div>
-<!-- اول jQuery -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
-
-<!-- سپس Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- در آخر Select2 -->
-
 <script>
     $(document).ready(function () {
         $('#multiple-select-field').select2()
