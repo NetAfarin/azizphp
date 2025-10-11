@@ -70,6 +70,7 @@ class UserController extends Controller
                     'first_name' => $first_name,
                     'last_name' => $last_name,
                     'phone_number' => $phone,
+                    'salon_id' => 1,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
                     'user_type' => 2,
                     'birth_date' => $_POST['birth_date'],
@@ -139,6 +140,7 @@ class UserController extends Controller
 //                        define('SALON_ID', 'sa');}
 //                    }
                         $_SESSION['user_id'] = $user->id;
+                        $_SESSION['salon_id'] = $user->salon_id;
                         $_SESSION['user_name'] = $user->first_name;
                         $_SESSION['is_admin'] = $user->isAdmin();
                         $_SESSION['is_operator'] = $user->isOperator();

@@ -220,5 +220,9 @@ return [
     'title' => 'title',
     'you' => 'you',
     'reserve_settings' => 'Reserve Settings',
-
+    'weekly_reserve_table' => 'Weekly reservation table',
+    'previous_week'        => 'Previous week',
+    'next_week'            => 'Next week',
+    'today' => 'Today',
+    'service' => 'Service',
 ];

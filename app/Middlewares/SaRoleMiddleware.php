@@ -23,7 +23,6 @@ class SaRoleMiddleware
             redirect("/user/login");
             exit;
         }
-
         $role = $_SESSION['user_role'] ?? '';
         if (!in_array($role, $this->allowedRoles)) {
             header('Location: ' . BASE_URL . '/forbidden');

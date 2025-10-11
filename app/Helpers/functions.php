@@ -86,6 +86,20 @@ if (!function_exists('getUrl')) {
         return $uri;
     }
 }
+if (!function_exists('rotateArray')) {
+    function rotateArray(array $arr, int $shift=1): array {
+        $count = count($arr);
+        if ($count === 0) return $arr;
+        $shift = $shift % $count;
+        if ($shift > 0) {
+            return array_merge(array_slice($arr, $shift), array_slice($arr, 0, $shift));
+        } elseif ($shift < 0) {
+            $shift = abs($shift);
+            return array_merge(array_slice($arr, -$shift), array_slice($arr, 0, $count - $shift));
+        }
+        return $arr;
+    }
+}
 function json_response($data, $status = 200)
 {
     http_response_code($status);

@@ -16,11 +16,21 @@ class User extends Model
         'phone_number',
         'register_datetime',
         'password',
+        'salon_id',
+        'postal_address',
+        'national_code',
+        'has_launch_time',
+        'launch_time',
+        'has_dinner_time',
+        'dinner_time',
+        'follow_shift_from_salon',
         'user_type',
         'is_active',
         'deleted'
     ];
-
+    protected array $virtualKeys = [
+        'services',
+    ];
 
     public static function findByPhone(string $phone): ?self
     {
