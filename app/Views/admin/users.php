@@ -1,3 +1,8 @@
+<?php
+
+use App\Models\UserType;
+
+?>
 <?= flash('success') ?>
 <?= flash('error') ?>
 <div class="mb-3" style="text-align: <?= $dir === 'rtl' ? 'right' : 'left' ?>;">
@@ -123,10 +128,10 @@
                             <td><?= htmlspecialchars($user->id) ?></td>
                             <td><?= htmlspecialchars($user->first_name) ?></td>
                             <td><?= htmlspecialchars($user->last_name) ?></td>
-                            <td><?= htmlspecialchars($user->phone_number) ?></td>
+                            <td><?= htmlspecialchars($user->phone_number) ?><?=$user->id==$_SESSION['user_id']?'<span class="badge bg-success mx-2">'.__('you').'</span><br>':''; ?></td>
                             <td><?= htmlspecialchars($user->getRoleTitle()) ?></td>
                             <td>
-                                <?php if ($user->getUserType()->en_title === 'employee'): ?>
+                                <?php if ($user->getUserType() === UserType::class::EMPLOYEE): ?>
                                     <?php foreach ($user->getEmployeeServices() as $service): ?>
                                         <span class="badge bg-info text-dark">
                             <?= htmlspecialchars((APP_LANG == 'fa' ?$service->fa_title : $service->title) ?? '-') ?>
@@ -145,7 +150,7 @@
                                 <a href="<?= BASE_URL ?>/admin/user/edit/<?= $user->id ?>" class="btn btn-sm btn-warning">
                                     ✏️ <?= __('edit') ?>
                                 </a>
-
+                                <?php if ($user->id!=$_SESSION['user_id']):?>
                                 <form action="<?= BASE_URL ?>/admin/user/delete/<?= $user->id ?>" method="post" class="d-inline"
                                       onsubmit="return confirm('<?= __('confirm_delete') ?>')">
                                     <?= csrf_field() ?>
@@ -153,6 +158,12 @@
                                         🗑️ <?= __('delete') ?>
                                     </button>
                                 </form>
+                                    <?php  if ($user->getUserType()->id === UserType::class::EMPLOYEE): ?>
+                                        <a href="<?= BASE_URL ?>/admin/bookings/set/<?= $user->id ?>" class="btn btn-sm btn-info">
+                                            <?= __('reserve_settings') ?>
+                                        </a>
+                                    <?php  endif; ?>
+                               <?php  endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

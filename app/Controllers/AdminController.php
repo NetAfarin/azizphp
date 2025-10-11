@@ -366,5 +366,55 @@ class AdminController extends Controller
         $this->view('user/components', ['title' => __('admin_panel')]);
 
     }
+    public function bookingsSet($employeeId)
+    {
+        $user = User::find((int)$employeeId);
+
+        if (!$user) {
+            $_SESSION['flash_error'] = __('user_not_found');
+            redirect("/admin/users");
+            exit;
+        }
+
+        $userTypes = UserType::all();
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $employeeId)->get() ?? [];
+
+        $this->view('admin/booking/set', [
+            'title' => __('edit_user'),
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'employeeServicesData' => $employeeServicesData,
+        ]);
+    }
+    public function bookingsSettings()
+    {
+        $user = User::find((int)$id);
+
+        if (!$user) {
+            $_SESSION['flash_error'] = __('user_not_found');
+            redirect("/admin/users");
+            exit;
+        }
+
+        $userTypes = UserType::all();
+        $groupedServices = Service::groupedForSelect();
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $selectedServiceIds =[];
+        $durations = Duration::all();
+
+        foreach ($employeeServicesData as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
+
+        $this->view('admin/editUser', [
+            'title' => __('edit_user'),
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'groupedServices' => $groupedServices,
+            'selectedServiceIds' => $selectedServiceIds,
+            'employeeServicesData' => $employeeServicesData,
+            'durations' => $durations,
+        ]);
+    }
 
 }

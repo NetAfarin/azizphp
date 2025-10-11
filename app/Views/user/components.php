@@ -137,11 +137,11 @@
 
 <div>
         <h6 class="mt-5">default and hover</h6>
-        <input type="text" class="left-form-control is-invalid" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+        <input type="text" class="left-form-control " placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
         <h6 class="mt-5">danger</h6>
-        <input type="text" class="left-form-control mt-1" placeholder="شماره موبایل" aria-label="Username" aria-describedby="basic-addon1">
+    <input type="text" class="form-control is-invalid ltr-input" placeholder="شماره موبایل">
         <h6 class="mt-5">success</h6>
-        <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example">
+        <input class="form-control is-valid" type="text" value="برچسب" aria-label="readonly input example" readonly>
        <div class="bg-secondary mt-5 p-2">
            <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
        </div>
@@ -207,7 +207,9 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     $(document).ready(function () {
         $('#multiple-select-field').select2()

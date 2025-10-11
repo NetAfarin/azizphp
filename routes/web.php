@@ -28,7 +28,7 @@ use App\Middlewares\SaRoleMiddleware;
 //    Route::get('/user/register', [UserController::class, 'register']);
 //});
 
-Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class])->group(function () {
     Route::post('/user/login', [UserController::class, 'login']);
     Route::post('/user/register', [UserController::class, 'register']);
 });
@@ -78,6 +78,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::get('/admin/user/register/{userType}', [adminController::class, 'addUser']);
     Route::get('/admin/components', [AdminController::class, 'components']);
+    Route::get('/admin/bookings/settings', [AdminController::class, 'bookingSettings']);
+    Route::get('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
 
 });
 

@@ -16,6 +16,7 @@ return [
     'manage_services' => 'manage_services',
     'booking_list' => 'Booking list',
     'new_booking' => 'new_booking',
+    'booking_settings' => 'Booking Settings',
     'settings' => 'settings',
     'hello_user' => 'Hello, :name',
     'logout_success' => 'You have successfully logged out ✅',
@@ -217,5 +218,7 @@ return [
     'add_reserve' => 'Add New Reservation',
     'search_services' => 'Search by Service title',
     'title' => 'title',
+    'you' => 'you',
+    'reserve_settings' => 'Reserve Settings',
 
 ];

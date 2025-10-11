@@ -213,3 +213,106 @@
         left: -2vw
     }
 }
+
+ .selected {
+     background-color: #007bff;
+     color: white;
+ }
+
+.resereved {
+    background-color: #cd0000;
+    color: white;
+}
+
+.resereved:hover {
+    background-color: #cd0000;
+}
+
+.preresereved {
+    background-color: #cdb000;
+    color: white;
+}
+
+.preresereved:hover {
+    background-color: #cdb000;
+}
+
+.selected:hover {
+    background-color: #025190;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.table-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.arrow-button {
+    font-size: 20px;
+    cursor: pointer;
+}
+.dynamic-grid {
+    display: grid;
+    gap: 0px;
+    gridTemplateColumns: repeat(8, 1fr);
+    gridTemplateRows: repeat(24, auto);
+}
+
+.box {
+    border: 1px solid #717171;
+    padding: 6px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.box2 {
+    /*border: 1px solid #717171;*/
+    padding-bottom: 8px;
+    padding-top: 8px;
+    opacity: 0;
+    text-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.disabledBox {
+    border: 1px solid #c6c6c6;
+    background-color: #c6c6c6;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    text-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.launchBox {
+    border: 1px solid #ff5e5e;
+    background-color: #ff5e5e;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    text-align: center;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
