@@ -718,7 +718,7 @@ tr,
 td,
 th {
     border-style: solid;
-    border-color: inherit;
+    border-color: var(--bs-gray-input);
     border-width: 0;
     text-align: center;
 }
@@ -781,3 +781,22 @@ th {
     padding-left: 0;
     background-color: var(--bs-gray-input);
 }
+.table-container {
+    width: 994px;
+    height: 540px;
+    border-radius: 15px;
+    padding: 0;
+    border: 1px solid var(--bs-gray-input);
+    overflow: hidden;
+}
+.custom-table {
+    margin: 0;
+    border: none !important;
+}
+
+.custom-table tbody td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--bs-gray-input) !important;
+}
+

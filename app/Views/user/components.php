@@ -173,6 +173,15 @@
             <option>South Sudan</option>
             <option>United States</option>
             <option>Canada</option>
+            <option>Canad3a</option>
+            <option>Canada4</option>
+            <option>Canad5a</option>
+            <option>Canada6</option>
+            <option>Canada7</option>
+            <option>Canada8</option>
+            <option>Canada9</option>
+            <option>Canada00</option>
+            <option>Canada04</option>
         </select>
     </div>
 
@@ -205,8 +214,10 @@
         🔍
     </span>
     </div>
-    <div class="row d-flex justify-content-center bg-danger ">
-        <table class="table mt-5  table-bordered table-rounded">
+    <div class="row justify-content-center mt-5">
+        <div class="table-container">
+            <table class="table custom-table">
+
             <thead class="table-primary ">
             <tr>
                 <th>روز</th>
@@ -308,7 +319,7 @@
                     </div>
                 </td>
             </tr>
-            <tr class="rounded-bottom-2">
+            <tr>
                 <td>جمعه</td>
                 <td>🕒 8:00</td>
                 <td>🕒 17:00</td>
@@ -324,17 +335,15 @@
                 </td>
             </tr>
             </tbody>
-        </table>
 
+        </table>
+        </div>
     </div>
     <div class="d-flex justify-content-center mt-5">
-        <p>خروج</p>
-
+        خروج<span class="fa fa-"></span>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     $(document).ready(function () {
