@@ -28,7 +28,7 @@ use App\Middlewares\SaRoleMiddleware;
 //    Route::get('/user/register', [UserController::class, 'register']);
 //});
 
-Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class])->group(function () {
     Route::post('/user/login', [UserController::class, 'login']);
     Route::post('/user/register', [UserController::class, 'register']);
 });
