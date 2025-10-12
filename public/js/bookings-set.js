@@ -81,7 +81,7 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
             continue;
         }
 
-        gridContainer.appendChild(createBox(rend, columnStart, rstart, text, 'box', 'checkAll-col-' + i, "", true,i === todayIndex?todayWord:''));
+        gridContainer.appendChild(createBox(rend, columnStart, rstart, text, 'box', 'checkAll-col-' + i, "", true,(i>0&&(i-1 === todayIndex))?todayWord:''));
     }
     duration = serviceObj.estimated_duration*30
     tmpstart = minStart;

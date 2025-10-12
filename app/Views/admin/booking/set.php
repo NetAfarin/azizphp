@@ -1,11 +1,12 @@
 <?php
 $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
 $days=rotateArray( $days,$salon->start_day_of_week);
-$todayIndex = intval(date('w'))+1-intval($salon->start_day_of_week);
+
+$i1 = intval(date('w')) - intval($salon->start_day_of_week);
+$todayIndex = $i1<0? $i1+7:$i1;
 $today = new DateTime('today');
 $deltaToWeekStart = $todayIndex;
 $weekStart = (clone $today)->modify("-{$deltaToWeekStart} days");
-//vd($today);
 $format = 'Y-m-d';
 $weekDates = [];
 for ($i = 0; $i < 7; $i++) {

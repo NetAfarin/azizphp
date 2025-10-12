@@ -196,7 +196,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content ">
                 <div class="modal-body custom-modal-body">
-                    <h4 class="fw-bold">آیا از حذف کاربر مطمعن هستید؟</h4>
+                    <h4 class="fw-bold">آیا از حذف کاربر مطمئن هستید؟</h4>
                     <div class="d-flex gap-4">
                         <button type="button" class="btn btn-primary btn-modal">بله</button>
                         <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">خیر</button>
@@ -477,7 +477,7 @@
             </div>
         </div>
         <div class="mt-5">
-            <div class="d-flex flex-column justify-content-evenly   custom-shadow" style="height: 212px; width: 670px; border-radius: 8px">
+            <div class="d-flex flex-column justify-content-evenly   shadow-md" style="height: 212px; width: 670px; border-radius: 8px">
                 <div class="p-2  text-start fw-bold">نظر شما مهم است!</div>
                 <div class="p-2 text-secondary text-center ">رنگ موی شما ۲ روز پیش انجام شد. لطفاً تجربه‌تان را به اشتراک بگذارید.</div>
                 <div class="p-2 text-secondary text-center">

@@ -29,9 +29,9 @@
 <!--<div class="logo-overlay">-->
 <!--    <img src="--><?php //= asset('img/a.jpeg') ?><!--" class="logo-img">-->
 <!--</div>-->
-    <div class="overlay-element shadow-box">
-        <form class="col-8">
-            <div class="mb-4">
+    <div class="overlay-element shadow-md p-5">
+        <form class="w-100">
+            <div class="mb-4 mx-2">
                 <i class="fa-solid fa-phone-flip icon-custom"></i>
                 <label for="exampleInputTel" class="form-label text-black fw-bold pe-2">شماره همراه</label>
                 <input type="tel" class="form-control mt-3 ltr-input fw-bold" id="exampleInputTel">
