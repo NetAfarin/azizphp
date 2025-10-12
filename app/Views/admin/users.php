@@ -131,10 +131,10 @@ use App\Models\UserType;
                             <td><?= htmlspecialchars($user->phone_number) ?><?=$user->id==$_SESSION['user_id']?'<span class="badge bg-success mx-2">'.__('you').'</span><br>':''; ?></td>
                             <td><?= htmlspecialchars($user->getRoleTitle()) ?></td>
                             <td>
-                                <?php if ($user->getUserType() === UserType::class::EMPLOYEE): ?>
+                                <?php if ($user->getUserType()->id === UserType::class::EMPLOYEE):?>
                                     <?php foreach ($user->getEmployeeServices() as $service): ?>
                                         <span class="badge bg-info text-dark">
-                            <?= htmlspecialchars((APP_LANG == 'fa' ?$service->fa_title : $service->title) ?? '-') ?>
+                            <?=  htmlspecialchars((APP_LANG == 'fa' ?$service->fa_title : $service->title) ?? '-') ?>
                         </span>
                                     <?php endforeach; ?>
                                 <?php else: ?>

@@ -2,6 +2,7 @@
 namespace App\Middlewares;
 
 use App\Core\Loggable;
+use App\Core\Logger;
 use App\Core\Request;
 use Redis;
 
@@ -15,8 +16,12 @@ class RateLimiterMiddleware
 
     public function __construct()
     {
-        $this->redis = new Redis();
-        $this->redis->connect('127.0.0.1', 6379);
+        try {
+            $this->redis = new Redis();
+            $this->redis->connect('127.0.0.1', 6379);
+        }catch (\Exception $exception){
+            Logger::error("RateLimiterMiddleware Exception: {$exception->getMessage()}");
+        }
     }
 
     public function handle(Request $request, $next)
@@ -54,50 +59,56 @@ class RateLimiterMiddleware
 
     protected function allowRequest(string $key): bool
     {
-        $count = $this->redis->get($key);
+        try {
+            $count = $this->redis->get($key);
 
-        if ($count === false) {
-            $this->redis->set($key, 1, $this->decaySeconds);
+            if ($count === false) {
+                $this->redis->set($key, 1, $this->decaySeconds);
+                return true;
+            }
+
+            if ($count >= $this->maxRequests) {
+                return false;
+            }
+
+            $this->redis->incr($key);
             return true;
-        }
-
-        if ($count >= $this->maxRequests) {
+        }catch (\Exception $exception){
             return false;
         }
 
-        $this->redis->incr($key);
-        return true;
     }
 
     protected function tooManyRequestsResponse(string $key)
     {
-        $ttl = $this->redis->ttl($key);
-        if ($ttl < 0) $ttl = 0;
+        try {
+            $ttl = $this->redis->ttl($key);
+            if ($ttl < 0) $ttl = 0;
 
-        http_response_code(429);
-        header("Retry-After: $ttl");
+            http_response_code(429);
+            header("Retry-After: $ttl");
 
-        $lang = $_SESSION['lang'] ?? 'fa';
-        $isApiRequest = isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false;
+            $lang = $_SESSION['lang'] ?? 'fa';
+            $isApiRequest = isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false;
 
-        if ($isApiRequest) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'error' => __('redis_heading'),
-                'retry_after_seconds' => __('redis_retry', ['rtime' => $ttl]),
-                'message' => __('redis_message')
-            ]);
-        } else {
-            header('Content-Type: text/html; charset=utf-8');
-            $t = [
-                'title' => __('redis_title'),
-                'heading' => __('redis_heading'),
-                'message' => __('redis_message'),
-                'retry' => __('redis_retry', ['rtime' => $ttl]),
-            ];
-            $dir = ($lang === 'fa') ? 'rtl' : 'ltr';
-            $textAlign = $dir === 'rtl' ? 'right' : 'left';
-            echo <<<HTML
+            if ($isApiRequest) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'error' => __('redis_heading'),
+                    'retry_after_seconds' => __('redis_retry', ['rtime' => $ttl]),
+                    'message' => __('redis_message')
+                ]);
+            } else {
+                header('Content-Type: text/html; charset=utf-8');
+                $t = [
+                    'title' => __('redis_title'),
+                    'heading' => __('redis_heading'),
+                    'message' => __('redis_message'),
+                    'retry' => __('redis_retry', ['rtime' => $ttl]),
+                ];
+                $dir = ($lang === 'fa') ? 'rtl' : 'ltr';
+                $textAlign = $dir === 'rtl' ? 'right' : 'left';
+                echo <<<HTML
             <!DOCTYPE html>
             <html lang="$lang" dir="$dir">
             <head>
@@ -109,7 +120,11 @@ class RateLimiterMiddleware
              <div class="container"> <h1>{$t['heading']}</h1> <p>{$t['message']}</p> <p class="retry">{$t['retry']}</p> </div> 
              </body> </html>
 HTML;
+            }
+            exit;
+        }catch (\Exception $exception){
+            Logger::error("RateLimiterMiddleware Exception: {$exception->getMessage()}");
         }
-        exit;
+
     }
 }

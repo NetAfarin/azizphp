@@ -1,18 +1,39 @@
 <?php
-$hours = range(8, 17);
-
-$days = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
-
-$dayse = ['SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI'];
+$days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
+$days=rotateArray( $days,$salon->start_day_of_week);
+$todayIndex = intval(date('w'))+1-intval($salon->start_day_of_week);
+$today = new DateTime('today');
+$deltaToWeekStart = $todayIndex;
+$weekStart = (clone $today)->modify("-{$deltaToWeekStart} days");
+//vd($today);
+$format = 'Y-m-d';
+$weekDates = [];
+for ($i = 0; $i < 7; $i++) {
+    $d = (clone $weekStart)->modify("+{$i} days")->format($format);
+    if (APP_LANG=="fa"){
+        $explode = explode('-', $d);
+        list($jy, $jm, $jd)=gregorian_to_jalali($explode[0], $explode[1], $explode[2]);
+        $weekDates[] =  sprintf("%04d/%02d/%02d", $jy, $jm, $jd);
+    }else{
+        $weekDates[] = $d;
+    }
+}
 ?>
 
-<div class="container mt-5">
-    <div class="table-container">
-        <span class="btn btn-info arrow-button" id="prevWeek">&#8592; هفته قبل</span>
-        <h2 class="text-center mb-4">جدول رزرو برای هفته</h2>
-        <span class="btn btn-info arrow-button" id="nextWeek">هفته بعد &#8594;</span>
-    </div>
+<label for="per_page" class="form-label mb-0"><?= __('service') ?>:</label>
+<select id="employeeService" class="form-select w-auto">
+    <?php foreach ($employeeServicesData as $opt):  ?>
+        <option value="<?= $opt->id ?>" ><?= $opt->title ?></option>
+    <?php endforeach; ?>
+</select>
+<div class="container mt-5 " dir="ltr">
 
+    <div class="table-container">
+    <span class="btn btn-info arrow-button" id="prevWeek"><span class="fa fa-arrow-left mx-1"></span><?= __('previous_week') ?></span>
+        <h2 class="text-center mb-4" dir="<?= APP_LANG=="fa"?'rtl':'ltr' ?>"><?= __('weekly_reserve_table')." $user->first_name $user->last_name" ?></h2>
+        <span class="btn btn-info arrow-button" id="nextWeek" ><?= __('next_week') ?><span class="fa fa-arrow-right mx-1"></span></span>
+    </span>
+    </div>
     <div class="dynamic-grid" id="grid-container"></div>
 
     <div class="text-center">
@@ -20,167 +41,37 @@ $dayse = ['SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI'];
     </div>
 </div>
 <?php
+$servicePayload = array_map(function ($item) {
+    if (is_object($item)) {
+        if (method_exists($item, 'toArray')) return $item->toArray();
+        if ($item instanceof JsonSerializable) return $item->jsonSerialize();
+        return get_object_vars($item); // فقط publicها
+    }
+    return $item;
+}, $employeeServicesData);
 $scheduleData = (object)[
-        'startTime' => "10:00:00",
-        'endTime' => "19:00:00",
-        'startTimeW1' => "10:00:00",
-        'endTimeW1' => "15:00:00",
-        'startTimeW2' => "10:00:00",
-        'endTimeW2' => "16:30:00",
-        'startTimeH' => "10:00:00",
-        'endTimeH' => "19:30:00",
-        'hasLaunchTime' => true,
-        'launchTime' => "12:00:00"
+        'weekDates' => $weekDates,
+        'todayIndex' =>$todayIndex ,
+        'weekDays' => $days,
+        'startTime' => $salon->start_time,
+        'endTime' => $salon->end_time,
+        'startTimeW1' => $salon->start_time_weekend_1,
+        'endTimeW1' => $salon->end_time_weekend_1,
+        'startTimeW2' => $salon->start_time_weekend_2,
+        'endTimeW2' => $salon->end_time_weekend_2,
+        'startTimeH' => $salon->start_time_holidays,
+        'endTimeH' => $salon->end_time_holidays,
+        'hasLaunchTime' => $user->has_launch_time,
+        'launchTime' => $user->launch_time,
+        'todayWord'=>__('today'),
+        'w1Index'=>5,
+        'w2Index'=>6,
+        'hIndexes'=>[1,3],
+        'serviceObj'=>$servicePayload,
 ];
-
 
 ?>
 
-<?php
-$scheduleSamples = [
-    // 1) نمونه‌ی پایه (مشابه دیتای شما)
-    (object)[
-        'startTime'   => "10:00:00",
-        'endTime'     => "19:00:00",
-        'startTimeW1' => "10:00:00",
-        'endTimeW1'   => "15:00:00",
-        'startTimeW2' => "10:00:00",
-        'endTimeW2'   => "16:30:00",
-        'startTimeH'  => "10:00:00",
-        'endTimeH'    => "19:30:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "12:00:00",
-    ],
-
-    // 2) شیفت عادی با ساعات کمی متفاوت
-    (object)[
-        'startTime'   => "09:30:00",
-        'endTime'     => "18:30:00",
-        'startTimeW1' => "09:30:00",
-        'endTimeW1'   => "14:30:00",
-        'startTimeW2' => "09:30:00",
-        'endTimeW2'   => "17:00:00",
-        'startTimeH'  => "10:00:00",
-        'endTimeH'    => "18:00:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "13:00:00",
-    ],
-
-    // 3) شیفت کوتاه‌تر در کل و بدون اضافه‌کاری
-    (object)[
-        'startTime'   => "08:00:00",
-        'endTime'     => "16:00:00",
-        'startTimeW1' => "08:00:00",
-        'endTimeW1'   => "12:00:00",
-        'startTimeW2' => "08:00:00",
-        'endTimeW2'   => "14:30:00",
-        'startTimeH'  => "08:00:00",
-        'endTimeH'    => "16:00:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "12:30:00",
-    ],
-
-    // 4) بدون زمان ناهار (برای تست شرط hasLaunchTime=false)
-    (object)[
-        'startTime'   => "11:00:00",
-        'endTime'     => "19:00:00",
-        'startTimeW1' => "11:00:00",
-        'endTimeW1'   => "15:30:00",
-        'startTimeW2' => "11:00:00",
-        'endTimeW2'   => "17:00:00",
-        'startTimeH'  => "11:00:00",
-        'endTimeH'    => "19:00:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => null,   // عمداً null برای تست
-    ],
-
-    // 5) ناهار دیرهنگام
-    (object)[
-        'startTime'   => "10:00:00",
-        'endTime'     => "19:00:00",
-        'startTimeW1' => "10:00:00",
-        'endTimeW1'   => "15:00:00",
-        'startTimeW2' => "10:00:00",
-        'endTimeW2'   => "16:00:00",
-        'startTimeH'  => "10:00:00",
-        'endTimeH'    => "19:00:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "15:30:00",
-    ],
-
-    // 6) روز W1 تعطیل (با برابر بودن start/end برای تست «روز تعطیل»)
-    (object)[
-        'startTime'   => "09:00:00",
-        'endTime'     => "17:00:00",
-        'startTimeW1' => "00:00:00", // تعطیل
-        'endTimeW1'   => "10:00:00",
-        'startTimeW2' => "09:00:00",
-        'endTimeW2'   => "13:00:00",
-        'startTimeH'  => "09:00:00",
-        'endTimeH'    => "17:30:00",
-        'hasLaunchTime' => false,
-        'launchTime'    => "12:15:00",
-    ],
-
-    // 7) دقایق نیم‌ساعته و رُند نبودن بعضی بازه‌ها
-    (object)[
-        'startTime'   => "08:30:00",
-        'endTime'     => "17:00:00",
-        'startTimeW1' => "08:30:00",
-        'endTimeW1'   => "12:15:00",
-        'startTimeW2' => "08:30:00",
-        'endTimeW2'   => "15:45:00",
-        'startTimeH'  => "09:15:00",
-        'endTimeH'    => "17:00:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "13:30:00",
-    ],
-
-    // 8) شیفت شبانه (شروع روز قبل، پایان روز بعد) — برای تست منطق عبور از نیمه‌شب
-    (object)[
-        'startTime'   => "22:00:00",
-        'endTime'     => "06:00:00", // پایان روز بعد
-        'startTimeW1' => "22:00:00",
-        'endTimeW1'   => "02:00:00",
-        'startTimeW2' => "22:00:00",
-        'endTimeW2'   => "04:30:00",
-        'startTimeH'  => "22:00:00",
-        'endTimeH'    => "06:30:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "01:00:00",
-    ],
-
-    // 9) بازه‌ی مرزی (کل روز کاری)
-    (object)[
-        'startTime'   => "00:00:00",
-        'endTime'     => "23:59:59",
-        'startTimeW1' => "00:00:00",
-        'endTimeW1'   => "12:00:00",
-        'startTimeW2' => "12:00:00",
-        'endTimeW2'   => "23:59:59",
-        'startTimeH'  => "08:00:00",
-        'endTimeH'    => "20:00:00",
-        'hasLaunchTime' => true,
-        'launchTime'    => "12:00:00",
-    ],
-
-    // 10) مورد عمداً نامعتبر برای تست اعتبارسنجی (endTime قبل از startTime، ناهار خارج از بازه)
-    (object)[
-        'startTime'   => "12:00:00",
-        'endTime'     => "14:00:00", // نامعتبر: پایان قبل از شروع
-        'startTimeW1' => "09:00:00",
-        'endTimeW1'   => "10:45:00",
-        'startTimeW2' => "13:00:00",
-        'endTimeW2'   => "14:30:00", // نامعتبر: پایان قبل از شروع
-        'startTimeH'  => "10:30:00",
-        'endTimeH'    => "21:00:00", // نامعتبر
-        'hasLaunchTime' => true,
-        'launchTime'    => "13:30:00", // خارج از شیفت
-    ],
-];
-$scheduleData=$scheduleSamples[9]
-// اگر لازم دارید: echo json_encode($scheduleSamples, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
-?>
 
 <script>
     window.scheduleConfig = <?= json_encode($scheduleData, JSON_UNESCAPED_UNICODE) ?>;

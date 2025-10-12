@@ -8,7 +8,9 @@ abstract class Model
     protected string $table;
     protected array $attributes = [];
     protected array $fillable = [];
-    protected array $virtual = [];
+    protected array $virtualKeys = [];
+    protected array $virtualValues = [];
+
     protected array $wheres = [];
     protected array $joins = [];
     protected array $with = [];
@@ -49,29 +51,43 @@ abstract class Model
     public function fill(array $data): void
     {
         foreach ($this->fillable as $key) {
-            if (isset($data[$key])) {
+            if (array_key_exists($key, $data)) {
                 $this->attributes[$key] = $data[$key];
             }
         }
-        foreach ($data as $key => $val) {
-            if (!in_array($key, $this->fillable)) {
-                $this->virtual[$key] = $val;
+        foreach ($this->virtualKeys as $vkey) {
+            if (array_key_exists($vkey, $data)) {
+                $this->virtualValues[$vkey] = $data[$vkey];
             }
         }
     }
 
     public function __set($name, $value)
     {
-        if (in_array($name, $this->fillable)) {
+        if (in_array($name, $this->fillable, true)) {
             $this->attributes[$name] = $value;
-        } else {
-            $this->virtual[$name] = $value;
+            return;
+        }
+        if (in_array($name, $this->virtualKeys, true)) {
+            $this->virtualValues[$name] = $value;
+            return;
         }
     }
 
+
     public function __get($name)
     {
-        return $this->attributes[$name] ?? $this->virtual[$name] ?? null;
+        if (array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+        $accessor = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $name))) . 'Attribute';
+        if (method_exists($this, $accessor)) {
+            return $this->{$accessor}();
+        }
+        if (array_key_exists($name, $this->virtualValues)) {
+            return $this->virtualValues[$name];
+        }
+        return $this->attributes[$name] ?? $this->virtualKeys[$name] ?? null;
     }
 
     public function select(array $columns): static
@@ -349,7 +365,18 @@ abstract class Model
 
     public function toArray(): array
     {
-        return $this->attributes;
+        $data = $this->attributes;
+        foreach ($this->virtualKeys as $vkey) {
+            if (array_key_exists($vkey, $this->virtualValues)) {
+                $data[$vkey] = $this->virtualValues[$vkey];
+            } else {
+                $accessor = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $vkey))) . 'Attribute';
+                if (method_exists($this, $accessor)) {
+                    $data[$vkey] = $this->{$accessor}();
+                }
+            }
+        }
+        return $data;
     }
 
     public function deleteWhere(array $conditions): bool

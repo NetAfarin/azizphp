@@ -7,6 +7,8 @@ use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\Duration;
 use App\Models\EmployeeService;
+use App\Models\Holiday;
+use App\Models\Salon;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
@@ -243,6 +245,7 @@ class AdminController extends Controller
                     'first_name' => $first_name,
                     'last_name' => $last_name,
                     'phone_number' => $phone,
+                    'salon_id' => 1,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
                     'user_type' => $userTypeInstance->id,
                     'birth_date' => $_POST['birth_date'],
@@ -375,6 +378,9 @@ class AdminController extends Controller
             redirect("/admin/users");
             exit;
         }
+        $salon = Salon::find((int)$user->salon_id);
+        $holidays = Holiday::all();
+
 
         $userTypes = UserType::all();
         $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $employeeId)->get() ?? [];
@@ -383,6 +389,8 @@ class AdminController extends Controller
             'title' => __('edit_user'),
             'user' => $user,
             'userTypes' => $userTypes,
+            'salon' => $salon,
+            'holidays' => $holidays,
             'employeeServicesData' => $employeeServicesData,
         ]);
     }

@@ -227,4 +227,9 @@ return [
     'title' => 'عنوان',
     'you' => 'شما',
     'reserve_settings' => 'تنظیمات رزرو',
+    'weekly_reserve_table' => 'جدول رزرو برای هفته',
+    'previous_week' => 'هفته قبل',
+    'next_week' => 'هفته بعد',
+    'today' => 'امروز',
+    'service' => 'خدمت',
 ];

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Core\Database;
@@ -14,10 +15,10 @@ class EmployeeService extends Model
         'service_id',
         'user_id',
         'price',
-        'free_hour',
         'estimated_duration',
     ];
-    protected array $virtual = [
+    protected array $virtualKeys = [
+        'title',
         'en_title',
         'fa_title',
     ];

@@ -1,6 +1,26 @@
+const {
+    weekDates,
+    todayIndex,
+    weekDays,
+    startTime,
+    endTime,
+    startTimeW1,
+    endTimeW1,
+    startTimeW2,
+    endTimeW2,
+    startTimeH,
+    endTimeH,
+    hasLaunchTime,
+    launchTime,
+    todayWord,
+    w1Index,
+    w2Index,
+    hIndexes,
+    serviceObj
+} = window.scheduleConfig;
+console.log((serviceObj))
 
-
-function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, startTimeW2, endTimeW2, startTimeH, endTimeH, hasLaunchTime, launchTIme) {
+function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTIme,serviceObj) {
     const gridContainer = document.getElementById('grid-container');
     let startUnit = timeToUnits(startTime);
     let endUnit = timeToUnits(endTime);
@@ -20,7 +40,6 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
     if (maxEnd % 2 === 1) {
         maxEnd++;
     }
-    const weekDays = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
     let maxDiff = (maxEnd - minStart) / 2;
     maxDiff % 2 === 1 ? maxDiff + 1 : maxDiff
 
@@ -30,10 +49,10 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
     tmpstart = minStart;
     cellnumber = 1;
 
-    console.log("minStart->",minStart)
-    console.log("maxEnd->",maxEnd)
-    console.log("maxDiff->",maxDiff)
-    console.log("rows->",rows)
+    // console.log("minStart->", minStart)
+    // console.log("maxEnd->", maxEnd)
+    // console.log("maxDiff->", maxDiff)
+    // console.log("rows->", rows)
 
     let cc = 1;
     for (let i = 1; i <= (rows * 2); i++) {
@@ -51,7 +70,7 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
         if (i === 0) {
             text = "روز / ساعت";
         } else if (i < columns) {
-            text = `${weekDays[i - 1]}`;
+            text = `${weekDays[i - 1]} ${weekDates[i - 1]}`;
         } else if (i % columns === 0) {
             rstart = Math.floor(i / columns) + cc;
             rend = Math.floor(i / columns) + cc + 2;
@@ -62,9 +81,9 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
             continue;
         }
 
-        gridContainer.appendChild(createBox(rend, columnStart, rstart, text,'box','checkAll-col-'+i));
+        gridContainer.appendChild(createBox(rend, columnStart, rstart, text, 'box', 'checkAll-col-' + i, "", true,i === todayIndex?todayWord:''));
     }
-    duration = 90
+    duration = serviceObj.estimated_duration*30
     tmpstart = minStart;
 
     for (let i = 1; i < columns; i++) {
@@ -74,7 +93,7 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
         let workRange = 0
         let startOfOffForEnd = 0;
         let startOfLaunchTime = startLaunch - minStart + 2;
-        if (weekDays[i - 1] == 'جمعه') {//jome
+        if ((i - 1) === w2Index) {//jome
             if (startUnit6 > minStart) {
                 const endOfOffForStart = startUnit6 - minStart + 2;
                 gridContainer.appendChild(createBox(endOfOffForStart, gridColumn, 2, "", "disabledBox"));
@@ -88,7 +107,7 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
                 gridContainer.appendChild(createBox(endOfOffForEnd, gridColumn, startOfOffForEnd, "", "disabledBox"));
             }
             workRange = endUnit6 - startUnit6
-        } else if (weekDays[i - 1] == 'پنجشنبه') {//panjshanbe
+        } else if ((i - 1) === w1Index) {
             if (startUnit5 > minStart) {
                 const endOfOffForStart = startUnit5 - minStart + 2;
                 gridContainer.appendChild(createBox(endOfOffForStart, gridColumn, 2, "", "disabledBox"));
@@ -103,14 +122,14 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
             }
             workRange = endUnit5 - startUnit5
         } else {
-            if (weekDays[i - 1] == 'دوشنبه') {
+            if (hIndexes.includes(i-1)  ) {
                 if (startUnith > minStart) {
                     const endOfOffForStart = startUnith - minStart + 2;
                     gridContainer.appendChild(createBox(endOfOffForStart, gridColumn, 2, "", "disabledBox"));
                     j = startUnith - minStart + 1
                 }
                 if (hasLaunchTime && startLaunch >= startUnith && startLaunch < endUnith) {
-                    gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox"));
+                    gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox",null,"#f320000"));
                 }
                 startOfOffForEnd = endUnith - minStart + 2;
                 if ((endUnith) < maxEnd) {
@@ -133,12 +152,12 @@ function generateGrid(columns, startTime, endTime, startTimeW1, endTimeW1, start
                 workRange = endUnit - startUnit
             }
         }
-        console.log(weekDays[i - 1] + "->workRange:" + workRange + " start:" + (j) + " end:" + ((startOfOffForEnd)))
+        // console.log(weekDays[i - 1] + "->workRange:" + workRange + " start:" + (j) + " end:" + ((startOfOffForEnd)))
         for (; j < (startOfOffForEnd - (duration / 30));) {
             if (hasLaunchTime && j < startOfLaunchTime && (j + (duration / 30)) >= startOfLaunchTime) {
                 j = startOfLaunchTime
             } else {
-                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, "کاشت ناخن" + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}`+ "<br>", ["box", "cell"],'col-'+i+'_row-'+j));
+                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, serviceObj.title + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}` + "<br>", ["box", "cell"], 'col-' + i + '_row-' + j, i-1===w1Index?"#f3550033":i-1===w2Index?"#f3005033":i-1===w2Index?"#f5000033":""));
                 j += (duration / 30)
             }
         }
@@ -159,7 +178,7 @@ function unitsToTime(unit) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null) {
+function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null, bgColor = '', header = false,todayWord='') {
     const box = document.createElement('div');
     if (Array.isArray(classnames)) {
         classnames.forEach(cls => box.classList.add(cls));
@@ -167,18 +186,19 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
         box.classList.add(classnames);
     }
 
-    box.innerHTML = text;
+    box.innerHTML = ((todayWord!=='') ? '<span class="badge bg-success mx-1">' + todayWord + '</span>' : '') + text;
     box.style.gridColumnStart = gridColumn;
     box.style.gridRowStart = gridRowStart;
     box.style.gridRowEnd = end;
+    box.style.backgroundColor = bgColor;
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
 
-    if (checkboxId && gridColumn!==1) {
+    if (checkboxId && gridColumn !== 1) {
         checkbox.id = checkboxId;
         box.appendChild(checkbox);
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             if (this.id.startsWith('checkAll-col-')) {
                 const colNumber = this.id.split('-')[2];
                 const checkboxes = document.querySelectorAll(`input[id^="col-${colNumber}_row-"]`);
@@ -189,7 +209,7 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
             }
         });
 
-        box.addEventListener('click', function(event) {
+        box.addEventListener('click', function (event) {
             if (event.target.type === 'checkbox') {
                 return;
             }
@@ -198,34 +218,31 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
             checkbox.dispatchEvent(new Event('change'));
         });
 
-        box.getCheckbox = function() {
+        box.getCheckbox = function () {
             return checkbox;
         };
 
-        box.setChecked = function(checked) {
+        box.setChecked = function (checked) {
             checkbox.checked = checked;
             checkbox.dispatchEvent(new Event('change'));
         };
 
-        box.isChecked = function() {
+        box.isChecked = function () {
             return checkbox.checked;
         };
 
     }
     return box;
 }
-const {
-    startTime,
-    endTime,
-    startTimeW1,
-    endTimeW1,
-    startTimeW2,
-    endTimeW2,
-    startTimeH,
-    endTimeH,
-    hasLaunchTime,
-    launchTime
-} = window.scheduleConfig;
 
 
-generateGrid(8, startTime, endTime, startTimeW1, endTimeW1, startTimeW2, endTimeW2, startTimeH, endTimeH, hasLaunchTime, launchTime);
+
+$(document).ready(function () {
+    $('#employeeService').on('change', function (e) {
+        let id=$(this).val();
+        let serviceObj1 =  serviceObj.find(s => Number(s.id) === Number(id));
+        console.log("selected->", serviceObj1.id)
+        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj1);
+    })
+    generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+})
