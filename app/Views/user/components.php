@@ -350,10 +350,7 @@
                 <th>نام خانوادگی</th>
                 <th>شماره موبایل</th>
                 <th>نقش کاربر</th>
-                <th>امتیاز <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 7H7M7 7V3M7 7L4 4M21 17H17M17 17V21M17 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M3 17H12M21 7H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg></th>
+                <th>امتیاز <i class="fas fa-sort-amount-down-alt mx-1"></th>
                 <th>عملیات</th>
             </tr>
             </thead>
@@ -417,14 +414,8 @@
             <tr>
                 <th> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> ردیف</th>
                 <th>عنوان</th>
-                <th>دسته بندی <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 7H7M7 7V3M7 7L4 4M21 17H17M17 17V21M17 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M3 17H12M21 7H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg></th>
-                <th>تعداد خدمات <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 7H7M7 7V3M7 7L4 4M21 17H17M17 17V21M17 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M3 17H12M21 7H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg></th>
+                <th><i class="fas fa-sort-amount-down-alt mx-1"></th>
+                <th>تعداد خدمات <i class="fas fa-sort-amount-down-alt mx-1"></i></th>
                 <th>عملیات</th>
             </tr>
             </thead>
@@ -435,10 +426,13 @@
                     1
                 </td>
                 <td>
-                    <div class="d-flex justify-content-center gap-2">
+                    <div class="d-flex justify-content-between " >
+                        <span class="badge category-bg-light-green " style="opacity: 0">دسته بندی</span>
                         <span>ابرو و مژه</span>
-                       <span class="badge category-bg-light-green">دسته بندی</span>
+                        <span class="badge category-bg-light-green">دسته بندی</span>
                     </div>
+
+
                 </td>
                 <td>-</td>
                 <td>2</td>

@@ -1,6 +1,6 @@
 @font-face {
     font-family: myFont;
-    src: url("../../public/font/iransans.ttf");
+    src: url("../font/iransans.ttf");
 }
 
 :root {
@@ -70,11 +70,11 @@
     --bs-dark-border-subtle: #adb5bd;
     --bs-white-rgb: 255, 255, 255;
     --bs-black-rgb: 0, 0, 0;
-    --bs-font-sans-serif: iransans, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-font-sans-serif: myFont;
+    --bs-body-font-family: myFont;
 
     /*--bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
-    --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --bs-font-monospace:  myFont;
     --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
     --bs-body-font-size: 1rem;
     --bs-body-font-weight: 400;
@@ -131,7 +131,9 @@
     --bs-form-border :#D4D3D3;
     --bs-light-green : #B2FF00;
 }
-
+body, *{
+    font-family: myFont, serif;
+}
 /*:root {*/
 /*--bs-primary-hover: #D4417C;*/
 /*--bs-secondary-hover: #5A6268;*/
