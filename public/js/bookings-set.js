@@ -19,6 +19,12 @@ const {
     serviceObj
 } = window.scheduleConfig;
 console.log((serviceObj))
+console.log((serviceObj[0]))
+const pageSize = 7;
+const getWeekSlice = (weekDates, weekNumber ) =>
+    weekDates.slice((weekNumber - 1) * pageSize, weekNumber * pageSize);
+let weekNumber=1
+let selectedWeekDates =getWeekSlice(weekDates,weekNumber)
 
 function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTIme,serviceObj) {
     const gridContainer = document.getElementById('grid-container');
@@ -70,7 +76,7 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
         if (i === 0) {
             text = "روز / ساعت";
         } else if (i < columns) {
-            text = `${weekDays[i - 1]} ${weekDates[i - 1]}`;
+            text = `${weekDays[i - 1]} ${selectedWeekDates[i - 1]}`;
         } else if (i % columns === 0) {
             rstart = Math.floor(i / columns) + cc;
             rend = Math.floor(i / columns) + cc + 2;
@@ -206,6 +212,12 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
                 checkboxes.forEach(cb => {
                     cb.checked = this.checked;
                 });
+                let diffCHeckBox1 = diffCHeckBox();
+                if(diffCHeckBox1 !== undefined && diffCHeckBox1.length > 0) {
+                    startTask()
+                }else {
+                    finishTask();
+                }
             }
         });
 
@@ -216,6 +228,12 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
 
             checkbox.checked = !checkbox.checked;
             checkbox.dispatchEvent(new Event('change'));
+            let diffCHeckBox1 = diffCHeckBox();
+            if(diffCHeckBox1 !== undefined && diffCHeckBox1.length > 0) {
+                startTask()
+            }else {
+                finishTask();
+            }
         });
 
         box.getCheckbox = function () {
@@ -230,11 +248,32 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
         box.isChecked = function () {
             return checkbox.checked;
         };
-
+          addCheckBox(checkbox);
     }
     return box;
 }
+let checkBoxes=[]
+const addCheckBox = (el) => checkBoxes.push({ el, last: !!el.checked });
+const diffCHeckBox = () => checkBoxes.filter(x => !!x.el.checked !== x.last);
 
+let taskInProgress = false;
+
+function startTask() {
+    console.log("startTask");
+    taskInProgress = true;
+}
+
+function finishTask() {
+    console.log("finishTask");
+    taskInProgress = false;
+}
+
+window.addEventListener('beforeunload', (event) => {
+    if (taskInProgress) {
+        event.preventDefault();
+        event.returnValue = '';
+    }
+});
 
 
 $(document).ready(function () {
@@ -245,4 +284,15 @@ $(document).ready(function () {
         generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj1);
     })
     generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+    $('#nextWeek').on('click', function (e) {
+        weekNumber++
+        selectedWeekDates =getWeekSlice(weekDates,weekNumber)
+        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+    })
+    $('#prevWeek').on('click', function (e) {
+        weekNumber--
+        selectedWeekDates =getWeekSlice(weekDates,weekNumber)
+        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+    })
+
 })

@@ -9,7 +9,7 @@ $deltaToWeekStart = $todayIndex;
 $weekStart = (clone $today)->modify("-{$deltaToWeekStart} days");
 $format = 'Y-m-d';
 $weekDates = [];
-for ($i = 0; $i < 7; $i++) {
+for ($i = 0; $i < 7*4; $i++) {
     $d = (clone $weekStart)->modify("+{$i} days")->format($format);
     if (APP_LANG=="fa"){
         $explode = explode('-', $d);
