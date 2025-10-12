@@ -1,5 +1,5 @@
 
-
+<link rel="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
 <div  class="bg-dark">
     <div class="row">
         <div class="col-2">
@@ -215,125 +215,246 @@
     </span>
     </div>
     <div class="row justify-content-center mt-5">
-        <div class="table-container">
+        <div class="table-wrapper">
+            <table class="table custom-table">
+
+                <thead class="table-primary ">
+                <tr>
+                    <th>روز</th>
+                    <th>شروع کار</th>
+                    <th>پایان کار</th>
+                    <th>وضعیت</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>شنبه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>یکشنبه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>دوشنبه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>سه شنبه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>چهارشنبه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>پنج شنبه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>جمعه</td>
+                    <td>🕒 8:00</td>
+                    <td>🕒 17:00</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <div class="form-check">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    تعطیل
+                                </label>
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="table-wrapper">
             <table class="table custom-table">
 
             <thead class="table-primary ">
             <tr>
-                <th>روز</th>
-                <th>شروع کار</th>
-                <th>پایان کار</th>
-                <th>وضعیت</th>
+                <th> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> ردیف</th>
+                <th>نام</th>
+                <th>نام خانوادگی</th>
+                <th>شماره موبایل</th>
+                <th>نقش کاربر</th>
+                <th>امتیاز <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 7H7M7 7V3M7 7L4 4M21 17H17M17 17V21M17 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 17H12M21 7H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg></th>
+                <th>عملیات</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>شنبه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
                 <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    1
+                </td>
+                <td>هانیه</td>
+                <td>محمدپور</td>
+                <td>09211111111</td>
+                <td>مدیر</td>
+                <td> 5</td>
+                <td>
+                    <div class="d-flex justify-content-center gap-1">
+                        <button class="btn  activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+                            </svg></button>
+                        <button class="btn activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                            </svg></button>
                     </div>
+                </td>
 
+            </tr>
+            <tr>
+                <td>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    1
+                </td>
+                <td>هانیه</td>
+                <td>محمدپور</td>
+                <td>09211111111</td>
+                <td>مدیر</td>
+                <td> 5</td>
+                <td>
+                    <div class="d-flex justify-content-center gap-1">
+                        <button class="btn  activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+                            </svg></button>
+                        <button class="btn activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                            </svg></button>
+                    </div>
                 </td>
 
             </tr>
+            </tr>
+
+            </tbody>
+
+        </table>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="table-wrapper">
+            <table class="table custom-table">
+
+            <thead class="table-primary ">
             <tr>
-                <td>یکشنبه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
+                <th> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> ردیف</th>
+                <th>عنوان</th>
+                <th>دسته بندی <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 7H7M7 7V3M7 7L4 4M21 17H17M17 17V21M17 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 17H12M21 7H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg></th>
+                <th>تعداد خدمات <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 7H7M7 7V3M7 7L4 4M21 17H17M17 17V21M17 17L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M3 17H12M21 7H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg></th>
+                <th>عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
                 <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                    1
+                </td>
+                <td>
+                    <div class="d-flex justify-content-center gap-2">
+                        <span>ابرو و مژه</span>
+                       <span class="badge category-bg-light-green">دسته بندی</span>
                     </div>
                 </td>
-            </tr>
-            <tr>
-                <td>دوشنبه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
+                <td>-</td>
+                <td>2</td>
                 <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
+                    <div class="d-flex justify-content-center gap-1">
+                        <button class="btn  activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+                            </svg></button>
+                        <button class="btn activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                            </svg></button>
                     </div>
                 </td>
+
             </tr>
-            <tr>
-                <td>سه شنبه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>چهارشنبه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>پنج شنبه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>جمعه</td>
-                <td>🕒 8:00</td>
-                <td>🕒 17:00</td>
-                <td>
-                    <div class="d-flex justify-content-center">
-                        <div class="form-check">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                تعطیل
-                            </label>
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </div>
-                </td>
-            </tr>
+
             </tbody>
 
         </table>
@@ -364,7 +485,7 @@
         <div class="mt-5">
             <div class="d-flex flex-column justify-content-evenly   custom-shadow" style="height: 212px; width: 670px; border-radius: 8px">
                 <div class="p-2  text-start fw-bold">نظر شما مهم است!</div>
-                <div class="p-2 text-secondary text-start ">رنگ موی شما ۲ روز پیش انجام شد. لطفاً تجربه‌تان را به اشتراک بگذارید.</div>
+                <div class="p-2 text-secondary text-center ">رنگ موی شما ۲ روز پیش انجام شد. لطفاً تجربه‌تان را به اشتراک بگذارید.</div>
                 <div class="p-2 text-secondary text-center">
                     <button class="btn btn-primary">ثبت نظر</button>
                 </div>
@@ -380,13 +501,13 @@
                          <div class="d-flex flex-column justify-content-center"
                               style="border: 1px solid #DEDEDE; background: #F5F5F5; border-radius: 8px; width: 267px; height: 99px;">
                              <h6>رنگ مو</h6>
-                             <p>مدت زمان: 2 ساعت</p>
+                             <p class="text-secondary">مدت زمان: 2 ساعت</p>
                          </div>
 
                          <div class="d-flex flex-column justify-content-center"
                               style="border: 1px solid #DEDEDE; background: #F5F5F5; border-radius: 8px; width: 267px; height: 99px;">
                              <h6>رنگ مو</h6>
-                             <p>مدت زمان: 2 ساعت</p>
+                             <p class="text-secondary">مدت زمان: 2 ساعت</p>
                          </div>
                      </div>
                  </div>
