@@ -165,6 +165,12 @@ class UserController extends Controller
             'errors' => $errors
         ]);
     }
+    public function login_page()
+    {
+        $this->view('user/login-page', [
+            'title' => __('login'),
+        ]);
+    }
 
     public function logout(): void
     {

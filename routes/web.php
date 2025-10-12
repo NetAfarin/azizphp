@@ -21,6 +21,8 @@ use App\Middlewares\SaRoleMiddleware;
 //    Route::get('/user/login', [UserController::class, 'login']);
     Route::middleware([InstanceMiddleware::class,GuestMiddleware::class])->group(function () {
         Route::get('/user/login', [UserController::class, 'login']);
+        Route::get('/user/login2', [UserController::class, 'login_page']);
+
         Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
@@ -30,6 +32,7 @@ use App\Middlewares\SaRoleMiddleware;
 
 Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class])->group(function () {
     Route::post('/user/login', [UserController::class, 'login']);
+    Route::post('/user/login2', [UserController::class, 'login_page']);
     Route::post('/user/register', [UserController::class, 'register']);
 });
 
