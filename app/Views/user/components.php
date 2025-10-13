@@ -146,6 +146,7 @@
         <input class="form-control mt-5" type="text" value="برچسب" aria-label="readonly input example" readonly>
     </div>
     <div class="input-with-icon mt-5">
+        <label for="password" class="form-label text-black fw-bold pe-2">رمز عبور</label>
         <input type="password" class="form-control ltr-input" id="password" placeholder="رمز عبور خود را وارد کنید">
         <button type="button" class="password-toggle" id="togglePassword">
             <span>👁️</span>
@@ -251,10 +252,10 @@
                     <td>
                         <div class="d-flex justify-content-center">
                             <div class="form-check">
-                                <label class="form-check-label" for="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault2">
                                     تعطیل
                                 </label>
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault2">
                             </div>
                         </div>
                     </td>
@@ -266,10 +267,10 @@
                     <td>
                         <div class="d-flex justify-content-center">
                             <div class="form-check">
-                                <label class="form-check-label" for="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault3">
                                     تعطیل
                                 </label>
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault3">
                             </div>
                         </div>
                     </td>
@@ -281,10 +282,10 @@
                     <td>
                         <div class="d-flex justify-content-center">
                             <div class="form-check">
-                                <label class="form-check-label" for="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault4">
                                     تعطیل
                                 </label>
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault4">
                             </div>
                         </div>
                     </td>
@@ -296,10 +297,10 @@
                     <td>
                         <div class="d-flex justify-content-center">
                             <div class="form-check">
-                                <label class="form-check-label" for="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault5">
                                     تعطیل
                                 </label>
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault5">
                             </div>
                         </div>
                     </td>
@@ -311,10 +312,10 @@
                     <td>
                         <div class="d-flex justify-content-center">
                             <div class="form-check">
-                                <label class="form-check-label" for="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault6">
                                     تعطیل
                                 </label>
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault6">
                             </div>
                         </div>
                     </td>
@@ -326,10 +327,10 @@
                     <td>
                         <div class="d-flex justify-content-center">
                             <div class="form-check">
-                                <label class="form-check-label" for="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault7">
                                     تعطیل
                                 </label>
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault7">
                             </div>
                         </div>
                     </td>
@@ -345,7 +346,10 @@
 
             <thead class="table-primary ">
             <tr>
-                <th> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> ردیف</th>
+                <th> <input class="form-check-input" type="checkbox" value="" id="allUsers">
+                    <label class="form-check-label" for="allUsers">
+                        ردیف
+                    </label></th>
                 <th>نام</th>
                 <th>نام خانوادگی</th>
                 <th>شماره موبایل</th>
@@ -357,8 +361,10 @@
             <tbody>
             <tr>
                 <td>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    1
+                    <input class="form-check-input" type="checkbox" value="" id="tableUser1">
+                    <label class="form-check-label" for="tableUser1">
+                        1
+                    </label>
                 </td>
                 <td>هانیه</td>
                 <td>محمدپور</td>
@@ -367,20 +373,18 @@
                 <td> 5</td>
                 <td>
                     <div class="d-flex justify-content-center gap-1">
-                        <button class="btn  activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
-                            </svg></button>
-                        <button class="btn activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                            </svg></button>
+                        <button class="btn  activities-icon"><span class="fa fa-edit"></span></button>
+                        <button class="btn  activities-icon"><span class="fa fa-trash"></span></button>
                     </div>
                 </td>
 
             </tr>
             <tr>
                 <td>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    1
+                    <input class="form-check-input" type="checkbox" value="" id="tableUser2">
+                    <label class="form-check-label" for="tableUser2">
+                        2
+                    </label>
                 </td>
                 <td>هانیه</td>
                 <td>محمدپور</td>
@@ -389,12 +393,8 @@
                 <td> 5</td>
                 <td>
                     <div class="d-flex justify-content-center gap-1">
-                        <button class="btn  activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
-                            </svg></button>
-                        <button class="btn activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                            </svg></button>
+                        <button class="btn  activities-icon"><span class="fa fa-edit"></span></button>
+                        <button class="btn  activities-icon"><span class="fa fa-trash"></span></button>
                     </div>
                 </td>
 
@@ -412,7 +412,9 @@
 
             <thead class="table-primary ">
             <tr>
-                <th> <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"> ردیف</th>
+                <th> <input class="form-check-input" type="checkbox" value="" id="allServices">
+                <label for="allServices">ردیف</label>
+                </th>
                 <th>عنوان</th>
                 <th><i class="fas fa-sort-amount-down-alt mx-1"></th>
                 <th>تعداد خدمات <i class="fas fa-sort-amount-down-alt mx-1"></i></th>
@@ -422,8 +424,10 @@
             <tbody>
             <tr>
                 <td>
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                    1
+                    <input class="form-check-input" type="checkbox" value="" id="tableService1">
+                    <label class="form-check-label" for="tableService1">
+                        1
+                    </label>
                 </td>
                 <td>
                     <div class="d-flex justify-content-between " >
@@ -438,12 +442,8 @@
                 <td>2</td>
                 <td>
                     <div class="d-flex justify-content-center gap-1">
-                        <button class="btn  activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
-                            </svg></button>
-                        <button class="btn activities-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                            </svg></button>
+                        <button class="btn  activities-icon"><span class="fa fa-edit"></span></button>
+                        <button class="btn  activities-icon"><span class="fa fa-trash"></span></button>
                     </div>
                 </td>
 
@@ -456,18 +456,8 @@
     </div>
 
     <div>
-<!--        <div class="mt-5">-->
-<!--            <div class="card  shadow-sm mb-3" style="max-width: 18rem;">-->
-<!--                <div class="card-header fw-bold bg-transparent">خدمات محبوب شما</div>-->
-<!--                <div class="card-body">-->
-<!--                    <p class="card-text">کوتاهی مو با سارا</p>-->
-<!--                    <p class="card-text">ترمیم ناخن با هرکی</p>-->
-<!--                </div>-->
-<!--                <div class="card-footer"></div>-->
-<!--            </div>-->
-<!--        </div>-->
         <div class="mt-5">
-            <div class="card  custom-shadow mb-3" style="max-width: 18rem;">
+            <div class="card  shadow-md mb-3" style="max-width: 18rem;">
                 <div class="card-header text-center fw-bold bg-transparent">خدمات محبوب شما</div>
                 <div class="card-body">
                     <p class="card-text">کوتاهی مو با سارا</p>
@@ -486,7 +476,7 @@
             </div>
         </div>
              <div class="mt-5">
-                 <div class="d-flex flex-column justify-content-evenly custom-shadow"
+                 <div class="d-flex flex-column justify-content-evenly shadow-md"
                       style="height: 212px; width: 670px; border-radius: 8px">
 
                      <div class="p-2 text-start fw-bold">خدمات محبوب مجموعه</div>
@@ -509,7 +499,7 @@
 
              </div>
                  <div class="mt-5">
-                     <div class="custom-shadow rounded" style="width: 320px; height: 723px;">
+                     <div class="shadow-md rounded">
                          <h2 class="text-start" style="margin-right: 16px; padding-top: 16px">نکات مهم</h2>
                          <div class=" d-flex flex-column justify-content-start align-items-center"
                          >
@@ -533,9 +523,7 @@
                  </div>
 
 </div>
-
-
-<script>
+    <script>
     $(document).ready(function () {
         $('#multiple-select-field').select2()
     })
@@ -546,4 +534,18 @@
         password.setAttribute('type', type);
         this.innerHTML = type === 'password' ? '<span>👁️</span>' : '<span>🔒</span>';
     });
+
+    var selectAllUsers = document.getElementById("allUsers");
+    var selectAllServices = document.getElementById("allServices");
+    selectAllUsers.addEventListener("change", function () {
+        var table = this.closest("table");
+        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+        checkboxes.forEach(cb => cb.checked = selectAllUsers.checked);
+    });
+    selectAllServices.addEventListener("change", function () {
+        var table = this.closest("table");
+        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+        checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
+    });
+
 </script>

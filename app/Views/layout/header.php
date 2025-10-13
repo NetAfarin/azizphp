@@ -30,8 +30,8 @@ $dir = APP_DIRECTION;
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
-
 </head>
+<?php if(BASE_URL."/user/login2" == $_GET['url'] || BASE_URL."/user/originalView/otp" == $_GET['url'] ||  BASE_URL. "user/originalView/register-page" == $_GET['url']) : ?>
 <body class="container mt-4 d-flex flex-column h-100">
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -80,3 +80,5 @@ $dir = APP_DIRECTION;
     <?php unset($_SESSION['flash_error']); ?>
 <?php endif; ?>
 <script> const BASE_URL = "<?= BASE_URL?>";</script>
+
+<?php endif;?>

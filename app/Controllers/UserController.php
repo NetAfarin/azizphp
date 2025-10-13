@@ -35,36 +35,17 @@ class UserController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = trim($_POST['first_name'] ?? '');
             $last_name = trim($_POST['last_name'] ?? '');
-            $phone = trim($_POST['phone_number'] ?? '');
             $password = $_POST['password'] ?? '';
-//            $password_confirmation = $_POST['password_confirmation'] ?? '';
-
-            $captcha = $_SESSION['captcha'] ?? null;
-            $userCaptcha = $_POST['captcha'] ?? '';
-            if (!$captcha ||(( time() - $captcha['time'] )> 120)) {
-                $errors[] = __('captcha_expired');
-            } elseif ($userCaptcha != $captcha['code']) {
-                $errors[] = __('captcha_invalid');
-            }
-
             $validator = new Validator($_POST, [
                 'first_name' => 'required|min:2',
                 'last_name' => 'required|min:2',
-                'phone_number' => 'required|phone|unique:users,phone_number',
                 'password' => 'required|min:6|confirmed',
-                'password_confirmation' => 'required|same:password',
-                'birth_date' => 'required|date'
             ]);
 
             if ($validator->fails()) {
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
-
-            if (User::query()->where('phone_number', '=', $phone)->first()) {
-                $errors[] = __('phone_taken');
-            }
-
             if (empty($errors)) {
                 $user = new User([
                     'first_name' => $first_name,
@@ -165,9 +146,63 @@ class UserController extends Controller
             'errors' => $errors
         ]);
     }
-    public function login_page()
+    public function login_page(): void
     {
-        $this->view('user/login-page', [
+        $errors=[];
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $phone = $_POST['phone_number'] ?? '';
+            $validator = new Validator($_POST, [
+                'phone_number' => 'required|phone|unique:users,phone_number',
+            ]);
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
+
+            if (strlen($phone) !== 11 || !ctype_digit($phone)) {
+                $errors[] = __('phone_invalid');
+            }
+            if (empty($errors)) {
+                $user = User::findByPhone($phone);
+                if ($user) {
+                    $user_type = UserType::find($user->user_type);
+                    $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
+                    clear_old_input();
+                    $redirect =($user->isSuperAdmin() || $user->isSupport())?"/admin/panel":( ($user->isAdmin() || $user->isOperator())
+                        ? "/admin/panel" : "/home/index");
+                    redirect( "/user/otp");
+                    exit;
+                } else {
+                    redirect("/user/register2");
+
+                    $errors[] = __('login_failed');
+                }
+            }
+        }
+
+        $this->view('user/originalView/login-page', [
+            'title' => __('login'),
+            'errors' =>$errors,
+        ]);
+    }  public function register_page()
+    {
+        $this->view('user/originalView/register-page', [
+            'title' => __('login'),
+        ]);
+    }
+ public function add()
+    {
+        $this->view('user/add-user', [
+            'title' => __('login'),
+        ]);
+    }
+public function otp_page()
+    {
+        $this->view('user/originalView/otp', [
             'title' => __('login'),
         ]);
     }
