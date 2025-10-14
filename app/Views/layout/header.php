@@ -13,7 +13,7 @@ $title = $title ?? 'بدون عنوان';
 
 $lang = APP_LANG;
 $dir = APP_DIRECTION;
-
+$url = BASE_URL."/".$_GET['url'];
 ?>
 <!DOCTYPE html>
 
@@ -31,7 +31,7 @@ $dir = APP_DIRECTION;
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
 </head>
-<?php if(BASE_URL."/user/login2" == $_GET['url'] || BASE_URL."/user/originalView/otp" == $_GET['url'] ||  BASE_URL. "user/originalView/register-page" == $_GET['url']) : ?>
+<?php if(BASE_URL."/user/login2" != $url && BASE_URL."/user/register2" != $url && BASE_URL."/user/otp" != $url && BASE_URL."/user/add" != $url) : ?>
 <body class="container mt-4 d-flex flex-column h-100">
 <nav class="navbar navbar-light bg-light mb-4">
     <div class="container-fluid d-flex justify-content-between align-items-center">

@@ -196,7 +196,7 @@ class UserController extends Controller
     }
  public function add()
     {
-        $this->view('user/add-user', [
+        $this->view('user/originalView/add-user', [
             'title' => __('login'),
         ]);
     }

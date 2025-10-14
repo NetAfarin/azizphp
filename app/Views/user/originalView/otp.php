@@ -31,29 +31,31 @@
     <!--</div>-->
     <div class="overlay-element shadow-md p-5">
         <form class="w-100">
-            <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="tab-password-btn"
-                            data-bs-toggle="tab"
-                            data-bs-target="#pane-password"
-                            type="button" role="tab"
-                            aria-controls="pane-password" aria-selected="true">
-                        با رمز عبور
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="tab-otp-btn"
-                            data-bs-toggle="tab"
-                            data-bs-target="#pane-otp"
-                            type="button" role="tab"
-                            aria-controls="pane-otp" aria-selected="false">
-                        با کد تایید
-                    </button>
-                </li>
-            </ul>
+            <div class="col-lg-6 col-md-6 col-sm-12 mx-auto">
+                <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-password-btn"
+                                data-bs-toggle="tab"
+                                data-bs-target="#pane-password"
+                                type="button" role="tab"
+                                aria-controls="pane-password" aria-selected="true">
+                            با رمز عبور
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-otp-btn"
+                                data-bs-toggle="tab"
+                                data-bs-target="#pane-otp"
+                                type="button" role="tab"
+                                aria-controls="pane-otp" aria-selected="false">
+                            با کد تایید
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
 
             <div class="tab-content">
-                <!-- تب رمز عبور -->
                 <div class="tab-pane fade show active" id="pane-password" role="tabpanel" aria-labelledby="tab-password-btn">
                     <form id="form-password">
                         <div class="mb-4 mx-2">
@@ -62,7 +64,7 @@
                                 <label for="password-input" class="form-label text-black pe-2">رمز عبور</label>
                                 <input type="password" class="form-control mt-3 ltr-input" id="password-input">
                                 <button type="button" class="password-toggle" id="togglePassword">
-                                    <i class="fa-solid icon-custom fa-eye pe-2"></i>
+                                    <i class="fa-solid inside-icon fa-eye pe-2"></i>
                                 </button>
                             </div>
                         </div>
@@ -72,7 +74,6 @@
                     </form>
                 </div>
 
-                <!-- تب کد تایید -->
                 <div class="tab-pane fade" id="pane-otp" role="tabpanel" aria-labelledby="tab-otp-btn">
                     <form id="form-otp">
                         <div class="mb-4 mx-2">
@@ -113,6 +114,27 @@
         document.getElementById(tabId).style.display = "block";
         evt.currentTarget.classList.add("active");
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const target = document.querySelector(this.getAttribute('data-bs-target'));
+                const currentActive = document.querySelector('.tab-pane.active');
+
+                if (currentActive && currentActive !== target) {
+                    currentActive.classList.remove('show', 'active');
+                    currentActive.classList.add('fading-out');
+
+                    setTimeout(() => {
+                        currentActive.classList.remove('fading-out');
+                        target.classList.add('show', 'active');
+                    }, 500);
+                }
+            });
+        });
+    });
 </script>
 </body>
 </html>
