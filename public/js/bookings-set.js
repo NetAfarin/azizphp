@@ -21,12 +21,12 @@ const {
 console.log((serviceObj))
 console.log((serviceObj[0]))
 const pageSize = 7;
-const getWeekSlice = (weekDates, weekNumber ) =>
+const getWeekSlice = (weekDates, weekNumber) =>
     weekDates.slice((weekNumber - 1) * pageSize, weekNumber * pageSize);
-let weekNumber=1
-let selectedWeekDates =getWeekSlice(weekDates,weekNumber)
+let weekNumber = 1
+let selectedWeekDates = getWeekSlice(weekDates, weekNumber)
 
-function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTIme,serviceObj) {
+function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTIme, serviceObj) {
     const gridContainer = document.getElementById('grid-container');
     let startUnit = timeToUnits(startTime);
     let endUnit = timeToUnits(endTime);
@@ -87,9 +87,9 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
             continue;
         }
 
-        gridContainer.appendChild(createBox(rend, columnStart, rstart, text, 'box', 'checkAll-col-' + i, "", true,(i>0&&(i-1 === todayIndex))?todayWord:''));
+        gridContainer.appendChild(createBox(rend, columnStart, rstart, text, 'box', 'checkAll-col-' + i, "", true, (i > 0 && (i - 1 === todayIndex)) ? todayWord : ''));
     }
-    duration = serviceObj.estimated_duration*30
+    duration = serviceObj.estimated_duration * 30
     tmpstart = minStart;
 
     for (let i = 1; i < columns; i++) {
@@ -128,14 +128,14 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
             }
             workRange = endUnit5 - startUnit5
         } else {
-            if (hIndexes.includes(i-1)  ) {
+            if (hIndexes.includes(i - 1)) {
                 if (startUnith > minStart) {
                     const endOfOffForStart = startUnith - minStart + 2;
                     gridContainer.appendChild(createBox(endOfOffForStart, gridColumn, 2, "", "disabledBox"));
                     j = startUnith - minStart + 1
                 }
                 if (hasLaunchTime && startLaunch >= startUnith && startLaunch < endUnith) {
-                    gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox",null,"#f320000"));
+                    gridContainer.appendChild(createBox(startLaunch - minStart + 3, gridColumn, startOfLaunchTime, "", "launchBox", null, "#f320000"));
                 }
                 startOfOffForEnd = endUnith - minStart + 2;
                 if ((endUnith) < maxEnd) {
@@ -163,7 +163,7 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
             if (hasLaunchTime && j < startOfLaunchTime && (j + (duration / 30)) >= startOfLaunchTime) {
                 j = startOfLaunchTime
             } else {
-                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, serviceObj.title + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}` + "<br>", ["box", "cell"], 'col-' + i + '_row-' + j, i-1===w1Index?"#f3550033":i-1===w2Index?"#f3005033":i-1===w2Index?"#f5000033":""));
+                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, serviceObj.title + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}` + "<br>", ["box", "cell"], 'col-' + i + '_row-' + j, i - 1 === w1Index ? "#f3550033" : i - 1 === w2Index ? "#f3005033" : i - 1 === w2Index ? "#f5000033" : ""));
                 j += (duration / 30)
             }
         }
@@ -184,7 +184,7 @@ function unitsToTime(unit) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null, bgColor = '', header = false,todayWord='') {
+function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null, bgColor = '', header = false, todayWord = '') {
     const box = document.createElement('div');
     if (Array.isArray(classnames)) {
         classnames.forEach(cls => box.classList.add(cls));
@@ -192,7 +192,7 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
         box.classList.add(classnames);
     }
 
-    box.innerHTML = ((todayWord!=='') ? '<span class="badge bg-success mx-1">' + todayWord + '</span>' : '') + text;
+    box.innerHTML = ((todayWord !== '') ? '<span class="badge bg-success mx-1">' + todayWord + '</span>' : '') + text;
     box.style.gridColumnStart = gridColumn;
     box.style.gridRowStart = gridRowStart;
     box.style.gridRowEnd = end;
@@ -213,9 +213,9 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
                     cb.checked = this.checked;
                 });
                 let diffCHeckBox1 = diffCHeckBox();
-                if(diffCHeckBox1 !== undefined && diffCHeckBox1.length > 0) {
+                if (diffCHeckBox1 !== undefined && diffCHeckBox1.length > 0) {
                     startTask()
-                }else {
+                } else {
                     finishTask();
                 }
             }
@@ -229,9 +229,9 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
             checkbox.checked = !checkbox.checked;
             checkbox.dispatchEvent(new Event('change'));
             let diffCHeckBox1 = diffCHeckBox();
-            if(diffCHeckBox1 !== undefined && diffCHeckBox1.length > 0) {
+            if (diffCHeckBox1 !== undefined && diffCHeckBox1.length > 0) {
                 startTask()
-            }else {
+            } else {
                 finishTask();
             }
         });
@@ -248,12 +248,13 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
         box.isChecked = function () {
             return checkbox.checked;
         };
-          addCheckBox(checkbox);
+        addCheckBox(checkbox);
     }
     return box;
 }
-let checkBoxes=[]
-const addCheckBox = (el) => checkBoxes.push({ el, last: !!el.checked });
+
+let checkBoxes = []
+const addCheckBox = (el) => checkBoxes.push({el, last: !!el.checked});
 const diffCHeckBox = () => checkBoxes.filter(x => !!x.el.checked !== x.last);
 
 let taskInProgress = false;
@@ -278,21 +279,25 @@ window.addEventListener('beforeunload', (event) => {
 
 $(document).ready(function () {
     $('#employeeService').on('change', function (e) {
-        let id=$(this).val();
-        let serviceObj1 =  serviceObj.find(s => Number(s.id) === Number(id));
+        let id = $(this).val();
+        let serviceObj1 = serviceObj.find(s => Number(s.id) === Number(id));
         console.log("selected->", serviceObj1.id)
-        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj1);
+        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj1);
     })
-    generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+    generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
     $('#nextWeek').on('click', function (e) {
         weekNumber++
-        selectedWeekDates =getWeekSlice(weekDates,weekNumber)
-        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+        selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
+        $('#prevWeek').prop('disabled', (weekNumber <= 1));
+        $('#nextWeek').prop('disabled', (weekNumber >= 4));
     })
     $('#prevWeek').on('click', function (e) {
         weekNumber--
-        selectedWeekDates =getWeekSlice(weekDates,weekNumber)
-        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime,serviceObj[0]);
+        selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
+        $('#prevWeek').prop('disabled', (weekNumber <= 1));
+        $('#nextWeek').prop('disabled', (weekNumber >= 4));
     })
 
 })

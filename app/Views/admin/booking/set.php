@@ -9,7 +9,8 @@ $deltaToWeekStart = $todayIndex;
 $weekStart = (clone $today)->modify("-{$deltaToWeekStart} days");
 $format = 'Y-m-d';
 $weekDates = [];
-for ($i = 0; $i < 7*4; $i++) {
+$maxWeek = 4;
+for ($i = 0; $i < 7* $maxWeek; $i++) {
     $d = (clone $weekStart)->modify("+{$i} days")->format($format);
     if (APP_LANG=="fa"){
         $explode = explode('-', $d);
@@ -30,9 +31,9 @@ for ($i = 0; $i < 7*4; $i++) {
 <div class="container mt-5 " dir="ltr">
 
     <div class="table-container">
-    <span class="btn btn-info arrow-button" id="prevWeek"><span class="fa fa-arrow-left mx-1"></span><?= __('previous_week') ?></span>
-        <h2 class="text-center mb-4" dir="<?= APP_LANG=="fa"?'rtl':'ltr' ?>"><?= __('weekly_reserve_table')." $user->first_name $user->last_name" ?></h2>
-        <span class="btn btn-info arrow-button" id="nextWeek" ><?= __('next_week') ?><span class="fa fa-arrow-right mx-1"></span></span>
+    <button class="btn btn-info arrow-button" id="prevWeek" disabled><span class="fa fa-arrow-left mx-1"></span><?= __('previous_week') ?></button>
+        <h2 class="text-center mb-4 no-select" dir="<?= APP_LANG=="fa"?'rtl':'ltr' ?>"><?= __('weekly_reserve_table')." $user->first_name $user->last_name" ?></h2>
+        <button class="btn btn-info arrow-button" id="nextWeek" <?= $maxWeek<=1?"disabled":"" ?>><?= __('next_week') ?><span class="fa fa-arrow-right mx-1"></span></button>
     </span>
     </div>
     <div class="dynamic-grid" id="grid-container"></div>
