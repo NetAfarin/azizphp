@@ -1,16 +1,27 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چیدمان عمودی دو ستون</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="<?= asset('css/theme.css')?>" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<?php
+$publicErrors = array_filter($errors ?? [], fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
+if (!empty($publicErrors)): ?>
+    <div class="toast align-items-center text-bg-danger border-1 show overlay-element1 mt-5" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <ul class="mb-0">
+                    <?php foreach ($errors as $key => $fieldErrors): ?>
+                        <?php if (is_numeric($key)): ?>
+                        <?= htmlspecialchars($fieldErrors) ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+<?php endif; ?>
 
-</head>
-<body>
+<?php if (!empty($success)): ?>
+    <div class="alert alert-success">
+        <?= __('register_success') ?> ✅
+    </div>
+<?php endif; ?>
 <div class="container-custom position-relative">
     <div class="row h-40 m-0">
         <div class="col-12 p-0">
@@ -32,30 +43,39 @@
     <!--    <img src="--><?php //= asset('img/a.jpeg') ?><!--" class="logo-img">-->
     <!--</div>-->
     <div class="overlay-element shadow-md p-5">
-        <form class="w-100">
-            <div class="mb-4 mx-2">
+        <form class="w-100" method="post">
+            <?= csrf_field() ?>
+            <div class="mb-3 mx-2">
                 <i class="fa-solid fa-user icon-custom"></i>
                 <label for="first_name" class="form-label text-black  pe-2">نام</label>
-                <input type="text" class="form-control mt-3  " id="first_name">
-            </div> <div class="mb-4 mx-2">
+                <input type="text" class="form-control mt-2  " id="first_name" name="first_name">
+                <?php if (!empty($errors['first_name'])) : ?>
+                    <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="mb-3 mx-2">
                 <i class="fa-solid fa-user icon-custom"></i>
                 <label for="last_name" class="form-label text-black  pe-2">نام خانوادگی</label>
-                <input type="text" class="form-control mt-3  " id="last_name">
+                <input type="text" class="form-control mt-2  " id="last_name" name="last_name">
+                <?php if (!empty($errors['last_name'])) : ?>
+                    <div class="text-danger small"><?= htmlspecialchars($errors['last_name'][0]) ?></div>
+                <?php endif; ?>
             </div>
-            <div class="mb-4 mx-2">
+            <div class="mb-3 mx-2">
                 <div class="input-with-icon">
                         <i class="fa-solid icon-custom fa-lock"></i>
                         <label for="password" class="form-label text-black  pe-2">رمز عبور</label>
-                        <input type="password" class="form-control mt-3 ltr-input " id="password">
-                        <button type="button" class="password-toggle" id="togglePassword">
+                        <input type="password" class="form-control mt-2 ltr-input " id="password" name="password">
+                    <?php if (!empty($errors['password'])) : ?>
+                        <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>
+                    <?php endif; ?>
+                        <button type="button" class="password-toggle" id="togglePassword" >
                             <i class="fa-solid icon-custom fa-eye pe-2 "></i>
                         </button>
-
-
                 </div>
             </div>
             <div class="text-center mt-4">
-                <button type="button" class="btn btn-primary px-5">
+                <button type="submit" class="btn btn-primary px-5">
                     ادامه
                 </button>
             </div>

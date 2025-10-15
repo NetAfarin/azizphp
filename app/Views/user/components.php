@@ -218,7 +218,6 @@
     <div class="row justify-content-center mt-5">
         <div class="table-wrapper">
             <table class="table custom-table">
-
                 <thead class="table-primary ">
                 <tr>
                     <th>روز</th>

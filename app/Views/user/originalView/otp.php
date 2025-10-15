@@ -1,13 +1,27 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چیدمان عمودی دو ستون</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="<?= asset('css/theme.css')?>" rel="stylesheet" />
-</head>
+<?php
+$publicErrors = array_filter($errors ?? [], fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
+if (!empty($publicErrors)): ?>
+    <div class="toast align-items-center text-bg-danger border-1 show overlay-element1 mt-5" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <ul class="mb-0">
+                    <?php foreach ($errors as $key => $fieldErrors): ?>
+                        <?php if (is_numeric($key)): ?>
+                            <?= htmlspecialchars($fieldErrors) ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php if (!empty($success)): ?>
+    <div class="alert alert-success">
+        <?= __('register_success') ?> ✅
+    </div>
+<?php endif; ?>
 <body>
 <div class="container-custom position-relative">
     <div class="row h-40 m-0">
@@ -30,7 +44,7 @@
     <!--    <img src="--><?php //= asset('img/a.jpeg') ?><!--" class="logo-img">-->
     <!--</div>-->
     <div class="overlay-element shadow-md p-5">
-        <form class="w-100">
+        <div class="w-100">
             <div class="col-lg-6 col-md-6 col-sm-12 mx-auto">
                 <ul class="nav nav-tabs nav-justified mb-3" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -57,39 +71,44 @@
 
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="pane-password" role="tabpanel" aria-labelledby="tab-password-btn">
-                    <form id="form-password">
+                    <form id="form-password" method="post">
+                        <?= csrf_field() ?>
                         <div class="mb-4 mx-2">
                             <div class="input-with-icon">
                                 <i class="fa-solid icon-custom fa-lock"></i>
                                 <label for="password-input" class="form-label text-black pe-2">رمز عبور</label>
-                                <input type="password" class="form-control mt-3 ltr-input" id="password-input">
+                                <input type="password" class="form-control mt-3 ltr-input" id="password-input" name="password">
+                                <?php if (!empty($errors['password'])) : ?>
+                                    <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>
+                                <?php endif; ?>
                                 <button type="button" class="password-toggle" id="togglePassword">
                                     <i class="fa-solid inside-icon fa-eye pe-2"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="text-center mt-4">
-                            <button type="button" class="btn btn-primary px-5">ادامه</button>
+                            <button type="submit" class="btn btn-primary px-5">ادامه</button>
                         </div>
                     </form>
                 </div>
 
                 <div class="tab-pane fade" id="pane-otp" role="tabpanel" aria-labelledby="tab-otp-btn">
-                    <form id="form-otp">
+                    <form id="form-otp" method="post">
+                        <?= csrf_field() ?>
                         <div class="mb-4 mx-2">
                             <div class="input-with-icon">
                                 <i class="fa-solid icon-custom fa-key"></i>
                                 <label for="otp-code" class="form-label text-black pe-2">کد تایید</label>
-                                <input type="text" class="form-control mt-3 ltr-input" id="otp-code">
+                                <input type="text" class="form-control mt-3 ltr-input" id="otp-code" name="otp">
                             </div>
                         </div>
                         <div class="text-center mt-4">
-                            <button type="button" class="btn btn-primary px-5">ادامه</button>
+                            <button type="submit" class="btn btn-primary px-5">ادامه</button>
                         </div>
                     </form>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

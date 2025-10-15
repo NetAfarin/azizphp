@@ -13,8 +13,11 @@ $title = $title ?? 'بدون عنوان';
 
 $lang = APP_LANG;
 $dir = APP_DIRECTION;
-$url = BASE_URL."/".$_GET['url'];
-?>
+if (!empty($_GET['url'])) {
+    $url = BASE_URL . "/" . $_GET['url'];
+} else {
+    $url = BASE_URL;
+}?>
 <!DOCTYPE html>
 
 <html lang="<?= $lang ?>" dir="<?= $dir ?>">
@@ -30,40 +33,40 @@ $url = BASE_URL."/".$_GET['url'];
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
-<?php if(BASE_URL."/user/login2" != $url && BASE_URL."/user/register2" != $url && BASE_URL."/user/otp" != $url && BASE_URL."/user/add" != $url) : ?>
-<body class="container mt-4 d-flex flex-column h-100">
-<nav class="navbar navbar-light bg-light mb-4">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-        <span class="navbar-text">
-            <?= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ?? __('guest'))]) ?>
-        </span>
-
-        <div class="d-flex align-items-center gap-2">
-            <a href="?lang=fa" class="btn btn-sm btn-outline-primary">🇮🇷 فارسی</a>
-            <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>
-
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?= BASE_URL  ?>/user/profile"
-                   class="btn btn-sm btn-outline-primary">👤 <?= __('profile') ?></a>
-                <a href="<?= BASE_URL  ?>/user/logout"
-                   class="btn btn-sm btn-danger">🚪 <?= __('logout') ?></a>
-                <?php if (isset($_SESSION['user_role']) &&
-                        ($_SESSION['user_role'] == UserType::ADMIN ||
-                                $_SESSION['user_role'] == UserType::OPERATOR ||
-                                $_SESSION['user_role'] == UserType::SUPER_ADMIN ||
-                                $_SESSION['user_role'] == UserType::SUPPORT)): ?>
-                    <a href="<?= BASE_URL  ?>/user/register"
-                       class="btn btn-sm btn-outline-primary">📝 <?= __('register') ?></a>
-                <?php endif; ?>
-            <?php else: ?>
-                <a href="<?= BASE_URL  ?>/user/login"
-                   class="btn btn-sm btn-outline-success">🔐 <?= __('login') ?></a>
-
-            <?php endif; ?>
-        </div>
-    </div>
-</nav>
+<!--<nav class="navbar navbar-light bg-light mb-4">-->
+<!--    <div class="container-fluid d-flex justify-content-between align-items-center">-->
+<!--        <span class="navbar-text">-->
+<!--            --><?php //= __('hello_user', ['name' => htmlspecialchars($_SESSION['user_name'] ?? __('guest'))]) ?>
+<!--        </span>-->
+<!---->
+<!--        <div class="d-flex align-items-center gap-2">-->
+<!--            <a href="?lang=fa" class="btn btn-sm btn-outline-primary">🇮🇷 فارسی</a>-->
+<!--            <a href="?lang=en" class="btn btn-sm btn-outline-secondary">🇺🇸 English</a>-->
+<!---->
+<!--            --><?php //if (isset($_SESSION['user_id'])): ?>
+<!--                <a href="--><?php //= BASE_URL  ?><!--/user/profile"-->
+<!--                   class="btn btn-sm btn-outline-primary">👤 --><?php //= __('profile') ?><!--</a>-->
+<!--                <a href="--><?php //= BASE_URL  ?><!--/user/logout"-->
+<!--                   class="btn btn-sm btn-danger">🚪 --><?php //= __('logout') ?><!--</a>-->
+<!--                --><?php //if (isset($_SESSION['user_role']) &&
+//                        ($_SESSION['user_role'] == UserType::ADMIN ||
+//                                $_SESSION['user_role'] == UserType::OPERATOR ||
+//                                $_SESSION['user_role'] == UserType::SUPER_ADMIN ||
+//                                $_SESSION['user_role'] == UserType::SUPPORT)): ?>
+<!--                    <a href="--><?php //= BASE_URL  ?><!--/user/register"-->
+<!--                       class="btn btn-sm btn-outline-primary">📝 --><?php //= __('register') ?><!--</a>-->
+<!--                --><?php //endif; ?>
+<!--            --><?php //else: ?>
+<!--                <a href="--><?php //= BASE_URL  ?><!--/user/login"-->
+<!--                   class="btn btn-sm btn-outline-success">🔐 --><?php //= __('login') ?><!--</a>-->
+<!---->
+<!--            --><?php //endif; ?>
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
 <?php if (!empty($_SESSION['flash_success'])): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <?= htmlspecialchars($_SESSION['flash_success']) ?>
@@ -80,5 +83,3 @@ $url = BASE_URL."/".$_GET['url'];
     <?php unset($_SESSION['flash_error']); ?>
 <?php endif; ?>
 <script> const BASE_URL = "<?= BASE_URL?>";</script>
-
-<?php endif;?>
