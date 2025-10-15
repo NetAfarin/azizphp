@@ -67,8 +67,6 @@ if (!empty($publicErrors)): ?>
                     </li>
                 </ul>
             </div>
-
-
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="pane-password" role="tabpanel" aria-labelledby="tab-password-btn">
                     <form id="form-password" method="post">
@@ -82,7 +80,7 @@ if (!empty($publicErrors)): ?>
                                     <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>
                                 <?php endif; ?>
                                 <button type="button" class="password-toggle" id="togglePassword">
-                                    <i class="fa-solid inside-icon fa-eye pe-2"></i>
+                                    <i class="fa-solid icon-custom fa-eye mt-1  pe-2 "></i>
                                 </button>
                             </div>
                         </div>
@@ -113,6 +111,7 @@ if (!empty($publicErrors)): ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
     const togglePassword = document.getElementById('togglePassword');
     const password = document.getElementById('password');
     togglePassword.addEventListener('click', function() {
@@ -155,5 +154,6 @@ if (!empty($publicErrors)): ?>
         });
     });
 </script>
+
 </body>
 </html>

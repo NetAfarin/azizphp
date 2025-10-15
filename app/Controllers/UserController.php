@@ -95,7 +95,6 @@ class UserController extends Controller
             'success' => $success
         ]);
     }
-
     public function login(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -162,7 +161,7 @@ class UserController extends Controller
             'errors' => $errors
         ]);
     }
-    public function login_page(): void
+    public function loginPage(): void
     {
         $errors=[];
         if (session_status() === PHP_SESSION_NONE) {
@@ -171,6 +170,7 @@ class UserController extends Controller
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->checkCsrf();
             $phone = $_POST['phone_number'] ?? '';
+            $_SESSION['phone_number'] = $phone;
             $validator = new Validator($_POST, [
                 'phone_number' => 'required|phone|unique:users,phone_number',
             ]);
@@ -193,7 +193,7 @@ class UserController extends Controller
                     redirect( "/user/otp");
                     exit;
                 } else {
-                    $_SESSION['phone_number'] = $phone;
+
                     redirect("/user/register2");
                     $errors[] = __('login_failed');
                 }
@@ -205,7 +205,7 @@ class UserController extends Controller
             'errors' =>$errors,
         ]);
     }
-    public function register_page()
+    public function registerPage()
     {
         $phone =  $_SESSION['phone_number'];
         $errors = [];
@@ -265,7 +265,7 @@ class UserController extends Controller
             'title' => __('login'),
         ]);
     }
-public function otp_page()
+public function otpPage()
     {
         $phone =  $_SESSION['phone_number'];
         $errors = [];
@@ -274,17 +274,21 @@ public function otp_page()
             session_start();
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $password = $_POST['password'] ?? '';
             $user = User::findByPhone($phone);
             $validator = new Validator($_POST, [
-                'password' => 'required|min:6|confirmed',
+                'password' => 'required|min:6',
             ]);
 
             if ($validator->fails()) {
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
-            if (password_verify($_POST['password'], $user->password)) {
-
+            $user = User::findByPhone($phone);
+            if (!$user) {
+                $errors[] = "کاربر یافت نشد.";
+            }
+            if (password_verify($password, $user->password))  {
                redirect("/");
             }else{
                 $errors[] = "رمز عبور اشتباه است!";
