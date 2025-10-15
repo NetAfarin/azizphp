@@ -22,9 +22,9 @@ use App\Middlewares\SaRoleMiddleware;
     Route::middleware([InstanceMiddleware::class,GuestMiddleware::class])->group(function () {
         Route::get('/user/register', [UserController::class, 'register']);
         Route::get('/user/login', [UserController::class, 'login']);
-        Route::get('/user/login2', [UserController::class, 'login_page']);
-        Route::get('/user/register2', [UserController::class, 'register_page']);
-        Route::get('/user/otp', [UserController::class, 'otp_page']);
+        Route::get('/user/login2', [UserController::class, 'loginPage']);
+        Route::get('/user/register2', [UserController::class, 'registerPage']);
+        Route::get('/user/otp', [UserController::class, 'otpPage']);
         Route::get('/user/add', [UserController::class, 'add']);
         Route::get('/', [HomeController::class, 'index']);
     });
@@ -35,10 +35,10 @@ use App\Middlewares\SaRoleMiddleware;
 
 Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddleware::class])->group(function () {
     Route::post('/user/login', [UserController::class, 'login']);
-    Route::post('/user/login2', [UserController::class, 'login_page']);
+    Route::post('/user/login2', [UserController::class, 'loginPage']);
     Route::post('/user/register', [UserController::class, 'register']);
-    Route::post('/user/register2', [UserController::class, 'register_page']);
-    Route::post('/user/otp', [UserController::class, 'otp_page']);
+    Route::post('/user/register2', [UserController::class, 'registerPage']);
+    Route::post('/user/otp', [UserController::class, 'otpPage']);
 });
 
 // User routes
