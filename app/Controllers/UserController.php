@@ -95,7 +95,6 @@ class UserController extends Controller
             'success' => $success
         ]);
     }
-
     public function login(): void
     {
         if (session_status() === PHP_SESSION_NONE) {

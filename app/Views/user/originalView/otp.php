@@ -67,8 +67,6 @@ if (!empty($publicErrors)): ?>
                     </li>
                 </ul>
             </div>
-
-
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="pane-password" role="tabpanel" aria-labelledby="tab-password-btn">
                     <form id="form-password" method="post">
