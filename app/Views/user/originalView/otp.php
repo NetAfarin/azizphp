@@ -53,7 +53,7 @@ if (!empty($publicErrors)): ?>
                                 data-bs-target="#pane-password"
                                 type="button" role="tab"
                                 aria-controls="pane-password" aria-selected="true">
-                            با رمز عبور
+                            <?= __("with_password") ?>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -62,7 +62,7 @@ if (!empty($publicErrors)): ?>
                                 data-bs-target="#pane-otp"
                                 type="button" role="tab"
                                 aria-controls="pane-otp" aria-selected="false">
-                            با کد تایید
+                            <?= __("with_otp") ?>
                         </button>
                     </li>
                 </ul>
@@ -72,52 +72,79 @@ if (!empty($publicErrors)): ?>
                     <form id="form-password" method="post">
                         <?= csrf_field() ?>
                         <div class="mb-4 mx-2">
-                            <div class="input-with-icon">
-                                <i class="fa-solid icon-custom fa-lock"></i>
-                                <label for="password-input" class="form-label text-black pe-2">رمز عبور</label>
-                                <input type="password" class="form-control mt-3 ltr-input" id="password-input" name="password">
+                            <div class="mb-4 mx-2">
+                                <label for="passwordInput" class="form-label text-black  px-1">
+                                    <i class="fa-solid icon-custom fa-lock"></i>
+                                    <?= __("password") ?>
+                                    <span class="bullet-color"> *</span>
+                                </label>
+                                <div class="input-with-icon">
+                                    <input type="password" class="form-control ltr-input" id="passwordInput" name="password">
+                                    <i class="fa fa-eye" id="togglePassword"></i>
+                                </div>
                                 <?php if (!empty($errors['password'])) : ?>
                                     <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>
                                 <?php endif; ?>
-                                <button type="button" class="password-toggle" id="togglePassword">
-                                    <i class="fa-solid icon-custom fa-eye mt-1  pe-2 "></i>
-                                </button>
                             </div>
                         </div>
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary px-5">ادامه</button>
+                            <button type="submit" class="btn btn-primary px-5">
+                                <?= __("continue") ?>
+                            </button>
                         </div>
                     </form>
                 </div>
+
 
                 <div class="tab-pane fade" id="pane-otp" role="tabpanel" aria-labelledby="tab-otp-btn">
                     <form id="form-otp" method="post">
                         <?= csrf_field() ?>
                         <div class="mb-4 mx-2">
+                            <label for="otpInput" class="form-label text-black  px-1">
+                                <i class="fa-solid icon-custom fa-lock"></i>
+                                <?= __("verification_code") ?>
+                                <span class="bullet-color"> *</span>
+                            </label>
                             <div class="input-with-icon">
-                                <i class="fa-solid icon-custom fa-key"></i>
-                                <label for="otp-code" class="form-label text-black pe-2">کد تایید</label>
-                                <input type="text" class="form-control mt-3 ltr-input" id="otp-code" name="otp">
+                                <input type="password" class="form-control ltr-input" id="otpInput">
+                                <i class="fa fa-eye" id="toggleOtp"></i>
                             </div>
+                            <?php if (!empty($errors['otp'])) : ?>
+                                <div class="text-danger small"><?= htmlspecialchars($errors['otp'][0]) ?></div>
+                            <?php endif; ?>
                         </div>
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary px-5">ادامه</button>
+                            <button type="submit" class="btn btn-primary px-5"><?= __("continue")?></button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+    <script>
 
     const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        this.innerHTML = type === 'password' ? '<i class="fa-solid icon-custom fa-eye pe-2 "  id="togglePassword"></i>' : '<i class="fa-solid icon-custom fa-eye-slash  pe-2 "  id="togglePassword"></i>';
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleOtp = document.getElementById('toggleOtp');
+    const otpInput = document.getElementById('otpInput');
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'togglePassword') {
+            const passwordInput = document.getElementById('passwordInput');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            e.target.classList.toggle('fa-eye');
+            e.target.classList.toggle('fa-eye-slash');
+        }
+        if (e.target && e.target.id === 'toggleOtp') {
+            const passwordInput = document.getElementById('otpInput');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            e.target.classList.toggle('fa-eye');
+            e.target.classList.toggle('fa-eye-slash');
+
+        }
     });
     function openTab(evt, tabId) {
         var tabcontent = document.getElementsByClassName("tabcontent");

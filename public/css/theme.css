@@ -458,12 +458,15 @@ body, * {
     /*max-height: 200px;     */
     overflow-y: auto;
 }
+.select2-results__option select2-results__option--selectable select2-results__option--selected :hover{
+    color: #0a3622;
+}
 .select2-container .select2-results__option[aria-selected="true"] {
-    background-color: var(--bs-primary) !important;
-    color: white !important;
+    background-color: var(--bs-gray-input) !important;
+    color: black !important;
 }
 .select2-container .select2-results__option[aria-selected="true"]:hover {
-    background-color: #ff69b4 !important;
+    /*background-color: #ff69b4 !important;*/
     color: white !important;
 }
 .select2-container .select2-search--inline .select2-search__field {
@@ -482,11 +485,11 @@ body, * {
     word-break: keep-all;
 }
 .form-check-input {
-    background-color: var(--bs-gray-input);
-    border: 0;
+    background-color: white;
+    border: 1px solid var(--bs-table-line);
 }
 .form-check-input:checked {
-    background-color: var(--bs-gray-input);
+    background-image: var(--bs-form-check-bg-image);
     border: 0;
 }
 .form-check-input:focus {
@@ -567,35 +570,10 @@ thead, tbody, tfoot, tr, td, th {
 .table-bordered > :not(caption) > * {
     border-width: var(--bs-border-width) 0;
 }
-.form-check-input {
-    --bs-form-check-bg: var(--bs-success);
-    background-color: var(--bs-light);
-    background-image: var(--bs-form-switch-bg);
-    border: var(--bs-border-width) solid var(--bs-dark);
-}
-.form-check-input[type=checkbox] {
-    border-radius: 0;
-    background-color: #fff;
-    border: solid 1px #000;
-}
 .form-check-input:checked[type=checkbox] {
-    --bs-form-check-bg-image: none;
-    background-color: var(--bs-primary);
-    border: solid 1px #000;
-}
-.form-switch .form-check-input {
-    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%236c757d'/%3e%3c/svg%3e");
-    border: 0 !important;
-    border-radius: 2em;
-    background-color: var(--bs-gray-input);
-}
-.form-switch .form-check-input:focus {
-    background-color: var(--bs-gray-input);
-}
-.form-switch .form-check-input:checked {
-    background-position: right center;
-    --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
-    background-color: var(--bs-gray-input);
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23e83e8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");    background-color: var(--bs-primary);
+     background-color: white;
+    border: 1px solid var(--bs-table-line);
 }
 .form-switch.form-check-reverse {
     padding-right: 2.5em;
@@ -792,7 +770,8 @@ border-bottom: 2px solid var(--bs-primary);
 color: var(--bs-tab-color);
 border-bottom: 0;
 }
-.nav-link:active{
+
+.nav-link {
     color: var(--bs-tab-color);
 }
 .nav-tabs .nav-link {
@@ -809,6 +788,9 @@ border-bottom: 0;
 }
 .right-border{
     border-right: 4px solid var(--bs-primary);
+}
+.left-border{
+    border-left: 4px solid var(--bs-primary);
 }
 .bullet-color{
     color: var(--bs-bullet-color);
@@ -835,7 +817,7 @@ hr {
 .under{
     font-weight: normal;
 }
-.nav-link:hover{
+ .nav-link:hover{
     color: var(--bs-primary);
 }
 .nav-link{
@@ -930,4 +912,37 @@ hr {
 
 .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
     border-right: 4px solid var(--bs-primary) ;
+}
+.ltr-icon{
+    transform: scaleX(-1);
+}
+
+.form-label {
+    margin-bottom: 0;
+}
+.menu-border-radius{
+    border-radius: 1rem;
+}
+.select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice__remove{
+    border-left: 0;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+     border-right: 0;
+}
+.input-with-icon {
+    position: relative;
+}
+.input-with-icon i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000000;
+}
+hr {
+    margin: 1rem 0;
+    color: #CFCFCF;
+    border: 0;
+    border-top: var(--bs-border-width) solid;
+    opacity: 1;
 }

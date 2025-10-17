@@ -1,4 +1,5 @@
 <?php
+$lang = $_SESSION['lang'] ?? 'fa';
 $publicErrors = array_filter($errors ?? [], fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
 if (!empty($publicErrors)): ?>
     <div class="toast align-items-center text-bg-danger border-1 show overlay-element1 mt-5" role="alert" aria-live="assertive" aria-atomic="true">
@@ -45,38 +46,39 @@ if (!empty($publicErrors)): ?>
     <div class="overlay-element shadow-md p-5">
         <form class="w-100" method="post">
             <?= csrf_field() ?>
-            <div class="mb-3 mx-2">
-                <i class="fa-solid fa-user icon-custom"></i>
-                <label for="first_name" class="form-label text-black  pe-2">نام</label>
-                <input type="text" class="form-control mt-2  " id="first_name" name="first_name">
+            <div class="mb-4 mx-2">
+                <i class="fa-solid fa-user icon-custom "></i>
+                <label for="first_name" class="form-label text-black  px-1"><?= __("name") ?><span class="bullet-color"> *</span></label>
+                <input type="text" class="form-control  " id="first_name" name="first_name">
                 <?php if (!empty($errors['first_name'])) : ?>
                     <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
                 <?php endif; ?>
             </div>
-            <div class="mb-3 mx-2">
+            <div class="mb-4 mx-2">
                 <i class="fa-solid fa-user icon-custom"></i>
-                <label for="last_name" class="form-label text-black  pe-2">نام خانوادگی</label>
-                <input type="text" class="form-control mt-2  " id="last_name" name="last_name">
+                <label for="last_name" class="form-label text-black  px-1"><?= __("last_name") ?><span class="bullet-color"> *</span></label>
+                <input type="text" class="form-control  " id="last_name" name="last_name">
                 <?php if (!empty($errors['last_name'])) : ?>
                     <div class="text-danger small"><?= htmlspecialchars($errors['last_name'][0]) ?></div>
                 <?php endif; ?>
             </div>
-            <div class="mb-3 mx-2">
-                <div class="input-with-icon">
+            <div class="mb-4 mx-2">
+                    <label for="passwordInput" class="form-label text-black  px-1">
                         <i class="fa-solid icon-custom fa-lock"></i>
-                        <label for="password" class="form-label text-black  pe-2">رمز عبور</label>
-                        <input type="password" class="form-control mt-2 ltr-input " id="password" name="password">
-                    <?php if (!empty($errors['password'])) : ?>
-                        <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>
-                    <?php endif; ?>
-                        <button type="button" class="password-toggle" id="togglePassword" >
-                            <i class="fa-solid icon-custom fa-eye pe-2 "></i>
-                        </button>
-                </div>
+                        <?= __("password") ?>
+                        <span class="bullet-color"> *</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input type="password" class="form-control ltr-input" id="passwordInput" name="password">
+                        <i class="fa fa-eye" id="togglePassword"></i>
+                    </div>
+                <?php if (!empty($errors['password'])) : ?>
+                    <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>
+                <?php endif; ?>
             </div>
             <div class="text-center mt-4">
                 <button type="submit" class="btn btn-primary px-5">
-                    ادامه
+                    <?= __("continue") ?>
                 </button>
             </div>
         </form>
@@ -85,13 +87,18 @@ if (!empty($publicErrors)): ?>
 
 <script>
     const togglePassword = document.getElementById('togglePassword');
-    const password = document.getElementById('password');
-    togglePassword.addEventListener('click', function() {
-        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-        password.setAttribute('type', type);
-        this.innerHTML = type === 'password' ? '<i class="fa-solid icon-custom fa-eye pe-2 "  id="togglePassword"></i>' : '<i class="fa-solid icon-custom fa-eye-slash  pe-2 "  id="togglePassword"></i>';
-    });
+    const passwordInput = document.getElementById('passwordInput');
 
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'togglePassword') {
+            const passwordInput = document.getElementById('passwordInput');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            e.target.classList.toggle('fa-eye');
+            e.target.classList.toggle('fa-eye-slash');
+        }
+    });
 </script>
 </body>
 </html>
