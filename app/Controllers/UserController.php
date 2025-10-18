@@ -30,8 +30,6 @@ class UserController extends Controller
     {
         $errors = [];
         $success = false;
-
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = trim($_POST['first_name'] ?? '');
             $last_name = trim($_POST['last_name'] ?? '');
@@ -70,7 +68,6 @@ class UserController extends Controller
                     'first_name' => $first_name,
                     'last_name' => $last_name,
                     'phone_number' => $phone,
-                    'salon_id' => 1,
                     'password' => password_hash($password, PASSWORD_DEFAULT),
                     'user_type' => 2,
                     'birth_date' => $_POST['birth_date'],
@@ -98,7 +95,6 @@ class UserController extends Controller
             'success' => $success
         ]);
     }
-
     public function login(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -163,6 +159,176 @@ class UserController extends Controller
        $this->view('user/login', [
             'title' => __('login'),
             'errors' => $errors
+        ]);
+    }
+    public function loginPage(): void
+    {
+        $errors=[];
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['user_id'])) {
+            $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
+                ? '/admin/panel' :((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false)?'/sa/dashboard': '/home/index');
+            redirect( $redirect);
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->checkCsrf();
+            $phone = $_POST['phone_number'] ?? '';
+            $_SESSION['phone_number'] = $phone;
+            $validator = new Validator($_POST, [
+                'phone_number' => 'required|phone|unique:users,phone_number',
+            ]);
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
+
+            if (strlen($phone) !== 11 || !ctype_digit($phone)) {
+                $errors[] = __('phone_invalid');
+            }
+            if (empty($errors)) {
+                $user = User::findByPhone($phone);
+                if ($user) {
+                    $_SESSION['user_id'] = $user->id;
+                    $_SESSION['salon_id'] = $user->salon_id;
+                    $_SESSION['user_name'] = $user->first_name;
+                    $_SESSION['last_name'] = $user->last_name;
+                    $_SESSION['is_admin'] = $user->isAdmin();
+                    $_SESSION['is_operator'] = $user->isOperator();
+                    $_SESSION['is_super_admin'] = $user->isSuperAdmin();
+                    $_SESSION['is_support'] = $user->isSupport();
+                    $user_type = UserType::find($user->user_type);
+                    $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
+                    clear_old_input();
+
+                    $redirect =($user->isSuperAdmin() || $user->isSupport())?"/admin/panel":( ($user->isAdmin() || $user->isOperator())
+                        ? "/admin/panel" : "/home/index");
+                    redirect( "/user/otp");
+                    exit;
+                } else {
+
+                    redirect("/user/register2");
+                    $errors[] = __('login_failed');
+                }
+            }
+        }
+
+        $this->view('user/originalView/login-page', [
+            'title' => __('login'),
+            'errors' =>$errors,
+        ]);
+    }
+    public function registerPage()
+    {
+        $errors = [];
+        $success = false;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (isset($_SESSION['user_id'])) {
+            $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
+                ? '/admin/panel' :((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false)?'/sa/dashboard': '/home/index');
+            redirect( $redirect);
+            exit;
+        }
+        if(isset($_SESSION['phone_number'])){
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $first_name = trim($_POST['first_name'] ?? '');
+                $last_name = trim($_POST['last_name'] ?? '');
+                $password = $_POST['password'] ?? '';
+                $validator = new Validator($_POST, [
+                    'first_name' => 'required|min:2',
+                    'last_name' => 'required|min:2',
+                    'password' => 'required|min:6|confirmed',
+                ]);
+                if ($validator->fails()) {
+                    $errors = array_merge($errors, $validator->errors());
+                    save_old_input();
+                }
+                if (User::query()->where('phone_number', '=', $_SESSION['phone_number'])->first()) {
+                    $errors[] = __('phone_taken');
+                }
+
+
+                if (empty($errors)) {
+                    $user = new User([
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'phone_number' => $_SESSION['phone_number'],
+                        'password' => password_hash($password, PASSWORD_DEFAULT),
+                        'user_type' => 2,
+                        'register_datetime' => date('Y-m-d H:i:s'),
+                        'is_active' => 1,
+                        'deleted' => 0
+                    ]);
+                    if ($user->save()) {
+                        clear_old_input();
+                        $_SESSION['flash_success'] = __('register_success');
+                        redirect("/user/otp");
+                        exit;
+                    } else {
+                        $errors[] = __('user_save_error');
+                    }
+                }
+            } else {
+                clear_old_input();
+            }
+        }else{
+            redirect("/user/login2");
+        }
+
+        $this->view('user/originalView/register-page', [
+            'title' => __('login'),
+            'errors' => $errors,
+        ]);
+    }
+ public function add()
+    {
+        $this->view('user/originalView/add-user', [
+            'title' => __('add_user'),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : ""
+        ]);
+    }
+public function otpPage()
+    {
+        $errors = [];
+        $success = false;
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if(isset($_SESSION['phone_number'])) {
+
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $password = $_POST['password'] ?? '';
+                $user = User::findByPhone($_SESSION['phone_number']);
+                $validator = new Validator($_POST, [
+                    'password' => 'required|min:6',
+                ]);
+
+                if ($validator->fails()) {
+                    $errors = array_merge($errors, $validator->errors());
+                    save_old_input();
+                }
+                $user = User::findByPhone($_SESSION['phone_number']);
+                if (!$user) {
+                    $errors[] = "کاربر یافت نشد.";
+                }
+                if (password_verify($password, $user->password)) {
+                    redirect("/");
+                } else {
+                    $errors[] = "رمز عبور اشتباه است!";
+
+                }
+            } else {
+                clear_old_input();
+            }
+        }
+        $this->view('user/originalView/otp', [
+            'title' => __('login'),
+            'errors' => $errors,
         ]);
     }
 
