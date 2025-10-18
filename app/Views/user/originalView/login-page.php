@@ -7,7 +7,6 @@
 
 <body>
 <div class="container-custom position-relative">
-
     <div class="row h-40 m-0">
         <div class="col-12 p-0">
             <div class="col-full1 p-0">

@@ -70,3 +70,49 @@ $(document).ready(function () {
 
     });
 });
+
+$(document).ready(function () {
+    $('#multiple-select-field').select2()
+})
+$(document).ready(function() {
+    $('.js-example-basic-single').select2({
+        minimumResultsForSearch: Infinity
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdownLinks = document.querySelectorAll('.nav-item.dropdown > a.dropdown-toggle[href^="#"]');
+
+    dropdownLinks.forEach(link => {
+        const collapseId = link.getAttribute('href');
+        const collapseEl = document.querySelector(collapseId);
+        if (!collapseEl) return;
+        if (collapseEl.classList.contains('show')) {
+            link.classList.add('right-border');
+            link.classList.add('active-menu');
+            link.setAttribute('aria-expanded', 'true');
+        }
+        collapseEl.addEventListener('show.bs.collapse', function () {
+            dropdownLinks.forEach(l => l.classList.remove('right-border'));
+            link.classList.add('right-border');
+            link.classList.add('active-menu');
+            link.setAttribute('aria-expanded', 'true');
+        })
+        collapseEl.addEventListener('hide.bs.collapse', function () {
+            link.classList.remove('right-border');
+            link.classList.remove('active-menu');
+            link.setAttribute('aria-expanded', 'false');
+        });
+    });
+});
+var selectAllUsers = document.getElementById("allUsers");
+var selectAllServices = document.getElementById("allServices");
+selectAllUsers.addEventListener("change", function () {
+    var table = this.closest("table");
+    var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+    checkboxes.forEach(cb => cb.checked = selectAllUsers.checked);
+});
+selectAllServices.addEventListener("change", function () {
+    var table = this.closest("table");
+    var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+    checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
+});

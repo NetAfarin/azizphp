@@ -1,16 +1,12 @@
 <?php
-
 use App\Models\UserType;
-
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once BASE_PATH . '/app/Helpers/lang.php';
 require_once BASE_PATH . '/app/Helpers/flash.php';
-
 $userName = $_SESSION['user_name'] ?? 'مهمان';
 $title = $title ?? 'بدون عنوان';
-
 $lang = APP_LANG;
 $dir = APP_DIRECTION;
 if (!empty($_GET['url'])) {

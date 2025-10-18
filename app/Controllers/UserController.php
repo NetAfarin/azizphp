@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Validator;
+use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Middlewares\RoleMiddleware;
@@ -280,16 +281,33 @@ class UserController extends Controller
         }
 
         $this->view('user/originalView/register-page', [
-            'title' => __('login'),
+            'title' => __('register'),
             'errors' => $errors,
         ]);
     }
  public function add()
     {
+        $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
+        $userRole = UserType::all();
+        $lang = $_SESSION['lang'] ?? 'fa';
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){}
         $this->view('user/originalView/add-user', [
             'title' => __('add_user'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
-            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : ""
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
+            'lang' => $lang,
+            'services' => $service,
+            'userRole' => $userRole,
+        ]);
+    }
+    public function manageUsers()
+    {
+        $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
+        $userRole = UserType::all();
+        $lang = $_SESSION['lang'] ?? 'fa';
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){}
+        $this->view('user/originalView/manageUsers', [
+            'title' => __('manage_users'),
         ]);
     }
 public function otpPage()
@@ -327,7 +345,7 @@ public function otpPage()
             }
         }
         $this->view('user/originalView/otp', [
-            'title' => __('login'),
+            'title' => __('verification'),
             'errors' => $errors,
         ]);
     }

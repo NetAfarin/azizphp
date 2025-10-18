@@ -233,7 +233,7 @@ return [
     'job_information' => 'Job Information',
     'break_time' => 'Break Time',
     'skills' => 'Skills',
-    'reserve_list' => 'reserve list',
+    'reserves_list' => 'reserve list',
     'manage_reserve' => 'manages reserves',
     'collapse_menu' => 'collapse menu',
     'basic_data' => 'basic data',
@@ -245,4 +245,5 @@ return [
     'status' => 'status',
     'day' => 'day',
     'verification_code' => 'verification code',
+    'verification' => 'verification',
 ];

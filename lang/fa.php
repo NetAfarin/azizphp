@@ -240,7 +240,7 @@ return [
     'job_information' => 'اطلاعات شغلی',
     'break_time' => 'زمان استراحت',
     'skills' => 'مهارت',
-    'reserve_list' => 'لیست رزروها',
+    'reserves_list' => 'لیست رزروها',
     'manage_reserve' => 'مدیریت رزرو',
     'collapse_menu' => 'جمع کردن فهرست',
     'basic_data' => 'اطلاعات پایه',
@@ -252,4 +252,5 @@ return [
     'status' => 'وضعیت',
     'day' => 'روز',
     'verification_code' => 'کد تایید',
+    'verification' =>  'تایید',
 ];
