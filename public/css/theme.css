@@ -1040,3 +1040,10 @@ hr {
     background-color: var(--bs-gray-input);
     color: black;
 }
+.tips{
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--bs-secondary);
+    margin-bottom: 20px;
+}
