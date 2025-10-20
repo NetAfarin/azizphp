@@ -16,7 +16,7 @@
                             <a href="#manageUsers" data-bs-toggle="collapse" aria-expanded="false"
                                class="justify-content d-flex dropdown-toggle nav-link ">
                                 <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text px-2 "><?= __("manage_users") ?></span>
+                                <span class="mx-2 item-text px-1 "><?= __("manage_users") ?></span>
                             </a>
                             <ul class="collapse list-unstyled pl-4 w-100 show" id="manageUsers">
                                 <li class="nav-item active">
@@ -37,7 +37,7 @@
                             <a href="#manageService" data-bs-toggle="collapse" aria-expanded="false"
                                class="justify-content d-flex dropdown-toggle  nav-link ">
                                 <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text px-2"><?= __("manage_services") ?></span>
+                                <span class="mx-2 item-text px-1"><?= __("manage_services") ?></span>
                             </a>
                             <ul class="collapse list-unstyled pl-4 w-100  " id="manageService">
                                 <li class="nav-item  active">
@@ -58,7 +58,7 @@
                             <a href="#reserveList" data-bs-toggle="collapse" aria-expanded="false"
                                class="justify-content d-flex dropdown-toggle nav-link ">
                                 <i class="fa fa-book icon-color"></i>
-                                <span class="mx-2 item-text px-2"><?= __("reserves_list") ?></span>
+                                <span class="mx-2 item-text px-1"><?= __("reserves_list") ?></span>
                             </a>
                             <ul class="collapse list-unstyled pl-4 w-100 " id="reserveList">
                                 <li class="nav-item  active">
@@ -190,7 +190,7 @@
         <div class="col-lg-9 col-md-12 col-xl-9 col-xxl-10 px-3">
             <div class=" mt-lg-0 mt-3">
                 <div class="col-12 d-flex  justify-content-between align-items-center">
-                    <h4 class="<?php echo $lang == 'en' ? 'left-border' : 'right-border' ?> px-2"><?= $title ?></h4>
+                    <h4 class="<?php echo $lang == 'en' ? 'title-left-border' : 'title-right-border' ?> px-2"><?= $title ?></h4>
                     <div class="d-flex align-items-center gap-4">
                         <div class="d-flex justify-content-center">
                             <div class="profile-details py-3" style="width: 60px;">
@@ -204,7 +204,7 @@
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                 <span class="fa fa-user"></span>
-                                <span class="px-2">
+                                <span class="px-2 text-black">
                                    <?php echo (empty($first_name) || empty($last_name)) ? "نامشخص" : "$first_name $last_name"; ?>
                                </span>
                             </button>

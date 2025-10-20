@@ -203,7 +203,7 @@ return [
     'home' => 'Home Page',
     'invalid_user_type' => 'Invalid user type',
     'search' => 'Search',
-    'search_users' => 'Search by Name and Mobile Number',
+    'search_users' => 'Search Users',
     'add' => 'Add %s',
 
 
@@ -246,4 +246,16 @@ return [
     'day' => 'day',
     'verification_code' => 'verification code',
     'verification' => 'verification',
+    'add_new_user' =>  'Add New User',
+    'item_per_page' =>  'Items per page:',
+    'group_work' =>  'Group Work',
+    'all' =>  'All',
+    'operator' =>  'Operator',
+    'employee' =>  'Employee',
+    'customer' =>  'Customer',
+    'item' =>  'Item',
+    'row' =>  'Row',
+    'score' =>  'Score',
+    'execution' =>  'Run',
+
 ];

@@ -303,11 +303,24 @@ class UserController extends Controller
     public function manageUsers()
     {
         $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
-        $userRole = UserType::all();
+        $userRole = UserType::query()
+            ->select([
+                'user_type_table.title',
+//                'COUNT(ut.id) AS user_count',
+            ])
+            ->join('user_table as ut', 'ut.user_type', '=', 'user_type_table.id')
+            ->groupBy('user_type_table.title')
+            ->get();
+//        vd($userRole)
+
+        ;
         $lang = $_SESSION['lang'] ?? 'fa';
         if($_SERVER['REQUEST_METHOD'] === 'POST'){}
         $this->view('user/originalView/manageUsers', [
             'title' => __('manage_users'),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
+//            'roles' => $userRole,
         ]);
     }
 public function otpPage()
