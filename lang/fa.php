@@ -212,7 +212,7 @@ return [
     'invalid_user_type' => 'نوع کاربر نامعتبر است',
     'search' => 'جستجو',
     'search_users' => 'جستجوی کاربران',
-    'add' => 'افزودن %s',
+    'add_user_s' => 'افزودن %s',
 
     'reserve_not_found' => 'رزرو پیدا نشد',
     'customer_first_name' => 'نام مشتری',
@@ -244,7 +244,7 @@ return [
     'manage_reserve' => 'مدیریت رزرو',
     'collapse_menu' => 'جمع کردن فهرست',
     'basic_data' => 'اطلاعات پایه',
-    'shift' => 'شیفت کاری',
+    'shift' => 'شیفت کاری مطابق مجموعه',
     'menu' => 'منو',
     'add_user' => 'افزودن کاربر',
     'start_work' => 'شروع کاری',
@@ -264,4 +264,5 @@ return [
     'row' =>  'ردیف',
     'score' =>  'امتیاز',
     'execution' =>  'اجرا',
+    'add' =>  'اضافه کردن',
 ];

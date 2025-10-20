@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Validator;
+use App\Models\Duration;
+use App\Models\EmployeeService;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
@@ -287,6 +289,12 @@ class UserController extends Controller
     }
     public function add()
     {
+        $user = User::find($_SESSION['user_id']);
+        $groupedServices = Service::groupedForSelect();
+        $selectedServiceIds =[];
+        $userTypes = UserType::all();
+
+        $durations = Duration::all();
         $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
         $userRole = UserType::all();
         $lang = $_SESSION['lang'] ?? 'fa';
@@ -298,6 +306,11 @@ class UserController extends Controller
             'lang' => $lang,
             'services' => $service,
             'userRole' => $userRole,
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'groupedServices' => $groupedServices,
+            'selectedServiceIds' => $selectedServiceIds,
+            'durations' => $durations,
         ]);
     }
     public function dashboard()
@@ -414,7 +427,8 @@ class UserController extends Controller
 
         $this->view('user/edit', [
             'title' => __('edit_profile'),
-            'user' => $user
+            'user' => $user,
+
         ]);
     }
 

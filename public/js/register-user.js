@@ -70,13 +70,42 @@ $(document).ready(function () {
 
     });
 });
+$(document).ready(function() {
+    var switchData = document.getElementById("switchBox");
+    var table = document.getElementById("workTable");
+    var shiftTitle = document.getElementById("shiftTitle");
+    var role = $('#userRole');
+
+    function updateTableDisplay() {
+        var selectedOption = role.find('option:selected');
+        var optionId = selectedOption.attr('id');
+
+        if (optionId == "1" && switchData.checked) {
+            table.style.display = "none";
+        } else{
+            table.style.display = "block";
+        }
+        if(optionId != "1") {
+            switchBox.style.display="none";
+            shiftTitle.style.display="none";
+        }else {
+            switchBox.style.display = "block";
+            shiftTitle.style.display = "block";
+        }
+
+    }
+
+    switchData.addEventListener('change', updateTableDisplay);
+    role.on('change', updateTableDisplay);
+    updateTableDisplay();
+});
 
 $(document).ready(function () {
     $('#multiple-select-field').select2()
 })
 $(document).ready(function() {
     $('.js-example-basic-single').select2({
-        minimumResultsForSearch: Infinity
+        minimumResultsForSearch: Infinity,
     });
 });
 document.addEventListener('DOMContentLoaded', function () {

@@ -1,229 +1,12 @@
-<?php $lang = $_SESSION['lang'] ?? 'fa'; ?>
-<body style="background: #E9F3F9; padding: 30px 20px 30px 20px">
-<div class="container-fluid">
-    <div class="row">
-        <div class="d-lg-none">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-                    aria-controls="sidebar">
-                <i class="fa fa-bars"></i>
-            </button>
-        </div>
+<div class="d-lg-none">
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+            aria-controls="sidebar">
+        <i class="fa fa-bars"></i>
+    </button>
+</div>
+<?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
-        <div class="col-lg-3 col-md-3 col-xl-3 col-xxl-2 px-4 d-none d-lg-block">
-            <div class="bg-white d-flex flex-column gap-5 pb-4 sidebar-full-height menu-border-radius">
-                <img src="<?= asset('img/delarose-black.png') ?>" style="height: 200px; object-fit: contain"
-                     class="mt-4">
-                <nav class="topnav navbar navbar-light " id="menuBar">
-                    <ul class="navbar-nav flex-fill w-100 mb-2 " style="margin: 0 0 0 0">
-                        <li class="nav-item justify-content d-flex py-2 normal-menu-item">
-                            <i class="fa fa-dashboard icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("dashboard") ?></span>
-                        </li>
-                        <li class="nav-item dropdown ">
-                            <a href="#manageUsers" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text px-2 "><?= __("manage_users") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 show" id="manageUsers">
-                                <li class="nav-item active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under"><?= __("manage_users") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under "><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  dropdown ">
-                            <a href="#manageService" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle  nav-link ">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text px-2"><?= __("manage_services") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100  " id="manageService">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_services") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under "><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  dropdown">
-                            <a href="#reserveList" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-book icon-color"></i>
-                                <span class="mx-2 item-text px-2"><?= __("reserves_list") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 " id="reserveList">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span class="mx-2 under "><?= __("manage_reserve") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("setting") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item justify-content  d-flex  py-2 normal-menu-item ">
-                            <i class="fa fa-gear icon-color"></i>
-                            <span class="item-text"><?= __("settings") ?></span>
-                        </li>
-                        <li class="nav-item justify-content d-flex  py-2 normal-menu-item">
-                            <i class="fa-solid fa-compress icon-color"></i>
-                            <span class="item-text"><?= __("collapse_menu") ?></span>
-                        </li>
-                    </ul>
 
-                </nav>
-                <div class="justify-content d-flex nav-item py-2 normal-menu-item">
-                    <i class="fa-solid fa-right-from-bracket icon-color"></i>
-                    <span class="item-text"><?= __("logout") ?></span>
-                </div>
-            </div>
-        </div>
-        <div class="offcanvas offcanvas-start p-0 rounded-5 m-2" tabindex="-1" id="sidebar"
-             aria-labelledby="sidebarLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="sidebarLabel"><?= __("menu") ?></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body p-0">
-                <nav class="topnav navbar navbar-light">
-
-                    <ul class="navbar-nav flex-fill w-100 mb-2 " style="margin: 0 0 0 0">
-                        <li class="nav-item justify-content d-flex py-2 normal-menu-item">
-                            <i class="fa fa-dashboard icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("dashboard") ?></span>
-                        </li>
-                        <li class="nav-item  dropdown ">
-                            <a href="#dashboard" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle  nav-link  <?php echo $lang == 'en' ? 'left-border' : 'right-border' ?>">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text "><?= __("manage_users") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 show " id="dashboard">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_users") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown ">
-                            <a href="#manageService" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text"><?= __("manage_services") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 " id="manageService">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_services") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  dropdown">
-                            <a href="#reserveList" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-book icon-color"></i>
-                                <span class="mx-2 item-text"><?= __("reserve_list") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 " id="reserveList">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_reserve") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item justify-content  d-flex  py-2 normal-menu-item ">
-                            <i class="fa fa-gear icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("settings") ?></span>
-                        </li>
-                        <li class="nav-item justify-content d-flex py-2 normal-menu-item">
-                            <i class="fa-solid fa-compress icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("collapse_menu") ?></span>
-                        </li>
-                    </ul>
-
-                </nav>
-                <div class="justify-content d-flex nav-item  py-2 normal-menu-item">
-                    <a href="<?= BASE_URL ?>/user/logout" class="text-decoration-none">
-                        <i class="fa-solid fa-right-from-bracket icon-color"></i>
-                        <span class="item-text mx-2 "><?= __("logout") ?></span>
-                    </a>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9 col-md-12 col-xl-9 col-xxl-10 px-3">
-            <div class=" mt-lg-0 mt-3">
-                <div class="col-12 d-flex  justify-content-between align-items-center">
-                    <h4 class="<?php echo $lang == 'en' ? 'left-border' : 'right-border' ?> px-2"><?= $title ?></h4>
-                    <div class="d-flex align-items-center gap-4">
-                        <div class="d-flex justify-content-center">
-                            <div class="profile-details py-3" style="width: 60px;">
-                                <i class="fa-solid fa-bell icon-color"></i>
-                            </div>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-white py-3 rounded-4 d-flex align-items-center dropdown-toggle"
-                                    id="navbarDropdownMenuLink"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                <span class="fa fa-user"></span>
-                                <span class="px-2">
-                                   <?php echo (empty($first_name) || empty($last_name)) ? "نامشخص" : "$first_name $last_name"; ?>
-                               </span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end p-0" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a class="dropdown-item" href="#"><?= __("profile") ?></a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/logout"><?= __('logout') ?></a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
                 <div class="mt-5"><h4><?= __("basic_data") ?></h4></div>
                 <div class="row mt-5">
                     <div class="col-6">
@@ -256,7 +39,7 @@
                     <div class="col-6">
                         <label for="userRole"><?= __("role") ?><span class="bullet-color"> *</span></label>
                         <select class="js-example-basic-single w-100" name="state" id="userRole">
-                        <?php foreach ($userRole as $role): ?>
+                            <?php foreach ($userRole as $role): ?>
                             <option id="<?= $role->id ?>"><?= ($lang =="fa" ? $role->title : $role->en_title)?></option>
                         <?php endforeach;?>
                         </select>
@@ -285,18 +68,29 @@
 
                     </div>
                     <div class="col-6">
+                          <div class="mb-3" id="employee_services_section" >
+
                         <label for="multiple-select-field" class="form-label"><?= __("skills") ?><span
                                     class="bullet-color"> *</span></label>
                         <select class="form-select" id="multiple-select-field" multiple>
                             <?php foreach ($services as $service): ?>
-                             <option id="<?= $service->id ?>"><?= ($lang =="fa" ? $service->fa_title : $service->en_title)?></option>
+                                <option value="<?= $service->id ?>">
+                                    <?= ($lang =="fa" ? $service->fa_title : $service->en_title) ?>
+                                </option>
                             <?php endforeach;?>
                         </select>
+
+                          </div>
                     </div>
+                    <div id="services_table_wrapper" class="mt-3"></div>
                 </div>
-                <div class="mt-5">
-                    <span><?= __("shift") ?></span>
-                    <div class="table-wrapper mt-3">
+                <div class="mt-5" id="employeeSection">
+                    <span id="shiftTitle"><?= __("shift") ?></span>
+                    <div class="form-check  switch-input form-switch mt-2">
+                        <input class="switch-input form-check-input" type="checkbox" role="switch" id="switchBox">
+                        <label class="switch-input form-check-label" for="switchBox"></label>
+                    </div>
+                    <div class="table-wrapper mt-3" id="workTable" style="display: none">
                         <div class="table-responsive ">
                             <table class="table custom-table">
                                 <thead class="table-primary ">
@@ -433,6 +227,64 @@
                 </div>
                 <button class="btn btn-primary mt-5 px-5" type="submit">افزودن</button>
 
-
+</div>
+</div>
 </body>
+<script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;
+</script>
+<script>
+
+    $(document).ready(function() {
+
+        $('#multiple-select-field').on('change', function() {
+            const selectedOptions = $(this).select2('data');
+            const $wrapper = $('#services_table_wrapper');
+
+            if(selectedOptions.length === 0){
+                $wrapper.html('');
+                return;
+            }
+
+            let tableHTML = '<div class="table-wrapper"><table class="table transparent custom-table   table-bordered"><thead><tr><th>نام سرویس</th><th>قیمت (تومان)</th><th>مدت زمان</th><th>حذف</th></tr></thead><tbody></div>';
+
+            selectedOptions.forEach(opt => {
+                let durationOptionsHTML = '';
+                durations.forEach(d => {
+                    durationOptionsHTML += `<option value="${d.id}">${d.title}</option>`;
+                });
+
+                tableHTML += `
+                <tr>
+                    <td>${opt.text}</td>
+                    <td>
+                        <input type="text" min="0" class="form-control" name="service_prices" required>
+                    </td>
+                    <td>
+                    <select name="service_durations" class=" js-duration-select" required>
+                            ${durationOptionsHTML}
+                        </select>
+                    </td>
+                    <td>
+                        <i class="fa fa-close remove-row icon-color"></i>
+                    </td>
+                </tr>`;
+            });
+
+            tableHTML += '</tbody></table>';
+            $wrapper.html(tableHTML);
+            $('.js-duration-select').select2({
+                placeholder: "انتخاب مدت زمان",
+                width: '100%',
+                minimumResultsForSearch: Infinity
+            });
+        });
+
+        // حذف ردیف‌ها
+        $(document).on('click', '.remove-row', function() {
+            $(this).closest('tr').remove();
+        });
+
+    });
+
+</script>
 <script src="<?= asset('/js/register-user.js') ?>"></script>
