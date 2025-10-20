@@ -285,7 +285,7 @@ class UserController extends Controller
             'errors' => $errors,
         ]);
     }
- public function add()
+    public function add()
     {
         $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
         $userRole = UserType::all();
@@ -298,6 +298,14 @@ class UserController extends Controller
             'lang' => $lang,
             'services' => $service,
             'userRole' => $userRole,
+        ]);
+    }
+    public function dashboard()
+    {
+        $this->view('user/originalView/userDashboard', [
+            'title' => __('dashboard'),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
     }
     public function manageUsers()
@@ -323,7 +331,7 @@ class UserController extends Controller
 //            'roles' => $userRole,
         ]);
     }
-public function otpPage()
+    public function otpPage()
     {
         $errors = [];
         $success = false;

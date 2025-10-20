@@ -1064,6 +1064,13 @@ hr {
     background-color: var(--bs-gray-input);
     color: black;
 }
+.tips{
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--bs-secondary);
+    margin-bottom: 20px;
+}
 
 .select2-container--default.select2-container--open.select2-container--below .select2-selection--single,.select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
      border-bottom-left-radius: 8px;
