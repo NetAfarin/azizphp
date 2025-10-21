@@ -15,9 +15,6 @@ class Controller
             } else {
                 echo "View '$viewFile' یافت نشد.";
             }
-        if($view != "user/originalView/login-page" && $view != "user/originalView/otp"&& $view != "user/originalView/register-page") {
             include BASE_PATH . '/app/Views/layout/footer.php';
-        }
-
     }
 }

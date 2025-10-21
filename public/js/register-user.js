@@ -70,3 +70,80 @@ $(document).ready(function () {
 
     });
 });
+$(document).ready(function() {
+    var switchData = document.getElementById("switchBox");
+    var table = document.getElementById("workTable");
+    var shiftTitle = document.getElementById("shiftTitle");
+    var section = document.getElementById("employeeSection");
+    var role = $('#userRole');
+
+    function updateTableDisplay() {
+        var selectedOption = role.find('option:selected');
+        var optionId = selectedOption.val();
+
+        if (optionId == "1") {
+                switchBox.style.display = "block";
+            shiftTitle.style.display = "block";
+
+            if (switchData.checked) {
+                table.style.display = "none";
+            } else {
+                table.style.display = "block";
+            }
+        } else {
+            switchBox.style.display = "none";
+            table.style.display = "none";
+            shiftTitle.style.display = "none";
+        }
+    }
+
+    switchData.addEventListener('change', updateTableDisplay);
+    role.on('change', updateTableDisplay);
+    updateTableDisplay();
+});
+
+$(document).ready(function () {
+    $('#multiple-select-field').select2()
+})
+$(document).ready(function() {
+    $('.js-example-basic-single').select2({
+        minimumResultsForSearch: Infinity,
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdownLinks = document.querySelectorAll('.nav-item.dropdown > a.dropdown-toggle[href^="#"]');
+
+    dropdownLinks.forEach(link => {
+        const collapseId = link.getAttribute('href');
+        const collapseEl = document.querySelector(collapseId);
+        if (!collapseEl) return;
+        if (collapseEl.classList.contains('show')) {
+            link.classList.add('right-border');
+            link.classList.add('active-menu');
+            link.setAttribute('aria-expanded', 'true');
+        }
+        collapseEl.addEventListener('show.bs.collapse', function () {
+            dropdownLinks.forEach(l => l.classList.remove('right-border'));
+            link.classList.add('right-border');
+            link.classList.add('active-menu');
+            link.setAttribute('aria-expanded', 'true');
+        })
+        collapseEl.addEventListener('hide.bs.collapse', function () {
+            link.classList.remove('right-border');
+            link.classList.remove('active-menu');
+            link.setAttribute('aria-expanded', 'false');
+        });
+    });
+});
+var selectAllUsers = document.getElementById("allUsers");
+var selectAllServices = document.getElementById("allServices");
+selectAllUsers.addEventListener("change", function () {
+    var table = this.closest("table");
+    var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+    checkboxes.forEach(cb => cb.checked = selectAllUsers.checked);
+});
+selectAllServices.addEventListener("change", function () {
+    var table = this.closest("table");
+    var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+    checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
+});

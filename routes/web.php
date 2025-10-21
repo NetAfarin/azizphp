@@ -26,6 +26,8 @@ use App\Middlewares\SaRoleMiddleware;
         Route::get('/user/register2', [UserController::class, 'registerPage']);
         Route::get('/user/otp', [UserController::class, 'otpPage']);
         Route::get('/user/add', [UserController::class, 'add']);
+        Route::get('/user/dashboard', [UserController::class, 'dashboard']);
+        Route::get('/user/manage', [UserController::class, 'manageUsers']);
         Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
@@ -38,6 +40,7 @@ Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddlew
     Route::post('/user/login2', [UserController::class, 'loginPage']);
     Route::post('/user/register', [UserController::class, 'register']);
     Route::post('/user/register2', [UserController::class, 'registerPage']);
+    Route::post('/user/add', [UserController::class, 'add']);
     Route::post('/user/otp', [UserController::class, 'otpPage']);
 });
 
