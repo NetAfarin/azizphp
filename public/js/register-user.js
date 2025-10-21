@@ -74,25 +74,27 @@ $(document).ready(function() {
     var switchData = document.getElementById("switchBox");
     var table = document.getElementById("workTable");
     var shiftTitle = document.getElementById("shiftTitle");
+    var section = document.getElementById("employeeSection");
     var role = $('#userRole');
 
     function updateTableDisplay() {
         var selectedOption = role.find('option:selected');
-        var optionId = selectedOption.attr('id');
+        var optionId = selectedOption.val();
 
-        if (optionId == "1" && switchData.checked) {
-            table.style.display = "none";
-        } else{
-            table.style.display = "block";
-        }
-        if(optionId != "1") {
-            switchBox.style.display="none";
-            shiftTitle.style.display="none";
-        }else {
-            switchBox.style.display = "block";
+        if (optionId == "1") {
+                switchBox.style.display = "block";
             shiftTitle.style.display = "block";
-        }
 
+            if (switchData.checked) {
+                table.style.display = "none";
+            } else {
+                table.style.display = "block";
+            }
+        } else {
+            switchBox.style.display = "none";
+            table.style.display = "none";
+            shiftTitle.style.display = "none";
+        }
     }
 
     switchData.addEventListener('change', updateTableDisplay);

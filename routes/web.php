@@ -40,6 +40,7 @@ Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddlew
     Route::post('/user/login2', [UserController::class, 'loginPage']);
     Route::post('/user/register', [UserController::class, 'register']);
     Route::post('/user/register2', [UserController::class, 'registerPage']);
+    Route::post('/user/add', [UserController::class, 'add']);
     Route::post('/user/otp', [UserController::class, 'otpPage']);
 });
 

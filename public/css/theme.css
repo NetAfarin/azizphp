@@ -1252,7 +1252,6 @@ span.select2{
 .select2-container--default .select2-selection--multiple{
     border-radius: var(--bs-border-radius);
 }
-/* حالت hover برای سلکت2 */
 .select2-container:hover .select2-selection {
     border-color: var(--bs-primary) !important;
     box-shadow: 0 0 0.25rem 0 var(--bs-primary) !important;

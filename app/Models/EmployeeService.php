@@ -15,7 +15,9 @@ class EmployeeService extends Model
         'service_id',
         'user_id',
         'price',
+        'update_time',
         'estimated_duration',
+        'deleted',
     ];
     protected array $virtualKeys = [
         'title',

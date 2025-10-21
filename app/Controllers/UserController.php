@@ -6,6 +6,8 @@ use App\Core\Controller;
 use App\Core\Validator;
 use App\Models\Duration;
 use App\Models\EmployeeService;
+use App\Models\EmployeeTable;
+use App\Models\Salon;
 use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
@@ -289,27 +291,105 @@ class UserController extends Controller
     }
     public function add()
     {
+        $errors = [];
         $user = User::find($_SESSION['user_id']);
-        $groupedServices = Service::groupedForSelect();
-        $selectedServiceIds =[];
-        $userTypes = UserType::all();
-
+        $salonId = $_SESSION['salon_id'] ?? 0;
+        $salon = Salon::find($salonId);
+        $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
+        $days=rotateArray($days,$salon->start_day_of_week);
         $durations = Duration::all();
         $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
         $userRole = UserType::all();
         $lang = $_SESSION['lang'] ?? 'fa';
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){}
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+           $firstName = trim($_POST['firstname']);
+           $lastname = trim($_POST['lastname']);
+           $nationalCode = trim($_POST['nationalCode']);
+           $phoneNumber = trim($_POST['phoneNumber']);
+           $postal_address = trim($_POST['address']);
+           $role = trim($_POST['role']);
+           $birth_date = trim($_POST['birth_date']);
+            $serviceChosen     = $_POST['service'] ?? [];
+            $service_prices    = $_POST['service_prices'] ?? [];
+            $service_durations = $_POST['service_durations'] ?? [];
+            $employeeHolidays = $_POST['holiday'] ?? [];
+            $startTime = $_POST['startTime']?? [];
+            $endTime = $_POST['endTime']?? [];
+            $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
+            if (User::query()->where('phone_number', '=', $phoneNumber)->get()) {
+                $errors[] = __('phone_taken');
+                save_old_input();
+            }
+            if (empty($errors)) {
+
+                $user = new User([
+                'first_name' => $firstName,
+                'last_name' => $lastname,
+                'phone_number' => $phoneNumber,
+                'national_code' => $nationalCode,
+                'birth_date' => $birth_date,
+                'password' => "",
+                'postal_address' => $postal_address,
+                'register_datetime' => date('Y-m-d H:i:s'),
+                'user_type' => $role,
+                'follow_shift_from_salon' => $followSalon,
+                'deleted' => 0,
+                'is_active' => 1
+            ]);
+            if ($user->save()) {
+                $userId = $user->id;
+                if($role == "1"){
+                    foreach ($serviceChosen as $index => $serviceId) {
+                        $price = $service_prices[$index] ?? null;
+                        $duration = $service_durations[$index] ?? null;
+                        $employeeService = new EmployeeService([
+                            'service_id' => $serviceId,
+                            'user_id' => $userId,
+                            'price' => $price,
+                            'update_time' => date('Y-m-d H:i:s'),
+                            'estimated_duration' => $duration,
+                            'deleted' => 0,
+                            'is_active' => 1
+                        ]);
+                        $employeeService->save();
+                    }
+                }
+                if($role == "1" && $followSalon == 0){
+                    foreach ($days as $index => $day) {
+                        $off = $employeeHolidays[$index] ?? 0;
+                        $startTimeWork = $startTime[$index] ?? null;
+                        $endTimeWork = $endTime[$index] ?? null;
+
+                        $employeeTable = new EmployeeTable([
+                            'user_id' => $userId,
+                            'start_day_of_week' => $index,
+                            'off_day' => $off,
+                            'start_time' => $startTimeWork,
+                            'end_time' => $endTimeWork,
+                        ]);
+                         $employeeTable->save();
+                    }
+                }
+                clear_old_input();
+                $_SESSION['flash_success'] = __('register_success');
+                redirect("/user/add");
+                exit;
+            } else {
+                $errors[] = __('user_save_error');
+            }
+                }
+
+        }
+
         $this->view('user/originalView/add-user', [
             'title' => __('add_user'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
             'lang' => $lang,
             'services' => $service,
+            'days' => $days,
             'userRole' => $userRole,
             'user' => $user,
-            'userTypes' => $userTypes,
-            'groupedServices' => $groupedServices,
-            'selectedServiceIds' => $selectedServiceIds,
             'durations' => $durations,
         ]);
     }
