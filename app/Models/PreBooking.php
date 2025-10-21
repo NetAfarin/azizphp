@@ -18,4 +18,9 @@ class PreBooking extends Model
         'created_at',
         'updated_at'
     ];
+    protected array $virtualKeys = [
+        'service_id',
+        'fa_title',
+        'en_title'
+    ];
 }

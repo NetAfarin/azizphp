@@ -1,5 +1,6 @@
 const {
     weekDates,
+    weekDatesForShow,
     todayIndex,
     weekDays,
     startTime,
@@ -16,15 +17,24 @@ const {
     w1Index,
     w2Index,
     hIndexes,
-    serviceObj
+    serviceObj,
+    prebookingList
 } = window.scheduleConfig;
-console.log((serviceObj))
-console.log((serviceObj[0]))
+// console.log((serviceObj))
+// console.log((serviceObj[0]))
+// console.log("prebookingList : ",(prebookingList))
+// for(idx=0;idx<prebookingList.length;idx++){
+//     console.log(prebookingList[idx].id)
+//     console.log(prebookingList[idx].user_id)
+//     console.log("date:",prebookingList[idx].date)
+//     console.log("time:",prebookingList[idx].time)
+// }
 const pageSize = 7;
 const getWeekSlice = (weekDates, weekNumber) =>
     weekDates.slice((weekNumber - 1) * pageSize, weekNumber * pageSize);
 let weekNumber = 1
 let selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+let selectedWeekDatesForShow = getWeekSlice(weekDatesForShow, weekNumber)
 
 function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTIme, serviceObj) {
     const gridContainer = document.getElementById('grid-container');
@@ -76,7 +86,7 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
         if (i === 0) {
             text = "روز / ساعت";
         } else if (i < columns) {
-            text = `${weekDays[i - 1]} ${selectedWeekDates[i - 1]}`;
+            text = `${weekDays[i - 1]} ${selectedWeekDatesForShow[i - 1]}`;
         } else if (i % columns === 0) {
             rstart = Math.floor(i / columns) + cc;
             rend = Math.floor(i / columns) + cc + 2;
@@ -163,7 +173,23 @@ function generateGrid(columns, startTime, endTime, w1Index, startTimeW1, endTime
             if (hasLaunchTime && j < startOfLaunchTime && (j + (duration / 30)) >= startOfLaunchTime) {
                 j = startOfLaunchTime
             } else {
-                gridContainer.appendChild(createBox(j + 1 + (duration / 30), gridColumn, j + 1, serviceObj.title + "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}` + "<br>", ["box", "cell"], 'col-' + i + '_row-' + j, i - 1 === w1Index ? "#f3550033" : i - 1 === w2Index ? "#f3005033" : i - 1 === w2Index ? "#f5000033" : ""));
+                // console.log(unitsToTime(j + minStart - 1))
+                let find = prebookingList.find(item => item.date === selectedWeekDates[i] && item.time ===unitsToTime(j + minStart - 1));
+                let bgColor =(find!==undefined)? "" :( i - 1 === w1Index ? "#f3550033" : i - 1 === w2Index ? "#f3005033" : i - 1 === w2Index ? "#f5000033" : "");
+                let text1 = serviceObj.title   +((find!==undefined&&(find.status==2||find.status==1))?'<span class="badge bg-success">رزرو شده</span>':'')+ "<br>" + ` ${unitsToTime(j + minStart - 1)} - ${unitsToTime(j + minStart - 1 + (duration / 30))}`;
+                gridContainer.appendChild(
+                    createBox(j + 1 + (duration / 30),
+                        gridColumn, j + 1,
+                        text1 ,
+                        ["box", "cell"],
+                        'col-' + i + '_row-' + j,  bgColor,false,'',
+                        (find!==undefined)&&find.service_id==serviceObj.service_id,selectedWeekDates[i],
+                    unitsToTime(j + minStart - 1),serviceObj.service_id,serviceObj.id));
+                if ((find!==undefined)){
+                    // console.log("service_id:",find.service_id);
+                    // console.log("serviceObj.id:",serviceObj.service_id);
+                }
+                // console.log("service_id:"+(find!==undefined)?find.service_id:'not found');
                 j += (duration / 30)
             }
         }
@@ -184,7 +210,9 @@ function unitsToTime(unit) {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null, bgColor = '', header = false, todayWord = '') {
+function createBox(end, gridColumn, gridRowStart, text, classnames = "box", checkboxId = null,
+                   bgColor = '', header = false, todayWord = '',selected=false,
+                   date=null,time=null,serviceId=null,employeeServiceId=null) {
     const box = document.createElement('div');
     if (Array.isArray(classnames)) {
         classnames.forEach(cls => box.classList.add(cls));
@@ -203,6 +231,16 @@ function createBox(end, gridColumn, gridRowStart, text, classnames = "box", chec
 
     if (checkboxId && gridColumn !== 1) {
         checkbox.id = checkboxId;
+        checkbox.checked=selected
+        if (!header) {
+            checkbox.name = 'selected[]';
+            checkbox.value = JSON.stringify({
+                date: date || '',
+                time: time || '',
+                service_id: serviceId || '',
+                employeeServiceId: employeeServiceId || ''
+            });
+        }
         box.appendChild(checkbox);
         checkbox.addEventListener('change', function () {
             if (this.id.startsWith('checkAll-col-')) {
@@ -261,20 +299,22 @@ let taskInProgress = false;
 
 function startTask() {
     console.log("startTask");
+    $('#reserveBtn').prop('disabled', false);
     taskInProgress = true;
 }
 
 function finishTask() {
     console.log("finishTask");
     taskInProgress = false;
+    $('#reserveBtn').prop('disabled', true);
 }
 
-window.addEventListener('beforeunload', (event) => {
-    if (taskInProgress) {
-        event.preventDefault();
-        event.returnValue = '';
-    }
-});
+// window.addEventListener('beforeunload', (event) => {
+//     if (taskInProgress) {
+//         event.preventDefault();
+//         event.returnValue = '';
+//     }
+// });
 
 
 $(document).ready(function () {
@@ -286,18 +326,168 @@ $(document).ready(function () {
     })
     generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
     $('#nextWeek').on('click', function (e) {
-        weekNumber++
-        selectedWeekDates = getWeekSlice(weekDates, weekNumber)
-        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
-        $('#prevWeek').prop('disabled', (weekNumber <= 1));
-        $('#nextWeek').prop('disabled', (weekNumber >= 4));
+        if (taskInProgress) {
+                showConfirm({
+                    title: 'هشدار',
+                    message: 'در انتخاب ساعت ها تغییر داشتید، برای رفتن به صفحه بعدی ابتدا تغییرات راذخیره کنید و یا به حالت اولیه بازگردانید',
+                    okText: 'ذخیره تغییرات',
+                    cancelText: 'ذخیره نمیکنم، میرم صفحه بعدی',
+                    onOk: function() {
+
+                    },
+                    onCancel: function() {
+                        finishTask()
+                        weekNumber++
+                        selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+                        selectedWeekDatesForShow = getWeekSlice(weekDatesForShow, weekNumber)
+                        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
+                        $('#prevWeek').prop('disabled', (weekNumber <= 1));
+                        $('#nextWeek').prop('disabled', (weekNumber >= 4));
+                        $('#startDate').val(selectedWeekDates[0]);
+                        $('#endDate').val(selectedWeekDates[6]);
+                    }
+                });
+        }else {
+            finishTask()
+            weekNumber++
+            selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+            selectedWeekDatesForShow = getWeekSlice(weekDatesForShow, weekNumber)
+            generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
+            $('#prevWeek').prop('disabled', (weekNumber <= 1));
+            $('#nextWeek').prop('disabled', (weekNumber >= 4));
+            $('#startDate').val(selectedWeekDates[0]);
+            $('#endDate').val(selectedWeekDates[6]);
+        }
+
     })
     $('#prevWeek').on('click', function (e) {
-        weekNumber--
-        selectedWeekDates = getWeekSlice(weekDates, weekNumber)
-        generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
-        $('#prevWeek').prop('disabled', (weekNumber <= 1));
-        $('#nextWeek').prop('disabled', (weekNumber >= 4));
+        if (taskInProgress) {
+            showConfirm({
+                title: 'هشدار',
+                message: 'در انتخاب ساعت ها تغییر داشتید، برای رفتن به صفحه بعدی ابتدا تغییرات راذخیره کنید و یا به حالت اولیه بازگردانید',
+                okText: 'ذخیره تغییرات',
+                cancelText: 'ذخیره نمیکنم، میرم صفحه قبلی',
+                onOk: function() {
+
+                },
+                onCancel: function() {
+                    finishTask()
+                    weekNumber--
+                    selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+                    selectedWeekDatesForShow = getWeekSlice(weekDatesForShow, weekNumber)
+                    generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
+                    $('#prevWeek').prop('disabled', (weekNumber <= 1));
+                    $('#nextWeek').prop('disabled', (weekNumber >= 4));
+                    $('#startDate').val(selectedWeekDates[0]);
+                    $('#endDate').val(selectedWeekDates[6]);
+                }
+            });
+        }else {
+            finishTask()
+            weekNumber--
+            selectedWeekDates = getWeekSlice(weekDates, weekNumber)
+            selectedWeekDatesForShow = getWeekSlice(weekDatesForShow, weekNumber)
+            generateGrid(8, startTime, endTime, w1Index, startTimeW1, endTimeW1, w2Index, startTimeW2, endTimeW2, hIndexes, startTimeH, endTimeH, hasLaunchTime, launchTime, serviceObj[0]);
+            $('#prevWeek').prop('disabled', (weekNumber <= 1));
+            $('#nextWeek').prop('disabled', (weekNumber >= 4));
+            $('#startDate').val(selectedWeekDates[0]);
+            $('#endDate').val(selectedWeekDates[6]);
+        }
+
+
     })
 
 })
+
+
+/**
+ * showConfirm(options) -> Promise<boolean>
+ * options = {
+ *   title: '...',               // پیش‌فرض: 'تأیید'
+ *   message: '...',             // پیش‌فرض: ''
+ *   okText: '...',              // پیش‌فرض: 'تأیید'
+ *   cancelText: '...',          // پیش‌فرض: 'انصراف'
+ *   size: 'sm'|'lg'|'xl'|'',    // پیش‌فرض: '' (نرمال)
+ *   backdrop: 'static'|true|false, // پیش‌فرض: true
+ *   keyboard: true|false,       // پیش‌فرض: true
+ *   centered: true|false,       // پیش‌فرض: true
+ *   onOk: ()=>{},               // اختیاری
+ *   onCancel: ()=>{}            // اختیاری
+ * }
+ */
+function showConfirm(options = {}) {
+    const {
+        title = 'تأیید',
+        message = '',
+        okText = 'تأیید',
+        cancelText = 'انصراف',
+        size = '',
+        backdrop = true,
+        keyboard = true,
+        centered = true,
+        onOk,
+        onCancel
+    } = options;
+
+    // شناسه یکتا برای جلوگیری از تداخل
+    const uid = 'confirmModal_' + Date.now();
+    const sizeClass = size ? `modal-${size}` : '';
+    const centeredClass = centered ? 'modal-dialog-centered' : '';
+
+    // اگه مودالی با همین آیدی از قبل بود پاکش کن
+    $('#' + uid).remove();
+
+    // تمپلیت مودال
+    const $modal = $(`
+      <div class="modal fade" id="${uid}" tabindex="-1" aria-hidden="true" dir="rtl">
+        <div class="modal-dialog ${sizeClass} ${centeredClass}">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">${title}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+              ${message}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-role="cancel">${cancelText}</button>
+              <button type="button" class="btn btn-primary" data-role="ok">${okText}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    $('body').append($modal);
+
+    const bsModal = new bootstrap.Modal($modal[0], { backdrop, keyboard });
+
+    return new Promise((resolve) => {
+        // کلیک روی OK
+        $modal.find('[data-role="ok"]').on('click', () => {
+            onOk && onOk();     // اگر callback داده شده
+            resolve(true);      // Promise => true
+            bsModal.hide();
+        });
+
+        // کلیک روی Cancel یا بستن با ×
+        const cancelHandler = () => {
+            onCancel && onCancel();
+            resolve(false);     // Promise => false
+        };
+        $modal.find('[data-role="cancel"]').on('click', () => {
+            cancelHandler();
+            bsModal.hide();
+        });
+        $modal.on('hide.bs.modal', () => {
+            // اگر با ESC یا کلیک بیرون بسته شد و هنوز resolve نشده
+            // اینجا resolve انجام میشه فقط اگر قبلاً OK کلیک نشده باشه
+        });
+        $modal.on('hidden.bs.modal', () => {
+            $modal.remove(); // پاکسازی از DOM
+        });
+
+        // نمایش مودال
+        bsModal.show();
+    });
+}

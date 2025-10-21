@@ -379,27 +379,38 @@ abstract class Model
         return $data;
     }
 
-    public function deleteWhere(array $conditions): bool
+    /*
+    * @param string $table            Table name
+    * @param array  $conditions       Conditions DSL (see above)
+    * @param int|null $limit          Optional LIMIT to cap deletions (e.g., 100)
+    * @param array $allowedColumns    Optional whitelist of allowed column names
+    * @return int                     Number of affected rows
+    * @throws InvalidArgumentException
+    */
+    public function deleteWhere(string $table, array $conditions, ?int $limit = null, array $allowedColumns = []): int
     {
-        $clauses = [];
-        $params = [];
-
-        foreach ($conditions as $col => $val) {
-            if (is_array($val)) {
-                $placeholders = implode(',', array_fill(0, count($val), '?'));
-                $clauses[] = "$col IN ($placeholders)";
-                $params = array_merge($params, $val);
-            } else {
-                $clauses[] = "$col = ?";
-                $params[] = $val;
-            }
+        if (empty($conditions)) {
+            throw new InvalidArgumentException('Delete without conditions is not allowed.');
         }
 
-        $where = implode(' AND ', $clauses);
-        $sql = "DELETE FROM {$this->table} WHERE $where";
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+            throw new InvalidArgumentException('Invalid table name.');
+        }
 
-        $stmt = Database::pdo()->prepare($sql);
-        return $stmt->execute($params);
+        $params = [];
+        $where  = $this->buildWhereClause($conditions, $params, $allowedColumns);
+
+        $sql = "DELETE FROM `{$table}` WHERE {$where}";
+        if ($limit !== null) {
+            if ($limit <= 0) {
+                throw new InvalidArgumentException('Limit must be a positive integer.');
+            }
+            $sql .= " LIMIT {$limit}";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->rowCount();
     }
 
     public function belongsTo(string $related, string $foreignKey, string $ownerKey = 'id'): ?Model

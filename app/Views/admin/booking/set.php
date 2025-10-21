@@ -9,13 +9,15 @@ $deltaToWeekStart = $todayIndex;
 $weekStart = (clone $today)->modify("-{$deltaToWeekStart} days");
 $format = 'Y-m-d';
 $weekDates = [];
+$weekDatesForShow = [];
 $maxWeek = 4;
 for ($i = 0; $i < 7* $maxWeek; $i++) {
     $d = (clone $weekStart)->modify("+{$i} days")->format($format);
+    $weekDates[] = $d;
     if (APP_LANG=="fa"){
         $explode = explode('-', $d);
         list($jy, $jm, $jd)=gregorian_to_jalali($explode[0], $explode[1], $explode[2]);
-        $weekDates[] =  sprintf("%04d/%02d/%02d", $jy, $jm, $jd);
+        $weekDatesForShow[] =  sprintf("%04d/%02d/%02d", $jy, $jm, $jd);
     }else{
         $weekDates[] = $d;
     }
@@ -36,23 +38,45 @@ for ($i = 0; $i < 7* $maxWeek; $i++) {
         <button class="btn btn-info arrow-button" id="nextWeek" <?= $maxWeek<=1?"disabled":"" ?>><?= __('next_week') ?><span class="fa fa-arrow-right mx-1"></span></button>
     </span>
     </div>
+    <form method="post">
+        <?= csrf_field() ?>
+        <input type="hidden" id="startDate" name="startDate" value="<?= $weekDates[0] ?>">
+        <input type="hidden" id="endDate" name="endDate" value="<?= $weekDates[6] ?>">
     <div class="dynamic-grid" id="grid-container"></div>
 
     <div class="text-center">
-        <button class="btn btn-primary" id="reserveBtn">رزرو کردن</button>
+        <input type="submit" class="btn btn-primary" id="reserveBtn" disabled value="ذخیره تغییرات" />
     </div>
+    </form>
 </div>
 <?php
 $servicePayload = array_map(function ($item) {
     if (is_object($item)) {
         if (method_exists($item, 'toArray')) return $item->toArray();
         if ($item instanceof JsonSerializable) return $item->jsonSerialize();
-        return get_object_vars($item); // فقط publicها
+        return get_object_vars($item);
     }
     return $item;
 }, $employeeServicesData);
+
+$prebookingPayload = array_map(function ($item) {
+    if (APP_LANG=="fa"){
+        $explode = explode('-', $item->date);
+        list($jy, $jm, $jd)=gregorian_to_jalali($explode[0], $explode[1], $explode[2]);
+        $item->date =  sprintf("%04d/%02d/%02d", $jy, $jm, $jd);
+    }
+    $item->time=substr($item->time, 0, 5);
+    if (is_object($item)) {
+        if (method_exists($item, 'toArray')) return $item->toArray();
+        if ($item instanceof JsonSerializable) return $item->jsonSerialize();
+        return get_object_vars($item);
+    }
+
+    return $item;
+}, $prebookingList);
 $scheduleData = (object)[
         'weekDates' => $weekDates,
+        'weekDatesForShow' => $weekDatesForShow,
         'todayIndex' =>$todayIndex ,
         'weekDays' => $days,
         'startTime' => $salon->start_time,
@@ -70,8 +94,8 @@ $scheduleData = (object)[
         'w2Index'=>6,
         'hIndexes'=>[1,3],
         'serviceObj'=>$servicePayload,
+        'prebookingList'=>$prebookingPayload,
 ];
-
 ?>
 
 

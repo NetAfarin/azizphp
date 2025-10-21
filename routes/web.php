@@ -64,6 +64,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::post('/admin/salon/create', [SuperAdminController::class, 'createSalon']);
     Route::post('/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
+    Route::post('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
 
 });
 
