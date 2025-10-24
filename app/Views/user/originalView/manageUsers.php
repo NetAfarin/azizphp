@@ -22,7 +22,7 @@
         <div class="col-12 ">
             <div class="custom-part-with-border ">
                 <div class="d-flex  flex-wrap justify-content-between gap-sm-2">
-                    <div>
+                    <div class="d-flex">
                         <select class="js-example-basic-single test h-40-custom" name="state" id="xx">
                             <option><?= __("group_work") ?></option>
                             <option><?= __("group_work") ?></option>
@@ -36,15 +36,16 @@
                         <input type="text" class="form-control " id="search" name="search" placeholder="<?= __("search_users") ?>">
                     </div>
                 </div>
-                <div class="d-flex flex-wrap justify-content-between mt-4">
-                    <div>
-<!--                        --><?php //foreach ($roles as $role): ?>
-                        <span class="text-primary with-border sortUserRole"><?= __("all") ?> (8)</span>
-                        <span class= "with-border sortUserRole"><?= __("customer") ?> (2)</span>
-                        <span class="with-border sortUserRole"><?= __("employee") ?> (4)</span>
+                <div class="d-flex flex-wrap justify-content-between  mt-4">
+                    <div class="d-flex">
+                        <span class="text-primary sortUserRole"><?= __("all") ?> (8)</span>
+                        <div class="vertical-separator"></div>
+                        <span class= " sortUserRole"><?= __("customer") ?> (2)</span>
+                        <div class="vertical-separator"></div>
+                        <span class="sortUserRole"><?= __("employee") ?> (4)</span>
+                        <div class="vertical-separator"></div>
                         <span class="sortUserRole"> <?= __("operator") ?> (1)</span></div>
                     <span class="sortUserRole">8 <?= __("item") ?></span>
-<!--                    --><?// endforeach; ?>
                 </div>
             </div>
         </div>

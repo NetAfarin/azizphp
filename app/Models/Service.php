@@ -33,6 +33,25 @@ class Service extends Model
             ->where('parent_id', '=', $parentId)
             ->get();
     }
+    public static function orderByParentId(): array
+    {
+//        select
+//st.fa_title as parent,
+//st1.fa_title,
+//FROM service_table st
+//JOIN service_table st1 on st.id = st1.parent_id
+        return static::query()
+            ->select([
+                'service_table.id',
+                'service_table.fa_title',
+                'p.fa_title',
+            ])
+            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id' , 'left')
+            ->orderBy('service_table.parent_id', 'ASC')
+            ->get();
+
+
+    }
     public static function groupByParentId(): array
     {
         return (new static())

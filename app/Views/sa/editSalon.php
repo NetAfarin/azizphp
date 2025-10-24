@@ -104,14 +104,7 @@ if (!empty($publicErrors)): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['about_us'][0]) ?></div>
         <?php endif; ?>
     </div>
-    <div class="mb-3">
-        <label class="form-label"><?= __('salon_start_day') ?></label>
-        <select class="form-select" id="daySelect" name="start_day_of_week">
-            <?php foreach ($dayWeek as  $key => $value): ?>
-            <option value="<?= $key ?>" <?= (htmlspecialchars($salon->start_day_of_week) == $key) ? 'selected' : '' ?>>
-                <?= htmlspecialchars($value) ?>
-            </option>
-            <?php endforeach; ?>
+    <div class="mb-3">endforeach; ?>
         </select>
         <?php if (!empty($errors['salon_start_day'])): ?>
             <div class="text-danger small"><?= htmlspecialchars($errors['salon_start_day'][0]) ?></div>

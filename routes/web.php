@@ -54,7 +54,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(func
 });
 
 // Admin POST routes (CSRF + RateLimit)
-Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, RateLimiterMiddleware::class])->group(function () {
+Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, /*RateLimiterMiddleware::class*/])->group(function () {
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
     Route::post('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
     Route::post('/admin/user/register/{userType}', [AdminController::class, 'addUser']);
@@ -68,6 +68,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/salon/create', [SuperAdminController::class, 'createSalon']);
     Route::post('/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
     Route::post('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
+    Route::post('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
+
 
 });
 

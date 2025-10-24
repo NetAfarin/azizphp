@@ -261,36 +261,39 @@ class ServiceController extends Controller
     {
 
         $services = Service::query()->where("parent_id", "=", 0)->get();
+        $allServices = Service::orderByParentId();
         $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fa_title = $_POST['fa_title'];
             $en_title = $_POST['en_title'];
-            $service_key = $_POST['service_key'];
-            $categoryId = $_POST['parent_id'];
+//            $service_key = $_POST['service_key'];
+            $categoryId = $_POST['category'] ?? '';
+            $addCategory =  isset($_POST['serviceCategory']) && $_POST['serviceCategory'] == 'on' ? 1 : 0;
             $service = new Validator($_POST, [
-                'service_key' => "required|min:2|max:40",
+//                'service_key' => "required|min:2|max:40",
                 'fa_title' => "required|min:2|max:40",
                 'en_title' => "required|min:2|max:40",
-                'parent_id' => "required|not:0",
+//                'parent_id' => "required|not:0",
             ]);
             if ($service->fails()) {
                 $errors = array_merge($errors, $service->errors());
                 save_old_input();
             }
             $category = new Service([
-                'service_key' => $service_key,
+                'service_key' => "",
                 'fa_title' => $fa_title,
                 'en_title' => $en_title,
-                'parent_id' => $categoryId,
+                'parent_id' => ($addCategory == 1) ? 0 : $categoryId,
+                'created_at' =>  date('Y-m-d H:i:s'),
+                'updated_at' =>  date('Y-m-d H:i:s'),
                 'deleted' => 0,
             ]);
             if (empty($errors)) {
-
                 if ($category->save()) {
 
                     clear_old_input();
                     $_SESSION['flash_success'] = __('add_service_message');
-                    redirect("/admin/services/management");
+                    redirect("/admin/services/create");
                     exit;
                 } else {
                     $errors[] = __('user_save_error');
@@ -301,8 +304,9 @@ class ServiceController extends Controller
         }
         $this->view('admin/services/addService', [
             'errors' => $errors,
-            'title' => __('services'),
-            "services" => $services
+            'title' => __('add_services'),
+            "services" => $services,
+            "allServices" => $allServices,
         ]);
 
     }

@@ -470,85 +470,88 @@ class SuperAdminController extends Controller
     public function createSalon(){
         $errors = [];
         $planeType = Plan::all();
+        $lang = $_SESSION['lang'] ?? 'fa';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $salon_name = $_POST['salon_name'];
-            $manager = $_POST['manager'];
-            $manager_mobile = $_POST['manager_mobile'];
-            $salon_username = $_POST['username'];
-            $postal_address = $_POST['postal_address'];
-            $salon_link = $_POST['link_name'];
-            $plan = $_POST['plan'];
-            $about_us = $_POST['about_us'];
-            $start_day_of_week = $_POST['start_day_of_week'];
-            $start_time = $_POST['start_time'];
-            $end_time = $_POST['end_time'];
-            $start_time_weekend_1 = $_POST['start_time_weekend_1'];
-            $end_time_weekend_1 = $_POST['end_time_weekend_1'];
-            $start_time_weekend_2 = $_POST['start_time_weekend_2'];
-            $end_time_weekend_2 = $_POST['end_time_weekend_2'];
-            $max_reserve_day = $_POST['max_reserve_day'];
-            $start_time_holiday = $_POST['start_time_holidays'];
-            $end_time_holiday = $_POST['end_time_holidays'];
-            $activeHolidays = $_POST['active_holidays'] ?? 0;
-            $active_weekend_2 = $_POST['active_weekend_2'] ?? 0;
-            $active_weekend_1 = $_POST['active_weekend_1'] ?? 0;
-            $manager_email = $_POST['manager_email'];
-            $validator = new Validator($_POST, [
-                'salon_name' => 'required|min:2|max:100',
-                'manager' => 'required|min:2|max:100',
-                'manager_mobile' => 'required|min:2|max:100',
-                'username' => 'required|min:2|max:100',
-                'postal_address' => 'required|min:2|max:100',
-                'link_name' => 'required|min:2|max:100',
-                'plan' => 'required|min:1|max:100',
-                'about_us' => 'required|min:2|max:100',
-                'start_day_of_week' => 'required|min:1|max:100',
-                'start_time' => 'required|min:2|max:100',
-                'end_time' => 'required|min:2|max:100',
-                'start_time_weekend_1' => 'required|min:2|max:100',
-                'end_time_weekend_1' => 'required|min:2|max:100',
-                'start_time_weekend_2' => 'required|min:2|max:100',
-                'end_time_weekend_2' => 'required|min:2|max:100',
-                'max_reserve_day' => 'required|min:2|max:100',
-                'start_time_holidays' => 'required|min:2|max:100',
-                'end_time_holidays' => 'required|min:2|max:100',
+             $name =  $_POST['name'];
+             $branchCode =  "";
+             $address =  $_POST['address'];
+             $aboutUs =  $_POST['about_us'];
+             $managerName =  $_POST['manager_name'];
+             $managerLastName =  $_POST['manager_lastname'];
+             $managerPhoneNumber =  $_POST['manager_phone_number'];
+             $managerEmail =  $_POST['manager_email'];
+             $startTimeWork =  $_POST['start_time_work'];
+             $endTimeWork =  $_POST['end_time_work'];
+             $startTimeWeekend_1 =  $_POST['start_time_weekend_1'];
+             $endTimeWeekend_1 =  $_POST['end_time_weekend_1'];
+             $startTimeWeekend_2 =  $_POST['start_time_weekend_2'];
+             $endTimeWeekend_2 =  $_POST['end_time_weekend_2'];
+            $startDayOfWeek =  $_POST['start_day_of_week'];
+            $activeWeekend1 =  isset($_POST['active_weekend_1']);
+            $activeWeekend2 =  isset( $_POST['active_weekend_2']);
+            $activeHoliday =  isset($_POST['active_holidays']);
+            $startTimeHoliday =  $_POST['start_time_holidays'];
+            $endTimeHoliday =  $_POST['end_time_holidays'];
+//            $validator = new Validator($_POST, [
+//                'salon_name' => 'required|min:2|max:100',
+//                'manager' => 'required|min:2|max:100',
+//                'manager_mobile' => 'required|min:2|max:100',
+//                'username' => 'required|min:2|max:100',
+//                'postal_address' => 'required|min:2|max:100',
+//                'link_name' => 'required|min:2|max:100',
+//                'plan' => 'required|min:1|max:100',
+//                'about_us' => 'required|min:2|max:100',
+//                'start_day_of_week' => 'required|min:1|max:100',
+//                'start_time' => 'required|min:2|max:100',
+//                'end_time' => 'required|min:2|max:100',
+//                'start_time_weekend_1' => 'required|min:2|max:100',
+//                'end_time_weekend_1' => 'required|min:2|max:100',
+//                'start_time_weekend_2' => 'required|min:2|max:100',
+//                'end_time_weekend_2' => 'required|min:2|max:100',
+//                'max_reserve_day' => 'required|min:2|max:100',
+//                'start_time_holidays' => 'required|min:2|max:100',
+//                'end_time_holidays' => 'required|min:2|max:100',
 //                'active_holidays' => 'required|min:0|max:100',
 //                'active_weekend_2' => 'required|min:0|max:100',
 //                'active_weekend_1' => 'required|min:0|max:100',
-                'manager_email' => 'required|min:2|max:100',
-            ]);
-            if ($validator->fails()) {
-                $errors = array_merge($errors, $validator->errors());
-                save_old_input();
-            }
+//                'manager_email' => 'required|min:2|max:100',
+//            ]);
+//            if ($validator->fails()) {
+//                $errors = array_merge($errors, $validator->errors());
+//                save_old_input();
+//            }
             $salon = new Salon([
-                'name' => $salon_name,
-                'manager_email' => $manager_email,
-                'manager_mobile' => $manager_mobile,
-                'postal_address' => $postal_address,
-                'avatar' => "?",
-                'manager' => $manager,
-                'username' => $salon_username,
-                'link_name' => $salon_link,
-                'plan_id' => (int)$plan,
-                'about_us' => $about_us,
-                'start_day_of_week' => (int)$start_day_of_week,
-                'start_time' => $start_time,
-                'end_time' => $end_time,
-                'start_time_weekend_1' => $start_time_weekend_1,
-                'end_time_weekend_1' => $end_time_weekend_1,
-                'start_time_weekend_2' => $start_time_weekend_2,
-                'end_time_weekend_2' => $end_time_weekend_2,
-                'max_reserve_day' => $max_reserve_day,
-                'start_time_holidays' => $start_time_holiday,
-                'end_time_holidays' => $end_time_holiday,
-                'active_holidays' => $activeHolidays,
-                'active_weekend_2' => $active_weekend_2,
-                'active_weekend_1' => $active_weekend_1,
+                'name' => $name,
+                'branch_code' => $branchCode,
+                'username' => "",
+                'link_name' => "",
+                'avatar' => "",
+                'manager' =>$managerName,
+                'manager_mobile' => $managerPhoneNumber,
+                'manager_email' => $managerEmail,
+                'plan_id' => 1,
+                'postal_address' => $address,
+                'latitude' => $address,
+                'longitude' => $address,
+                'about_us' => $aboutUs,
+                'start_day_of_week' => $startDayOfWeek,
+                'start_time' => $startTimeWork,
+                'end_time' => $endTimeWork,
+                'active_weekend_1' => $activeWeekend1,
+                'start_time_weekend_1' => $startTimeWeekend_1,
+                'end_time_weekend_1' => $endTimeWeekend_1,
+                'active_weekend_2' => $activeWeekend2,
+                'start_time_weekend_2' => $startTimeWeekend_2,
+                'end_time_weekend_2' => $endTimeWeekend_2,
+                'active_holidays' => $activeHoliday,
+                'start_time_holidays' => $startTimeHoliday,
+                'end_time_holidays' => $endTimeHoliday,
+                'max_reserve_day' => "",
                 'active' => 1,
                 'deleted' => 0
             ]);
             if (empty($errors)) {
+
                 if ($salon->save()) {
                     clear_old_input();
                     $_SESSION['flash_success'] = __('add_salon_message');
@@ -566,7 +569,7 @@ class SuperAdminController extends Controller
             'title' => __('create_salon'),
             'planeType' => $planeType,
             'errors' => $errors,
-            'dayWeek' =>  weekDay()
+            'dayWeek' =>  weekDay($lang)
         ]);
 
     }

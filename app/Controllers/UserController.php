@@ -207,7 +207,7 @@ class UserController extends Controller
                     $user_type = UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                     clear_old_input();
-
+//                    vd($user->id);
                     $redirect =($user->isSuperAdmin() || $user->isSupport())?"/admin/panel":( ($user->isAdmin() || $user->isOperator())
                         ? "/admin/panel" : "/home/index");
                     redirect( "/user/otp");
@@ -259,6 +259,7 @@ class UserController extends Controller
 
                 if (empty($errors)) {
                     $user = new User([
+                        'salon_id' => 1,
                         'first_name' => $first_name,
                         'last_name' => $last_name,
                         'phone_number' => $_SESSION['phone_number'],
@@ -296,7 +297,7 @@ class UserController extends Controller
         $salonId = $_SESSION['salon_id'] ?? 0;
         $salon = Salon::find($salonId);
         $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
-        $days=rotateArray($days,$salon->start_day_of_week);
+//        $days=rotateArray($days,$salon->start_day_of_week);
         $durations = Duration::all();
         $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
         $userRole = UserType::all();
@@ -323,12 +324,13 @@ class UserController extends Controller
             if (empty($errors)) {
 
                 $user = new User([
+                'salon_id' => 1,
                 'first_name' => $firstName,
                 'last_name' => $lastname,
                 'phone_number' => $phoneNumber,
                 'national_code' => $nationalCode,
                 'birth_date' => $birth_date,
-                'password' => "",
+                'password' => password_hash("123456" , PASSWORD_DEFAULT),
                 'postal_address' => $postal_address,
                 'register_datetime' => date('Y-m-d H:i:s'),
                 'user_type' => $role,

@@ -117,15 +117,12 @@
 
                          </td>
                          <td>
-                             <div class="d-flex justify-content-center">
-                                 <div class="form-check">
-                                     <label class="form-check-label" for="holiday-<?= $index ?>">
-                                         تعطیل
-                                     </label>
-                                     <input class="form-check-input" type="checkbox" id="holiday-<?= $index ?>" name="holiday[<?= $index ?>]" value="1">
-                                 </div>
+                             <div class="form-check">
+                                 <label class="form-check-label" for="holiday-<?= $index ?>">
+                                     تعطیل
+                                 </label>
+                                 <input class="form-check-input" type="checkbox" id="holiday-<?= $index ?>" name="holiday[<?= $index ?>]" value="1">
                              </div>
-
                          </td>
 
                      </tr>
