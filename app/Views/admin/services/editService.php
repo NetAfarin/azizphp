@@ -48,9 +48,9 @@ if (!empty($publicErrors)): ?>
         <select class="js-example-basic-single form-select w-100" name="parent_id">
             <option value="0"><?= __('select_category') ?></option>
             <?php foreach ($categories as $cat): ?>
-            <option value="<?= $cat->id ?>" <?= ($cat->id == $service->parent_id ) && ((old('parent_id', $service->parent_id)) != 0) ? 'selected' : '' ?>>
-                <?= htmlspecialchars($cat->fa_title) ?>
-            </option>
+                <option value="<?= $cat->id ?>" <?= ($cat->id == $service->parent_id ) && ((old('parent_id', $service->parent_id)) != 0) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($cat->fa_title) ?>
+                </option>
             <?php endforeach; ?>
         </select>
         <?php if (!empty($errors['parent_id'])): ?>

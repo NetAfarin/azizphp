@@ -136,6 +136,8 @@
     --bs-bg-under-menu : #F3F1F1;
     --bs-bg-dropdown-item:#BBBBBB;
     --bs-bg-border-left:#B9B8B8;
+    --action-menu:#EBEAEA;
+    --bs-pagination-border-radius: 8px;
 }
 
 body, * {
@@ -164,6 +166,17 @@ body, * {
     --bs-btn-active-bg: #DADADA;
     --bs-btn-active-border-color:  #d5d2d2;
 
+}
+.btn-search{
+    --bs-btn-bg: #FFF;
+    --bs-btn-color: var(--bs-primary);
+    --bs-btn-hover-bg: #FFF;
+    --bs-btn-hover-color: var(--bs-primary);
+    --bs-btn-active-color: var(--bs-primary);
+    --bs-btn-active-bg: #FFF;
+    --bs-btn-active-border-color:  var(--bs-primary);
+    --bs-btn-hover-border-color: var(--bs-primary);
+    --bs-btn-border-color: var(--bs-input-border);
 }
 .btn-secondary {
     --bs-btn-color: #fff;
@@ -534,8 +547,8 @@ body, * {
     height: 48px;
 }
 .modal-content {
-    width: 520px;
-    height: 246px;
+    /*width: 520px;*/
+    /*height: 246px;*/
     border: 0;
 }
 .modal-body {
@@ -1146,11 +1159,11 @@ hr {
 .select2-container[dir="rtl"]  .select2-selection--single .select2-selection__rendered{
     font-size: 15px;
 }
-.select2-container[dir="ltr"] .select2-selection--single .select2-selection__rendered {
+.sectionPagination + .select2-container[dir="ltr"] .select2-selection--single .select2-selection__rendered {
     display: block;
      padding-left:0;
      padding-right:0;
-    overflow: hidden;
+     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap
 }
@@ -1274,4 +1287,57 @@ span.select2{
     width: 1px;
     height: 26px;
     margin: 0 10px;
+}
+.active>.page-link,.page-link.active {
+    z-index: 3;
+    color: white;
+    background-color: var(--bs-primary);
+    border-color: var(--bs-table-line)
+}
+.icon-pagination{
+    color: var(--bs-primary);
+}
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color:var(--bs-table-line);
+}
+
+
+.select2-selection .select2-selection--single{
+    justify-content: center;
+}
+.input-group:focus-within {
+    box-shadow: 0 0 0.25rem 0 var(--bs-primary);
+    border-color: var(--bs-primary);
+    border-radius: var(--bs-border-radius);
+}
+
+
+.input-group:focus-within .form-control,
+.input-group:focus-within .btn {
+    border-color: var(--bs-primary);
+}
+.input-group:hover .form-control,
+.input-group:hover .btn {
+    border-color: var(--bs-primary);
+}
+.input-group .form-control:focus {
+    box-shadow: none !important;
+}
+html[lang="en"] .input-group input , .dropdown-item{
+    direction: ltr;
+    text-align: left;
+}
+.btn-delete{
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    display: flex  ;
+    align-items: center;
+}
+.action-menu{
+    background-color: var(--action-menu);
 }

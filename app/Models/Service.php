@@ -20,6 +20,12 @@ class Service extends Model
         'updated_at',
         'deleted',
     ];
+    protected array $virtualKeys = [
+        'id',
+        'parent_title',
+        'title',
+        'childCount',
+    ];
     public static function parentServices(): array
     {
         return (new static())
@@ -43,7 +49,7 @@ class Service extends Model
         return static::query()
             ->select([
                 'service_table.id',
-                'service_table.fa_title',
+                'service_table.fa_title AS category',
                 'p.fa_title',
             ])
             ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id' , 'left')

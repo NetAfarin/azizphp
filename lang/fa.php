@@ -282,4 +282,5 @@ return [
     'add_services' =>  'افزودن خدمات',
     'english_title' =>  'عنوان به انگلیسی',
     'add_as_service_category' =>  'افزودن به عنوان دسته بندی خدمات',
+    'sub_category_count' => 'تعداد خدمات',
 ];

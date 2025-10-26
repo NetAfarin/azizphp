@@ -204,9 +204,8 @@ return [
     'invalid_user_type' => 'Invalid user type',
     'search' => 'Search',
     'search_users' => 'Search Users',
-    'add' => 'Add %s',
-
-
+    'add_user_s' => 'Add %s',
+    'add' => 'Add',
     'reserve_not_found' => 'Reservation not found',
     'customer_first_name' => 'Customer First Name',
     'customer_last_name' => 'Customer Last Name',
@@ -254,7 +253,7 @@ return [
     'employee' =>  'Employee',
     'customer' =>  'Customer',
     'item' =>  'Item',
-    'row' =>  'Row',
+    'row' =>  'row',
     'score' =>  'Score',
     'execution' =>  'Run',
     'branch_code' =>  'Branch Code',
@@ -271,4 +270,10 @@ return [
     'start_time_work_at_holiday' => 'Start time of work on official holiday',
     'end_time_work_at_holiday' => 'End time of work on official holiday',
     'holiday' => 'Holidays',
+    'add_services' => 'Add Services',
+    'english_title' => 'English Title',
+    'add_as_service_category' => 'Add as Service Category',
+    'sub_category_count' => 'sub category count',
+    'category' => 'category',
+
 ];

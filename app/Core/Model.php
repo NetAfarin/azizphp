@@ -473,4 +473,20 @@ abstract class Model
             }
         }
     }
+    public function count(): int
+    {
+        $params = [];
+        $sql = $this->buildCountSql($params);
+        $stmt = Database::pdo()->prepare($sql);
+        $i = 1;
+        foreach ($params as $val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindValue($i++, $val, $type);
+        }
+        $stmt->execute();
+        $count = (int)($stmt->fetch(PDO::FETCH_ASSOC)['aggregate'] ?? 0);
+        $this->resetQuery();
+        return $count;
+    }
+
 }

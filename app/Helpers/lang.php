@@ -12,11 +12,18 @@ function __($key, array $replace = []): string
         }
     }
 
-    $line = $translations[$key] ?? $key;
+    // اگر مقدار null بود، رشته خالی برگردون
+    $line = $translations[$key] ?? '';
 
-    foreach ($replace as $k => $v) {
-        $line = str_replace(":$k", $v, $line);
+    // اگر هنوز null یا غیررشته بود، بازم رشته خالی بشه
+    if ($line === null) {
+        $line = '';
     }
 
-    return $line;
+    foreach ($replace as $k => $v) {
+        $line = str_replace(":$k", (string)($v ?? ''), $line);
+    }
+
+    // در نهایت مطمئن شو همیشه رشته برمی‌گرده
+    return (string)$line;
 }
