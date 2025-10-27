@@ -9,6 +9,7 @@ use App\Models\EmployeeService;
 use App\Models\EmployeeTable;
 use App\Models\Salon;
 use App\Models\Service;
+use App\Models\ServiceVisitRelation;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Middlewares\RoleMiddleware;
@@ -383,7 +384,7 @@ class UserController extends Controller
 
         }
 
-        $this->view('user/originalView/add-user', [
+        $this->view('user/originalView/addUser', [
             'title' => __('add_user'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
@@ -401,6 +402,27 @@ class UserController extends Controller
             'title' => __('dashboard'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
+        ]);
+    }
+    public function operatorDashboard()
+    {
+        $visits = ServiceVisitRelation::query()->select([
+            "ut.first_name AS customerName",
+            "ut.last_name AS customerLastName",
+             "st.fa_title AS service",
+            "vst.fa_title AS visitStatus",
+        ])
+            ->join("visit_table AS vt", "vt.id", "=", "service_visit_relation_table.visit_id")
+            ->join("user_table AS ut", "ut.id", "=", "vt.customer_id")
+            ->join("service_table AS st", "st.id", "=", "service_visit_relation_table.service_id")
+            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
+            ->get();
+
+        $this->view('user/originalView/operatorDashboard', [
+            'title' => __('dashboard'),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
+            'visits' => $visits,
         ]);
     }
     public function manageUsers()

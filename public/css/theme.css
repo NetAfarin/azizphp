@@ -168,6 +168,8 @@ body, * {
 
 }
 .btn-search{
+    display: flex;
+    align-items: center;
     --bs-btn-bg: #FFF;
     --bs-btn-color: var(--bs-primary);
     --bs-btn-hover-bg: #FFF;
@@ -431,7 +433,7 @@ body, * {
     transition: color 0.3s ease;
 }
 .icon-color {
-    color: var(--bs-primary);
+    color: var(--bs-primary) !important;
     font-size: 21px;
 }
 .centered-element {
@@ -556,16 +558,9 @@ body, * {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    text-align: right;
 }
-.custom-modal-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    gap: 4rem;
-}
+
 .search-bar {
     height: 50px;
     display: block;
@@ -848,6 +843,9 @@ label {
     display: inline-block;
     padding-bottom: 10px;
 }
+.tick .form-check-label {
+    padding-bottom: 0 !important;
+}
 hr {
     margin: 1rem 0;
     color: inherit;
@@ -866,7 +864,7 @@ hr {
 .under{
     font-weight: normal;
 }
- .nav-link:hover{
+.test .nav-link:hover{
     color: var(--bs-primary);
 }
 .nav-link{
@@ -880,6 +878,10 @@ hr {
 }
 .list-unstyled{
     background-color: var(--bs-bg-under-menu);
+    padding: 0.5rem 1rem;
+}
+.tips .list-unstyled{
+    background-color: white;
     padding: 0.5rem 1rem;
 }
 .normal-menu-item{
@@ -912,7 +914,7 @@ hr {
 .justify-content{
     align-items: center;
 }
-.nav-item:hover{
+nav .nav-item:hover{
     background-color: var(--bs-gray-input);
 }
 .dropdown-menu {
@@ -1103,11 +1105,15 @@ hr {
     color: var(--bs-primary);
     position: absolute;
     top: 50%;
-    left: 50%;
-    margin-left: 4px;
+    left: 20px;
+    margin-left: 0;
     transform: translate(-50%, -50%);
 }
-.select2-container--default .select2-selection--single .select2-selection__arrow {
+html[lang="en"] .select2-container--default .select2-selection--single .select2-selection__arrow:after {
+    left: auto !important;
+}
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
     top: unset !important;
 }
 
@@ -1133,7 +1139,7 @@ hr {
      border-bottom-right-radius: 8px;
 }
 .select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
-    padding-right: 8px;
+    padding-right: 15px;
      /*padding-left: 0;*/
 }
 /*test*/
@@ -1211,7 +1217,7 @@ html[lang="en"] .input-with-icon-left input , .dropdown-item{
     height: 1px;
     background-color: #DADADA;
     border: none;
-    margin-inline: calc(-1 * 15px);
+    margin-inline: calc(-1 * 20px);
 }
 
 
@@ -1257,7 +1263,7 @@ html[lang="en"] .input-with-icon-left input , .dropdown-item{
 }
 
 span.select2{
-    width: 100% !important;
+    /*width: 100% !important;*/
 }
 .select2-container--default .select2-selection--multiple{
     border-radius: var(--bs-border-radius);
@@ -1277,6 +1283,10 @@ span.select2{
 .form-check-input {
     background-color: var(--bs-gray-input);
     border: 0;
+}
+.tick .form-check-input {
+    background-color: white;
+    border: 1px solid black;
 }
 .checkBox.form-check-input {
     background-color: white;
@@ -1340,4 +1350,56 @@ html[lang="en"] .input-group input , .dropdown-item{
 }
 .action-menu{
     background-color: var(--action-menu);
+}
+.tick .form-check-input[type=checkbox] {
+    border-radius: 0;
+}
+.tick .form-check-input:checked[type=checkbox] {
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23e83e8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    background-color: var(--bs-primary);
+    background-color: white;
+    border: 1px solid black;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.time-with-icon {
+    position: relative;
+}
+.time-with-icon::after {
+    content: "\f017";
+    font-family: "Font Awesome 6 Pro";
+    font-weight: 900;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--bs-primary);
+    font-size: 21px;
+    pointer-events: none;
+    z-index: 2;
+}
+html[lang="en"] .time-with-icon::after {
+    left: auto;
+    right: 10px;
+}
+.time-input {
+    direction: rtl;
+    text-align: right;
+    padding-left: 40px;
+    padding-right: 10px;
+}
+html[lang="en"] .time-input {
+    direction: ltr;
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 40px;
+}
+#mySelect2 + .select2-container {
+    width: 70% !important;
 }

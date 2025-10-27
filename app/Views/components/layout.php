@@ -1,6 +1,12 @@
 <?php $lang = $_SESSION['lang'] ?? 'fa'; ?>
 <body style="background: #E9F3F9; padding: 30px 20px 30px 20px">
 <div class="container-fluid">
+    <div class="d-lg-none">
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+                aria-controls="sidebar">
+            <i class="fa fa-bars"></i>
+        </button>
+    </div>
     <div class="row">
         <div class="col-lg-3 col-md-3 col-xl-3 col-xxl-2 px-4 d-none d-lg-block">
             <div class="bg-white d-flex flex-column gap-5 pb-4 sidebar-full-height menu-border-radius">
@@ -12,7 +18,7 @@
                             <i class="fa fa-dashboard icon-color"></i>
                             <span class="item-text mx-2 "><?= __("dashboard") ?></span>
                         </li>
-                        <li class="nav-item dropdown ">
+                        <li class="nav-item dropdown test">
                             <a href="#manageUsers" data-bs-toggle="collapse" aria-expanded="false"
                                class="justify-content d-flex dropdown-toggle nav-link ">
                                 <i class="fa fa-user icon-color"></i>

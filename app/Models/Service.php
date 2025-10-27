@@ -24,6 +24,7 @@ class Service extends Model
         'id',
         'parent_title',
         'title',
+        'en_title',
         'childCount',
     ];
     public static function parentServices(): array

@@ -18,6 +18,12 @@ class ServiceVisitRelation extends Model
         'employee_id',
         'deleted',
     ];
+    protected array $virtualKeys = [
+        'customerName',
+        'customerLastName',
+        'service',
+        'visitStatus',
+    ];
 
     public function visit()
     {

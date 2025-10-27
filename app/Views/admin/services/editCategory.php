@@ -21,12 +21,6 @@ if (!empty($publicErrors)): ?>
         <?= __('register_success') ?> ✅
     </div>
 <?php endif; ?>
-<div class="d-lg-none">
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-            aria-controls="sidebar">
-        <i class="fa fa-bars"></i>
-    </button>
-</div>
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
 <form method="post">

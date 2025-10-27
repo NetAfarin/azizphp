@@ -267,7 +267,7 @@ class ServiceController extends Controller
         $sortTitleUrl = (BASE_URL . '/admin/services/create?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $sortCategoryUrl = (BASE_URL . '/admin/services/create?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $sortServiceCountUrl = (BASE_URL . '/admin/services/create?sortby=count&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $allowedPerPage = [10, 20, 50, 100];
+        $allowedPerPage = [1 ,10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
         $categories = Service::query()->where("parent_id", "=", 0)->get();
         $lang = $_SESSION['lang'] ?? 'fa';
@@ -372,6 +372,7 @@ class ServiceController extends Controller
          $servicesData = Service::query()->select([
             'service_table.id',
             'service_table.service_key',
+            'service_table.en_title',
             ($lang === 'fa'
                 ? 'service_table.fa_title'
                 : 'service_table.en_title') . ' AS title',
@@ -390,6 +391,7 @@ class ServiceController extends Controller
         }else if($filter == "services"){
             $pagination = $servicesData;
         }
+
         $this->view('admin/services/addService', [
             'errors' => $errors,
             'title' => __('add_services'),
@@ -410,6 +412,8 @@ class ServiceController extends Controller
             'sortCategoryUrl' => $sortCategoryUrl,
             'sortServiceCountUrl' => $sortServiceCountUrl,
             'items' => ($services2->whereLike($column, $search)->count() == $services2->count()) ? 0 : $services2->whereLike($column, $search)->count(),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
 
     }
@@ -458,7 +462,7 @@ class ServiceController extends Controller
         $this->view('admin/services/editService', [
             'title' => __('edit_user'),
             'categories' => $allCategory,
-            'service' => $service,
+            'servicess' => $service,
             'errors' => $errors,
         ]);
 
@@ -474,7 +478,7 @@ class ServiceController extends Controller
         $category = Service::find((int)$id);
         if (!$category) {
             $_SESSION['flash_error'] = __('category_not_found');
-            redirect("/admin/services/management");
+            redirect("/admin/services/create");
             exit;
         }
 
@@ -493,7 +497,7 @@ class ServiceController extends Controller
             $_SESSION['flash_error'] = __('delete_failed');
         }
 
-        redirect("/admin/services");
+        redirect("/admin/services/create");
         exit;
     }
 

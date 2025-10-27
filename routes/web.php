@@ -27,6 +27,7 @@ use App\Middlewares\SaRoleMiddleware;
         Route::get('/user/otp', [UserController::class, 'otpPage']);
         Route::get('/user/add', [UserController::class, 'add']);
         Route::get('/user/dashboard', [UserController::class, 'dashboard']);
+        Route::get('/operator/dashboard', [UserController::class, 'operatorDashboard']);
         Route::get('/user/manage', [UserController::class, 'manageUsers']);
         Route::get('/', [HomeController::class, 'index']);
     });

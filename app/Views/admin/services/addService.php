@@ -1,6 +1,5 @@
 
 <?php
-
 use App\Models\Service;
 
 $publicErrors = array_filter($errors ?? [], fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
@@ -21,12 +20,6 @@ if (!empty($publicErrors)): ?>
         <?= __('register_success') ?> ✅
     </div>
 <?php endif; ?>
-<div class="d-lg-none">
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-            aria-controls="sidebar">
-        <i class="fa fa-bars"></i>
-    </button>
-</div>
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
 <form method="post">
@@ -72,17 +65,15 @@ if (!empty($publicErrors)): ?>
     </div>
 </form>
 <div class="col mt-5">
-    <div class="row mt-5">
-        <div class="col-6 testi">
-            <label for="paginationOption"><?= __("item_per_page") ?></label>
-            <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
-                <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
-                <option value="20" <?= $per_page == 20 ? 'selected' : '' ?>>20</option>
-                <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
-            </select>
-        </div>
+           <div class="testi d-flex align-items-baseline">
+               <label for="itemsInPage" class="px-2"><?= __("item_per_page") ?></label>
+               <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
+                   <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
+                   <option value="20" <?= $per_page == 20 ? 'selected' : '' ?>>20</option>
+                   <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
+               </select>
     </div>
-    <div class="row mt-4">
+    <div class="mt-4">
         <div class="custom-part-with-border">
             <div class="d-flex  justify-content-between gap-sm-2">
                 <div class="d-flex">
@@ -92,7 +83,7 @@ if (!empty($publicErrors)): ?>
                         <option><?= __("group_work") ?></option>
                     </select>
 
-                    <button class="btn btn-primary mx-1" style="width: 50px;height: 50px;"><?= __("execution") ?></button>
+                    <button class="btn btn-primary mx-2" style="width: 59px;height: 50px;"><?= __("execution") ?></button>
                 </div>
                 <form method="get" class="d-flex align-items-center gap-2 mb-2">
                     <div class="input-group">
@@ -126,8 +117,9 @@ if (!empty($publicErrors)): ?>
 
         </div>
         <?php if(!empty($allServices)): ?>
-        <div class="row mt-5">
+        <div class="mt-5">
                 <div class="table-wrapper">
+                    <div class="table-responsive ">
                     <table class="table custom-table">
                     <thead class="table-primary ">
                     <tr>
@@ -172,7 +164,7 @@ if (!empty($publicErrors)): ?>
                             </td>
                             <td>
                                 <?php if ($service->parent_id == 0): ?>
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex  justify-content-between">
                                         <span class="badge category-bg-light-green" style="opacity: 0">دسته بندی</span>
                                         <?=  htmlspecialchars($service->title);  ?>
                                         <span class="badge category-bg-light-green"><?= __("category") ?></span>
@@ -208,78 +200,97 @@ if (!empty($publicErrors)): ?>
                                     </button>
 
                                     <ul class="dropdown-menu dropdown-menu-end p-0 action-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <li><a class="dropdown-item text-start" href="<?= BASE_URL ?>/admin/services/category/edit/<?= $service->id ?>" data-bs-toggle="modal" data-bs-target="#editModal">ویرایش</a></li>
+
+                                        <li>
+                                            <a class="dropdown-item text-start editServiceBtn"
+                                               data-id="<?= $service->id ?>"
+                                               data-fa="<?= htmlspecialchars($service->title) ?>"
+                                               data-en="<?= htmlspecialchars($service->en_title) ?>"
+                                               data-category="<?= $service->parent_id ?>"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#editModal">
+                                                <?= __("edit") ?>
+                                            </a>
+                                        </li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-start">حذف</a></li>
+                                        <li><a class="dropdown-item text-start " data-bs-toggle="modal" data-bs-target="#showDialogDelete<?= $service->id ?>">حذف</a></li>
                                     </ul>
                                 </div>
-
-                                    <!--                                    <a href="--><?php //= BASE_URL ?><!--/admin/services/category/edit/--><?php //= $service->id ?><!--" class="btn btn-active activities-icon">-->
-<!--                                        <span class="fa fa-edit"></span>-->
-<!--                                    </a>-->
-<!--                                <form action="--><?php //= BASE_URL ?><!--/admin/services/category/delete/--><?php //= $service->id ?><!--" method="post" class="d-inline"-->
-<!--                                      onsubmit="return confirm('--><?php //= __('confirm_delete_category') ?>
-                                   <?php //= csrf_field() ?>
-<!--                                    <button class="btn btn-active activities-icon"><span class="fa fa-trash"></span></button>-->
-<!--                                </form>-->
-<!--                                </div>-->
-<!--                                <div class="d-flex justify-content-center gap-1">-->
-<!--                                    <a href="--><?php //= BASE_URL ?><!--/admin/services/delete/--><?php //= $service->id ?><!--t" class="btn btn btn-active activities-icon">-->
-<!--                                        <span class="fa fa-edit"></span>-->
-<!--                                    </a>-->
-<!---->
                             </td>
+                            <form method="post" action="<?= BASE_URL ?>/admin/services/delete/<?= $service->id ?>" id="editServiceForm">
+                                <?= csrf_field() ?>
+                                <div class="modal fade borderless-modal" id="showDialogDelete<?= $service->id ?>" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-body custom-modal-body mt-4 mb-4">
+                                                <h4 class="fw-bold">آیا از حذف کاربر خدمت هستید؟</h4>
+                                                <div class="d-flex gap-4 mt-5">
+                                                    <button type="submit" class="btn btn-primary btn-modal">بله</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">خیر</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <form id="editServiceForm">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="id" id="service_id">
+                                                <div class="mb-3">
+                                                    <label for="fa_title_modal"><?= __("title") ?></label>
+                                                    <input type="text" class="form-control" name="fa_title" id="fa_title_modal">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="en_title_modal"><?= __("en_title") ?></label>
+                                                    <input type="text" class="form-control" name="en_title" id="en_title_modal" >
+                                                </div>
+                                                <div class="form-check form-switch mt-4">
+                                                    <input class="switch-input form-check-input" type="checkbox" role="switch"
+                                                           id="serviceCategory_modal" name="serviceCategory"
+                                                        <?= ($service->parent_id == 0) ? 'checked' : '' ?>>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label><?= __("select_category") ?></label>
+                                                    <select class="form-control" name="category" id="category_modal">
+                                                        <?php foreach ($services as $ser): ?>
+                                                            <option value="<?= $ser->id ?>"
+                                                                <?= ($ser->id == ($service->parent_id ?? 0) ? 'selected' : '') ?>>
+                                                                <?= ($lang == "fa") ? htmlspecialchars($ser->fa_title ?? '') : htmlspecialchars($ser->en_title ?? '') ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+
+
+                                            </div>
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <button type="submit" class="btn btn-primary"><?= __("save") ?></button>
+                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= __("cancel") ?></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
 
                         </tr>
                         <?php $count++ ?>
                     <?php endforeach;?>
-                    <div class="modal fade borderless-modal" id="editModal" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content ">
-                                <div class="modal-body custom-modal-body">
-                                    <div class="row">
-                                        <div class="col-12 mt-4">
-                                            <label for="fa_title"><?= __("title") ?> <span class="bullet-color"> *</span></label>
-                                            <input type="text" class="form-control" id="fa_title" name="fa_title" value="<?= htmlspecialchars(old('fa_title', $services->fa_title ?? '')) ?>">
-                                        </div>
-                                        <div class="col-12 mt-4">
-                                            <label for="en_title"><?= __("english_title") ?> <span class="bullet-color"> *</span></label>
-                                            <input type="text" class="form-control" id="en_title" name="en_title" value="<?= htmlspecialchars(old('en_title', $services->en_title ?? '')) ?>">
-                                        </div>
-                                        <div class="col-12 mt-4">
-                                            <label class="form-check-label" for="serviceCategory"><?=__("add_as_service_category") ?></label>
-                                            <div class="form-check form-switch ">
-                                                <input class="switch-input form-check-input" type="checkbox" role="switch"
-                                                       id="serviceCategory" name="serviceCategory">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mt-3">
-                                            <label for="category" class="form-label mb-0"><?= __('select_category') ?>:</label>
-                                            <select class="js-example-basic-single2 w-100"  id="category" name="category" >
-                                                <?php foreach ($services as $ser): ?>
-                                                    <option value="<?= $ser->id ?>">
-                                                        <?=($lang == "fa") ? htmlspecialchars($ser->fa_title) : htmlspecialchars($ser->en_title) ?>
-                                                    </option>
-                                                <?php endforeach;?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-4">
-                                        <button type="button" class="btn btn-primary btn-modal">بله</button>
-                                        <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">خیر</button>
-                                    </div>
-                                </div>
 
-                            </div>
-                        </div>
-                    </div>
+
+
                     </tbody>
                 </table>
+                    </div>
             </div>
 
 
         </div>
-        <div class="row mt-4">
+        <div class="mt-4">
             <?php if (!empty($pagination) && $pagination['last_page'] > 1): ?>
                 <nav aria-label="Page navigation " class="p-0">
                     <ul class="pagination justify-content-end">
@@ -316,7 +327,7 @@ if (!empty($publicErrors)): ?>
 </div>
 
 <script>
-    const lang = document.documentElement.lang; // "en" یا "fa"
+    const lang = document.documentElement.lang;
     const btn = document.querySelector('.btn-search');
 
     if (lang === 'en') {
@@ -372,6 +383,45 @@ if (!empty($publicErrors)): ?>
         url.searchParams.set('page', 1);
         window.location.href = url.toString();
     });
+    $(document).ready(function() {
+        $('#myForm').on('submit', function(e) {
+            e.preventDefault(); // جلوگیری از ارسال فرم به صورت معمولی
+
+            $.ajax({
+                url: '/submit.php', // مسیر سرور
+                method: 'POST',
+                data: $(this).serialize(), // جمع آوری داده‌های فرم
+                success: function(response) {
+                    $('#result').html(response); // نمایش پاسخ سرور
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+    $('.editServiceBtn').on('click', function() {
+        const id = $(this).data('id');
+        const fa = $(this).data('fa');
+        const en = $(this).data('en');
+        const category = $(this).data('category');
+
+        $('#service_id').val(id);
+        $('#fa_title_modal').val(fa);
+        $('#en_title_modal').val(en);
+
+        // فقط چک‌باکس را روشن می‌کنیم اگر parent_id == 0
+        $('#serviceCategory_modal').prop('checked', category == 0);
+
+        // سلکت را بدون تغییر نگه می‌داریم
+        $('#category_modal').val(category);
+    });
+
+    // دیگر نیاز به غیرفعال کردن سلکت نیست
+    $('#serviceCategory_modal').on('change', function() {
+        // فقط رفتار بصری یا دیگر منطق‌ها، سلکت را دست نزنیم
+    });
+
 
 </script>
 

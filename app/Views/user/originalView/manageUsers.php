@@ -1,9 +1,3 @@
-<div class="d-lg-none">
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-            aria-controls="sidebar">
-        <i class="fa fa-bars"></i>
-    </button>
-</div>
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
 <div>

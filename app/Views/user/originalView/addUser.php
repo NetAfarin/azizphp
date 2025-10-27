@@ -1,11 +1,4 @@
-<div class="d-lg-none">
-    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
-            aria-controls="sidebar">
-        <i class="fa fa-bars"></i>
-    </button>
-</div>
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
-
  <form method="post">
      <?= csrf_field() ?>
      <div class="mt-5"><h4><?= __("basic_data") ?></h4></div>
@@ -27,8 +20,10 @@
          </div>
          <div class="col-6">
              <label for="birthday-date"><?= __("birth_date") ?><span class="bullet-color"> *</span></label>
-             <!--                        <input type="text" class="form-control" id="birthday-date">-->
-             <input type="text" id="birth_date_picker" class="form-control" name="birth_date">
+             <div class="input-with-icon-left">
+                 <input type="text" id="birth_date_picker" class="form-control" name="birth_date">
+                 <i class="fa fa-calendar icon-color"></i>
+             </div>
 
          </div>
      </div>
@@ -109,20 +104,24 @@
                      <tr>
                          <td><?= $day ?></td>
                          <td>
-<!--                             <i class="fa-light fa-clock icon-color pe-1"></i>-->
-                             <input type="time" name="startTime[]" class="form-control" >
-                         </td>
-                         <td>
-                             <input type="time" name="endTime[]" class="form-control" >
-
-                         </td>
-                         <td>
-                             <div class="form-check">
-                                 <label class="form-check-label" for="holiday-<?= $index ?>">
-                                     تعطیل
-                                 </label>
-                                 <input class="form-check-input" type="checkbox" id="holiday-<?= $index ?>" name="holiday[<?= $index ?>]" value="1">
+                             <div class="custom-time-container time-with-icon">
+                                 <input type="time" name="endTime[]" class="form-control time-input" id="timeIcon">
                              </div>
+                         </td>
+                         <td>
+                             <div class="custom-time-container time-with-icon">
+                                 <input type="time" name="endTime[]" class="form-control time-input" id="timeIcon">
+                             </div>
+                         </td>
+                         <td>
+                           <div class="d-flex justify-content-center align-items-center">
+                               <div class="form-check tick">
+                                   <label class="form-check-label m-0" for="holiday-<?= $index ?>">
+                                       تعطیل
+                                   </label>
+                                   <input class="form-check-input" type="checkbox" id="holiday-<?= $index ?>" name="holiday[<?= $index ?>]" value="1">
+                               </div>
+                           </div>
                          </td>
 
                      </tr>
@@ -149,12 +148,24 @@
             const selectedOptions = $(this).select2('data');
             const $wrapper = $('#services_table_wrapper');
 
-            if(selectedOptions.length === 0){
+            if (selectedOptions.length === 0) {
                 $wrapper.html('');
                 return;
             }
 
-            let tableHTML = '<div class="table-wrapper"><table class="table transparent custom-table ""><thead><tr><th>نام سرویس</th><th>قیمت (تومان)</th><th>مدت زمان</th><th>حذف</th></tr></thead><tbody></div>';
+            let tableHTML = `
+            <div class="table-wrapper">
+                <table class="table transparent custom-table">
+                    <thead>
+                        <tr>
+                            <th>نام سرویس</th>
+                            <th>قیمت (تومان)</th>
+                            <th>مدت زمان</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
 
             selectedOptions.forEach(opt => {
                 let durationOptionsHTML = '';
@@ -163,24 +174,26 @@
                 });
 
                 tableHTML += `
-                <tr>
+                <tr data-service-id="${opt.id}">
                     <td>${opt.text}</td>
                     <td>
                         <input type="text" min="0" class="form-control" name="service_prices[]" required>
                     </td>
                     <td>
-                    <select name="service_durations[]" class=" js-duration-select" required>
+                        <select name="service_durations[]" class="js-duration-select" required>
                             ${durationOptionsHTML}
                         </select>
                     </td>
                     <td>
-                        <i class="fa fa-close remove-row icon-color"></i>
+                        <i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i>
                     </td>
-                </tr>`;
+                </tr>
+            `;
             });
 
-            tableHTML += '</tbody></table>';
+            tableHTML += '</tbody></table></div>';
             $wrapper.html(tableHTML);
+
             $('.js-duration-select').select2({
                 placeholder: "انتخاب مدت زمان",
                 width: '100%',
@@ -188,12 +201,22 @@
             });
         });
 
-        // حذف ردیف‌ها
         $(document).on('click', '.remove-row', function() {
-            $(this).closest('tr').remove();
+            const $row = $(this).closest('tr');
+            const serviceId = $row.data('service-id');
+
+            $row.remove();
+            const $select = $('#multiple-select-field');
+            let selectedValues = $select.val() || [];
+            selectedValues = selectedValues.filter(id => id !== String(serviceId));
+            $select.val(selectedValues).trigger('change');
         });
 
     });
+    document.getElementById('timeIcon').addEventListener('click', function() {
+        document.getElementById('timeInput').showPicker();
+    });
 
 </script>
+
 <script src="<?= asset('/js/register-user.js') ?>"></script>
