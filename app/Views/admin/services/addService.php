@@ -112,7 +112,9 @@ if (!empty($publicErrors)): ?>
                     <div class="vertical-separator"></div>
                     <a href="?filter=services" class="text-decoration-none "><?= __("services") ?> (<?= $serviceSize ?>)</a>
                 </div>
+                <?php if(isset($_GET['search'])): ?>
                 <div><?= $items ?> <?=  __("item") ?></div>
+                <?php endif; ?>
             </div>
 
         </div>

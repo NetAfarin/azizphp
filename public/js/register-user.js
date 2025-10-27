@@ -118,21 +118,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const collapseEl = document.querySelector(collapseId);
         if (!collapseEl) return;
         if (collapseEl.classList.contains('show')) {
-            link.classList.add('right-border');
+
             link.classList.add('active-menu');
             link.setAttribute('aria-expanded', 'true');
         }
-        collapseEl.addEventListener('show.bs.collapse', function () {
-            dropdownLinks.forEach(l => l.classList.remove('right-border'));
-            link.classList.add('right-border');
-            link.classList.add('active-menu');
-            link.setAttribute('aria-expanded', 'true');
-        })
-        collapseEl.addEventListener('hide.bs.collapse', function () {
-            link.classList.remove('right-border');
-            link.classList.remove('active-menu');
-            link.setAttribute('aria-expanded', 'false');
-        });
     });
 });
 var selectAllUsers = document.getElementById("allUsers");

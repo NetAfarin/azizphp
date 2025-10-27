@@ -267,7 +267,7 @@ class ServiceController extends Controller
         $sortTitleUrl = (BASE_URL . '/admin/services/create?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $sortCategoryUrl = (BASE_URL . '/admin/services/create?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $sortServiceCountUrl = (BASE_URL . '/admin/services/create?sortby=count&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $allowedPerPage = [1 ,10, 20, 50, 100];
+        $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
         $categories = Service::query()->where("parent_id", "=", 0)->get();
         $lang = $_SESSION['lang'] ?? 'fa';
@@ -338,10 +338,7 @@ class ServiceController extends Controller
             ])
             ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
             ->where('service_table.deleted', '=', 0)->orderBy("service_table.parent_id");
-           $column = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
-           if ($search !== '') {
-              $services2->whereLike($column, $search);
-           }
+
          if (!empty($sortBy)) {
             if ($sortBy == 'title') {
                 $services2->orderBy($sortBy, $sortOrder);
@@ -385,9 +382,15 @@ class ServiceController extends Controller
             '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
 
         ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')->where("service_table.parent_id","<>", 0)->where('service_table.deleted','=',0)->paginate($page, $perPage);
+        $column = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
+
         $pagination = $services2->paginate($page, $perPage);
          if($filter == "categories"){
-            $pagination = $categoriesData;
+             $pagination = $categoriesData;
+             if ($search !== '') {
+                 $services2->whereLike($column, $search);
+             }
+
         }else if($filter == "services"){
             $pagination = $servicesData;
         }
