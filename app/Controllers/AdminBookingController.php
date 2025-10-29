@@ -186,6 +186,7 @@ class AdminBookingController extends Controller
         redirect("/admin/bookings/new");
         exit;
     }
+
     public function getEmployeeServices($employeeId)
     {
         $employee = User::query()

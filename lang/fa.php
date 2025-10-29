@@ -260,7 +260,7 @@ return [
     'operator' =>  'اپراتور',
     'employee' =>  'کارمند',
     'customer' =>  'مشتری',
-    'item' =>  'مورد',
+    'item' =>  'مجموعا %s مورد',
     'row' =>  'ردیف',
     'score' =>  'امتیاز',
     'execution' =>  'اجرا',
@@ -283,4 +283,5 @@ return [
     'english_title' =>  'عنوان به انگلیسی',
     'add_as_service_category' =>  'افزودن به عنوان دسته بندی خدمات',
     'sub_category_count' => 'تعداد خدمات',
+    'edit_service' => 'ویرایش خدمت',
 ];

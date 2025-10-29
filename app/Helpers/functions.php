@@ -132,3 +132,67 @@ function weekDay($lang = 'fa')
         ];
     }
 }
+function renderPagination($totalPages, $currentPage, $perPage, $search = '', $sortBy = '', $sortOrder = '', $filter = '' , $lang = "fa"): string
+{
+    $final = '<ul class="pagination">';
+    $pages = [];
+    $pages[] = 1;
+    if ($currentPage == 1) {
+        $start = 2;
+        $end = min(3, $totalPages - 1);
+    } elseif ($currentPage == 2) {
+        $start = 2;
+        $end = min(3, $totalPages - 1);
+    }elseif ($currentPage == $totalPages) {
+        $start = max(2, $totalPages - 2);
+        $end = $totalPages - 1;
+    } else {
+        $start = max(2, $currentPage - 1);
+        $end = min($totalPages - 1, $currentPage + 1);
+    }
+    if ($start > 2) $pages[] = '...';
+    for ($i = $start; $i <= $end; $i++) $pages[] = $i;
+    if ($end < $totalPages - 1) $pages[] = '...';
+    if ($totalPages > 1) $pages[] = $totalPages;
+    $prevPage = max(1, $currentPage - 1);
+    $nextPage = min($totalPages, $currentPage + 1);
+    $baseParams = [
+        'per_page' => $perPage,
+    ];
+    $prevLink = "?page=$prevPage&per_page=$perPage";
+    if (!empty($search)) $prevLink .= "&search=" . urlencode($search);
+    if (!empty($sortBy)) $prevLink .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
+    if (!empty($filter)) $prevLink .= "&filter=$filter";
+    $iconPre = ($lang == 'fa') ? 'fa-chevron-right' : 'fa-chevron-left';
+    $iconNext = ($lang == 'fa') ? 'fa-chevron-left' : 'fa-chevron-right';
+    if ($currentPage == 1) {
+        $final .= "<li><a class='disable' href='javascript:void(0)'><i class='fa-solid $iconPre'></i></a></li>";
+    } else {
+        $final .= "<li><a class='enable' href='$prevLink'><i class='fa-solid $iconPre'></i></a></li>";
+    }
+    foreach ($pages as $p) {
+        if ($p === '...') {
+            $final .= "<li class='dots'>...</li>";
+        }else if ($p == $currentPage) {
+            $final .= "<li class='active-page'><a href='javascript:void(0)'>$p</a></li>";
+        } else {
+            $active = ($p == $currentPage) ? 'active-page' : '';
+            $link = "?page=$p&per_page=$perPage";
+            if (!empty($search)) $link .= "&search=" . urlencode($search);
+            if (!empty($sortBy)) $link .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
+            if (!empty($filter)) $link .= "&filter=$filter";
+            $final .= "<li class='$active'><a href='$link'>$p</a></li>";
+        }
+    }
+    $nextLink = "?page=$nextPage&per_page=$perPage";
+    if (!empty($search)) $nextLink .= "&search=" . urlencode($search);
+    if (!empty($sortBy)) $nextLink .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
+    if (!empty($filter)) $nextLink .= "&filter=$filter";
+    if ($currentPage == $totalPages) {
+        $final .= "<li><a class='disable' href='javascript:void(0)'><i class='fa-solid $iconNext'></i></a></li>";
+    } else {
+        $final .= "<li><a class='enable' href='$nextLink'><i class='fa-solid $iconNext'></i></a></li>";
+    }
+    $final .= '</ul>';
+    return $final;
+}

@@ -221,7 +221,7 @@ class UserController extends Controller
             }
         }
 
-        $this->view('user/originalView/login-page', [
+        $this->view('user/originalView/loginPage', [
             'title' => __('login'),
             'errors' =>$errors,
         ]);
@@ -286,7 +286,7 @@ class UserController extends Controller
             redirect("/user/login2");
         }
 
-        $this->view('user/originalView/register-page', [
+        $this->view('user/originalView/registerPage', [
             'title' => __('register'),
             'errors' => $errors,
         ]);
@@ -427,25 +427,55 @@ class UserController extends Controller
     }
     public function manageUsers()
     {
-        $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
-        $userRole = UserType::query()
-            ->select([
-                'user_type_table.title',
-//                'COUNT(ut.id) AS user_count',
-            ])
-            ->join('user_table as ut', 'ut.user_type', '=', 'user_type_table.id')
-            ->groupBy('user_type_table.title')
-            ->get();
-//        vd($userRole)
+        $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
+        $filter = trim($_GET['filter'] ?? 'all');
+        $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
+        $sortTitleUrl = (BASE_URL . '/admin/services/create?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortCategoryUrl = (BASE_URL . '/admin/services/create?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortServiceCountUrl = (BASE_URL . '/admin/services/create?sortby=count&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $allowedPerPage = [1, 10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-        ;
+//        $totalPages = ceil($pagination['total'] / $perPage);
+        $userRole = User::query()
+            ->select([
+                'utt.title AS user_type',
+                'user_table.first_name',
+                'user_table.last_name',
+                'user_table.phone_number',
+                'abbas.result AS result',
+                's.services AS services_name'
+            ])
+            ->join('user_type_table as utt', 'user_table.user_type', '=', 'utt.id')
+            ->join("(
+        SELECT 
+            employee_id,
+            (6 - (
+                (AVG(quality_score_id) +
+                 AVG(behavior_score) +
+                 AVG(onTime_score) +
+                 AVG(tools_score)) / 4
+            )) AS result
+        FROM surveys_table
+        GROUP BY employee_id
+    ) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
+            ->join("(
+        SELECT est.user_id, GROUP_CONCAT(st.fa_title SEPARATOR ', ') AS services
+        FROM employee_service_table est
+        JOIN service_table st ON st.id = est.service_id
+        GROUP BY est.user_id
+    ) AS s", 's.user_id', '=', 'user_table.id', 'LEFT')
+            ->get();
         $lang = $_SESSION['lang'] ?? 'fa';
         if($_SERVER['REQUEST_METHOD'] === 'POST'){}
         $this->view('user/originalView/manageUsers', [
             'title' => __('manage_users'),
+            'users' => $userRole,
+            'renderPagination' => renderPagination(10, $page, $perPage, $search, $sortBy, $sortOrder, $filter ,$lang),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
-//            'roles' => $userRole,
         ]);
     }
     public function otpPage()

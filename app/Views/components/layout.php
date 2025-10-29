@@ -2,7 +2,7 @@
 <body style="background: #E9F3F9; padding: 30px 20px 30px 20px">
 <div class="container-fluid">
     <div class="d-lg-none">
-        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
+        <button class="btn btn-primary icon-hamburger" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"
                 aria-controls="sidebar">
             <i class="fa fa-bars"></i>
         </button>

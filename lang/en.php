@@ -252,7 +252,7 @@ return [
     'operator' =>  'Operator',
     'employee' =>  'Employee',
     'customer' =>  'Customer',
-    'item' =>  'Item',
+    'item' =>  'Total %s Item(s)',
     'row' =>  'row',
     'score' =>  'Score',
     'execution' =>  'Run',
@@ -275,5 +275,5 @@ return [
     'add_as_service_category' => 'Add as Service Category',
     'sub_category_count' => 'sub category count',
     'category' => 'category',
-
+    'edit_service' => 'Edit Service',
 ];

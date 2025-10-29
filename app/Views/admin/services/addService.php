@@ -1,7 +1,6 @@
 
 <?php
 use App\Models\Service;
-
 $publicErrors = array_filter($errors ?? [], fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
 if (!empty($publicErrors)): ?>
     <div class="alert alert-danger">
@@ -71,13 +70,14 @@ if (!empty($publicErrors)): ?>
                    <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
                    <option value="20" <?= $per_page == 20 ? 'selected' : '' ?>>20</option>
                    <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
+                   <option value="100" <?= $per_page == 100 ? 'selected' : '' ?>>100</option>
                </select>
     </div>
     <div class="mt-4">
         <div class="custom-part-with-border">
             <div class="d-flex  justify-content-between gap-sm-2">
                 <div class="d-flex">
-                    <select class="js-example-basic-single " name="state" id="xx">
+                    <select class="js-example-basic-single halfSelectForm" name="state" id="xx">
                         <option><?= __("group_work") ?></option>
                         <option><?= __("group_work") ?></option>
                         <option><?= __("group_work") ?></option>
@@ -86,34 +86,35 @@ if (!empty($publicErrors)): ?>
                     <button class="btn btn-primary mx-2" style="width: 59px;height: 50px;"><?= __("execution") ?></button>
                 </div>
                 <form method="get" class="d-flex align-items-center gap-2 mb-2">
+                    <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
                     <div class="input-group">
-                        <input type="text" class="form-control border-end-0 " name="search" id="search"
+                        <input type="text" class="form-control border-end-0" name="search" id="search"
                                value="<?= htmlspecialchars($search) ?>" placeholder="<?= __("search") ?>">
-                        <button
-                                class="btn btn-search border-start-0"
-                                type="submit" id="btn-search">
-                            <i class="fa fa-search"></i>
+                        <?php if(empty($search)):?>
+                            <button class="btn btn-search border-start-0" type="submit" id="btn-search">
+                                <i class='fas fa-search'></i>
+                            </button>
+                        <?php else:?>
+                        <?php if (!empty($search)): ?><button class="btn btn-search border-start-0" type="button" id="btn-delete">
+                            <a href="?filter=<?= htmlspecialchars($filter) ?>&page=1&per_page=<?= $per_page ?>" class="center text-decoration-none"><i class='fas fa-xmark text-primary'></i></a>
                         </button>
-
+                        <?php endif;?>
+                        <?php endif; ?>
                     </div>
-                    <?php if (!empty($per_page)): ?>
-                        <input type="hidden" name="per_page" value="<?= $per_page ?>">
-                    <?php endif; ?>
-                    <?php if (!empty($search)): ?>
-                        <a href="?page=1&per_page=<?= $per_page ?>" class="btn btn-danger btn-delete">✖ <?= __('clear') ?></a>
-                    <?php endif; ?>
                 </form>
             </div>
             <div class="d-flex flex-wrap justify-content-between mt-5">
                 <div class="d-flex" id="filterLinks">
-                    <a href="?filter=all" class="text-decoration-none"><?= __("all") ?> (<?= $all ?>)</a>
+                    <a href="?filter=all<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none"><?= __("all") ?> (<?= $all ?>)</a>
                     <div class="vertical-separator"></div>
-                    <a href="?filter=categories" class="text-decoration-none "><?= __("category") ?> (<?= $categorySize ?>)</a>
+                    <a href="?filter=categories<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none">
+                        <?= __("category") ?> (<?= $categorySize ?>)
+                    </a>
                     <div class="vertical-separator"></div>
-                    <a href="?filter=services" class="text-decoration-none "><?= __("services") ?> (<?= $serviceSize ?>)</a>
+                    <a href="?filter=services<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none "><?= __("services") ?> (<?= $serviceSize ?>)</a>
                 </div>
                 <?php if(isset($_GET['search'])): ?>
-                <div><?= $items ?> <?=  __("item") ?></div>
+                <div><?php printf( __("item"),$items) ?></div>
                 <?php endif; ?>
             </div>
 
@@ -129,21 +130,45 @@ if (!empty($publicErrors)): ?>
                             <label for="allServices"><?= __("row") ?></label>
                         </th>
                         <th class="text-center" >
-                            <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-white">
-                                <?= __('title')?>
-                                <i class="fas fa-sort-amount-down-alt mx-1"></i>
+                            <a href="<?= $sortTitleUrl ?>" class="text-decoration-none text-white d-flex justify-content-center align-items-center">
+                                <?= __('category_title')?>
+                                <?php if ($sortBy === 'title'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fa-solid fa-caret-up mx-1"></i>
+                                    <?php else: ?>
+                                        <i class="fa-solid fa-caret-down mx-1"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-caret-down mx-1"></i>
+                                <?php endif; ?>
                             </a>
                         </th>
                         <th >
-                            <a href="<?= $sortCategoryUrl ?>" class="text-decoration-none text-white">
+                            <a href="<?= $sortCategoryUrl ?>" class="text-decoration-none text-white d-flex justify-content-center align-items-center">
                                 <?= __('category')?>
-                                <i class="fas fa-sort-amount-down-alt mx-1"></i>
+                                <?php if ($sortBy === 'category'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fa-solid fa-caret-up mx-1"></i>
+                                    <?php else: ?>
+                                        <i class="fa-solid fa-caret-down mx-1"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-caret-down mx-1"></i>
+                                <?php endif; ?>
                             </a>
                         </th>
                         <th>
-                            <a href="<?= $sortServiceCountUrl ?>" class="text-decoration-none text-white">
-                                <?= __('sub_category_count')?>
-                                <i class="fas fa-sort-amount-down-alt mx-1"></i>
+                            <a href="<?= $sortServiceCountUrl ?>" class="text-decoration-none text-white d-flex justify-content-center align-items-center">
+                                <?= __('category')?>
+                                <?php if ($sortBy === 'count'): ?>
+                                    <?php if ($sortOrder === 'asc'): ?>
+                                        <i class="fa-solid fa-caret-up mx-1"></i>
+                                    <?php else: ?>
+                                        <i class="fa-solid fa-caret-down mx-1"></i>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <i class="fas fa-caret-down mx-1"></i>
+                                <?php endif; ?>
                             </a>
                         </th>
                         <th><?= __("actions") ?></th>
@@ -156,8 +181,6 @@ if (!empty($publicErrors)): ?>
                     ?>
                     <?php foreach ($allServices as $service): ?>
                         <tr>
-
-
                             <td>
                                 <input class="form-check-input checkBox" type="checkbox" value="" id="tableService<?= $count?>">
                                 <label class="form-check-label" for="tableService<?= $count?>">
@@ -205,14 +228,14 @@ if (!empty($publicErrors)): ?>
 
                                         <li>
                                             <a class="dropdown-item text-start editServiceBtn"
-                                               data-id="<?= $service->id ?>"
-                                               data-fa="<?= htmlspecialchars($service->title) ?>"
-                                               data-en="<?= htmlspecialchars($service->en_title) ?>"
-                                               data-category="<?= $service->parent_id ?>"
+                                               type="button"
+                                               data-bs-target="#editModal"
                                                data-bs-toggle="modal"
-                                               data-bs-target="#editModal">
-                                                <?= __("edit") ?>
+                                               data-id="<?= $service->id ?>">
+                                                ویرایش
                                             </a>
+                                            <meta name="csrf-token" content="{{ csrf_token() }}">
+
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item text-start " data-bs-toggle="modal" data-bs-target="#showDialogDelete<?= $service->id ?>">حذف</a></li>
@@ -238,26 +261,32 @@ if (!empty($publicErrors)): ?>
                             <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
-                                        <form id="editServiceForm">
-                                            <div class="modal-body">
+                                        <form id="editForm" method="post" >
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="id" id="service_id">
+                                            <div class="modal-body2">
+                                                <span class="center"><?= __("edit_service") ?></span>
                                                 <input type="hidden" name="id" id="service_id">
-                                                <div class="mb-3">
-                                                    <label for="fa_title_modal"><?= __("title") ?></label>
+                                                <div class="mt-4">
+                                                    <label for="fa_title_modal"><?= __("title") ?><span class="bullet-color"> *</span></label>
                                                     <input type="text" class="form-control" name="fa_title" id="fa_title_modal">
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="en_title_modal"><?= __("en_title") ?></label>
+                                                <div class="mt-4">
+                                                    <label for="en_title_modal"><?= __("english_title") ?><span class="bullet-color"> *</span></label>
                                                     <input type="text" class="form-control" name="en_title" id="en_title_modal" >
                                                 </div>
-                                                <div class="form-check form-switch mt-4">
-                                                    <input class="switch-input form-check-input" type="checkbox" role="switch"
-                                                           id="serviceCategory_modal" name="serviceCategory"
-                                                        <?= ($service->parent_id == 0) ? 'checked' : '' ?>>
+                                                <div class="mt-4">
+                                                    <label class="form-check-label" for="checkBoxCategory"><?=__("add_as_service_category") ?></label>
+                                                    <div class="form-check form-switch ">
+                                                        <input class="switch-input form-check-input" type="checkbox" role="switch"
+                                                               id="checkBoxCategory" name="checkBoxCategory">
+                                                    </div>
                                                 </div>
 
-                                                <div class="mb-3">
-                                                    <label><?= __("select_category") ?></label>
-                                                    <select class="form-control" name="category" id="category_modal">
+
+                                                <div class="mt-4">
+                                                    <label><?= __("select_category") ?><span class="bullet-color"> *</span></label>
+                                                    <select class="form-control" name="category" id="category_modal" <?php /*= ($service->parent_id == 0)  ? 'disabled' : '' */?>>
                                                         <?php foreach ($services as $ser): ?>
                                                             <option value="<?= $ser->id ?>"
                                                                 <?= ($ser->id == ($service->parent_id ?? 0) ? 'selected' : '') ?>>
@@ -267,12 +296,16 @@ if (!empty($publicErrors)): ?>
                                                     </select>
                                                 </div>
 
-
-                                            </div>
-                                                <div class="d-flex justify-content-end gap-2">
-                                                    <button type="submit" class="btn btn-primary"><?= __("save") ?></button>
-                                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><?= __("cancel") ?></button>
+                                                <div class="row g-2 px-5 mt-4">
+                                                    <div class="col-6">
+                                                        <button type="submit" class="btn btn-primary w-100 py-2"><?= __("edit_service") ?></button>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <button type="button" class="btn btn-outline-secondary w-100 py-2" data-bs-dismiss="modal"><?= __("cancel") ?></button>
+                                                    </div>
                                                 </div>
+                                            </div>
+
                                             </div>
                                         </form>
                                     </div>
@@ -282,53 +315,98 @@ if (!empty($publicErrors)): ?>
                         </tr>
                         <?php $count++ ?>
                     <?php endforeach;?>
-
-
-
                     </tbody>
                 </table>
                     </div>
             </div>
-
-
         </div>
         <div class="mt-4">
-            <?php if (!empty($pagination) && $pagination['last_page'] > 1): ?>
-                <nav aria-label="Page navigation " class="p-0">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item <?= $pagination['current_page'] == 1 ?>">
-                            <a class="page-link icon-pagination"
-                               href="?page=1&per_page=<?= $per_page ?>"
-                               aria-label="First">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php for ($i = 1; $i <= $pagination['last_page']; $i++): ?>
-                            <li class="page-item <?= $i === $pagination['current_page'] ? 'active' : '' ?>">
-                                <a class="page-link" href="?page=<?= $i ?>&per_page=<?= $per_page ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= !empty($sortBy) ? '&sortby=' . urlencode($sortBy).('&sortorder='.$sortOrder) : '' ?>">
-                                    <?= $i ?>
-                                </a>
-                            </li>
-                        <?php endfor; ?>
-                        <li class="page-item <?= $pagination['current_page'] == $pagination['last_page'] ?>">
-                            <a class="page-link icon-pagination"
-                               href="?page=<?= $pagination['last_page'] ?>&per_page=<?= $per_page ?>"
-                               aria-label="Last">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+            <div class="d-flex justify-content-end">
+                <?php echo $renderPagination; ?>
 
-            <?php endif; ?>
+            </div>
+
         </div>
-        <?php else: ?>
+
+
+    <?php else: ?>
         <div class="alert alert-danger">پیدا نشد</div>
         <?php endif; ?>
     </div>
 </div>
 
 <script>
+    document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const serviceId = button.dataset.id;
+
+        fetch(`${BASE_URL}/admin/services/getService/${serviceId}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('service_id').value = data.id;
+                document.getElementById('fa_title_modal').value = data.fa_title;
+                document.getElementById('en_title_modal').value = data.en_title;
+
+                const checkBox = document.getElementById('checkBoxCategory');
+                const categorySelect = document.getElementById('category_modal');
+
+                // وقتی parent_id = 0 یعنی این مورد دسته است
+                const isCategory = (parseInt(data.parent_id) === 0);
+                checkBox.checked = isCategory;
+                categorySelect.disabled = isCategory;
+
+                if (!isCategory) {
+                    categorySelect.value = data.parent_id;
+                } else {
+                    categorySelect.value = '';
+                }
+
+                // تغییر وضعیت چک‌باکس
+                checkBox.addEventListener('change', function() {
+                    categorySelect.disabled = this.checked;
+                    if (this.checked) {
+                        categorySelect.value = '';
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching service:', error));
+    });
+
+
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const serviceId = document.getElementById('service_id').value;
+        const isCategory = document.getElementById('checkBoxCategory').checked ? 1 : 0;
+        const categoryValue = document.getElementById('category_modal').value || 0;
+
+        formData.append('checkBoxCategory', isCategory);
+        formData.append('category_modal', categoryValue);
+
+        fetch(`${BASE_URL}/admin/services/update/${serviceId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    $('#editModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(data.message || 'خطا در بروزرسانی سرویس');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('خطا در بروزرسانی سرویس');
+            });
+    });
+
     const lang = document.documentElement.lang;
     const btn = document.querySelector('.btn-search');
 
@@ -384,44 +462,6 @@ if (!empty($publicErrors)): ?>
         url.searchParams.set('per_page', perPage);
         url.searchParams.set('page', 1);
         window.location.href = url.toString();
-    });
-    $(document).ready(function() {
-        $('#myForm').on('submit', function(e) {
-            e.preventDefault(); // جلوگیری از ارسال فرم به صورت معمولی
-
-            $.ajax({
-                url: '/submit.php', // مسیر سرور
-                method: 'POST',
-                data: $(this).serialize(), // جمع آوری داده‌های فرم
-                success: function(response) {
-                    $('#result').html(response); // نمایش پاسخ سرور
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-    });
-    $('.editServiceBtn').on('click', function() {
-        const id = $(this).data('id');
-        const fa = $(this).data('fa');
-        const en = $(this).data('en');
-        const category = $(this).data('category');
-
-        $('#service_id').val(id);
-        $('#fa_title_modal').val(fa);
-        $('#en_title_modal').val(en);
-
-        // فقط چک‌باکس را روشن می‌کنیم اگر parent_id == 0
-        $('#serviceCategory_modal').prop('checked', category == 0);
-
-        // سلکت را بدون تغییر نگه می‌داریم
-        $('#category_modal').val(category);
-    });
-
-    // دیگر نیاز به غیرفعال کردن سلکت نیست
-    $('#serviceCategory_modal').on('change', function() {
-        // فقط رفتار بصری یا دیگر منطق‌ها، سلکت را دست نزنیم
     });
 
 

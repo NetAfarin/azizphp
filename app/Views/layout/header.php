@@ -25,10 +25,12 @@ if (!empty($_GET['url'])) {
     <link href="<?= asset('css/FontAwesomePro/css/all.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/style.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/theme.css')?>" rel="stylesheet" />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
 </head>
 <!--<nav class="navbar navbar-light bg-light mb-4">-->
 <!--    <div class="container-fluid d-flex justify-content-between align-items-center">-->

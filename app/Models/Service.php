@@ -40,25 +40,6 @@ class Service extends Model
             ->where('parent_id', '=', $parentId)
             ->get();
     }
-    public static function orderByParentId(): array
-    {
-//        select
-//st.fa_title as parent,
-//st1.fa_title,
-//FROM service_table st
-//JOIN service_table st1 on st.id = st1.parent_id
-        return static::query()
-            ->select([
-                'service_table.id',
-                'service_table.fa_title AS category',
-                'p.fa_title',
-            ])
-            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id' , 'left')
-            ->orderBy('service_table.parent_id', 'ASC')
-            ->get();
-
-
-    }
     public static function groupByParentId(): array
     {
         return (new static())
@@ -81,5 +62,34 @@ class Service extends Model
         }
 
         return $result;
+    }
+
+    public static function getServicesOnly(string $column): Service
+    {
+        return Service::query()->select(['service_table.id', 'service_table.'.$column . ' AS title', 'service_table.parent_id',
+            'p.'.$column . ' AS parent_title',
+            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
+        ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
+            ->where("service_table.parent_id", "<>", 0)
+            ->where('service_table.deleted', '=', 0);
+    }
+
+    public static function getCategoriesOnly(string $column): Service
+    {
+        return Service::query()->select(['service_table.id', 'service_table.'.$column . ' AS title', 'service_table.parent_id',
+            'p.'.$column . ' AS parent_title',
+            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
+        ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
+            ->where("service_table.parent_id", "=", 0)
+            ->where('service_table.deleted', '=', 0);
+    }
+
+    public static function getAll(string $column): Service
+    {
+        return Service::query()->select(['service_table.id', 'service_table.'.$column . ' AS title', 'service_table.parent_id',
+            'p.'.$column . ' AS parent_title',
+            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
+        ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
+            ->where('service_table.deleted', '=', 0);
     }
 }

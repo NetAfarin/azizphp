@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\Service;
+use function Sodium\add;
 
 class ServiceController extends Controller
 {
@@ -37,13 +38,13 @@ class ServiceController extends Controller
             ->select([
                 'service_table.id',
                 'service_table.service_key',
-                ($lang === 'fa' ? 'service_table.fa_title ' :'service_table.en_title').' AS title',
+                ($lang === 'fa' ? 'service_table.fa_title ' : 'service_table.en_title') . ' AS title',
                 'service_table.parent_id',
                 'service_table.created_at',
                 'service_table.updated_at',
-                ($lang === 'fa' ? 'p.fa_title ' :'p.en_title').' AS parent_title'
+                ($lang === 'fa' ? 'p.fa_title ' : 'p.en_title') . ' AS parent_title'
             ])
-            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id','LEFT')
+            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
             ->where('service_table.deleted', '=', 0);
 
         $column = $lang == "fa" ? "service_table.fa_title" : 'en_title';
@@ -53,7 +54,7 @@ class ServiceController extends Controller
         if (!empty($sortBy)) {
             if ($sortBy == 'title') {
                 $services->orderBy($sortBy, $sortOrder);
-            }else if ($sortBy == 'category') {
+            } else if ($sortBy == 'category') {
                 $services->orderBy('parent_title', $sortOrder);
             }
         }
@@ -153,7 +154,7 @@ class ServiceController extends Controller
 //        $categories = Service::query()->where("id", "=", $id)->first();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $categoryId = $_POST['category'] ?? '';
-            $addCategory =  isset($_POST['serviceCategory']) && $_POST['serviceCategory'] == 'on' ? 1 : 0;
+            $addCategory = isset($_POST['serviceCategory']) && $_POST['serviceCategory'] == 'on' ? 1 : 0;
             $fa_title = trim($_POST['fa_title'] ?? '');
             $en_title = trim($_POST['en_title'] ?? '');
             $validator = new Validator($_POST, [
@@ -231,47 +232,89 @@ class ServiceController extends Controller
         exit;
     }
 
-    public function services()
+    public function getService($serviceId)
     {
-        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $allowedPerPage = [10, 20, 50, 100];
-        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
+        $service = Service::query()
+            ->where('id', '=', $serviceId)
+            ->first();
 
-        if (!in_array($perPage, $allowedPerPage, true)) {
-            header("Location: ?page=1&per_page=10");
+        if (!$service) {
+            http_response_code(403);
+            echo json_encode(['error' => 'invalid service']);
             exit;
         }
 
-        $pagination = Service::query()
-            ->where("parent_id", "<>", 0)
-            ->where("deleted", "=", 0)
-            ->paginate($page, $perPage);
+        header('Content-Type: application/json');
+        echo json_encode($service->toArray());
+        exit;
+    }
 
-        $services = $pagination['data'];
+    public function updateService($id)
+    {
+        header('Content-Type: application/json');
+        $errors = [];
 
-        $this->view('admin/services/services', [
-            'title' => __('services'),
-            'services' => $services,
-            'pagination' => $pagination,
-            'per_page' => $perPage,
-            'allowedPerPage' => $allowedPerPage
+        $service = Service::find($id);
+        if (!$service) {
+            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
+            exit;
+        }
+
+        $editFaTitle = trim($_POST['fa_title'] ?? '');
+        $editEnTitle = trim($_POST['en_title'] ?? '');
+        $isCategory = (int)($_POST['checkBoxCategory'] ?? 0);
+        $categoryModal = $_POST['category_modal'] ?? null;
+
+        $validator = new Validator($_POST, [
+            'fa_title' => 'required|min:2|max:40',
+            'en_title' => 'required|min:2|max:40',
         ]);
+
+        if ($validator->fails()) {
+            $errors = array_merge($errors, $validator->errors());
+            echo json_encode(['success' => false, 'message' => $errors]);
+            exit;
+        }
+
+        // به‌روزرسانی اطلاعات
+        $service->fa_title = $editFaTitle;
+        $service->en_title = $editEnTitle;
+        $service->service_key = "";
+
+        if ($isCategory === 1) {
+            // خودش دسته است
+            $service->parent_id = 0;
+        } else {
+            // زیرمجموعه یک دسته دیگر است
+            $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
+        }
+
+        if ($service->save()) {
+            echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
+            exit;
+        }
     }
 
     public function addService()
     {
-        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+
+//        vd($_POST);
         $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
         $filter = trim($_GET['filter'] ?? 'all');
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
         $sortTitleUrl = (BASE_URL . '/admin/services/create?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $sortCategoryUrl = (BASE_URL . '/admin/services/create?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $sortServiceCountUrl = (BASE_URL . '/admin/services/create?sortby=count&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $allowedPerPage = [10, 20, 50, 100];
-        $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
-        $categories = Service::query()->where("parent_id", "=", 0)->get();
+        $allowedPerPage = [1, 10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $categories = Service::query()->where("parent_id", "=", 0)->where("deleted", "=", 0)->get();
         $lang = $_SESSION['lang'] ?? 'fa';
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
         if (!in_array($perPage, $allowedPerPage, true)) {
             $redirectUrl = '?page=1&per_page=10';
             if ($search !== '') {
@@ -288,7 +331,7 @@ class ServiceController extends Controller
             $fa_title = $_POST['fa_title'];
             $en_title = $_POST['en_title'];
             $categoryId = $_POST['category'] ?? '';
-            $addCategory =  isset($_POST['serviceCategory']) && $_POST['serviceCategory'] == 'on' ? 1 : 0;
+            $addCategory = isset($_POST['serviceCategory']) && $_POST['serviceCategory'] == 'on' ? 1 : 0;
             $service = new Validator($_POST, [
 //                'service_key' => "required|min:2|max:40",
                 'fa_title' => "required|min:2|max:40",
@@ -304,8 +347,8 @@ class ServiceController extends Controller
                 'fa_title' => $fa_title,
                 'en_title' => $en_title,
                 'parent_id' => ($addCategory == 1) ? 0 : $categoryId,
-                'created_at' =>  date('Y-m-d H:i:s'),
-                'updated_at' =>  date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
                 'deleted' => 0,
             ]);
             if (empty($errors)) {
@@ -321,90 +364,59 @@ class ServiceController extends Controller
         } else {
             clear_old_input();
         }
-        $services2 = Service::query()
-            ->select([
-                'service_table.id',
-                'service_table.service_key',
-                ($lang === 'fa'
-                    ? 'service_table.fa_title'
-                    : 'service_table.en_title') . ' AS title',
-                'service_table.parent_id',
-                'service_table.created_at',
-                'service_table.updated_at',
-                ($lang === 'fa'
-                    ? 'p.fa_title'
-                    : 'p.en_title') . ' AS parent_title',
-                '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
-            ])
-            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
-            ->where('service_table.deleted', '=', 0)->orderBy("service_table.parent_id");
-
-         if (!empty($sortBy)) {
+        $column = $lang == "fa" ? "fa_title" : 'en_title';
+        $services2 = Service::getAll($column);
+        $categoriesData = Service::getCategoriesOnly($column);
+        $servicesData = Service::getServicesOnly($column);
+        $sortByColumn = "service_table.parent_id";
+        if (!empty($sortBy)) {
             if ($sortBy == 'title') {
-                $services2->orderBy($sortBy, $sortOrder);
-            }else if ($sortBy == 'category') {
-                $services2->orderBy('parent_title', $sortOrder);
-            }else if ($sortBy == 'count') {
-                $services2->orderBy('childCount', $sortOrder);
+                $sortByColumn = $sortBy;
+            } else if ($sortBy == 'category') {
+                $sortByColumn = 'parent_title';
+            } else if ($sortBy == 'count') {
+                $sortByColumn = 'childCount';
             }
         }
-        $categoriesData = Service::query()->select([
-            'service_table.id',
-            'service_table.service_key',
-            ($lang === 'fa'
-                ? 'service_table.fa_title'
-                : 'service_table.en_title') . ' AS title',
-            'service_table.parent_id',
-            'service_table.created_at',
-            'service_table.updated_at',
-            ($lang === 'fa'
-                ? 'p.fa_title'
-                : 'p.en_title') . ' AS parent_title',
-            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
+        $services2->orderBy($sortByColumn, $sortOrder);
 
-        ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
-            ->where("service_table.parent_id","=", 0)
-            ->where('service_table.deleted','=',0)->paginate($page, $perPage);
-
-         $servicesData = Service::query()->select([
-            'service_table.id',
-            'service_table.service_key',
-            'service_table.en_title',
-            ($lang === 'fa'
-                ? 'service_table.fa_title'
-                : 'service_table.en_title') . ' AS title',
-            'service_table.parent_id',
-            'service_table.created_at',
-            'service_table.updated_at',
-            ($lang === 'fa'
-                ? 'p.fa_title'
-                : 'p.en_title') . ' AS parent_title',
-            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
-
-        ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')->where("service_table.parent_id","<>", 0)->where('service_table.deleted','=',0)->paginate($page, $perPage);
-        $column = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
-
-        $pagination = $services2->paginate($page, $perPage);
-         if($filter == "categories"){
-             $pagination = $categoriesData;
-             if ($search !== '') {
-                 $services2->whereLike($column, $search);
-             }
-
-        }else if($filter == "services"){
-            $pagination = $servicesData;
+        $allSearchData = Service::getAll($column);
+        $service1 = Service::getAll($column);
+        $service2 = Service::getCategoriesOnly($column);
+        $service3 = Service::getServicesOnly($column);
+        if ($search !== '') {
+            $allSearchData->whereLike($column, $search);
+            $service1->whereLike($column, $search);
+            $service2->whereLike($column, $search);
+            $service3->whereLike($column, $search);
+            $services2->whereLike($column, $search);
+            $categoriesData->whereLike($column, $search);
+            $servicesData->whereLike($column, $search);
+        }
+        if ($filter == "all" || empty($filter)) {
+            $pagination = $services2->paginate($page, $perPage);
+        } else if ($filter == "categories") {
+            $pagination = $categoriesData->paginate($page, $perPage);
+        } else if ($filter == "services") {
+            $pagination = $servicesData->paginate($page, $perPage);;
         }
 
+        $searchSize = sizeof($allSearchData->get());
+        $size1 = sizeof($service1->get());
+        $size2 = sizeof($service2->get());
+        $size3 = sizeof($service3->get());
+        $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('admin/services/addService', [
+            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter ,$lang),
             'errors' => $errors,
             'title' => __('add_services'),
             "services" => $categories,
             "lang" => $lang,
-            "filter " => $filter,
+            "filter" => $filter,
             "allServices" => $pagination['data'],
-            "all" => $pagination['total'],
-            "categorySize" => $categoriesData['total'],
-            "serviceSize" => $servicesData['total'],
+            "all" => $size1,
+            "categorySize" => $size2,
+            "serviceSize" => $size3,
             'pagination' => $pagination,
             'per_page' => $perPage,
             'allowedPerPage' => $allowedPerPage,
@@ -414,7 +426,7 @@ class ServiceController extends Controller
             'sortTitleUrl' => $sortTitleUrl,
             'sortCategoryUrl' => $sortCategoryUrl,
             'sortServiceCountUrl' => $sortServiceCountUrl,
-            'items' => ($services2->whereLike($column, $search)->count() == $services2->count()) ? 0 : $services2->whereLike($column, $search)->count(),
+            'items' => $searchSize,
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
@@ -503,5 +515,6 @@ class ServiceController extends Controller
         redirect("/admin/services/create");
         exit;
     }
+
 
 }

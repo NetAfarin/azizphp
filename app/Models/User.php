@@ -30,6 +30,9 @@ class User extends Model
     ];
     protected array $virtualKeys = [
         'services',
+        'services_name',
+        'user_type',
+        'result',
     ];
 
     public static function findByPhone(string $phone): ?self
