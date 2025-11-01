@@ -311,18 +311,18 @@ class AdminController extends Controller
         $user = User::find((int)$id);
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
-            redirect("/admin/users");
+            redirect("/admin/user/manage");
             exit;
         }
 
         if ($user->id == $_SESSION['user_id']) {
             $_SESSION['flash_error'] = __('cannot_delete_self');
-            redirect("/admin/users");
+            redirect("/admin/user/manage");
             exit;
         }
         if ($user->user_type == UserType::ADMIN) {
             $_SESSION['flash_error'] = __('cannot_delete_admin');
-            redirect("/admin/users");
+            redirect("/admin/user/manage");
             exit;
         }
 
@@ -340,7 +340,7 @@ class AdminController extends Controller
             $_SESSION['flash_error'] = __('delete_failed');
         }
 
-        redirect("/admin/users");
+        redirect("/admin/user/manage");
         exit;
     }
 

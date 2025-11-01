@@ -28,7 +28,7 @@ use App\Middlewares\SaRoleMiddleware;
         Route::get('/user/add', [UserController::class, 'add']);
         Route::get('/user/dashboard', [UserController::class, 'dashboard']);
         Route::get('/operator/dashboard', [UserController::class, 'operatorDashboard']);
-        Route::get('/user/manage', [UserController::class, 'manageUsers']);
+        Route::get('/admin/user/manage', [UserController::class, 'manageUsers']);
         Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
@@ -64,9 +64,9 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
     Route::post('/admin/services/category/delete/{id}', [ServiceController::class, 'deleteCategory']);
     Route::post('/admin/services/create', [ServiceController::class, 'addService']);
-    Route::get('/admin/services/getServiceAjax', [ServiceController::class, 'getServiceAjax']);
     Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
     Route::post('/admin/services/update/{id}', [ServiceController::class, 'updateService']);
+    Route::post('/admin/user/update/{id}', [UserController::class, 'updateUser2']);
     Route::post('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::post('/admin/salon/create', [SuperAdminController::class, 'createSalon']);
     Route::post('/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
@@ -93,6 +93,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
     Route::get('/admin/services/create', [ServiceController::class, 'addService']);
     Route::get('/admin/services/getService/{id}', [ServiceController::class, 'getService']);
+    Route::get('/admin/user/getUserData/{id}', [UserController::class, 'getUserData']);
     Route::get('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::get('/admin/user/register/{userType}', [adminController::class, 'addUser']);
     Route::get('/admin/components', [AdminController::class, 'components']);

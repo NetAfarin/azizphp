@@ -66,13 +66,13 @@ if (!empty($publicErrors)): ?>
 <div class="col mt-5">
            <div class="testi d-flex align-items-baseline">
                <label for="itemsInPage" class="px-2"><?= __("item_per_page") ?></label>
-               <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
-                   <option value="10" <?= $per_page == 10 ? 'selected' : '' ?>>10</option>
-                   <option value="20" <?= $per_page == 20 ? 'selected' : '' ?>>20</option>
-                   <option value="50" <?= $per_page == 50 ? 'selected' : '' ?>>50</option>
-                   <option value="100" <?= $per_page == 100 ? 'selected' : '' ?>>100</option>
-               </select>
+
     </div>
+    <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
+        <?php foreach ($allowedPerPage as $opt): ?>
+            <option value="<?= $opt ?>" <?= $per_page === $opt ? 'selected' : '' ?>><?= $opt ?></option>
+        <?php endforeach; ?>
+    </select>
     <div class="mt-4">
         <div class="custom-part-with-border">
             <div class="d-flex  justify-content-between gap-sm-2">
@@ -221,7 +221,7 @@ if (!empty($publicErrors)): ?>
                                             type="button"
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false">
-                                        <i class="fa fa-ellipsis-vertical"></i>
+                                        <i class="fa fa-ellipsis-vertical fs-4"></i>
                                     </button>
 
                                     <ul class="dropdown-menu dropdown-menu-end p-0 action-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -232,13 +232,13 @@ if (!empty($publicErrors)): ?>
                                                data-bs-target="#editModal"
                                                data-bs-toggle="modal"
                                                data-id="<?= $service->id ?>">
-                                                ویرایش
+                                                <?= __("edit") ?>
                                             </a>
                                             <meta name="csrf-token" content="{{ csrf_token() }}">
 
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-start " data-bs-toggle="modal" data-bs-target="#showDialogDelete<?= $service->id ?>">حذف</a></li>
+                                        <li><a class="dropdown-item text-start " data-bs-toggle="modal" data-bs-target="#showDialogDelete<?= $service->id ?>"><?=__("delete")?></a></li>
                                     </ul>
                                 </div>
                             </td>
@@ -349,8 +349,6 @@ if (!empty($publicErrors)): ?>
 
                 const checkBox = document.getElementById('checkBoxCategory');
                 const categorySelect = document.getElementById('category_modal');
-
-                // وقتی parent_id = 0 یعنی این مورد دسته است
                 const isCategory = (parseInt(data.parent_id) === 0);
                 checkBox.checked = isCategory;
                 categorySelect.disabled = isCategory;
@@ -360,8 +358,6 @@ if (!empty($publicErrors)): ?>
                 } else {
                     categorySelect.value = '';
                 }
-
-                // تغییر وضعیت چک‌باکس
                 checkBox.addEventListener('change', function() {
                     categorySelect.disabled = this.checked;
                     if (this.checked) {

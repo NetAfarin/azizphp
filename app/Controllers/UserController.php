@@ -427,53 +427,103 @@ class UserController extends Controller
     }
     public function manageUsers()
     {
+        $lang = $_SESSION['lang'] ?? 'fa';
         $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
         $filter = trim($_GET['filter'] ?? 'all');
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
-        $sortTitleUrl = (BASE_URL . '/admin/services/create?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $sortCategoryUrl = (BASE_URL . '/admin/services/create?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $sortServiceCountUrl = (BASE_URL . '/admin/services/create?sortby=count&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortFirstNameUrl = (BASE_URL . '/admin/user/manage?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortLastNameUrl = (BASE_URL . '/admin/user/manage?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
         $allowedPerPage = [1, 10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-//        $totalPages = ceil($pagination['total'] / $perPage);
-        $userRole = User::query()
-            ->select([
-                'utt.title AS user_type',
-                'user_table.first_name',
-                'user_table.last_name',
-                'user_table.phone_number',
-                'abbas.result AS result',
-                's.services AS services_name'
-            ])
-            ->join('user_type_table as utt', 'user_table.user_type', '=', 'utt.id')
-            ->join("(
-        SELECT 
-            employee_id,
-            (6 - (
-                (AVG(quality_score_id) +
-                 AVG(behavior_score) +
-                 AVG(onTime_score) +
-                 AVG(tools_score)) / 4
-            )) AS result
-        FROM surveys_table
-        GROUP BY employee_id
-    ) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
-            ->join("(
-        SELECT est.user_id, GROUP_CONCAT(st.fa_title SEPARATOR ', ') AS services
-        FROM employee_service_table est
-        JOIN service_table st ON st.id = est.service_id
-        GROUP BY est.user_id
-    ) AS s", 's.user_id', '=', 'user_table.id', 'LEFT')
-            ->get();
-        $lang = $_SESSION['lang'] ?? 'fa';
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){}
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            $redirectUrl = '?page=1&per_page=10';
+            if ($search !== '') {
+                $redirectUrl .= '&search=' . urlencode($search);
+            }
+            header("Location: " . $redirectUrl);
+            exit;
+        }
+        if (isset($_GET['search']) && empty($search)) {
+            header("Location: " . "?page=$page&per_page=$perPage");
+        }
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+        }
+        else {
+            clear_old_input();
+        }
+        $column = $lang == "fa" ? "first_name" : 'last_name';
+        $userType = UserType::all();
+        $allUsers2 = User::getAllUserWithDetails($column);
+        $customerData = User::getSomeUserWithDetails(2 , $column);
+        $employeesData = User::getSomeUserWithDetails(1 , $column);
+        $operatorsData = User::getSomeUserWithDetails(3 , $column);
+        $sortByColumn = "user_table.first_name";
+        if (!empty($sortBy)) {
+            if ($sortBy == 'first_name') {
+                $sortByColumn = $sortBy;
+            } else if ($sortBy == 'last_name') {
+                $sortByColumn = 'last_name';
+            } else if ($sortBy == 'user_role') {
+                $sortByColumn = 'user_role';
+            }
+        }
+        $allUsers2->orderBy($sortByColumn, $sortOrder);
+        $allSearchData = User::getAllUserWithDetails($column);
+        $users = User::getAllUserWithDetails($column);
+        $customers = User::getSomeUserWithDetails(2 , $column);
+        $employees = User::getSomeUserWithDetails(1 , $column);
+        $operators = User::getSomeUserWithDetails(3 , $column);
+
+        if ($search !== '') {
+            $allSearchData->whereLike($column, $search);
+            $users->whereLike($column, $search);
+            $customers->whereLike($column, $search);
+            $employees->whereLike($column, $search);
+            $operators->whereLike($column, $search);
+            $operatorsData->whereLike($column, $search);
+            $customerData->whereLike($column, $search);
+            $employeesData->whereLike($column, $search);
+            $allUsers2->whereLike($column, $search);
+        }
+        if ($filter == "all" || empty($filter)) {
+            $pagination = $allUsers2->paginate($page, $perPage);
+        }else if ($filter == "customers") {
+            $pagination = $customerData->paginate($page, $perPage);
+        }else if ($filter == "employees") {
+            $pagination = $employeesData->paginate($page, $perPage);
+        }else if ($filter == "operators") {
+            $pagination = $operatorsData->paginate($page, $perPage);
+        }
+
+        $searchSize = sizeof($allSearchData->get());
+        $usersSize = sizeof($users->get());
+        $customersSize = sizeof($customers->get());
+        $employeesSize = sizeof($employees->get());
+        $operatorsSize = sizeof($operators->get());
+        $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/manageUsers', [
             'title' => __('manage_users'),
-            'users' => $userRole,
-            'renderPagination' => renderPagination(10, $page, $perPage, $search, $sortBy, $sortOrder, $filter ,$lang),
+            'search' => $search,
+            'lang' => $lang,
+            'filter' => $filter,
+            'users' => $pagination['data'],
+            'allUsers' => $usersSize,
+            'customersSize' => $customersSize,
+            'employeesSize' => $employeesSize,
+            'operatorsSize' => $operatorsSize,
+            'searchSize' => $searchSize,
+            'pagination' => $pagination,
+            'per_page' => $perPage,
+            'sortBy' => $sortBy,
+            'userType' => $userType,
+            'sortFirstNameUrl' => $sortFirstNameUrl,
+            'sortLastNameUrl' => $sortLastNameUrl,
+            'allowedPerPage' => $allowedPerPage,
+            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter ,$lang),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
@@ -631,6 +681,114 @@ class UserController extends Controller
                 'per_page' => $perPage,
                 'allowedPerPage' => $allowedPerPage
             ]);
+    }
+    public function getUserData($id)
+    {
+        $user = User::query()
+            ->select([
+                'user_table.id',
+                'user_table.first_name',
+                'user_table.last_name',
+                'user_table.phone_number',
+                'utt.id as role_id',
+                (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title').' AS user_type'
+            ])
+            ->join('user_type_table as utt', 'user_table.user_type', '=', 'utt.id')
+            ->where('user_table.id', '=', $id)
+            ->first();
+
+        if (!$user) {
+            http_response_code(403);
+            echo json_encode(['error' => 'invalid user']);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($user->toArray());
+        exit;
+    }
+
+    public function updateService($id){
+            header('Content-Type: application/json');
+            $errors = [];
+
+            $service = User::find($id);
+            if (!$service) {
+                echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
+                exit;
+            }
+
+            $editFaTitle = trim($_POST['fa_title'] ?? '');
+            $editEnTitle = trim($_POST['en_title'] ?? '');
+            $isCategory = (int)($_POST['checkBoxCategory'] ?? 0);
+            $categoryModal = $_POST['category_modal'] ?? null;
+
+            $validator = new Validator($_POST, [
+                'fa_title' => 'required|min:2|max:40',
+                'en_title' => 'required|min:2|max:40',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                echo json_encode(['success' => false, 'message' => $errors]);
+                exit;
+            }
+            $service->fa_title = $editFaTitle;
+            $service->en_title = $editEnTitle;
+            $service->service_key = "";
+
+            if ($isCategory === 1) {
+                $service->parent_id = 0;
+            } else {
+                $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
+            }
+
+            if ($service->save()) {
+                echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
+                exit;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
+                exit;
+            }
+    }
+    public function updateUser2($id){
+        header('Content-Type: application/json');
+        $errors = [];
+
+        $user = User::find($id);
+        if (!$user) {
+            echo json_encode(['success' => false, 'message' => 'کاربر یافت نشد']);
+            exit;
+        }
+
+        $editFirstName = trim($_POST['first_name'] ?? '');
+        $editLastName = trim($_POST['last_name'] ?? '');
+        $phoneNumber = trim($_POST['phone_number'] ?? '');
+        $roles = trim($_POST['roles'] ?? '');
+
+        $validator = new Validator($_POST, [
+            'first_name' => 'required|min:2|max:40',
+            'last_name' => 'required|min:2|max:40',
+            'phone_number' => 'required|min:11|max:11',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = array_merge($errors, $validator->errors());
+            echo json_encode(['success' => false, 'message' => $errors]);
+            exit;
+        }
+        $user->first_name = $editFirstName;
+        $user->last_name = $editLastName;
+        $user->phone_number = $phoneNumber;
+        $user->user_type = $roles;
+
+        if ($user->save()) {
+            echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
+            exit;
+        }
     }
 }
 

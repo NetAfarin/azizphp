@@ -1137,6 +1137,7 @@ html[lang="en"] .select2-container--default .select2-selection--single .select2-
 .bg-badge-gray{
     background-color: var(--bs-gray-input);
     color: black;
+    font-weight: normal;
 }
 .tips{
     font-weight: normal;
@@ -1504,4 +1505,7 @@ html[lang="en"] .pagination li:last-child{
 }
 .halfSelectForm.select2-hidden-accessible + .select2-container {
     width: 180px !important;
+}
+#myInput::placeholder {
+    color: #721c24;
 }

@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\Service;
+use App\Models\User;
 use function Sodium\add;
 
 class ServiceController extends Controller
@@ -248,7 +249,6 @@ class ServiceController extends Controller
         echo json_encode($service->toArray());
         exit;
     }
-
     public function updateService($id)
     {
         header('Content-Type: application/json');
@@ -515,6 +515,4 @@ class ServiceController extends Controller
         redirect("/admin/services/create");
         exit;
     }
-
-
 }
