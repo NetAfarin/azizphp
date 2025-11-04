@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Validator;
+use App\Models\Booking;
 use App\Models\Duration;
 use App\Models\EmployeeService;
 use App\Models\EmployeeTable;
@@ -406,23 +407,53 @@ class UserController extends Controller
     }
     public function operatorDashboard()
     {
+        $allowedPerPage = [1, 10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $search = trim($_GET['search'] ?? '');
+        $lang = $_SESSION['lang'] ?? 'fa';
+        $column =  "ut.first_name" ;
+
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            $redirectUrl = '?page=1&per_page=10';
+            if ($search !== '') {
+                $redirectUrl .= '&search=' . urlencode($search);
+            }
+            header("Location: " . $redirectUrl);
+            exit;
+        }
+        if (isset($_GET['search']) && empty($search)) {
+            header("Location: " . "?page=$page&per_page=$perPage");
+        }
         $visits = ServiceVisitRelation::query()->select([
             "ut.first_name AS customerName",
             "ut.last_name AS customerLastName",
-             "st.fa_title AS service",
+            "st.fa_title AS service",
             "vst.fa_title AS visitStatus",
         ])
             ->join("visit_table AS vt", "vt.id", "=", "service_visit_relation_table.visit_id")
             ->join("user_table AS ut", "ut.id", "=", "vt.customer_id")
             ->join("service_table AS st", "st.id", "=", "service_visit_relation_table.service_id")
-            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
-            ->get();
+            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status");
 
+        if ($search !== '') {
+            $pagination = $visits->whereLike("ut.first_name", $search)
+                ->paginate($page, $perPage);
+        }else{
+            $pagination = $visits->paginate($page, $perPage);
+
+        }
+
+
+        $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [
             'title' => __('dashboard'),
+            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $lang),
+            'pagination' => $pagination,
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
-            'visits' => $visits,
+            'visits' => $pagination['data'],
+            'search' => $search,
         ]);
     }
     public function manageUsers()
@@ -790,5 +821,120 @@ class UserController extends Controller
             exit;
         }
     }
+
+
+    public function reserveList()
+    {
+        $lang = $_SESSION['lang'] ?? 'fa';
+        $sortBy = $_GET['sortby'] ?? '';
+        $sortOrder = $_GET['sortorder'] ?? 'asc';
+        $filter = trim($_GET['filter'] ?? 'all');
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = (int)($_GET['per_page'] ?? 10);
+        $allowedPerPage = [10, 20, 50, 100];
+        $search = trim($_GET['search'] ?? '');
+
+        $sortServiceUrl = BASE_URL . '/user/reserve?sortby=service&sortorder=' . (($sortBy == 'service' && $sortOrder == 'asc') ? 'desc' : 'asc');
+        $sortEmployeeUrl = BASE_URL . '/user/reserve?sortby=employee&sortorder=' . (($sortBy == 'employee' && $sortOrder == 'asc') ? 'desc' : 'asc');
+        $sortDateUrl = BASE_URL . '/user/reserve?sortby=date&sortorder=' . (($sortBy == 'date' && $sortOrder == 'asc') ? 'desc' : 'asc');
+        $fromDate = $_GET['from_date'] ?? null;
+        $toDate   = $_GET['to_date'] ?? null;
+        $sortByColumn = "vt.visit_datetime";
+        if ($sortBy === 'service') {
+            $sortByColumn = $lang == 'fa' ? 'st.fa_title' : 'st.en_title';
+        } elseif ($sortBy === 'employee') {
+            $sortByColumn = 'ut.first_name';
+        } elseif ($sortBy === 'date') {
+            $sortByColumn = 'vt.visit_datetime';
+        }
+        $column = $lang == "fa" ? "service_table.fa_title" : 'st.fa_title';
+        $allReserve= ServiceVisitRelation::visitsDetails();
+        $allReserveVisits= ServiceVisitRelation::visitsDetailsWithStatusType(1);
+        $allCancelledVisits= ServiceVisitRelation::visitsDetailsWithStatusType(3);
+        $allDoneVisits= ServiceVisitRelation::visitsDetailsWithStatusType(5);
+        if ($search !== '') {
+            $allReserve->whereLike($column, $search);
+            $allReserveVisits->whereLike($column, $search);
+            $allCancelledVisits->whereLike($column, $search);
+            $allDoneVisits->whereLike($column, $search);
+        }
+      if($filter == "all" || empty($filter)) {
+          $pagination = $allReserve->paginate($page, $perPage);
+      }
+        else if ($filter === 'reserved') {
+           $pagination = $allReserveVisits->paginate($page, $perPage);
+        } else if ($filter === 'done') {
+           $pagination = $allDoneVisits->paginate($page, $perPage);
+       }
+        else if ($filter === 'cancelled') {
+            $pagination = $allCancelledVisits->paginate($page, $perPage);
+        }
+        if (!empty($search)) {
+            $searchColumn = $lang == 'fa' ? 'st.fa_title' : 'st.en_title';
+            $allReserve->whereLike($searchColumn, $search);
+        }
+        $allReserve3 = ServiceVisitRelation::query()
+            ->select([
+                "service_visit_relation_table.*",
+                "vt.visit_datetime AS visitDate",
+                "vt.register_datetime AS registerDatetime",
+                "ut.first_name AS employeeName",
+                "ut.last_name AS employeeLastName",
+                "c.first_name AS customerName",
+                "c.last_name AS customerLastName",
+                "st.fa_title AS service",
+                "vst.fa_title AS visitStatus",
+                "vst.id AS visitStatusId"
+            ])
+            ->join("visit_table AS vt", "vt.id", "=", "service_visit_relation_table.visit_id")
+            ->join("user_table AS ut", "ut.id", "=", "service_visit_relation_table.employee_id")
+            ->join("user_table AS c", "c.id", "=", "vt.customer_id")
+            ->join("service_table AS st", "st.id", "=", "service_visit_relation_table.service_id")
+            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status");
+
+        if (!empty($fromDate) && !empty($toDate)) {
+            list($jy1, $jm1, $jd1) = explode('-', $fromDate);
+            list($jy2, $jm2, $jd2) = explode('-', $toDate);
+
+            $fromDate = jalali_to_gregorian($jy1, $jm1, $jd1, '-');
+            $toDate   = jalali_to_gregorian($jy2, $jm2, $jd2, '-');
+
+            $allReserve3->where("vt.visit_datetime", ">=", $fromDate . " 00:00:00")
+                ->where("vt.visit_datetime", "<=", $toDate . " 23:59:59");
+        }
+        $pagination = $allReserve3->paginate($perPage, $page);
+
+
+        $allReserve2= ServiceVisitRelation::visitsDetails();
+        $allReserveVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(1);
+        $allCancelledVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(3);
+        $allDoneVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(5);
+        $allVisitsSize = sizeof($allReserve2->get());
+        $allReserveVisitsSize = sizeof($allReserveVisits2->get());
+        $allCancelledVisitsSize = sizeof($allCancelledVisits2->get());
+        $allDoneSize = sizeof($allDoneVisits2->get());
+        $totalPages = ceil($pagination['total'] / $perPage);
+        $this->view('user/originalView/customerReserve', [
+            'title' => __('booking_list'),
+            'first_name' => $_SESSION['user_name'] ?? "",
+            'last_name' => $_SESSION['last_name'] ?? "",
+            'search' => $search,
+            'allowedPerPage' => $allowedPerPage,
+            'perPage' => $perPage,
+            'sortServiceUrl' => $sortServiceUrl,
+            'sortEmployeeUrl' => $sortEmployeeUrl,
+            'sortDateUrl' => $sortDateUrl,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+            'pagination' => $pagination,
+            'allReserve' => $pagination['data'],
+            'allVisits' => $allVisitsSize,
+            'visitsReserved' => $allReserveVisitsSize,
+            'allCancelledVisitsSize' => $allCancelledVisitsSize,
+            'allDoneVisitsSize' => $allDoneSize,
+            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter, $lang),
+        ]);
+    }
+
 }
 

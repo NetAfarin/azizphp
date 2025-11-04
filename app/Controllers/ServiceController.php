@@ -300,8 +300,6 @@ class ServiceController extends Controller
 
     public function addService()
     {
-
-//        vd($_POST);
         $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
         $filter = trim($_GET['filter'] ?? 'all');
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';

@@ -60,20 +60,37 @@ class AdminBookingController extends Controller
 
 
     public function create()
+{
+    $customers = User::query()->where('user_type', '=', UserType::CUSTOMER)->get();
+    $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
+    $services  = Service::all();
+    $durations = Duration::all();
+    $this->view('admin/booking/new', [
+        'title' => __('new_booking'),
+        'customers' => $customers,
+        'employees' => $employees,
+        'services' => $services,
+        'durations' => $durations,
+    ]);
+}
+    public function createReserve()
     {
+        $search = trim($_GET['search'] ?? '');
         $customers = User::query()->where('user_type', '=', UserType::CUSTOMER)->get();
         $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
+        $employeeTime = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
         $services  = Service::all();
         $durations = Duration::all();
-        $this->view('admin/booking/new', [
+        $this->view('admin/booking/newBooking', [
             'title' => __('new_booking'),
-            'customers' => $customers,
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
             'employees' => $employees,
             'services' => $services,
             'durations' => $durations,
+            'search' => $search,
         ]);
     }
-
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

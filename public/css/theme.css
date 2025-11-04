@@ -1506,6 +1506,25 @@ html[lang="en"] .pagination li:last-child{
 .halfSelectForm.select2-hidden-accessible + .select2-container {
     width: 180px !important;
 }
-#myInput::placeholder {
-    color: #721c24;
+.tab-item {
+    cursor: pointer;
+}
+.tab-circle {
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background-color: var(--bs-gray-input);
+    margin: 0 auto 5px auto;
+    transition: background-color 0.3s;
+}
+
+.tab-circle.active {
+    background-color: var(--bs-primary);
+}
+.reserveDerailsModal{
+    background-color: var(--bs-bg-under-menu);
+    margin-top: 35px;
+}
+.buttonSqaure{
+    width: 59px;height: 50px;
 }

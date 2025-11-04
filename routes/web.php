@@ -28,7 +28,6 @@ use App\Middlewares\SaRoleMiddleware;
         Route::get('/user/add', [UserController::class, 'add']);
         Route::get('/user/dashboard', [UserController::class, 'dashboard']);
         Route::get('/operator/dashboard', [UserController::class, 'operatorDashboard']);
-        Route::get('/admin/user/manage', [UserController::class, 'manageUsers']);
         Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
@@ -52,6 +51,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(func
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::get('/user/logout', [UserController::class, 'logout']);
     Route::get('/user/show/{id}', [UserController::class, 'showProfile']);
+    Route::get('/user/reserve', [UserController::class, 'reserveList']);
 });
 
 // Admin POST routes (CSRF + RateLimit)
@@ -88,6 +88,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/services/categories', [ServiceController::class, 'categories']);
     Route::get('/admin/services', [ServiceController::class, 'services']);
     Route::get('/admin/bookings/new', [AdminBookingController::class, 'create']);
+    Route::get('/admin/bookings/create', [AdminBookingController::class, 'createReserve']);
     Route::get('/admin/employee/{employeeId}/schedule', [AdminBookingController::class, 'weeklySchedule']);
     Route::get('/admin/services/category/create', [ServiceController::class, 'addCategory']);
     Route::get('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
@@ -99,6 +100,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/components', [AdminController::class, 'components']);
     Route::get('/admin/bookings/settings', [AdminController::class, 'bookingSettings']);
     Route::get('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
+    Route::get('/admin/user/manage', [UserController::class, 'manageUsers']);
 
 });
 

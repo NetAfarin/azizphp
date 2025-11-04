@@ -1,5 +1,4 @@
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
-
 <div class="col mt-5">
     <div class="row">
         <div class="col-lg-4 col-sm-12 col-md-4">
@@ -74,15 +73,23 @@
                               <option><?= __("group_work") ?></option>
                               <option><?= __("group_work") ?></option>
                           </select>
-                      <div class="input-group">
-                      <input type="text" class="form-control border-end-0 " name="search" id="search"
-                                 value="<?php /*= htmlspecialchars($search) */?>" placeholder="<?= __("search") ?>">
-                          <button
-                                  class="btn btn-search border-start-0"
-                                  type="submit" id="btn-search">
-                              <i class="fa fa-search"></i>
-                          </button>
-                      </div>
+                      <form method="get" class="d-flex align-items-center w-100">
+<!--                          <input type="hidden" name="filter" value="--><?php //= htmlspecialchars($filter) ?><!--">-->
+                          <div class="input-group">
+                              <input type="text" class="form-control border-end-0" name="search" id="search"
+                                     value="<?= htmlspecialchars($search) ?>" placeholder="<?= __("search") ?>">
+                              <?php if(empty($search)):?>
+                                  <button class="btn btn-search border-start-0" type="submit" id="btn-search">
+                                      <i class='fas fa-search'></i>
+                                  </button>
+                              <?php else:?>
+                                  <?php if (!empty($search)): ?><button class="btn btn-search border-start-0" type="button" id="btn-delete">
+                                      <a href="?page=1&per_page=<?= $per_page ?>" class="center text-decoration-none"><i class='fas fa-xmark text-primary'></i></a>
+                                      </button>
+                                  <?php endif;?>
+                              <?php endif; ?>
+                          </div>
+                      </form>
                   </div>
                </div>
            </div>
