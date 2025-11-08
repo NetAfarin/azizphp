@@ -60,7 +60,9 @@
                 </div>
             </div>
         </div>
-        <div class="mt-4">
+        <div class="mt-5">
+            <?php if (!empty($users)): ?>
+
             <div class="table-wrapper mt-3">
                 <div class="table-responsive ">
                     <table class="table custom-table">
@@ -108,7 +110,6 @@
                         $startNumber = (($pagination['current_page'] - 1) * $per_page) + 1;
                         $count = $startNumber;
                         ?>
-                        <?php if (!empty($users)): ?>
                             <?php foreach ($users as $user): ?>
                         <tr>
                             <td>
@@ -243,7 +244,7 @@
                         <?php endforeach;?>
 
 
-                        <?php endif?>
+
                         </tbody>
                     </table>
                 </div>
@@ -255,12 +256,29 @@
             <?php echo $renderPagination; ?>
         </div>
     </div>
+    <?php else: ?>
+        <div class="alert alert-danger">پیدا نشد</div>
+    <?php endif;?>
 </div>
 </div>
 </div>
 </div>
 </body>
 <script>
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const filter = urlParams.get('filter') || 'all';
+    const links = document.querySelectorAll('#filterLinks a');
+
+    links.forEach(link => {
+        link.classList.remove('text-primary');
+        link.classList.add('text-dark');
+        const href = new URL(link.href);
+        if(href.searchParams.get('filter') === filter) {
+            link.classList.remove('text-dark');
+            link.classList.add('text-primary');
+        }
+    });
     document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const userId = button.dataset.id;
@@ -307,19 +325,6 @@
             });
     });
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const filter = urlParams.get('filter') || 'all';
-    const links = document.querySelectorAll('#filterLinks a');
-
-    links.forEach(link => {
-        link.classList.remove('text-primary');
-        link.classList.add('text-dark');
-        const href = new URL(link.href);
-        if(href.searchParams.get('filter') === filter) {
-            link.classList.remove('text-dark');
-            link.classList.add('text-primary');
-        }
-    });
     $('#itemsInPage').on('change', function () {
         var perPage = $(this).val();
         var url = new URL(window.location.href);

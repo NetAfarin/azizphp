@@ -136,7 +136,6 @@ class User extends Model
         return User::query()
             ->select([
                 (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title').' AS user_type',
-                'user_table.first_name',
                 'user_table.id',
                 'user_table.'.$column,
                 'user_table.last_name',
@@ -170,7 +169,6 @@ class User extends Model
         return User::query()
             ->select([
                 'utt.title AS user_type',
-                'user_table.first_name',
                 'user_table.id',
                 'user_table.last_name',
                 'user_table.'.$column,

@@ -299,4 +299,13 @@ return [
     'submitDate' => 'تاریخ ثبت',
     'from_date' => 'از تاریخ',
     'to_date' => 'تا تاریخ',
+    'count_of_customers_had_services' => '%s مشتری خدمات دریافت کرده اند',
+    'customers_has_not_done_services' => 'هیچ مشتری خدمات دریافت نکرده است',
+    'cancelled_reserves' => '%s نوبت لغو شده است',
+    'not_have_cancelled_reserves' => 'هیچ نوبت لغو شده ندارید',
+    'active_reserve' => 'نوبت فعال',
+    'services_done_today' => 'خدمات انجام شده امروز',
+    'services_done' => 'خدمات انجام شده',
+    'all_status' => 'همه وضعیت ها',
+
 ];

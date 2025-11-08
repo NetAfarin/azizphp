@@ -105,7 +105,7 @@ if (!empty($publicErrors)): ?>
             </div>
             <div class="d-flex flex-wrap justify-content-between mt-5">
                 <div class="d-flex" id="filterLinks">
-                    <a href="?filter=all<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none"><?= __("all") ?> (<?= $all ?>)</a>
+                    <a href="?filter=all<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none "><?= __("all") ?> (<?= $all ?>)</a>
                     <div class="vertical-separator"></div>
                     <a href="?filter=categories<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none">
                         <?= __("category") ?> (<?= $categorySize ?>)
@@ -119,9 +119,9 @@ if (!empty($publicErrors)): ?>
             </div>
 
         </div>
-        <?php if(!empty($allServices)): ?>
         <div class="mt-5">
-                <div class="table-wrapper">
+            <?php if(!empty($allServices)): ?>
+            <div class="table-wrapper">
                     <div class="table-responsive ">
                     <table class="table custom-table">
                     <thead class="table-primary ">
@@ -323,11 +323,8 @@ if (!empty($publicErrors)): ?>
         <div class="mt-4">
             <div class="d-flex justify-content-end">
                 <?php echo $renderPagination; ?>
-
             </div>
-
         </div>
-
 
     <?php else: ?>
         <div class="alert alert-danger">پیدا نشد</div>
@@ -336,6 +333,19 @@ if (!empty($publicErrors)): ?>
 </div>
 
 <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const filter = urlParams.get('filter') || 'all';
+    const links = document.querySelectorAll('#filterLinks a');
+
+    links.forEach(link => {
+        link.classList.remove('text-primary');
+        link.classList.add('text-dark');
+        const href = new URL(link.href);
+        if(href.searchParams.get('filter') === filter) {
+            link.classList.remove('text-dark');
+            link.classList.add('text-primary');
+        }
+    });
     document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const serviceId = button.dataset.id;
@@ -410,19 +420,7 @@ if (!empty($publicErrors)): ?>
         btn.classList.add('ltr-input');
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const filter = urlParams.get('filter') || 'all';
-    const links = document.querySelectorAll('#filterLinks a');
 
-    links.forEach(link => {
-        link.classList.remove('text-primary');
-        link.classList.add('text-dark');
-        const href = new URL(link.href);
-        if(href.searchParams.get('filter') === filter) {
-            link.classList.remove('text-dark');
-            link.classList.add('text-primary');
-        }
-    });
     var selectAllServices = document.getElementById("allServices");
     selectAllServices.addEventListener("change", function () {
         var table = this.closest("table");

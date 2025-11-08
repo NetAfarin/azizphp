@@ -276,14 +276,19 @@ abstract class Model
 
     protected function buildCountSql(array &$params): string
     {
-        [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
-        $params = array_merge($params, $whereParams);
-        if ($this->groupBy) {
-            return "SELECT COUNT(*) AS aggregate FROM (SELECT 1 FROM {$this->table}{$whereClause} GROUP BY {$this->groupBy}) AS sub";
-        }
-        return "SELECT COUNT(*) AS aggregate FROM {$this->table}{$whereClause}";
+        $selectSql = $this->buildSelectSql($params);
+        return "SELECT COUNT(*) AS aggregate FROM ({$selectSql}) AS sub";
     }
-
+    //pre buildCountSql
+//    protected function buildCountSql(array &$params): string
+//    {
+//        [$whereClause, $whereParams] = $this->buildWhereClauseAndParams();
+//        $params = array_merge($params, $whereParams);
+//        if ($this->groupBy) {
+//            return "SELECT COUNT(*) AS aggregate FROM (SELECT 1 FROM {$this->table}{$whereClause} GROUP BY {$this->groupBy}) AS sub";
+//        }
+//        return "SELECT COUNT(*) AS aggregate FROM {$this->table}{$whereClause}";
+//    }
     public function get(): array
     {
         $params = [];

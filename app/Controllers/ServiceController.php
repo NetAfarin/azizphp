@@ -362,10 +362,10 @@ class ServiceController extends Controller
         } else {
             clear_old_input();
         }
-        $column = $lang == "fa" ? "fa_title" : 'en_title';
-        $services2 = Service::getAll($column);
-        $categoriesData = Service::getCategoriesOnly($column);
-        $servicesData = Service::getServicesOnly($column);
+        $column = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
+        $services2 = Service::getAll();
+        $categoriesData = Service::getCategoriesOnly();
+        $servicesData = Service::getServicesOnly();
         $sortByColumn = "service_table.parent_id";
         if (!empty($sortBy)) {
             if ($sortBy == 'title') {
@@ -378,10 +378,10 @@ class ServiceController extends Controller
         }
         $services2->orderBy($sortByColumn, $sortOrder);
 
-        $allSearchData = Service::getAll($column);
-        $service1 = Service::getAll($column);
-        $service2 = Service::getCategoriesOnly($column);
-        $service3 = Service::getServicesOnly($column);
+        $allSearchData = Service::getAll();
+        $service1 = Service::getAll();
+        $service2 = Service::getCategoriesOnly();
+        $service3 = Service::getServicesOnly();
         if ($search !== '') {
             $allSearchData->whereLike($column, $search);
             $service1->whereLike($column, $search);
