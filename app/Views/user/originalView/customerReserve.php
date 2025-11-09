@@ -254,11 +254,8 @@
             <div class="mt-4">
                 <div class="d-flex justify-content-end">
                     <?php echo $renderPagination; ?>
-
                 </div>
-
             </div>
-
 
         <?php else: ?>
             <div class="alert alert-danger">پیدا نشد</div>

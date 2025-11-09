@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-lg-4 col-sm-12 col-md-4">
             <div class="card  shadow-md h-100 " >
-                <div class="card-header text-center fw-bold bg-transparent fs-4">نوبت های امروز</div>
+                <div class="card-header text-center fw-bold bg-transparent fs-4"><?= __("visits_today_number") ?></div>
                 <div class="card-body">
                     <p class="card-text flex-wrap d-flex align-items-center justify-content-center gap-3"><span class="text-primary" style="font-size: 45px"><?= $todayVisitCount ?> </span><?= __("active_reserve") ?></p>
                 </div>
@@ -16,34 +16,24 @@
                 <div class="card-body" style="--divider-offset: 1.25rem; padding: 20px;">
                     <div class="d-flex align-items-center flex-wrap  gap-1 mb-2">
                         <i class="fa-regular fa-circle-check text-primary"></i>
-                        <span>کوتاهی مو: </span>
-                        <span class="text-primary">2 روز پیش</span>
+                        <span><?= __("services_done_today").":"?> </span>
+                        <span class="text-primary"><?=$doneServicesCount ?></span>
                     </div>
                     <div class="divider"></div>
                     <div class="d-flex align-items-center gap-1 mt-2 flex-wrap">
                         <i class="fa-regular fa-circle-check text-primary"></i>
-                        <span>کوتاهی مو: </span>
-                        <span class="text-primary">2 روز پیش</span>
+                        <span><?= __("services_confirm").":"?> </span>
+                        <span class="text-primary"><?=$pendingServicesCount ?></span>
                     </div>
                 </div>
                 <div class="custom-card-footer"><span></span></div>
             </div>
         </div>
-        <div class="col-lg-4 col-sm-12 col-md-4 mt-3 mt-lg-0 mt-md-0">
-            <div class="card  shadow-md" >
-                <div class="card-header text-center fw-bold bg-transparent fs-4">مشتری های حاضر</div>
-                <div class="card-body" style="--divider-offset: 1.25rem; padding: 20px;">
-                    <div class="d-flex align-items-center flex-wrap  gap-1 mb-2">
-                        <i class="fa-regular fa-circle-check text-primary"></i>
-                        <span>کوتاهی مو: </span>
-                        <span class="text-primary">2 روز پیش</span>
-                    </div>
-                    <div class="divider"></div>
-                    <div class="d-flex align-items-center gap-1 mt-2 flex-wrap">
-                        <i class="fa-regular fa-circle-check text-primary"></i>
-                        <span>کوتاهی مو: </span>
-                        <span class="text-primary">2 روز پیش</span>
-                    </div>
+        <div class="col-lg-4 col-sm-12 col-md-4 mt-3 mt-lg-0  mt-md-0">
+            <div class="card  shadow-md h-100 " >
+                <div class="card-header text-center fw-bold bg-transparent fs-4"><?= __("all_customers") ?></div>
+                <div class="card-body">
+                    <p class="card-text flex-wrap d-flex align-items-center justify-content-center gap-3"><span class="text-primary" style="font-size: 45px"><?= $customersCount ?> </span><?= __("person") ?></p>
                 </div>
                 <div class="custom-card-footer"><span></span></div>
             </div>
@@ -54,27 +44,28 @@
         <div class="col-lg-8 col-sm-12 col-md-8">
             <div class="col-lg-12 col-sm-12 mt-5">
                 <div class="d-flex py-4 rounded bg-white flex-column justify-content-evenly shadow-md">
-                    <div class="p-2 fw-bold text-center ">برای ثبت رزرو جدید مشتری، از این بخش استفاده کنید.</div>
+                    <div class="p-2 fw-bold text-center "><?= __("click_to_create_reserve") ?></div>
                     <div class="p-2 text-secondary text-center">
-                        <button class="btn btn-primary">ثبت رزرو جدید</button>
+                        <button class="btn btn-primary"><?= __("create_new_reserve") ?></button>
                     </div>
                 </div>
             </div>
        <div class="mt-5">
            <div class="row">
-               <div class="col-7 d-flex align-items-center">
-                   <h4 class="fw-bold">نوبت های امروز</h4>
+               <div class="col-lg-4 col-xxl-7 col-xl-5 col-md-5  col-sm-4 d-flex align-items-center">
+                   <h4 class="fw-bold"><?= __("visits_today_number") ?></h4>
                </div>
 
-               <div class="col-5">
+               <div class="col-lg-8 col-xxl-5  col-xl-7 col-md-7 col-sm-8">
                   <div class="d-flex align-items-center justify-content-center gap-2">
                           <select class="js-example-basic-single halfSelectForm" name="state" id="changeStatus">
                               <option value="0"><?= __("all_status") ?></option>
                               <?php foreach ($visitStatus as $status):?>
-                              <option value="<?= $status->id ?>" <?= ( $status->id == $getStatus) ? 'selected' : ''  ?>><?= $status->fa_title ?></option>
+                              <option value="<?= $status->id ?>" <?= ( $status->id == $getStatus) ? 'selected' : ''  ?>><?= (APP_LANG == 'fa') ?$status->fa_title : $status->en_title ?></option>
                               <?php endforeach ?>
                           </select>
                       <form method="get" class="d-flex align-items-center w-100">
+                          <input type="hidden" name="status" value="<?= htmlspecialchars($getStatus) ?>">
                           <div class="input-group">
                               <input type="text" class="form-control border-end-0" name="search" id="search"
                                      value="<?= htmlspecialchars($search) ?>" placeholder="<?= __("search") ?>">
@@ -84,7 +75,7 @@
                                   </button>
                               <?php else:?>
                                   <?php if (!empty($search)): ?><button class="btn btn-search border-start-0" type="button" id="btn-delete">
-                                      <a href="?page=1&per_page=<?= $per_page ?>" class="center text-decoration-none"><i class='fas fa-xmark text-primary'></i></a>
+                                      <a href="?status=<?= htmlspecialchars($getStatus) ?>&page=1&per_page=<?= $per_page ?>" class="center text-decoration-none"><i class='fas fa-xmark text-primary'></i></a>
                                       </button>
                                   <?php endif;?>
                               <?php endif; ?>
@@ -99,14 +90,14 @@
                <table class="table custom-table">
                    <thead class="table-primary ">
                    <tr>
-                       <th> <input class="form-check-input checkBox" type="checkbox" value="" id="allServices">
-                           <label for="allServices">ردیف</label>
+                       <th> <input class="form-check-input checkBox" type="checkbox" value="" id="allVisits">
+                           <label for="allVisits"><?= __("row")?></label>
                        </th>
-                       <th>نام</th>
-                       <th>نام خانوادگی</th>
-                       <th>خدمات</th>
-                       <th>وضعیت</th>
-                       <th>عملیات</th>
+                       <th><?= __("first_name")?></th>
+                       <th><?= __("last_name")?></th>
+                       <th><?= __("services")?></th>
+                       <th><?= __("status")?></th>
+                       <th><?= __("actions")?></th>
                    </tr>
                    </thead>
                    <tbody>
@@ -152,6 +143,11 @@
 
                </table>
            </div>
+                <div class="mt-3">
+                    <div class="d-flex mb-0 justify-content-end align-items-center">
+                        <?php echo $renderPagination; ?>
+                    </div>
+                </div>
             <?php else:?>
                 <div class="alert alert-danger">پیدا نشد</div>
             <?php endif;?>
@@ -160,7 +156,7 @@
 
             <div class="mt-5">
                 <div class="card  shadow-md" >
-                    <div class="card-header  fw-bold bg-transparent" style="--divider-offset: 1.25rem; padding: 27px;"><h4 class="fw-bold">گزارش روز گذشته</h4></div>
+                    <div class="card-header  fw-bold bg-transparent" style="--divider-offset: 1.25rem; padding: 27px;"><h4 class="fw-bold"><?= __("yesterday_report") ?></h4></div>
                     <div class="card-body" style="--divider-offset: 1.25rem; padding: 0 27px 0 27px ;">
                             <div class="my-2 text-start">
                                 <i class="fa-regular fa-circle-check text-primary"></i>
@@ -176,63 +172,61 @@
                             <div class="divider_lg"></div>
                         <div class="my-2 text-start">
                                 <i class="fa-regular fa-circle-check text-primary"></i>
-                                <span>رضایت مشتریان: 92%</span>
+                                <span><?= __("customers_happiness") ?>: 92%</span>
                             </div>
 
 
                     </div>
                     <div class="text-center" style="padding: 0 27px 27px 0 ;">
-                        <button class="btn btn-primary py-2 px-4">خروجی excel</button>
+                        <button class="btn btn-primary py-2 px-4"><?= __("export_excel") ?></button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 col-sm-12 col-md-4">
             <div class="mt-5">
-                <div class="shadow-md bg-white rounded py-4 px-3 tips ">
-                    <h4 class="text-start pb-2">آخرین اطلاعیه ها</h4>
-                    <ul class="list-unstyled d-flex flex-column align-items-end" style="direction: ltr; gap: 25px;">
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">ضدعفونی ابزارها تا ساعت ۹ انجام شود</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                <div class="shadow-md bg-white rounded py-4 px-4 vh-100">
+                    <h4 class="text-start mb-3"><?= __("lastest_news") ?></h4>
+                    <ul class="list-unstyled bg-white " >
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">ضدعفونی ابزارها تا ساعت ۹ انجام شود</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">شروع ساعت کاری در تاریخ ۶ شهریور ساعت ۸:۰۰ میباشد</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">شروع ساعت کاری در تاریخ ۶ شهریور ساعت ۸:۰۰ میباشد</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
                         </li>
 
-
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -257,5 +251,10 @@
         });
 
     });
-
+    var allVisits = document.getElementById("allVisits");
+    allVisits.addEventListener("change", function () {
+        var table = this.closest("table");
+        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+        checkboxes.forEach(cb => cb.checked = allVisits.checked);
+    });
 </script>

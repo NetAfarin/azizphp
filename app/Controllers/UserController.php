@@ -430,21 +430,23 @@ class UserController extends Controller
         $visitsWithStatusType = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus);
         if ($search !== '') {
             $visits->whereLike("user_table.first_name", $search);
-            $visitsWithStatusType->whereLike("user_table.first_name", $search);
+        }else if (empty(!$getStatus)) {
+            $visitsWithStatusType->whereLike("ut.first_name", $search);
         }
         if (!empty($getStatus)) {
-            $pagination = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus)->paginate($page, $perPage);
-        }else{
-            $pagination =  ServiceVisitRelation::getVisits()->paginate($page, $perPage);
+            $pagination = $visitsWithStatusType->paginate($page, $perPage);
+        }
+        else{
+            $pagination =  $visits->paginate($page, $perPage);
         }
 
         $doneService = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->get());
         $cancelledService = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(3)->get());
         $todayVisitsCount = ServiceVisitRelation::getVisitsNumberToday();
         $visitStatus = VisitStatus::all();
-
-
-
+        $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))->get());
+        $pendingServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(2)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))->get());
+        $customersCount = sizeof(User::all());
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [
             'title' => __('dashboard'),
@@ -459,6 +461,10 @@ class UserController extends Controller
             'search' => $search,
             'visitStatus' => $visitStatus,
             'getStatus' => $getStatus,
+            'doneServicesCount' => $doneServicesCount,
+            'pendingServicesCount' => $pendingServicesCount,
+            'customersCount' => $customersCount,
+            'per_page' => $perPage,
         ]);
     }
     public function manageUsers()

@@ -307,5 +307,14 @@ return [
     'services_done_today' => 'خدمات انجام شده امروز',
     'services_done' => 'خدمات انجام شده',
     'all_status' => 'همه وضعیت ها',
-
+    'person' => 'نفر',
+    'visits_today_number' => 'نوبت های امروز',
+    'all_customers' => 'مشتری های حاضر',
+    'services_confirm' => 'خدمات تایید شده',
+    'lastest_news' => 'آخرین اطلاعیه ها',
+    'click_to_create_reserve' => 'برای ثبت رزرو جدید مشتری، از این بخش استفاده کنید.',
+    'customers_happiness' => 'رضایت مشتریان',
+    'yesterday_report' => 'گزارش روز گذشته',
+    'export_excel' => 'خروجی Excel',
+    'create_new_reserve' => 'ثبت رزرو جدید',
 ];

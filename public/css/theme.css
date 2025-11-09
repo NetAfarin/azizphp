@@ -624,7 +624,7 @@ thead, tbody, tfoot, tr, td, th {
     background-color: var(--bs-gray-input);
 }
 .table-wrapper {
-    border-radius: 15px;
+    border-radius: 8px;
     padding: 0;
     border: 1px solid var(--bs-gray-input);
     overflow: hidden;
@@ -885,7 +885,8 @@ hr {
 }
 .list-unstyled{
     background-color: var(--bs-bg-under-menu);
-    padding: 0.5rem 1rem;
+    padding: 0;
+    margin-bottom: 0;
 }
 .tips .list-unstyled{
     background-color: white;
@@ -1138,16 +1139,6 @@ html[lang="en"] .select2-container--default .select2-selection--single .select2-
     background-color: var(--bs-gray-input);
     color: black;
     font-weight: normal;
-}
-.tips{
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 2;
-    color: var(--bs-secondary);
-    margin-bottom: 25px;
-}
-.tips:last-child {
-    margin-bottom: 0;
 }
 .select2-container--default.select2-container--open.select2-container--below .select2-selection--single,.select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
      border-bottom-left-radius: 8px;
@@ -1509,8 +1500,20 @@ html[lang="en"] .pagination li:last-child{
     justify-content: center;
     height: 40px;
 }
-.halfSelectForm.select2-hidden-accessible + .select2-container {
-    width: 220px !important;
+@media (min-width: 576px) {
+    .halfSelectForm.select2-hidden-accessible + .select2-container {
+        width: 300px !important;
+    }
+}
+@media (min-width: 768px) {
+    .halfSelectForm.select2-hidden-accessible + .select2-container {
+        width: 300px !important;
+    }
+}
+@media (min-width: 992px) {
+    .halfSelectForm.select2-hidden-accessible + .select2-container {
+        width: 250px !important;
+    }
 }
 .tab-item {
     cursor: pointer;
