@@ -138,7 +138,6 @@ class User extends Model
                 (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title').' AS user_type',
                 'user_table.id',
                 'user_table.'.$column,
-                'user_table.last_name',
                 'user_table.phone_number',
                 'abbas.result AS result',
                 's.services AS services_name'
@@ -170,7 +169,6 @@ class User extends Model
             ->select([
                 'utt.title AS user_type',
                 'user_table.id',
-                'user_table.last_name',
                 'user_table.'.$column,
                 'user_table.phone_number',
                 'abbas.result AS result',

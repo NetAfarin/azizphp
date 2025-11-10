@@ -1,3 +1,50 @@
+<?php
+$menuItems = [
+    [
+        'icon' => 'fa-dashboard',
+        'title' => __('dashboard'),
+        'link' => '/fw/operator/dashboard',
+    ],
+    [
+        'icon' => 'fa-user',
+        'title' => __('manage_users'),
+        'submenu' => [
+            ['title' => __('add'), 'link' => '/fw/admin/user/add'],
+            ['title' => __('manage_users'), 'link' => '/fw/admin/user/manage'],
+            ['title' => __('settings'), 'link' => '#'],
+        ]
+    ],
+    [
+        'icon' => 'fa-user',
+        'title' => __('manage_services'),
+        'submenu' => [
+            ['title' => __('add'), 'link' => '/fw/admin/services/create'],
+            ['title' => __('manage_services'), 'link' => '#'],
+            ['title' => __('settings'), 'link' => '#'],
+        ]
+    ],
+    [
+        'icon' => 'fa-book',
+        'title' => __('reserve_list'),
+        'submenu' => [
+            ['title' => __('add'), 'link' => '/fw/admin/bookings/create'],
+            ['title' => __('manage_reserve'), 'link' => '/fw/user/reserve'],
+            ['title' => __('settings'), 'link' => '#'],
+        ]
+    ],
+    [
+        'icon' => 'fa-gear',
+        'title' => __('settings'),
+        'link' => '#'
+    ],
+    [
+        'icon' => 'fa-solid fa-compress',
+        'title' => __('collapse_menu'),
+        'link' => '#'
+    ],
+];
+$currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/services/create
+?>
 <?php $lang = $_SESSION['lang'] ?? 'fa'; ?>
 <body style="background: #E9F3F9; padding: 30px 20px 30px 20px">
 <div class="container-fluid">
@@ -7,190 +54,63 @@
             <i class="fa fa-bars"></i>
         </button>
     </div>
+
     <div class="row">
         <div class="col-lg-3 col-md-3 col-xl-3 col-xxl-2 px-4 d-none d-lg-block">
             <div class="bg-white d-flex flex-column gap-5 pb-4 sidebar-full-height menu-border-radius">
                 <img src="<?= asset('img/delarose-black.png') ?>" style="height: 200px; object-fit: contain"
                      class="mt-4">
-                <nav class="topnav navbar navbar-light " id="menuBar">
-                    <ul class="navbar-nav flex-fill w-100 mb-2 " style="margin: 0 0 0 0">
-                        <li class="nav-item justify-content d-flex py-2 normal-menu-item">
-                            <i class="fa fa-dashboard icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("dashboard") ?></span>
-                        </li>
-                        <li class="nav-item dropdown test">
-                            <a href="#manageUsers" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text px-1 "><?= __("manage_users") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 show" id="manageUsers">
-                                <li class="nav-item active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
+                <nav class="topnav navbar navbar-light">
+                    <ul class="navbar-nav flex-fill w-100 mb-2" style="margin:0;">
+                        <?php foreach($menuItems as $item): ?>
+                            <?php if(isset($item['submenu'])): ?>
+                                <?php
+                                // بررسی می‌کنیم آیا یکی از زیرمنوها فعال است
+                                $isSubActive = false;
+                                foreach($item['submenu'] as $sub) {
+                                    if($sub['link'] === $currentUrl) {
+                                        $isSubActive = true;
+                                        break;
+                                    }
+                                }
+                                $parentClass = $isSubActive ? 'active-menu' : '';
+                                ?>
+                                <li class="nav-item dropdown <?= $parentClass ?>">
+                                    <a href="#<?= str_replace(' ', '', $item['title']) ?>"
+                                       data-bs-toggle="collapse"
+                                       aria-expanded="<?= $isSubActive ? 'true' : 'false' ?>"
+                                       class="justify-content d-flex dropdown-toggle nav-link <?= $parentClass ?>">
+                                        <i class="fa <?= $item['icon'] ?> icon-color"></i>
+                                        <span class="mx-2 item-text"><?= $item['title'] ?></span>
+                                    </a>
+                                    <ul class="collapse list-unstyled  w-100 <?= $isSubActive ? 'show' : '' ?>" id="<?= str_replace(' ', '', $item['title']) ?>">
+                                        <?php foreach($item['submenu'] as $sub): ?>
+                                            <?php $activeClass = ($sub['link'] === $currentUrl) ? 'text-primary' : ''; ?>
+                                            <li class="nav-item">
+                                                <a class="nav-link <?= $activeClass ?>" href="<?= $sub['link'] ?>">
+                                                    <span class="mx-2 under"><?= $sub['title'] ?></span>
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
                                 </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under"><?= __("manage_users") ?></span></a>
+                            <?php else: ?>
+                                <?php $activeClass = ($item['link'] === $currentUrl) ? 'text-primary active-menu' : ''; ?>
+                                <li class="nav-item justify-content d-flex py-2 normal-menu-item <?= $activeClass ?>">
+                                    <a href="<?= $item['link'] ?>" class="d-flex align-items-center text-decoration-none ">
+                                        <i class="fa <?= $item['icon'] ?> icon-color"></i>
+                                        <span class="item-text mx-2"><?= $item['title'] ?></span>
+                                    </a>
                                 </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under "><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  dropdown ">
-                            <a href="#manageService" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle  nav-link ">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text px-1"><?= __("manage_services") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100  " id="manageService">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_services") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under "><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  dropdown">
-                            <a href="#reserveList" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-book icon-color"></i>
-                                <span class="mx-2 item-text px-1"><?= __("reserves_list") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 " id="reserveList">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span class="mx-2 under "><?= __("manage_reserve") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("setting") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item justify-content  d-flex  py-2 normal-menu-item ">
-                            <i class="fa fa-gear icon-color"></i>
-                            <span class="item-text"><?= __("settings") ?></span>
-                        </li>
-                        <li class="nav-item justify-content d-flex  py-2 normal-menu-item">
-                            <i class="fa-solid fa-compress icon-color"></i>
-                            <span class="item-text"><?= __("collapse_menu") ?></span>
-                        </li>
-                    </ul>
+                            <?php endif; ?>
 
+                        <?php endforeach; ?>
+                    </ul>
                 </nav>
-                <div class="justify-content d-flex nav-item py-2 normal-menu-item">
+                <a href="/fw/user/logout" class="justify-content d-flex nav-item py-2 normal-menu-item text-decoration-none">
                     <i class="fa-solid fa-right-from-bracket icon-color"></i>
                     <span class="item-text"><?= __("logout") ?></span>
-                </div>
-            </div>
-        </div>
-        <div class="offcanvas offcanvas-start p-0 rounded-5 m-2" tabindex="-1" id="sidebar"
-             aria-labelledby="sidebarLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="sidebarLabel"><?= __("menu") ?></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body p-0">
-                <nav class="topnav navbar navbar-light">
-
-                    <ul class="navbar-nav flex-fill w-100 mb-2 " style="margin: 0 0 0 0">
-                        <li class="nav-item justify-content d-flex py-2 normal-menu-item">
-                            <i class="fa fa-dashboard icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("dashboard") ?></span>
-                        </li>
-                        <li class="nav-item  dropdown ">
-                            <a href="#dashboard" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle  nav-link  <?php echo $lang == 'en' ? 'left-border' : 'right-border' ?>">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text "><?= __("manage_users") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 show " id="dashboard">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_users") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown ">
-                            <a href="#manageService" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-user icon-color"></i>
-                                <span class="mx-2 item-text"><?= __("manage_services") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 " id="manageService">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_services") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item  dropdown">
-                            <a href="#reserveList" data-bs-toggle="collapse" aria-expanded="false"
-                               class="justify-content d-flex dropdown-toggle nav-link ">
-                                <i class="fa fa-book icon-color"></i>
-                                <span class="mx-2 item-text"><?= __("reserve_list") ?></span>
-                            </a>
-                            <ul class="collapse list-unstyled pl-4 w-100 " id="reserveList">
-                                <li class="nav-item  active">
-                                    <a class="nav-link  " href="./index.html"><span
-                                                class="mx-2 under text-primary"><?= __("add") ?></span></a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a class="nav-link  " href="./dashboard-analytics.html"><span
-                                                class="mx-2 under "><?= __("manage_reserve") ?></span></a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link  " href="./dashboard-sales.html"><span
-                                                class="mx-2 under"><?= __("settings") ?></span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item justify-content  d-flex  py-2 normal-menu-item ">
-                            <i class="fa fa-gear icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("settings") ?></span>
-                        </li>
-                        <li class="nav-item justify-content d-flex py-2 normal-menu-item">
-                            <i class="fa-solid fa-compress icon-color"></i>
-                            <span class="item-text mx-2 "><?= __("collapse_menu") ?></span>
-                        </li>
-                    </ul>
-
-                </nav>
-                <div class="justify-content d-flex nav-item  py-2 normal-menu-item">
-                    <a href="<?= BASE_URL ?>/user/logout" class="text-decoration-none">
-                        <i class="fa-solid fa-right-from-bracket icon-color"></i>
-                        <span class="item-text mx-2 "><?= __("logout") ?></span>
-                    </a>
-
-                </div>
+                </a>
             </div>
         </div>
         <div class="col-lg-9 col-md-12 col-xl-9 col-xxl-10 px-3">
@@ -221,5 +141,69 @@
                             </ul>
                         </div>
 
+                    </div>
+                </div>
+
+
+
+
+                <div class="offcanvas offcanvas-start p-0 rounded-5 m-2" tabindex="-1" id="sidebar"
+                     aria-labelledby="sidebarLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="sidebarLabel"><?= __("menu") ?></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body p-0">
+                        <nav class="topnav navbar navbar-light">
+                            <ul class="navbar-nav flex-fill w-100 mb-2" style="margin:0;">
+                                <?php foreach($menuItems as $item): ?>
+                                    <?php if(isset($item['submenu'])): ?>
+                                        <?php
+                                        // بررسی می‌کنیم آیا یکی از زیرمنوها فعال است
+                                        $isSubActive = false;
+                                        foreach($item['submenu'] as $sub) {
+                                            if($sub['link'] === $currentUrl) {
+                                                $isSubActive = true;
+                                                break;
+                                            }
+                                        }
+                                        $parentClass = $isSubActive ? 'active-menu' : '';
+                                        ?>
+                                        <li class="nav-item dropdown <?= $parentClass ?>">
+                                            <a href="#<?= str_replace(' ', '', $item['title']) ?>"
+                                               data-bs-toggle="collapse"
+                                               aria-expanded="<?= $isSubActive ? 'true' : 'false' ?>"
+                                               class="justify-content d-flex dropdown-toggle nav-link <?= $parentClass ?>">
+                                                <i class="fa <?= $item['icon'] ?> icon-color"></i>
+                                                <span class="mx-2 item-text"><?= $item['title'] ?></span>
+                                            </a>
+                                            <ul class="collapse list-unstyled  w-100 <?= $isSubActive ? 'show' : '' ?>" id="<?= str_replace(' ', '', $item['title']) ?>">
+                                                <?php foreach($item['submenu'] as $sub): ?>
+                                                    <?php $activeClass = ($sub['link'] === $currentUrl) ? 'text-primary' : ''; ?>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link <?= $activeClass ?>" href="<?= $sub['link'] ?>">
+                                                            <span class="mx-2 under"><?= $sub['title'] ?></span>
+                                                        </a>
+                                                    </li>
+                                                <?php endforeach; ?>
+                                            </ul>
+                                        </li>
+                                    <?php else: ?>
+                                        <?php $activeClass = ($item['link'] === $currentUrl) ? 'text-primary active-menu' : ''; ?>
+                                        <li class="nav-item justify-content d-flex py-2 normal-menu-item <?= $activeClass ?>">
+                                            <a href="<?= $item['link'] ?>" class="d-flex align-items-center text-decoration-none ">
+                                                <i class="fa <?= $item['icon'] ?> icon-color"></i>
+                                                <span class="item-text mx-2"><?= $item['title'] ?></span>
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+
+                                <?php endforeach; ?>
+                            </ul>
+                        </nav>
+                        <div class="justify-content d-flex nav-item py-2 normal-menu-item">
+                            <i class="fa-solid fa-right-from-bracket icon-color"></i>
+                            <span class="item-text"><?= __("logout") ?></span>
+                        </div>
                     </div>
                 </div>

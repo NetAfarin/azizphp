@@ -1,6 +1,6 @@
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
 <div>
-    <div class="mt-5"><a href="<?= BASE_URL ?>/user/add">
+    <div class="mt-5"><a href="<?= BASE_URL ?>/admin/user/add">
             <button class="btn btn-outline-primary py-2"><?= __("add_new_user") ?></button>
         </a></div>
     <div class="mt-4 testi">
@@ -213,13 +213,12 @@
                                                         <label for="phone_number"><?= __("phone_number") ?><span class="bullet-color"> *</span></label>
                                                         <input type="text" class="form-control" name="phone_number" id="phone_number" >
                                                     </div>
-
                                                     <div class="mt-4">
                                                         <label><?= __("user_type") ?><span class="bullet-color"> *</span></label>
                                                         <select class="form-control" name="roles" id="user_role">
                                                             <?php foreach ($userType as $role): ?>
                                                                 <option value="<?= $role->id ?>"<?= ($role->id == ($user->user_type ?? 0) ? 'selected' : '') ?>>
-                                                                    <?= ($lang == "fa") ? htmlspecialchars($role->title ?? '') : htmlspecialchars($role->en_title ?? '') ?>
+                                                                    <?= ($lang == "fa") ? htmlspecialchars($role->title ?? '') : htmlspecialchars($role->en_title) ?>
 
                                                                 </option>
                                                             <?php endforeach; ?>
@@ -251,11 +250,13 @@
             </div>
             </div>
         </div>
-    <div class="mt-4">
-        <div class="d-flex justify-content-end">
-            <?php echo $renderPagination; ?>
+    <?php if ($page > 1):?>
+        <div class="mt-3">
+            <div class="d-flex mb-0 justify-content-end align-items-center">
+                <?php echo $renderPagination; ?>
+            </div>
         </div>
-    </div>
+    <?php endif;?>
     <?php else: ?>
         <div class="alert alert-danger">پیدا نشد</div>
     <?php endif;?>

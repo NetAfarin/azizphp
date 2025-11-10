@@ -182,7 +182,7 @@
                                         </label>
                                     </td>
                                     <td><?= $service->service ?></td>
-                                    <td><?= $service->employeeName ?>  <?= $service->employeeLastName ?></td>
+                                    <td><?= $service->employeeFirstName ?>  <?= $service->employeeLastName ?></td>
                                     <td>123456</td>
                                     <td><?= toJalali($service->visitDate)['date']; ?></td>
                                     <td><?= toJalali($service->visitDate)['time']; ?></td>
@@ -230,7 +230,7 @@
                                                                 <div class="d-flex flex-column gap-3 p-3">
                                                                     <span><?= __("customer") ?>: <?= $service->customerName ?></span>
                                                                     <span><?= __("service") ?>: <?= $service->service ?></span>
-                                                                    <span><?= __("employee") ?>: <?= $service->employeeName ?>  <?= $service->employeeLastName ?></span>
+                                                                    <span><?= __("employee") ?>: <?= $service->employeeFirstName ?>  <?= $service->employeeLastName ?></span>
                                                                     <span><?= __("register_date") ?>: <span><?= toJalali($service->visitDate)['date'] ?></span></span>
                                                                     <span><?= __("register_time") ?>: <?= toJalali($service->visitDate)['time'] ?></span>
                                                                     <span><?= __("code") ?>: 123456</span>
@@ -243,6 +243,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
                                              </tr>
                                 <?php $count++ ?>
                             <?php endforeach; ?>
@@ -251,12 +252,13 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-4">
-                <div class="d-flex justify-content-end">
-                    <?php echo $renderPagination; ?>
-                </div>
+    <?php if ($page > 1):?>
+        <div class="mt-3">
+            <div class="d-flex mb-0 justify-content-end align-items-center">
+                <?php echo $renderPagination; ?>
             </div>
-
+        </div>
+    <?php endif;?>
         <?php else: ?>
             <div class="alert alert-danger">پیدا نشد</div>
         <?php endif; ?>

@@ -248,7 +248,7 @@ if (!empty($publicErrors)): ?>
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-body custom-modal-body mt-4 mb-4">
-                                                <h4 class="fw-bold">آیا از حذف کاربر خدمت هستید؟</h4>
+                                                <h4 class="fw-bold">آیا از حذف خدمت هستید؟</h4>
                                                 <div class="d-flex gap-4 mt-5">
                                                     <button type="submit" class="btn btn-primary btn-modal">بله</button>
                                                     <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">خیر</button>
@@ -320,12 +320,13 @@ if (!empty($publicErrors)): ?>
                     </div>
             </div>
         </div>
-        <div class="mt-4">
-            <div class="d-flex justify-content-end">
+    <?php if ($page > 1):?>
+        <div class="mt-3">
+            <div class="d-flex mb-0 justify-content-end align-items-center">
                 <?php echo $renderPagination; ?>
             </div>
         </div>
-
+    <?php endif;?>
     <?php else: ?>
         <div class="alert alert-danger">پیدا نشد</div>
         <?php endif; ?>

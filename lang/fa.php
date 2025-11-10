@@ -317,4 +317,5 @@ return [
     'yesterday_report' => 'گزارش روز گذشته',
     'export_excel' => 'خروجی Excel',
     'create_new_reserve' => 'ثبت رزرو جدید',
+    'reserve_list' => 'لیست رزروها',
 ];

@@ -113,17 +113,52 @@ $(document).ready(function() {
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownLinks = document.querySelectorAll('.nav-item.dropdown > a.dropdown-toggle[href^="#"]');
 
+    // مسیر فعلی بدون query string
+    const currentPath = window.location.pathname;
+
+    // ابتدا بررسی لینک‌های زیرمنو برای حالت اولیه
+    document.querySelectorAll('.nav-item.dropdown ul li a').forEach(subLink => {
+        const subHref = subLink.getAttribute('href');
+        if (subHref === currentPath) {
+            subLink.classList.add('text-primary'); // لینک فعال
+            const parentDropdown = subLink.closest('.nav-item.dropdown');
+            if (parentDropdown) {
+                const parentLink = parentDropdown.querySelector('a.dropdown-toggle');
+                parentLink.classList.add('active-menu');
+                const collapseEl = document.querySelector(parentLink.getAttribute('href'));
+                if(collapseEl) collapseEl.classList.add('show');
+            }
+        }
+    });
+
+    // اضافه کردن behavior برای باز و بسته شدن منوها (accordion)
     dropdownLinks.forEach(link => {
         const collapseId = link.getAttribute('href');
         const collapseEl = document.querySelector(collapseId);
         if (!collapseEl) return;
-        if (collapseEl.classList.contains('show')) {
 
+        collapseEl.addEventListener('shown.bs.collapse', function () {
+            // بستن سایر collapseها
+            dropdownLinks.forEach(otherLink => {
+                const otherCollapseEl = document.querySelector(otherLink.getAttribute('href'));
+                if (!otherCollapseEl || otherCollapseEl === collapseEl) return;
+                bootstrap.Collapse.getInstance(otherCollapseEl)?.hide();
+                otherLink.classList.remove('active-menu');
+            });
+
+            // کلاس active-menu به لینک خودش اضافه شود
             link.classList.add('active-menu');
             link.setAttribute('aria-expanded', 'true');
-        }
+        });
+
+        collapseEl.addEventListener('hidden.bs.collapse', function () {
+            link.classList.remove('active-menu');
+            link.setAttribute('aria-expanded', 'false');
+        });
     });
 });
+
+
 var selectAllUsers = document.getElementById("allUsers");
 var selectAllServices = document.getElementById("allServices");
 selectAllUsers.addEventListener("change", function () {

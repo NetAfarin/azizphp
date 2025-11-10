@@ -37,7 +37,7 @@
              <select class="js-example-basic-single w-100"  id="userRole" name="role">
                  <?php foreach ($userRole as $role): ?>
                      <option value="<?= $role->id ?>">
-                         <?=( $role->title) ?>
+                         <?= ($lang == "fa") ? htmlspecialchars($role->title ?? '') : htmlspecialchars($role->en_title) ?>
                      </option>
                  <?php endforeach;?>
              </select>

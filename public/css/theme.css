@@ -929,6 +929,9 @@ hr {
 nav .nav-item:hover{
     background-color: var(--bs-gray-input);
 }
+.navbar-nav .nav-item:last-child {
+    margin-bottom: 0;
+}
 .dropdown-menu {
     text-align: right;
     list-style: none;
@@ -1203,6 +1206,10 @@ html[lang="fa"] .input-with-icon-left input , .dropdown-item {
 html[lang="en"] .input-with-icon-left input , .dropdown-item{
     direction: ltr;
     text-align: left;
+}
+.dropdown-item.for-table{
+    direction: rtl;
+    text-align: right;
 }
 .page-link {
     color: var(--bs-secondary);
@@ -1536,4 +1543,28 @@ html[lang="en"] .pagination li:last-child{
 }
 .buttonSqaure{
     width: 59px;height: 50px;
+}
+#dropdown-menu-container {
+    /*width: 87px;*/
+    /*height: 51px;*/
+    position: absolute;
+    z-index: 1;
+    display: none;
+}
+#dropdown-menu-container.show {
+    display: block;
+    transform: translate(10px, 5px);
+}
+
+#dropdown-menu-container ul.dropdown-menu {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 0;
+    margin: 0;
+    /*min-width: 100px;*/
+    /*width: 100px !important;*/
+}
+.dropdown-item:focus,.dropdown-item:hover {
+    color: var(--bs-dropdown-link-hover-color);
+    background-color: var(--bs-bg-active-menu)
 }

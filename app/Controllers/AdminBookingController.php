@@ -76,11 +76,10 @@ class AdminBookingController extends Controller
     public function createReserve()
     {
         $search = trim($_GET['search'] ?? '');
-        $customers = User::query()->where('user_type', '=', UserType::CUSTOMER)->get();
         $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
-        $employeeTime = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
         $services  = Service::all();
         $durations = Duration::all();
+        $lang = $_GET['lang'] ?? 'fa';
         $this->view('admin/booking/newBooking', [
             'title' => __('new_booking'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
@@ -89,6 +88,7 @@ class AdminBookingController extends Controller
             'services' => $services,
             'durations' => $durations,
             'search' => $search,
+            'lang' => $lang,
         ]);
     }
     public function store()

@@ -66,9 +66,9 @@ class Service extends Model
 
     public static function getServicesOnly(): Service
     {
-        return Service::query()->select(['service_table.id', 'service_table.fa_title AS title', 'service_table.parent_id',
-            'p.fa_title AS parent_title',
-            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
+        return Service::query()->select(['service_table.id','service_table.parent_id',
+            (APP_LANG == "fa" ? "p.fa_title" : "p.en_title")." as parent_title",
+            (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as title",            '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
         ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
             ->where("service_table.parent_id", "<>", 0)
             ->where('service_table.deleted', '=', 0);
@@ -76,8 +76,9 @@ class Service extends Model
 
     public static function getCategoriesOnly(): Service
     {
-        return Service::query()->select(['service_table.id', 'service_table.fa_title AS title', 'service_table.parent_id',
-            'p.fa_title AS parent_title',
+        return Service::query()->select(['service_table.id', 'service_table.parent_id',
+            (APP_LANG == "fa" ? "p.fa_title" : "p.en_title")." as parent_title",
+            (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as title",
             '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
         ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
             ->where("service_table.parent_id", "=", 0)
@@ -86,8 +87,9 @@ class Service extends Model
 
     public static function getAll(): Service
     {
-        return Service::query()->select(['service_table.id', 'service_table.fa_title AS title', 'service_table.parent_id',
-            'p.fa_title AS parent_title',
+        return Service::query()->select(['service_table.id', 'service_table.parent_id',
+            (APP_LANG == "fa" ? "p.fa_title" : "p.en_title")." as parent_title",
+            (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as title",
             '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
         ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
             ->where('service_table.deleted', '=', 0);

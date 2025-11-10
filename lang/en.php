@@ -309,4 +309,6 @@ return [
     'yesterday_report' => 'Yesterday\'s report',
     'export_excel' => 'Export Excel',
     'create_new_reserve' => 'Create new reservation',
+    'reserve_list' => 'Reservation List',
+
 ];

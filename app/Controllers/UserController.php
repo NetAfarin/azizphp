@@ -210,9 +210,6 @@ class UserController extends Controller
                     $user_type = UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                     clear_old_input();
-//                    vd($user->id);
-                    $redirect =($user->isSuperAdmin() || $user->isSupport())?"/admin/panel":( ($user->isAdmin() || $user->isOperator())
-                        ? "/admin/panel" : "/home/index");
                     redirect( "/user/otp");
                     exit;
                 } else {
@@ -412,7 +409,7 @@ class UserController extends Controller
         $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $search = trim($_GET['search'] ?? '');
-        $getStatus = trim($_GET['status'] ?? '');
+        $getStatus = isset($_GET['status']) ? (int)$_GET['status'] : 0;
         $lang = $_SESSION['lang'] ?? 'fa';
         $column =  "ut.first_name" ;
         if (!in_array($perPage, $allowedPerPage, true)) {
@@ -426,22 +423,28 @@ class UserController extends Controller
         if (isset($_GET['search']) && empty($search)) {
             header("Location: " . "?page=$page&per_page=$perPage");
         }
-        $visits = ServiceVisitRelation::getVisits();
-        $visitsWithStatusType = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus);
-        if ($search !== '') {
-            $visits->whereLike("user_table.first_name", $search);
-        }else if (empty(!$getStatus)) {
-            $visitsWithStatusType->whereLike("ut.first_name", $search);
-        }
-        if (!empty($getStatus)) {
-            $pagination = $visitsWithStatusType->paginate($page, $perPage);
-        }
-        else{
-            $pagination =  $visits->paginate($page, $perPage);
-        }
+        if ($getStatus != 0) {
+            $query = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus);
+            if (!empty($search)) {
+                $query = $query->whereLike("ut.first_name", $search);
+            }
+        } else {
+            $query = ServiceVisitRelation::visitsDetails();
+//            vd($query->paginate($page, $perPage));
 
-        $doneService = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->get());
-        $cancelledService = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(3)->get());
+            if (!empty($search)) {
+                $query = $query->whereLike("user_table.first_name", $search);
+            }
+        }
+        $pagination = $query->paginate($page, $perPage);
+
+
+        $doneServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where(
+            "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')",
+            "=", date("Y-m-d", strtotime("-1 day")))->get());
+        $cancelledServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(3)->where(
+            "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')",
+            "=", date("Y-m-d", strtotime("-1 day")))->get());
         $todayVisitsCount = ServiceVisitRelation::getVisitsNumberToday();
         $visitStatus = VisitStatus::all();
         $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))->get());
@@ -453,8 +456,8 @@ class UserController extends Controller
             'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $lang),
             'pagination' => $pagination,
             'todayVisitCount' => sizeof($todayVisitsCount),
-            'customersHasServiceCount' => $doneService,
-            'cancelledReservesCount' => $cancelledService,
+            'doneServiceYesterday' => $doneServiceYesterday,
+            'cancelledServiceYesterday' => $cancelledServiceYesterday,
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
             'visits' => $pagination['data'],
@@ -465,6 +468,7 @@ class UserController extends Controller
             'pendingServicesCount' => $pendingServicesCount,
             'customersCount' => $customersCount,
             'per_page' => $perPage,
+            'page' => $totalPages
         ]);
     }
     public function manageUsers()
@@ -544,6 +548,7 @@ class UserController extends Controller
         $this->view('user/originalView/manageUsers', [
             'title' => __('manage_users'),
             'search' => $search,
+            'page' => $totalPages,
             'lang' => $lang,
             'filter' => $filter,
             'users' => $pagination['data'],
@@ -589,7 +594,7 @@ class UserController extends Controller
                     $errors[] = "کاربر یافت نشد.";
                 }
                 if (password_verify($password, $user->password)) {
-                    redirect("/");
+                    redirect("/admin/user/add");
                 } else {
                     $errors[] = "رمز عبور اشتباه است!";
 
@@ -897,8 +902,6 @@ class UserController extends Controller
         else if ($filter === 'cancelled') {
             $pagination = $allCancelledVisits2->paginate($page, $perPage);
         }
-
-
         $searchItems = sizeof($allSearchData->get());
         $allVisitsSize = sizeof($allReserve->get());
         $allReserveVisitsSize = sizeof($allReserveVisits->get());
@@ -920,6 +923,7 @@ class UserController extends Controller
             'sortDateUrl' => $sortDateUrl,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
+            'page' => $totalPages,
             'pagination' => $pagination,
             'allReserve' => $pagination['data'],
             'allVisits' => $allVisitsSize,

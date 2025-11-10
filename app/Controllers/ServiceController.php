@@ -425,6 +425,7 @@ class ServiceController extends Controller
             'sortCategoryUrl' => $sortCategoryUrl,
             'sortServiceCountUrl' => $sortServiceCountUrl,
             'items' => $searchSize,
+            'page' => $totalPages,
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
