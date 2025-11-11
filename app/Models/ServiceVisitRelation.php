@@ -9,6 +9,7 @@ class ServiceVisitRelation extends Model
     protected string $table = 'service_visit_relation_table';
 
     protected array $fillable = [
+        'id',
         'visit_id',
         'service_id',
         'price',
@@ -29,6 +30,7 @@ class ServiceVisitRelation extends Model
         'visitDate',
         'registerDatetime',
         'visitDatetime',
+        'id',
     ];
 
     public function visit()
@@ -58,6 +60,7 @@ class ServiceVisitRelation extends Model
     {
         return ServiceVisitRelation::query()
             ->select([
+                "service_visit_relation_table.id as id",
                 "ut.first_name AS employeeFirstName",
                 "ut.last_name AS employeeLastName",
                 (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as service",
@@ -79,6 +82,7 @@ class ServiceVisitRelation extends Model
     {
         return ServiceVisitRelation::query()
             ->select([
+                "service_visit_relation_table.id as id",
                 "ut.first_name AS employeeFirstName",
                 "ut.last_name AS employeeLastName",
                 (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as service",
@@ -103,21 +107,5 @@ class ServiceVisitRelation extends Model
             ->join("visit_table", "visit_table.id", "=", "service_visit_relation_table.visit_id")
             ->where("DATE_FORMAT(visit_table.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))
             ->get();
-    }
-    public static function getVisits()
-    {
-       return  ServiceVisitRelation::query()->select([
-            "user_table.first_name AS customerName",
-            "user_table.last_name AS customerLastName",
-            "em.last_name AS employeeFirstName",
-            "em.last_name AS employeeLastName",
-            (APP_LANG == "fa" ? "st.fa_title" : "st.en_title")." as service",
-            (APP_LANG == "fa" ? "vst.fa_title" : "vst.en_title")." as visitStatus",
-       ])
-            ->join("visit_table AS vt", "vt.id", "=", "service_visit_relation_table.visit_id")
-            ->join("user_table", "user_table.id", "=", "vt.customer_id")
-            ->join("user_table as em", "em.id", "=", "service_visit_relation_table.employee_id")
-            ->join("service_table AS st", "st.id", "=", "service_visit_relation_table.service_id")
-            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status");
     }
 }

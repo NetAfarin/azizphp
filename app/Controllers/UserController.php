@@ -792,6 +792,8 @@ class UserController extends Controller
                 exit;
             }
     }
+
+
     public function updateUser2($id){
         header('Content-Type: application/json');
         $errors = [];
@@ -831,8 +833,24 @@ class UserController extends Controller
             exit;
         }
     }
-
-
+    public function updateStatusType($id)
+    {
+        header('Content-Type: application/json');
+        $getId = (int)$id;
+        $getStatus = ServiceVisitRelation::find($getId);
+        if (!$getStatus) {
+            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
+            exit;
+        }
+        $statusType = (int)($_POST['status_id'] ?? 0);
+        $getStatus->visit_status = $statusType;
+            if ($getStatus->save()) {
+                echo json_encode(['success' => true, 'message' =>  'ikj']);
+                exit;
+            }else{
+                echo json_encode(['success' => false, 'message' => 'خطا در به روز رسانی']);
+            }
+        }
     public function reserveList()
     {
         $lang = $_SESSION['lang'] ?? 'fa';

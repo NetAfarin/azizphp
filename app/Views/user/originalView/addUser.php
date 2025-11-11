@@ -117,7 +117,7 @@
                            <div class="d-flex justify-content-center align-items-center">
                                <div class="form-check tick">
                                    <label class="form-check-label m-0" for="holiday-<?= $index ?>">
-                                       تعطیل
+                                      <?=__("close")?>
                                    </label>
                                    <input class="form-check-input" type="checkbox" id="holiday-<?= $index ?>" name="holiday[<?= $index ?>]" value="1">
                                </div>
@@ -131,7 +131,7 @@
              </div>
          </div>
      </div>
-     <button class="btn btn-primary mt-5 px-5" type="submit">افزودن</button>
+     <button class="btn btn-primary mt-5 px-5" type="submit"><?=__("add")?></button>
  </form>
 
 

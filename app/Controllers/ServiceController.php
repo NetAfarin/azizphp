@@ -276,16 +276,13 @@ class ServiceController extends Controller
             exit;
         }
 
-        // به‌روزرسانی اطلاعات
         $service->fa_title = $editFaTitle;
         $service->en_title = $editEnTitle;
         $service->service_key = "";
 
         if ($isCategory === 1) {
-            // خودش دسته است
             $service->parent_id = 0;
         } else {
-            // زیرمجموعه یک دسته دیگر است
             $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
         }
 

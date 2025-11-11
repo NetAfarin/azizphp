@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Validator;
 use App\Models\Booking;
 use App\Models\Duration;
 use App\Models\EmployeeService;
@@ -288,5 +289,53 @@ class AdminBookingController extends Controller
         header('Content-Type: application/json');
         echo json_encode(array_map(fn($s) => $s->toArray(), $services));
         exit;
+    }
+    public function updateStatusType($id)
+    {
+        header('Content-Type: application/json');
+        $errors = [];
+
+        $service = Service::find($id);
+        if (!$service) {
+            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
+            exit;
+        }
+
+        $editFaTitle = trim($_POST['fa_title'] ?? '');
+        $editEnTitle = trim($_POST['en_title'] ?? '');
+        $isCategory = (int)($_POST['checkBoxCategory'] ?? 0);
+        $categoryModal = $_POST['category_modal'] ?? null;
+
+        $validator = new Validator($_POST, [
+            'fa_title' => 'required|min:2|max:40',
+            'en_title' => 'required|min:2|max:40',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = array_merge($errors, $validator->errors());
+            echo json_encode(['success' => false, 'message' => $errors]);
+            exit;
+        }
+
+        // به‌روزرسانی اطلاعات
+        $service->fa_title = $editFaTitle;
+        $service->en_title = $editEnTitle;
+        $service->service_key = "";
+
+        if ($isCategory === 1) {
+            // خودش دسته است
+            $service->parent_id = 0;
+        } else {
+            // زیرمجموعه یک دسته دیگر است
+            $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
+        }
+
+        if ($service->save()) {
+            echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
+            exit;
+        }
     }
 }

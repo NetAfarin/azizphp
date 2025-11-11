@@ -328,7 +328,7 @@ if (!empty($publicErrors)): ?>
         </div>
     <?php endif;?>
     <?php else: ?>
-        <div class="alert alert-danger">پیدا نشد</div>
+        <div class="alert alert-danger"><?= __("not_found") ?></div>
         <?php endif; ?>
     </div>
 </div>

@@ -318,4 +318,7 @@ return [
     'export_excel' => 'خروجی Excel',
     'create_new_reserve' => 'ثبت رزرو جدید',
     'reserve_list' => 'لیست رزروها',
+    'not_found' => 'اطلاعاتی پیدا نشد',
+    'change_status_rserve' => 'تغییر وضعیت',
+    'has_not' => 'ندارد',
 ];

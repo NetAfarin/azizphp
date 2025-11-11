@@ -310,5 +310,6 @@ return [
     'export_excel' => 'Export Excel',
     'create_new_reserve' => 'Create new reservation',
     'reserve_list' => 'Reservation List',
-
+    'change_status_rserve' => 'Change Status',
+    'has_not' => 'has\'not',
 ];

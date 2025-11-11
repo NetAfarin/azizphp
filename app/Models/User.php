@@ -140,6 +140,7 @@ class User extends Model
                 'user_table.'.$column,
                 'user_table.phone_number',
                 'abbas.result AS result',
+//                (APP_LANG === 'fa' ? 'st.fa_title' : 'st.en_title').' AS services_name',
                 's.services AS services_name'
             ])
             ->join('user_type_table as utt', 'user_table.user_type', '=', 'utt.id')
@@ -156,7 +157,7 @@ class User extends Model
         GROUP BY employee_id
     ) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
             ->join("(
-        SELECT est.user_id, GROUP_CONCAT(st.fa_title SEPARATOR ', ') AS services
+        SELECT est.user_id, GROUP_CONCAT(st.en_title SEPARATOR ', ') AS services
         FROM employee_service_table est
         JOIN service_table st ON st.id = est.service_id
         GROUP BY est.user_id
@@ -188,7 +189,7 @@ class User extends Model
         GROUP BY employee_id
     ) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
             ->join("(
-        SELECT est.user_id, GROUP_CONCAT(st.fa_title SEPARATOR ', ') AS services
+        SELECT est.user_id, GROUP_CONCAT(st.en_title SEPARATOR ', ') AS services
         FROM employee_service_table est
         JOIN service_table st ON st.id = est.service_id
         GROUP BY est.user_id

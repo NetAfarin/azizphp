@@ -108,66 +108,95 @@
                        <td><?= htmlspecialchars($item->service) ?></td>
                        <td><?= htmlspecialchars($item->visitStatus) ?></td>
                        <td>
-                           <div class="d-flex justify-content-center gap-1">
-                               <div class="dropdown">
-                                   <button class="btn btn-active activities-icon "
-                                           type="button"
-                                           data-bs-toggle="dropdown"
-                                           data-item-id="<?= $item->id ?>">
-                                       <i class="fa fa-ellipsis-vertical"></i>
-                                   </button>
+                           <div class="dropdown d-flex justify-content-center align-items-center">
+                               <button class="btn btn-active activities-icon"
+                                       type="button"
+                                       data-bs-toggle="dropdown"
+                                       data-bs-target="#dropdown-menu-<?= $item->id ?>"
+                                       aria-expanded="false"
+                                       data-item-id="<?= $item->id ?>">
+                                   <i class="fa fa-ellipsis-vertical fs-4"></i>
+                               </button>
+                               <ul class="dropdown-menu dropdown-menu-start  p-0 action-menu " style="position: absolute;">
+                                   <li>
+                                       <a class="dropdown-item for-table d-flex align-items-center"
+                                          href="#"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#changeStatusModal"
+                                          data-id="<?= $item->id ?>">
+                                           <i class="fa fa-pen mx-2"></i>
+                                           <?= __("change_status_rserve") ?>
+                                           <meta name="csrf-token" content="{{ csrf_token() }}">
+                                       </a>
+                                   </li>
+                                   <li><hr class="dropdown-divider"></li>
+                                   <li>
+                                       <a class="dropdown-item for-table d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal_<?= $item->id ?>">
+                                           <i class="fa fa-page mx-2"></i>
+                                           <?= __("reserve_details") ?>
+                                       </a>
+                                   </li>
+                               </ul>
                            </div>
+                           <div class="modal fade" id="detailsModal_<?= $item->id ?>" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+                               <div class="modal-dialog modal-dialog-centered">
+                                   <div class="modal-content">
+                                       <input type="hidden" name="id" id="service_id">
+                                       <div class="modal-body2">
+                                           <h5 class="center fw-bold"><?= __("reserve_details") ?></h5>
+                                           <div class="reserveDerailsModal rounded text-start">
+                                               <div class="d-flex flex-column gap-3 p-3">
+                                                   <span><?= __("customer") ?>: <?= htmlspecialchars( $item->customerName) ." ". htmlspecialchars( $item->customerLastName) ?></span>
+                                                   <span><?= __("service") ?>: <?= htmlspecialchars($item->service) ?></span>
+                                                   <span><?= __("employee") ?>: <?= $item->employeeFirstName ?>  <?= $item->employeeLastName ?></span>
+                                                   <span><?= __("status") ?>:  <?= htmlspecialchars($item->visitStatus) ?></span>
+                                                   <span><?= __("register_time") ?>: <?= toJalali($item->visitDate)['time'] ?></span>
+                                                   <span><?= __("register_date") ?>: <span><?= toJalali($item->visitDate)['date'] ?></span></span>
+                                                   <!--                                       <span>--><?php //= __("code") ?><!--: 123456</span>-->
+                                                   <span><?= __("submitDate") ?>:  <?= toJalali($item->registerDatetime)['date'] ?></span>
+                                               </div>
+                                           </div>
+                                           <button class="btn btn-outline-primary px-5 mt-4"
+                                                   style="margin-top: 35px;"
+                                                   data-bs-dismiss="modal"><?= __("close") ?></button>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                           <div class="modal fade" id="changeStatusModal" tabindex="-1">
+                               <div class="modal-dialog modal-dialog-centered">
+                                   <div class="modal-content">
+                                       <form id="changeStatusForm" method="post" >
+                                           <?= csrf_field() ?>
+                                           <input type="hidden" name="id" id="status_id">
+                                           <div class="modal-body2">
+                                               <h5 class="center fw-bold"><?= __("change_status_rserve") ?></h5>
+                                               <div class="reserveDerailsModal rounded text-start">
+                                                   <div class="d-flex flex-column align-items-center gap-3 p-3">
+                                                       <select class="js-example-basic-single " name="status_id" id="changeStatusSelect">
+                                                           <option value="all"><?= __("all_status") ?></option>
+                                                           <?php foreach ($visitStatus as $status):?>
+                                                               <option value="<?= $status->id ?>" <?= ( $status->id == $item->visitStatusId) ? 'selected' : ''  ?>>
+                                                                   <?= (APP_LANG == 'fa') ? $status->fa_title : $status->en_title ?>
+                                                               </option>
+                                                           <?php endforeach ?>
+                                                       </select>
+                                                   </div>
+                                               </div>
+                                               <button class="btn btn-outline-primary px-5 mt-4" style="margin-top: 35px;" type="submit">
+                                                   <?= __("edit") ?>
+                                               </button>
+                                           </div>
+                                       </form>
+                                   </div>
+                               </div>
                            </div>
                      </td>
                    </tr>
-                   <?php $count ++; ?>
+                       <?php $count ++; ?>
              <?php endforeach;?>
                    </tbody>
                </table>
-               <div id="dropdown-menu-container" style="position:absolute; display:none; z-index:1;">
-                   <ul class="dropdown-menu p-0 action-menu show">
-                       <li>
-                           <a class="dropdown-item for-table d-flex align-items-center" href="#">
-                               <i class="fa fa-edit me-2"></i>
-                               تغییر وضعیت
-                           </a>
-                       </li>
-                       <li><hr class="dropdown-divider"></li>
-                       <li>
-                           <a class="dropdown-item for-table d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#detailsModal">
-                               <i class="fa fa-page me-2"></i>
-                               جزئیات رزرو
-                           </a>
-                       </li>
-                   </ul>
-               </div>
-
-               <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
-                   <div class="modal-dialog modal-dialog-centered">
-                       <div class="modal-content">
-                           <input type="hidden" name="id" id="service_id">
-                           <div class="modal-body2">
-                               <h5 class="center fw-bold"><?= __("reserve_details") ?></h5>
-                               <div class="reserveDerailsModal rounded text-start">
-                                   <div class="d-flex flex-column gap-3 p-3">
-                                       <span><?= __("customer") ?>: <?= htmlspecialchars( $item->customerName) ." ". htmlspecialchars( $item->customerLastName) ?></span>
-                                       <span><?= __("service") ?>: <?= htmlspecialchars($item->service) ?></span>
-                                       <span><?= __("employee") ?>: <?= $item->employeeFirstName ?>  <?= $item->employeeLastName ?></span>
-                                       <span><?= __("status") ?>:  <?= htmlspecialchars($item->visitStatus) ?></span>
-                                       <span><?= __("register_time") ?>: <?= toJalali($item->visitDate)['time'] ?></span>
-                                       <span><?= __("register_date") ?>: <span><?= toJalali($item->visitDate)['date'] ?></span></span>
-                                       <!--                                       <span>--><?php //= __("code") ?><!--: 123456</span>-->
-                                       <span><?= __("submitDate") ?>:  <?= toJalali($item->registerDatetime)['date'] ?></span>
-                                   </div>
-                               </div>
-                               <button class="btn btn-outline-primary px-5 mt-4"
-                                       style="margin-top: 35px;"
-                                       data-bs-dismiss="modal"><?= __("close") ?></button>
-                           </div>
-                       </div>
-                   </div>
-               </div>
-
            </div>
                 <?php if ($page > 1):?>
                     <div class="mt-3">
@@ -177,7 +206,7 @@
                     </div>
                 <?php endif;?>
             <?php else:?>
-                <div class="alert alert-danger">پیدا نشد</div>
+                <div class="alert alert-danger"><?= __("not_found") ?></div>
             <?php endif;?>
            </div>
        </div>
@@ -201,8 +230,6 @@
                                 <i class="fa-regular fa-circle-check text-primary"></i>
                                 <span><?= __("customers_happiness") ?>: 92%</span>
                             </div>
-
-
                     </div>
                     <div class="text-center" style="padding: 0 27px 27px 0 ;">
                         <button class="btn btn-primary py-2 px-4"><?= __("export_excel") ?></button>
@@ -259,62 +286,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 </div>
-<script>
-    $(document).ready(function() {
-        $('.js-example-basic-single').select2({
-            minimumResultsForSearch: Infinity,
-        });
-        $('#changeStatus').on('change', function () {
-            var getStatus = $(this).val();
-            var url = new URL(window.location.href);
-
-            if (getStatus === 'all') {
-                url.searchParams.delete('status');
-            } else {
-                url.searchParams.set('status', getStatus);
-            }
-
-            window.location.href = url.toString();
-        });
-
-    });
-    var allVisits = document.getElementById("allVisits");
-    allVisits.addEventListener("change", function () {
-        var table = this.closest("table");
-        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-        checkboxes.forEach(cb => cb.checked = allVisits.checked);
-    });
-    const menu = document.getElementById('dropdown-menu-container');
-
-    document.querySelectorAll('.activities-icon').forEach(btn => {
-        btn.addEventListener('click', function(e){
-            e.stopPropagation(); // جلوگیری از بسته شدن توسط document
-
-            const rect = btn.getBoundingClientRect();
-
-            // Toggle: اگر همان دکمه زده شد → بسته شود
-            if(menu.style.display === 'block' && menu.dataset.itemId === btn.dataset.itemId){
-                menu.style.display = 'none';
-            } else {
-                // باز کردن منو کنار دکمه
-                menu.style.top = window.scrollY + rect.bottom + 'px';
-                menu.style.left = window.scrollX + rect.left + 'px';
-                menu.style.display = 'block';
-                menu.dataset.itemId = btn.dataset.itemId;
-            }
-        });
-    });
-
-    // بستن منو وقتی روی هر جای صفحه کلیک شد
-    document.addEventListener('click', function(e){
-        if(!menu.contains(e.target)){
-            menu.style.display = 'none';
-        }
-    });
-
-
-</script>
+<script src="<?= asset('/js/operator.js') ?>"></script>
