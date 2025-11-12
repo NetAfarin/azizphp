@@ -123,7 +123,7 @@
                             <td><?= $user->phone_number ?></td>
                             <td><?= $user->user_type ?></td>
                             <td>
-                                <?php if($user->user_type == 'کارمند'): ?>
+                                <?php if($user->type_id == 1): ?>
                                     <?php if(($user->result != "")): ?>
                                         <?= $user->result ?>
                                     <?php else: ?>
@@ -135,7 +135,7 @@
 
                             </td>
                             <td>
-                                <?php if($user->user_type == 'کارمند'): ?>
+                                <?php if($user->type_id == 1): ?>
                                     <?php
                                     $services = $user->services_name ? explode(', ', $user->services_name) : [];
                                     foreach($services as $service): ?>

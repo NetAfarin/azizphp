@@ -75,26 +75,26 @@ if (!empty($publicErrors)): ?>
                     </div>
                 </div>
                 <h6 class="fw-bold mt-5"><?= __("choose_service")?></h6>
-               <div class="mt-4">
-                   <label for="service"><?= __('service') ?><span class="bullet-color"> *</span></label>
-                   <select class="js-example-basic-single form-select w-100" name="service">
-                       <?php foreach ($services as $ser): ?>
-                           <option value="<?= $ser->id ?>">
-                               <?=($lang == "fa") ? htmlspecialchars($ser->fa_title) : htmlspecialchars($ser->en_title) ?>
-                           </option>
-                       <?php endforeach; ?>
-                   </select>
-               </div>
+                <div class="mt-4">
+                    <label for="service"><?= __('service') ?><span class="bullet-color"> *</span></label>
+                    <form id="service_form" method="post">
+                        <?= csrf_field() ?>
+                        <select  class="js-example-basic-single form-select w-100" id="service_id" name="service">
+                            <?php foreach ($services as $ser): ?>
+                                <option value="<?= $ser->id ?>"><?= $ser->fa_title ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </form>
+                </div>
+
                 <h6 class="fw-bold mt-5"><?= __("choose_employee")?></h6>
                 <div class="mt-4">
                     <label for="employee"><?= __('employee') ?><span class="bullet-color"> *</span></label>
-                    <select class="js-example-basic-single form-select w-100" name="employee">
-                        <?php foreach ($employees as $employee): ?>
-                            <option value="<?= $employee->id ?>">
-                                <?= htmlspecialchars($employee->first_name) ?>
-                            </option>
-                        <?php endforeach; ?>
+                    <form id="employee_form" method="post">
+                        <?= csrf_field() ?>
+                    <select class="js-example-basic-single form-select w-100" name="employee" id="employee_select">
                     </select>
+                    </form>
                 </div>
 
                 <h6 class="fw-bold mt-5"><?= __("choose_time")?></h6>
@@ -109,7 +109,7 @@ if (!empty($publicErrors)): ?>
                         </div>
                         <div class="col-6">
                             <label for="time"><?= __('time') ?><span class="bullet-color"> *</span></label>
-                            <select class="js-example-basic-single form-select w-100" name="time">
+                            <select class="js-example-basic-single form-select w-100" name="time" >
                                 <?php foreach ($employees as $employee): ?>
                                     <option value="<?= $employee->id ?>">
                                         <?= htmlspecialchars($employee->first_name) ?>
@@ -127,12 +127,79 @@ if (!empty($publicErrors)): ?>
 </div>
 </div>
 <script>
+
+    function loadEmployees(serviceId) {
+        var formData = new FormData(document.getElementById('service_form'));
+
+        fetch(`${BASE_URL}/admin/bookings/get/${serviceId}`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                const select = document.getElementById('employee_select');
+                select.innerHTML = '';
+                data.data.forEach((item, index) => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.first_name;
+                    select.appendChild(option);
+                    if(index === 0) {
+                        option.selected = true;
+                    }
+                });
+
+                // ریفرش Select2
+                if ($(select).hasClass('js-example-basic-single')) {
+                    $(select).trigger('change.select2');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error:', error);
+                alert('خطا در بروزرسانی سرویس');
+            });
+    }
+    $('#service_id').change(function() {
+        loadEmployees(this.value);
+    });
+    $('#employee_select').change(function() {
+        var formData = new FormData(document.getElementById('employee_form'));
+
+        fetch(`${BASE_URL}/admin/bookings/getEmployeeTime/50`, {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('❌ Error:', error);
+                alert('خطا در بروزرسانی سرویس');
+            });
+    });
+
+    $(document).ready(function() {
+        const defaultServiceId = $('#service_id').val();
+        if(defaultServiceId) {
+            loadEmployees(defaultServiceId);
+        }
+    });
+
     $(document).ready(function () {
 
         $('.js-example-basic-single').select2({
             minimumResultsForSearch: Infinity,
         });
     });
+
+
 
     function switchTab(index) {
         document.getElementById('circle0').classList.remove('active');

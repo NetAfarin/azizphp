@@ -6,6 +6,7 @@ use App\Core\Validator;
 use App\Models\Booking;
 use App\Models\Duration;
 use App\Models\EmployeeService;
+use App\Models\EmployeeTable;
 use App\Models\User;
 use App\Models\Service;
 use App\Models\UserType;
@@ -76,9 +77,11 @@ class AdminBookingController extends Controller
 }
     public function createReserve()
     {
-        $search = trim($_GET['search'] ?? '');
+//        $getEmployeeService = EmployeeService::getEmployeeService((int)9)->get();
+//        vd($getEmployeeService);
+         $search = trim($_GET['search'] ?? '');
         $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
-        $services  = Service::all();
+        $services  = Service::query()->where('parent_id' , '<>', 0)->get();
         $durations = Duration::all();
         $lang = $_GET['lang'] ?? 'fa';
         $this->view('admin/booking/newBooking', [
@@ -92,6 +95,31 @@ class AdminBookingController extends Controller
             'lang' => $lang,
         ]);
     }
+    public function getServiceIdAjax($id)
+    {
+        header('Content-Type: application/json');
+
+        $getEmployeeService = EmployeeService::getEmployeeService((int)$id);
+
+        echo json_encode([
+            'success' => true,
+            'data' => $getEmployeeService
+        ]);
+        exit;
+    }
+    public function getEmployeeTimeAjax($id)
+    {
+        header('Content-Type: application/json');
+
+        $getEmployeeTime = EmployeeTable::getEmployeeTime((int)$id);
+
+        echo json_encode([
+            'success' => true,
+            'data' => $id
+        ]);
+        exit;
+    }
+
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

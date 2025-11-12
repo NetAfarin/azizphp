@@ -30,6 +30,7 @@ class User extends Model
     ];
     protected array $virtualKeys = [
         'services',
+        'type_id',
         'services_name',
         'user_type',
         'result',
@@ -131,46 +132,51 @@ class User extends Model
         }
     }
 
-    public static function getAllUserWithDetails($column): User
+    public static function getAllUserWithDetails(): User
     {
         return User::query()
             ->select([
                 (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title').' AS user_type',
                 'user_table.id',
-                'user_table.'.$column,
+                'utt.id As type_id',
+                'user_table.first_name',
+                'user_table.last_name',
                 'user_table.phone_number',
                 'abbas.result AS result',
-//                (APP_LANG === 'fa' ? 'st.fa_title' : 'st.en_title').' AS services_name',
                 's.services AS services_name'
             ])
             ->join('user_type_table as utt', 'user_table.user_type', '=', 'utt.id')
             ->join("(
-        SELECT 
-            employee_id,
-            (6 - (
-                (AVG(quality_score_id) +
-                 AVG(behavior_score) +
-                 AVG(onTime_score) +
-                 AVG(tools_score)) / 4
-            )) AS result
-        FROM surveys_table
-        GROUP BY employee_id
-    ) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
+    SELECT 
+        employee_id,
+        (6 - (
+            (AVG(quality_score_id) +
+             AVG(behavior_score) +
+             AVG(onTime_score) +
+             AVG(tools_score)) / 4
+        )) AS result
+    FROM surveys_table
+    GROUP BY employee_id
+) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
             ->join("(
-        SELECT est.user_id, GROUP_CONCAT(st.en_title SEPARATOR ', ') AS services
-        FROM employee_service_table est
-        JOIN service_table st ON st.id = est.service_id
-        GROUP BY est.user_id
-    ) AS s", 's.user_id', '=', 'user_table.id', 'LEFT')
-            ->where("user_table.deleted" , "=" , "0");
+    SELECT 
+        est.user_id, 
+        GROUP_CONCAT(IF('" . APP_LANG . "' = 'fa', st.fa_title, st.en_title) SEPARATOR ', ') AS services
+    FROM employee_service_table est
+    JOIN service_table st ON st.id = est.service_id
+    GROUP BY est.user_id
+) AS s", 's.user_id', '=', 'user_table.id', 'LEFT')
+            ->where("user_table.deleted", "=", "0");
     }
-    public static function getSomeUserWithDetails($userType  , $column): User
+    public static function getSomeUserWithDetails($userType ): User
     {
         return User::query()
             ->select([
                 'utt.title AS user_type',
+                'utt.id As type_id',
                 'user_table.id',
-                'user_table.'.$column,
+                'user_table.first_name',
+                'user_table.last_name',
                 'user_table.phone_number',
                 'abbas.result AS result',
                 's.services AS services_name'
@@ -189,7 +195,8 @@ class User extends Model
         GROUP BY employee_id
     ) AS abbas", 'abbas.employee_id', '=', 'user_table.id', 'LEFT')
             ->join("(
-        SELECT est.user_id, GROUP_CONCAT(st.en_title SEPARATOR ', ') AS services
+        SELECT est.user_id, GROUP_CONCAT(IF('" . APP_LANG . "' = 'fa', st.fa_title, st.en_title) SEPARATOR ', ') AS services
+        
         FROM employee_service_table est
         JOIN service_table st ON st.id = est.service_id
         GROUP BY est.user_id

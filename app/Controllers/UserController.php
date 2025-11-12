@@ -495,12 +495,12 @@ class UserController extends Controller
         if (isset($_GET['search']) && empty($search)) {
             header("Location: " . "?page=$page&per_page=$perPage");
         }
-        $column = $lang == "fa" ? "first_name" : 'last_name';
+        $column = $lang == "fa" ? "user_table.first_name" : 'user_table.last_name';
         $userType = UserType::all();
-        $allUsers2 = User::getAllUserWithDetails($column);
-        $customerData = User::getSomeUserWithDetails(2 , $column);
-        $employeesData = User::getSomeUserWithDetails(1 , $column);
-        $operatorsData = User::getSomeUserWithDetails(3 , $column);
+        $allUsers2 = User::getAllUserWithDetails();
+        $customerData = User::getSomeUserWithDetails(2 );
+        $employeesData = User::getSomeUserWithDetails(1 );
+        $operatorsData = User::getSomeUserWithDetails(3 );
         $sortByColumn = "user_table.first_name";
         if (!empty($sortBy)) {
             if ($sortBy == 'first_name') {
@@ -512,11 +512,11 @@ class UserController extends Controller
             }
         }
         $allUsers2->orderBy($sortByColumn, $sortOrder);
-        $allSearchData = User::getAllUserWithDetails($column);
-        $users = User::getAllUserWithDetails($column);
-        $customers = User::getSomeUserWithDetails(2 , $column);
-        $employees = User::getSomeUserWithDetails(1 , $column);
-        $operators = User::getSomeUserWithDetails(3 , $column);
+        $allSearchData = User::getAllUserWithDetails();
+        $users = User::getAllUserWithDetails();
+        $customers = User::getSomeUserWithDetails(2 );
+        $employees = User::getSomeUserWithDetails(1 );
+        $operators = User::getSomeUserWithDetails(3 );
 
         if ($search !== '') {
             $allSearchData->whereLike($column, $search);
@@ -820,10 +820,10 @@ class UserController extends Controller
             echo json_encode(['success' => false, 'message' => $errors]);
             exit;
         }
-        $user->first_name = $editFirstName;
-        $user->last_name = $editLastName;
-        $user->phone_number = $phoneNumber;
-        $user->user_type = $roles;
+        if (!empty($editFirstName)) $user->first_name = $editFirstName;
+        if (!empty($editLastName)) $user->last_name = $editLastName;
+        if (!empty($phoneNumber)) $user->phone_number = $phoneNumber;
+        if (!empty($roles)) $user->user_type = $roles;
 
         if ($user->save()) {
             echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);

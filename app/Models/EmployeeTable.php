@@ -18,4 +18,12 @@ class EmployeeTable extends Model
         'end_time',
     ];
 
+    public static function getEmployeeTime($id):EmployeeTable
+    {
+        return EmployeeTable::query()
+            ->select(['*'])
+            ->where('employee_table.user_id', '=' ,  $id);
+
+    }
+
 }

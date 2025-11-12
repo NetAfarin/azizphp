@@ -73,7 +73,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
     Route::post('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
     Route::post('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
-
+    Route::post('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceIdAjax']);
+    Route::post('/admin/bookings/getEmployeeTime/{id}', [AdminBookingController::class, 'getEmployeeTimeAjax']);
 
 });
 
