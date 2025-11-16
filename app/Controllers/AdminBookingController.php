@@ -110,12 +110,10 @@ class AdminBookingController extends Controller
     public function getEmployeeTimeAjax($id)
     {
         header('Content-Type: application/json');
-
         $getEmployeeTime = EmployeeTable::getEmployeeTime((int)$id);
-
         echo json_encode([
             'success' => true,
-            'data' => $id
+            'data' => $getEmployeeTime
         ]);
         exit;
     }

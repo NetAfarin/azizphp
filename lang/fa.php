@@ -188,7 +188,7 @@ return [
     'end_time_weekend_2' => 'پایان ساعت کاری روز $s',
     'start_time' => 'شروع ساعت کاری',
     'end_time' => 'پایان ساعت کاری',
-    'close' => 'بستن',
+    'close' => 'تعطیل',
     'add_salon_message' => 'سالن با موفقیت افزوده شد!',
     'manager_email' => 'ایمیل مدیر',
     'manager_mobile' => 'شماره موبایل مدیر',
@@ -321,4 +321,5 @@ return [
     'not_found' => 'اطلاعاتی پیدا نشد',
     'change_status_rserve' => 'تغییر وضعیت',
     'has_not' => 'ندارد',
+    'date' => 'تاریخ',
 ];

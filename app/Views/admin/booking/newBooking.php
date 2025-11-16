@@ -101,20 +101,17 @@ if (!empty($publicErrors)): ?>
                 <div class="mt-4">
                     <div class="row">
                         <div class="col-6">
-                            <label for="birthday-date"><?= __("birth_date") ?><span class="bullet-color"> *</span></label>
+                            <label for="birthday-employee_date"><?= __("date") ?><span class="bullet-color"> *</span></label>
                             <div class="input-with-icon-left">
-                                <input type="text" id="birth_date_picker" class="form-control" name="birth_date">
+                                <select class="js-example-basic-single form-select w-100" name="time"  id="employee_date">
+                                </select>
+<!--                                <input type="text" id="employee_date" class="form-control" name="employee_date">-->
                                 <i class="fa fa-calendar icon-color"></i>
                             </div>
                         </div>
                         <div class="col-6">
                             <label for="time"><?= __('time') ?><span class="bullet-color"> *</span></label>
-                            <select class="js-example-basic-single form-select w-100" name="time" >
-                                <?php foreach ($employees as $employee): ?>
-                                    <option value="<?= $employee->id ?>">
-                                        <?= htmlspecialchars($employee->first_name) ?>
-                                    </option>
-                                <?php endforeach; ?>
+                            <select class="js-example-basic-single form-select w-100" name="time"  id="employee_time">
                             </select>
                         </div>
                     </div>
@@ -152,9 +149,9 @@ if (!empty($publicErrors)): ?>
                     }
                 });
 
-                // ریفرش Select2
-                if ($(select).hasClass('js-example-basic-single')) {
-                    $(select).trigger('change.select2');
+                const firstOptionVal = $(select).find('option:first').val();
+                if(firstOptionVal) {
+                    $(select).val(firstOptionVal).trigger('change'); // trigger change واقعی
                 }
             })
             .catch(error => {
@@ -166,9 +163,11 @@ if (!empty($publicErrors)): ?>
         loadEmployees(this.value);
     });
     $('#employee_select').change(function() {
+        var selectedEmployeeId = $(this).val();
+        console.log("Selected Employee ID:", selectedEmployeeId);
         var formData = new FormData(document.getElementById('employee_form'));
-
-        fetch(`${BASE_URL}/admin/bookings/getEmployeeTime/50`, {
+        formData.append('employee_id', selectedEmployeeId);
+        fetch(`${BASE_URL}/admin/bookings/getEmployeeTime/${selectedEmployeeId}`, {
             method: 'POST',
             body: formData
         })
@@ -177,11 +176,39 @@ if (!empty($publicErrors)): ?>
                 return res.json();
             })
             .then(data => {
-                console.log(data);
+                console.log(data)
+                const select = document.getElementById('employee_time');
+                const date = document.getElementById('employee_date');
+                select.innerHTML = '';
+                date.innerHTML = '';
+                data.data.forEach((item, index) => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = `${item.start_time.substring(0,5)} الی ${item.end_time.substring(0,5)}`;
+                    select.appendChild(option);
+                    if(index === 0) {
+                        option.selected = true;
+                    }
+
+                    const option2 = document.createElement('option');
+                    option2.value = item.id;
+                    option2.textContent = `${item.start_time.substring(0,5)} الی ${item.end_time.substring(0,5)}`;
+                    date.appendChild(option2);
+                    if(index === 0) {
+                        option2.selected = true;
+                    }
+
+                });
+
+
+                // const firstOptionVal = $(select).find('option:first').val();
+                // if(firstOptionVal) {
+                //     $(select).val(firstOptionVal).trigger('change'); // trigger change واقعی
+                // }
             })
             .catch(error => {
                 console.error('❌ Error:', error);
-                alert('خطا در بروزرسانی سرویس');
+                alert('خطا در بروزرسانی سبریبرویس');
             });
     });
 

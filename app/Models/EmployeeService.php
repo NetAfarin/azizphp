@@ -31,7 +31,7 @@ class EmployeeService extends Model
     {
         $results = EmployeeService::query()
             ->select([
-                'ut.id as fa_title',
+                'ut.id',
                 'st.fa_title as fa_title',
                 'ut.first_name as first_name',
                 'ut.last_name as last_name'
@@ -39,9 +39,7 @@ class EmployeeService extends Model
             ->join('service_table as st', 'st.id', '=', 'employee_service_table.service_id')
             ->join('user_table as ut', 'ut.id', '=', 'employee_service_table.user_id')
             ->where('employee_service_table.service_id', '=', $id)
-            ->get(); // احتمالا آرایه از آبجکت‌ها برمی‌گرده
-
-        // تبدیل آرایه از آبجکت به آرایه ساده
+            ->get();
         return array_map(function($item) {
             return [
                 'id'   => $item->id,

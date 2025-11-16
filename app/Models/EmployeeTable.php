@@ -18,12 +18,19 @@ class EmployeeTable extends Model
         'end_time',
     ];
 
-    public static function getEmployeeTime($id):EmployeeTable
+    public static function getEmployeeTime($id): array
     {
-        return EmployeeTable::query()
+        $results =  EmployeeTable::query()
             ->select(['*'])
-            ->where('employee_table.user_id', '=' ,  $id);
-
+            ->where('employee_table.user_id', '=' ,  $id)
+              ->get();
+              return array_map(function($item) {
+            return [
+                'id'   => $item->id,
+                'start_time'   => $item->start_time,
+                'end_time' => $item->end_time,
+            ];
+        }, $results);
     }
 
 }

@@ -322,7 +322,6 @@ class UserController extends Controller
                 save_old_input();
             }
             if (empty($errors)) {
-
                 $user = new User([
                 'salon_id' => 1,
                 'first_name' => $firstName,
@@ -340,7 +339,7 @@ class UserController extends Controller
             ]);
             if ($user->save()) {
                 $userId = $user->id;
-                if($role == "1"){
+                if($role == "1"  && $followSalon == 1){
                     foreach ($serviceChosen as $index => $serviceId) {
                         $price = $service_prices[$index] ?? null;
                         $duration = $service_durations[$index] ?? null;
@@ -355,13 +354,11 @@ class UserController extends Controller
                         ]);
                         $employeeService->save();
                     }
-                }
-                if($role == "1" && $followSalon == 0){
+                } else{
                     foreach ($days as $index => $day) {
                         $off = $employeeHolidays[$index] ?? 0;
-                        $startTimeWork = $startTime[$index] ?? null;
-                        $endTimeWork = $endTime[$index] ?? null;
-
+                        $startTimeWork = $startTime[$index] ?? '00:00';
+                        $endTimeWork   = $endTime[$index] ?? '23:59';
                         $employeeTable = new EmployeeTable([
                             'user_id' => $userId,
                             'start_day_of_week' => $index,
@@ -374,7 +371,7 @@ class UserController extends Controller
                 }
                 clear_old_input();
                 $_SESSION['flash_success'] = __('register_success');
-                redirect("/user/add");
+                redirect("/admin/user/add");
                 exit;
             } else {
                 $errors[] = __('user_save_error');
