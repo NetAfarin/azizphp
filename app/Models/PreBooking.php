@@ -23,4 +23,32 @@ class PreBooking extends Model
         'fa_title',
         'en_title'
     ];
+    public static function getEmployeeDate($id):array
+    {
+        $results =  PreBooking::query()
+            ->select(['*'])
+            ->where('employee_booking_list_table.user_id', '=' ,  $id)
+            ->get();
+        return array_map(function($item) {
+            return [
+                'id'   => $item->id,
+                'date' => toJalali($item->date)['date'],
+                'status' => $item->status,
+            ];
+        }, $results);
+    }
+    public static function getEmployeeTime($id):array
+    {
+        $results =  PreBooking::query()
+            ->select(['*'])
+            ->where('employee_booking_list_table.id', '=' ,  $id)
+            ->get();
+        return array_map(function($item) {
+            return [
+                'id'   => $item->id,
+                'time'   => $item->time,
+                'status' => $item->status,
+            ];
+        }, $results);
+    }
 }

@@ -14,6 +14,7 @@ use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UserType;
+use Cassandra\Date;
 use DateTime;
 
 class AdminController extends Controller
@@ -375,6 +376,7 @@ class AdminController extends Controller
     {
 //        vd($employeeId);
         $user = User::find((int)$employeeId);
+        $errors = [];
 
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
@@ -382,22 +384,52 @@ class AdminController extends Controller
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        vd($_POST);
             $startDate = trim($_POST['startDate'] ?? '');
             $endDate = trim($_POST['endDate'] ?? '');
             $selectedList = $_POST['selected'] ?? [];
+            $data = [];
+            foreach ($selectedList as  $json_string) {
+                $data = json_decode($json_string, true);
+            }
+            $date = $data['date'];
+            $time = $data['time'];
+            $serviceId = $data['service_id'];
+            $employeeServiceId = $data['employeeServiceId'];
             //TODO dataye jadval ro tooye bazeye zamani baraye oon user_id va service ro agar status eshoon no action bood
             //TODO badesh miyaym dataye $selecttedList ro be jadval ezafe konam
             //TODO header e jadval ro yadet bashe
+            if (empty($errors)) {
+                $book = new PreBooking([
+                    'user_id' => $employeeId,
+                    'employee_service_id' => $employeeServiceId,
+                    'time' => $time,
+                    'date' => $date,
+                    'status' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
 
+                if ($book->save()) {
+                    vd($book);
+                    clear_old_input();
+                    $_SESSION['flash_success'] = __('register_success');
+                    redirect("/admin/user/manage");
+                    exit;
+                } else {
+                    $errors[] = __('user_save_error');
+                }
+            }
+        } else {
+            clear_old_input();
         }
 
-        $salon = Salon::find((int)$user->salon_id);
+        $salon = Salon::find(/*(int)$user->salon_id*/1);
         $holidays = Holiday::all();
-
         $userTypes = UserType::all();
-        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $employeeId)->get() ?? [];
+        $employeeServicesData = EmployeeService::query()
+            ->join('service_table AS srv','srv.id','=','employee_service_table.service_id')
+            ->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])
+            ->where('user_id', '=', $employeeId)->get() ?? [];
         $i1 = intval(date('w')) - intval($salon->start_day_of_week);
         $todayIndex = $i1<0? $i1+7:$i1;
         $today = new DateTime('today');
@@ -406,7 +438,11 @@ class AdminController extends Controller
         $prebookingList = PreBooking::query()
             ->select(["employee_booking_list_table.*,est.service_id,srv.*"])
             ->join('employee_service_table AS est','est.id','=','employee_service_id')
-            ->join('service_table AS srv','srv.id','=','est.service_id')->where('employee_booking_list_table.user_id', '=', $employeeId)->where('date', '>=', $weekStart->format('Y-m-d'))->get();
+            ->join('service_table AS srv','srv.id','=','est.service_id')
+            ->where('employee_booking_list_table.user_id', '=', $employeeId)
+            ->where('date', '>=', $weekStart->format('Y-m-d'))
+            ->get();
+
         $this->view('admin/booking/set', [
             'title' => __('edit_user'),
             'user' => $user,

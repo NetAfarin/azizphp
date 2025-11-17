@@ -1,4 +1,6 @@
-<?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
+<?php use App\Models\UserType;
+
+include BASE_PATH . '/app/Views/components/layout.php'; ?>
 <div>
     <div class="mt-5"><a href="<?= BASE_URL ?>/admin/user/add">
             <button class="btn btn-outline-primary py-2"><?= __("add_new_user") ?></button>
@@ -123,7 +125,7 @@
                             <td><?= $user->phone_number ?></td>
                             <td><?= $user->user_type ?></td>
                             <td>
-                                <?php if($user->type_id == 1): ?>
+                                <?php if($user->type_id == UserType::EMPLOYEE): ?>
                                     <?php if(($user->result != "")): ?>
                                         <?= $user->result ?>
                                     <?php else: ?>
@@ -135,7 +137,7 @@
 
                             </td>
                             <td>
-                                <?php if($user->type_id == 1): ?>
+                                <?php if($user->type_id == UserType::EMPLOYEE): ?>
                                     <?php
                                     $services = $user->services_name ? explode(', ', $user->services_name) : [];
                                     foreach($services as $service): ?>

@@ -312,4 +312,5 @@ return [
     'reserve_list' => 'Reservation List',
     'change_status_rserve' => 'Change Status',
     'has_not' => 'has\'not',
+    'not_found' => 'Information not found',
 ];

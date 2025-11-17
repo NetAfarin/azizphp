@@ -7,9 +7,11 @@ use App\Models\Booking;
 use App\Models\Duration;
 use App\Models\EmployeeService;
 use App\Models\EmployeeTable;
+use App\Models\PreBooking;
 use App\Models\User;
 use App\Models\Service;
 use App\Models\UserType;
+use App\Models\VisitTable;
 
 class AdminBookingController extends Controller
 {
@@ -77,13 +79,55 @@ class AdminBookingController extends Controller
 }
     public function createReserve()
     {
-//        $getEmployeeService = EmployeeService::getEmployeeService((int)9)->get();
-//        vd($getEmployeeService);
-         $search = trim($_GET['search'] ?? '');
+        $errors =[];
+        $search = trim($_GET['search'] ?? '');
         $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
         $services  = Service::query()->where('parent_id' , '<>', 0)->get();
         $durations = Duration::all();
         $lang = $_GET['lang'] ?? 'fa';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $mobile = $_POST['phone_number'] ?? '';
+            $checkMobile = User::query()->select(['*'])->where('phone_number', '=', $mobile)->where('deleted' , '=' , 0)->first();
+            if(!empty($checkMobile)){
+                $time = $_POST['time'] ?? 0;
+                $registrant = $_SESSION['user_id'] ?? '';
+               $getVisitDate = PreBooking::query()->where("id", "=", $time)->first();
+                $dateTime = $getVisitDate->date ." " .$getVisitDate->time;
+                $setVisit = new VisitTable([
+                    'registrant_user_id'=>$registrant,
+                    'customer_id '=>$checkMobile->id,
+                    'salon_id'=>1,
+                    'visit_datetime'=> $dateTime,
+                    'register_datetime'=>date('Y-m-d H:i:s'),
+                    'note'=>'',
+                    'deleted'=> 0
+                ]);
+                $validator = new Validator($_POST, [
+                    'first_name' => 'required|min:2|max:40',
+                    'last_name' => 'required|min:2|max:40',
+                ]);
+                if ($validator->fails()) {
+                    $errors = array_merge($errors, $validator->errors());
+                    save_old_input();
+                }
+                if (strlen($mobile) !== 11 || !ctype_digit($mobile)) {
+                    $errors[] = __('phone_invalid');
+                }
+                if (empty($errors)) {
+                    if ($setVisit->save()) {
+                        clear_old_input();
+                        $_SESSION['flash_success'] = __('add_category_message');
+                        redirect("/admin/bookings/create");
+                        exit;
+                    } else {
+                        $errors[] = __('user_save_error');
+                    }
+                }
+            }else{
+                $errors[] = __('not_found');
+            }
+
+        }
         $this->view('admin/booking/newBooking', [
             'title' => __('new_booking'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
@@ -93,31 +137,46 @@ class AdminBookingController extends Controller
             'durations' => $durations,
             'search' => $search,
             'lang' => $lang,
+            'errors' => $errors,
         ]);
     }
-    public function getServiceIdAjax($id)
+    public function searchUser($phone)
     {
         header('Content-Type: application/json');
-
-        $getEmployeeService = EmployeeService::getEmployeeService((int)$id);
-
+        $getUserByPhone = User::getUserDataByPhone($phone);
         echo json_encode([
             'success' => true,
-            'data' => $getEmployeeService
+            'data' => $getUserByPhone
         ]);
-        exit;
     }
-    public function getEmployeeTimeAjax($id)
+    public function getServiceId($id)
     {
         header('Content-Type: application/json');
-        $getEmployeeTime = EmployeeTable::getEmployeeTime((int)$id);
+        $getEmployeeService = EmployeeService::getEmployeeService((int)$id);
+            echo json_encode([
+                'success' => true,
+               'data' => $getEmployeeService
+            ]);
+
+    }
+    public function getEmployeeTime($id)
+    {
+        header('Content-Type: application/json');
+        $getEmployeeTime = PreBooking::getEmployeeTime((int)$id);
         echo json_encode([
             'success' => true,
             'data' => $getEmployeeTime
         ]);
-        exit;
     }
-
+    public function getEmployeeDate($id)
+    {
+        header('Content-Type: application/json');
+        $getEmployeeTime = PreBooking::getEmployeeDate((int)$id);
+        echo json_encode([
+            'success' => true,
+            'data' => $getEmployeeTime
+        ]);
+    }
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

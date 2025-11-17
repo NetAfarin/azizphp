@@ -202,4 +202,16 @@ class User extends Model
         GROUP BY est.user_id
     ) AS s", 's.user_id', '=', 'user_table.id', 'LEFT')->where('user_table.user_type', '=', $userType)->where("user_table.deleted" , "=" , "0");
     }
+    public static function getUserDataByPhone($phone): array
+    {
+        $results = User::query()->where("phone_number", "=", $phone)->where("deleted", "=", "0")->get();
+        return array_map(function($item) {
+            return [
+                'id'   => $item->id,
+                'first_name'   => $item->first_name,
+                'last_name'   => $item->last_name,
+                'phone_number'   => $item->phone_number,
+            ];
+        }, $results);
+    }
 }

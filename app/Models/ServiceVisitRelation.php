@@ -30,7 +30,6 @@ class ServiceVisitRelation extends Model
         'visitDate',
         'registerDatetime',
         'visitDatetime',
-        'id',
     ];
 
     public function visit()

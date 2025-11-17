@@ -20,8 +20,6 @@ if (!empty($publicErrors)): ?>
     </div>
 <?php endif; ?>
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
-
-
 <div class="col-12 mt-5 bg-white shadow-md rounded p-3">
     <div class="d-flex justify-content-around align-items-center">
         <div class="tab-item text-center d-flex" onclick="switchTab(0)">
@@ -33,33 +31,24 @@ if (!empty($publicErrors)): ?>
             <div class="px-2">اولویت زمان</div>
         </div>
     </div>
-
 </div>
     <div class="col-12 mt-5 bg-white shadow-md rounded p-4">
         <div class="tab-content ">
             <div id="content0">
                 <h6 class="fw-bold"><?= __("customer_information")?></h6>
-                <form method="get" class="d-flex align-items-center gap-2 mb-2">
-<!--                    <input type="hidden" name="filter" value="--><?php //= htmlspecialchars($filter) ?><!--">-->
+                <form method="post" >
+                    <?= csrf_field() ?>
                     <div class="input-group mt-5">
                         <input type="text" class="form-control border-end-0" name="search" id="search"
-                               value="<?= htmlspecialchars($search) ?>" placeholder="<?= __("search_customer_mobile") ?>">
-                        <?php if(empty($search)):?>
-                            <button class="btn btn-search border-start-0" type="submit" id="btn-search">
+                               value="<?= htmlspecialchars($search) ?>" placeholder="<?= __("search_customer_mobile") ?>" >
+                            <button class="btn btn-search border-start-0" type="button" id="btn-search" >
                                 <i class='fas fa-search'></i>
                             </button>
-                        <?php else:?>
-                            <?php if (!empty($search)): ?><button class="btn btn-search border-start-0" type="button" id="btn-delete">
-                                <a href="?page=1&per_page=<?= $per_page ?>" class="center text-decoration-none"><i class='fas fa-xmark text-primary'></i></a>
-                                </button>
-                            <?php endif;?>
-                        <?php endif; ?>
                     </div>
-                </form>
-                <div class="mt-5">
+                    <div class="mt-5">
                     <label for="phone_number"><?= __('phone_number') ?><span class="bullet-color"> *</span></label>
                     <input type="text" class="form-control" name="phone_number" id="phone_number"
-                           value="<?= old('phone_number') ?>">
+                           value="">
                     <?php if (!empty($errors['phone_number'])): ?>
                         <div class="text-danger small"><?= htmlspecialchars($errors['phone_number'][0]) ?></div>
                     <?php endif; ?>
@@ -68,44 +57,41 @@ if (!empty($publicErrors)): ?>
                     <div class="col-6">
                         <label for="first_name"><?= __('first_name') ?><span class="bullet-color"> *</span></label>
                         <input type="text" class="form-control" name="first_name" id="first_name">
+                        <?php if (!empty($errors['first_name'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
+                        <?php endif; ?>
                     </div>
                     <div class="col-6">
                         <label for="last_name"><?= __('last_name') ?><span class="bullet-color"> *</span></label>
                         <input type="text" class="form-control" name="last_name" id="last_name">
+                        <?php if (!empty($errors['last_name'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['last_name'][0]) ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <h6 class="fw-bold mt-5"><?= __("choose_service")?></h6>
                 <div class="mt-4">
                     <label for="service"><?= __('service') ?><span class="bullet-color"> *</span></label>
-                    <form id="service_form" method="post">
-                        <?= csrf_field() ?>
                         <select  class="js-example-basic-single form-select w-100" id="service_id" name="service">
                             <?php foreach ($services as $ser): ?>
                                 <option value="<?= $ser->id ?>"><?= $ser->fa_title ?></option>
                             <?php endforeach; ?>
                         </select>
-                    </form>
                 </div>
-
                 <h6 class="fw-bold mt-5"><?= __("choose_employee")?></h6>
                 <div class="mt-4">
                     <label for="employee"><?= __('employee') ?><span class="bullet-color"> *</span></label>
-                    <form id="employee_form" method="post">
-                        <?= csrf_field() ?>
                     <select class="js-example-basic-single form-select w-100" name="employee" id="employee_select">
                     </select>
-                    </form>
                 </div>
-
                 <h6 class="fw-bold mt-5"><?= __("choose_time")?></h6>
                 <div class="mt-4">
                     <div class="row">
                         <div class="col-6">
                             <label for="birthday-employee_date"><?= __("date") ?><span class="bullet-color"> *</span></label>
                             <div class="input-with-icon-left">
-                                <select class="js-example-basic-single form-select w-100" name="time"  id="employee_date">
+                                <select class="js-example-basic-single form-select w-100" name="date"  id="employee_date">
                                 </select>
-<!--                                <input type="text" id="employee_date" class="form-control" name="employee_date">-->
                                 <i class="fa fa-calendar icon-color"></i>
                             </div>
                         </div>
@@ -116,118 +102,178 @@ if (!empty($publicErrors)): ?>
                         </div>
                     </div>
                 </div>
+                <button class="btn btn-primary mt-4" type="submit" id="submitButton">نایید</button>
+                </form>
             </div>
             <div id="content1" style="display:none;">این محتوای اولویت زمان است</div>
         </div>
     </div>
-
+<div class="modal fade borderless-modal" id="reserveModal" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body custom-modal-body mt-4 mb-4">
+                <h4 class="fw-bold">این ساعت قبلا رزرو شده است</h4>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 </div>
 <script>
-
-    function loadEmployees(serviceId) {
-        var formData = new FormData(document.getElementById('service_form'));
-
-        fetch(`${BASE_URL}/admin/bookings/get/${serviceId}`, {
-            method: 'POST',
-            body: formData
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                const select = document.getElementById('employee_select');
-                select.innerHTML = '';
-                data.data.forEach((item, index) => {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.textContent = item.first_name;
-                    select.appendChild(option);
-                    if(index === 0) {
-                        option.selected = true;
-                    }
-                });
-
-                const firstOptionVal = $(select).find('option:first').val();
-                if(firstOptionVal) {
-                    $(select).val(firstOptionVal).trigger('change'); // trigger change واقعی
+    $(document).ready(function (){
+        $('#service_id').change(function() {
+            var serviceId = $(this).val();
+            if (!serviceId) {
+                console.log('سرویس انتخاب نشده');
+                return;
+            }
+            var url = `${BASE_URL}/admin/bookings/get/` + serviceId;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    $('#employee_time, #employee_date').empty();
+                    $('#employee_select').empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.first_name,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+                },
+                error: function(xhr, status, error) {
+                    console.log('❌ خطا در دریافت پاسخ:');
+                    console.log('   وضعیت:', status);
+                    console.log('   خطا:', error);
+                    console.log('   پاسخ سرور:', xhr.responseText);
+                    console.log('   کد وضعیت:', xhr.status);
                 }
-            })
-            .catch(error => {
-                console.error('❌ Error:', error);
-                alert('خطا در بروزرسانی سرویس');
             });
-    }
-    $('#service_id').change(function() {
-        loadEmployees(this.value);
-    });
-    $('#employee_select').change(function() {
-        var selectedEmployeeId = $(this).val();
-        console.log("Selected Employee ID:", selectedEmployeeId);
-        var formData = new FormData(document.getElementById('employee_form'));
-        formData.append('employee_id', selectedEmployeeId);
-        fetch(`${BASE_URL}/admin/bookings/getEmployeeTime/${selectedEmployeeId}`, {
-            method: 'POST',
-            body: formData
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return res.json();
-            })
-            .then(data => {
-                console.log(data)
-                const select = document.getElementById('employee_time');
-                const date = document.getElementById('employee_date');
-                select.innerHTML = '';
-                date.innerHTML = '';
-                data.data.forEach((item, index) => {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.textContent = `${item.start_time.substring(0,5)} الی ${item.end_time.substring(0,5)}`;
-                    select.appendChild(option);
-                    if(index === 0) {
-                        option.selected = true;
-                    }
+        });
+        $('#employee_select').change(function (){
+            var employeeId = $(this).val();
+            var url = `${BASE_URL}/admin/bookings/getEmployeeDate/` + employeeId;
 
-                    const option2 = document.createElement('option');
-                    option2.value = item.id;
-                    option2.textContent = `${item.start_time.substring(0,5)} الی ${item.end_time.substring(0,5)}`;
-                    date.appendChild(option2);
-                    if(index === 0) {
-                        option2.selected = true;
-                    }
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    $('#employee_date').empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.date,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+                },
 
-                });
-
-
-                // const firstOptionVal = $(select).find('option:first').val();
-                // if(firstOptionVal) {
-                //     $(select).val(firstOptionVal).trigger('change'); // trigger change واقعی
-                // }
-            })
-            .catch(error => {
-                console.error('❌ Error:', error);
-                alert('خطا در بروزرسانی سبریبرویس');
+                error: function(xhr, status, error) {
+                    console.log('❌ خطا در دریافت پاسخ:');
+                    console.log('   وضعیت:', status);
+                    console.log('   خطا:', error);
+                    console.log('   پاسخ سرور:', xhr.responseText);
+                    console.log('   کد وضعیت:', xhr.status);
+                }
             });
-    });
+        });
 
-    $(document).ready(function() {
-        const defaultServiceId = $('#service_id').val();
-        if(defaultServiceId) {
-            loadEmployees(defaultServiceId);
-        }
-    });
+        $('#employee_date').change(function (){
+            var dateId = $(this).val();
+            console.log(dateId)
+            var url = `${BASE_URL}/admin/bookings/getEmployeeTime/` + dateId;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    const dateSelect = $('#employee_time');
+                    dateSelect.empty();
+                    (response.data || []).forEach((item, index) => {
+                        const option2 = $('<option>', {
+                            value: item.id,
+                            text: item.time,
+                            'data-status': item.status
 
-    $(document).ready(function () {
+                        });
+                        if(index === 0) {
+                            option2.prop('selected', true);
+                        }
+                        dateSelect.append(option2);
+                    })
+                },
+                error: function(xhr, status, error) {
+                    console.log('❌ خطا در دریافت پاسخ:');
+                    console.log('   وضعیت:', status);
+                    console.log('   خطا:', error);
+                    console.log('   پاسخ سرور:', xhr.responseText);
+                    console.log('   کد وضعیت:', xhr.status);
+                }
+            });
 
+        });
         $('.js-example-basic-single').select2({
             minimumResultsForSearch: Infinity,
         });
+        $('#service_id').trigger('change');
+        $('#btn-search').on('click', function() {
+            var $icon = $(this).find('i');
+            var mobile = $('#search').val();
+
+            if ($icon.hasClass('fa-')) {
+                $('#search').val('');
+                $('#phone_number').val('');
+                $('#first_name').val('');
+                $('#last_name').val('');
+                $icon.removeClass('fa-xmark').addClass('fa-search');
+                return;
+            }
+
+            if (!mobile) {
+                clearUserFields();
+                return;
+            }
+            $icon.removeClass('fa-search').addClass('fa-xmark');
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/searchUser/${mobile}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    if (data.data.length > 0) {
+                        $('#first_name').val(data.data[0].first_name);
+                        $('#last_name').val(data.data[0].last_name);
+                        $('#phone_number').val(mobile);
+                    } else {
+                        clearUserFields();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('❌ Error:', error);
+                }
+            });
+        });
+        $('#submitButton').click(function(e) {
+            e.preventDefault();
+            var selectedOption = $('#employee_time option:selected');
+            var status = selectedOption.data('status');
+            if (status == 1) {
+                $('#reserveModal').modal('show');
+            }
+        });
+
+
     });
-
-
-
+    function clearUserFields() {
+        document.getElementById('phone_number').value = '';
+        document.getElementById('first_name').value = '';
+        document.getElementById('last_name').value = '';
+    }
     function switchTab(index) {
         document.getElementById('circle0').classList.remove('active');
         document.getElementById('circle1').classList.remove('active');

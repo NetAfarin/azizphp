@@ -659,22 +659,3 @@ function jalali_to_gregorian($jy, $jm, $jd, $mod = '')
     }
     return ($mod === '') ? array($gy, $gm, $gd) : $gy . $mod . $gm . $mod . $gd;
 }
-
-
-function toJalali($datetime , $separator = "/") {
-    if (!$datetime instanceof DateTime) {
-        $datetime = new DateTime($datetime);
-    }
-    $gregorianDate = $datetime->format('Y-m-d');
-    $time = $datetime->format('H:i');
-    list($gy, $gm, $gd) = explode('-', $gregorianDate);
-    $jalaliDateArray = gregorian_to_jalali($gy, $gm, $gd);
-    $year  = str_pad($jalaliDateArray[0], 4, '0', STR_PAD_LEFT);
-    $month = str_pad($jalaliDateArray[1], 2, '0', STR_PAD_LEFT);
-    $day   = str_pad($jalaliDateArray[2], 2, '0', STR_PAD_LEFT);
-    $jalaliDate = "{$year}$separator{$month}$separator{$day}";
-    return [
-        'date' => $jalaliDate,
-        'time' => $time
-    ];
-}

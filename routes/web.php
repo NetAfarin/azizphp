@@ -73,13 +73,16 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
     Route::post('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
     Route::post('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
-    Route::post('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceIdAjax']);
-    Route::post('/admin/bookings/getEmployeeTime/{id}', [AdminBookingController::class, 'getEmployeeTimeAjax']);
+    Route::post('/admin/bookings/create', [AdminBookingController::class, 'createReserve']);
 
 });
 
 // Admin GET routes
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class])->group(function () {
+    Route::get('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceId']);
+    Route::get('/admin/bookings/searchUser/{phone}', [AdminBookingController::class, 'searchUser']);
+    Route::get('/admin/bookings/getEmployeeTime/{id}', [AdminBookingController::class, 'getEmployeeTime']);
+    Route::get('/admin/bookings/getEmployeeDate/{id}', [AdminBookingController::class, 'getEmployeeDate']);
     Route::get('/admin/panel', [AdminController::class, 'panel']);
     Route::get('/admin/users', [AdminController::class, 'usersList']);
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser']);
