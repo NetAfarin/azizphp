@@ -1088,13 +1088,18 @@ html[lang="en"] .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
     align-items: center;
 }
 
-.input-with-icon-left i {
-    position: absolute;
+/*.input-with-icon-left i {*/
+/*    position: absolute;*/
+/*    left: 15px;*/
+/*    color: #000000;*/
+/*    pointer-events: none;*/
+/*}*/
+.html[lang="en"] .input-with-icon-left i{
+     position: absolute;
     left: 15px;
     color: #000000;
     pointer-events: none;
 }
-
 .input-with-icon-left input {
     padding-left: 40px;
 }

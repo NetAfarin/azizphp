@@ -10,7 +10,7 @@ class VisitTable extends Model
     protected array $fillable = [
         'id',
         'registrant_user_id',
-        'customer_id ',
+        'customer_id',
         'salon_id',
         'visit_datetime',
         'register_datetime',

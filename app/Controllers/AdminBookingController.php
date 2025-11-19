@@ -5,6 +5,7 @@ use App\Core\Controller;
 use App\Core\Validator;
 use App\Models\Booking;
 use App\Models\Duration;
+use App\Models\EmployeeBookingListTable;
 use App\Models\EmployeeService;
 use App\Models\EmployeeTable;
 use App\Models\PreBooking;
@@ -80,27 +81,74 @@ class AdminBookingController extends Controller
     public function createReserve()
     {
         $errors =[];
-        $search = trim($_GET['search'] ?? '');
         $employees = User::query()->where('user_type', '=', UserType::EMPLOYEE)->get();
         $services  = Service::query()->where('parent_id' , '<>', 0)->get();
         $durations = Duration::all();
         $lang = $_GET['lang'] ?? 'fa';
+        $newPhonNumber= '';
+        $newFirstName= '';
+        $newLastName= '';
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mobile = $_POST['phone_number'] ?? '';
-            $checkMobile = User::query()->select(['*'])->where('phone_number', '=', $mobile)->where('deleted' , '=' , 0)->first();
+            $searchPhoneNumber = $_POST['phone_number_modal'] ?? '';
+            $checkMobile = User::query()->select(['*'])->where('phone_number', '=', $mobile)->where('deleted', '=', 0)->first();
+            if (!empty($searchPhoneNumber)){
+                $firstName = $_POST['first_name_modal'] ?? '';
+                $lastName = $_POST['last_name_modal'] ?? '';
+                $phoneNumber = $_POST['phone_number_modal'] ?? '';
+                $user = new User([
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'birth_date' => '',
+                    'phone_number' => $phoneNumber,
+                    'register_datetime' => date('Y-m-d H:i:s'),
+                    'password' => '123456',
+                    'salon_id' => 1,
+                    'postal_address' => '',
+                    'national_code' => '',
+                    'has_launch_time' => '',
+                    'launch_time' => '',
+                    'has_dinner_time' => '',
+                    'dinner_time' => '',
+                    'follow_shift_from' => '',
+                    'user_type' => UserType::CUSTOMER,
+                    'is_active' => 1,
+                    'deleted' => 0
+                ]);
+                $validator = new Validator($_POST, [
+                    'first_name_modal' => 'required|min:2|max:40',
+                    'last_name_modal' => 'required|min:2|max:40',
+                ]);
+                if ($validator->fails()) {
+                    $errors = array_merge($errors, $validator->errors());
+                    save_old_input();
+                }
+                if (empty($errors)) {
+                    if ($user->save()) {
+                        clear_old_input();
+                        $newPhonNumber = $phoneNumber;
+                        $newFirstName  = $firstName;
+                        $newLastName   = $lastName;
+                    } else {
+                        $errors[] = __('user_save_error');
+                    }
+                }
+                else{
+                $errors[] = __('not_found');
+            }}
             if(!empty($checkMobile)){
                 $time = $_POST['time'] ?? 0;
                 $registrant = $_SESSION['user_id'] ?? '';
-               $getVisitDate = PreBooking::query()->where("id", "=", $time)->first();
-                $dateTime = $getVisitDate->date ." " .$getVisitDate->time;
+                $getVisitDate = PreBooking::query()->where("id", "=", $time)->first();
+                $dateTime = $getVisitDate->date . " " . $getVisitDate->time;
                 $setVisit = new VisitTable([
-                    'registrant_user_id'=>$registrant,
-                    'customer_id '=>$checkMobile->id,
-                    'salon_id'=>1,
-                    'visit_datetime'=> $dateTime,
-                    'register_datetime'=>date('Y-m-d H:i:s'),
-                    'note'=>'',
-                    'deleted'=> 0
+                    'registrant_user_id' => $registrant,
+                    'customer_id' => $checkMobile->id,
+                    'salon_id' => 1,
+                    'visit_datetime' => $dateTime,
+                    'register_datetime' => date('Y-m-d H:i:s'),
+                    'note' => '',
+                    'deleted' => 0
                 ]);
                 $validator = new Validator($_POST, [
                     'first_name' => 'required|min:2|max:40',
@@ -113,8 +161,11 @@ class AdminBookingController extends Controller
                 if (strlen($mobile) !== 11 || !ctype_digit($mobile)) {
                     $errors[] = __('phone_invalid');
                 }
+
                 if (empty($errors)) {
                     if ($setVisit->save()) {
+                        $getVisitDate->status = 1;
+                        $getVisitDate->save();
                         clear_old_input();
                         $_SESSION['flash_success'] = __('add_category_message');
                         redirect("/admin/bookings/create");
@@ -125,8 +176,97 @@ class AdminBookingController extends Controller
                 }
             }else{
                 $errors[] = __('not_found');
+
             }
 
+
+//            if (!empty($mobile)) {
+//                $checkMobile = User::query()->select(['*'])->where('phone_number', '=', $mobile)->where('deleted', '=', 0)->first();
+//                if (!empty($checkMobile)) {
+//                    $time = $_POST['time'] ?? 0;
+//                    $registrant = $_SESSION['user_id'] ?? '';
+//                    $getVisitDate = PreBooking::query()->where("id", "=", $time)->first();
+//                    $dateTime = $getVisitDate->date . " " . $getVisitDate->time;
+//                    $setVisit = new VisitTable([
+//                        'registrant_user_id' => $registrant,
+//                        'customer_id ' => $checkMobile->id,
+//                        'salon_id' => 1,
+//                        'visit_datetime' => $dateTime,
+//                        'register_datetime' => date('Y-m-d H:i:s'),
+//                        'note' => '',
+//                        'deleted' => 0
+//                    ]);
+//                    $validator = new Validator($_POST, [
+//                        'first_name' => 'required|min:2|max:40',
+//                        'last_name' => 'required|min:2|max:40',
+//                    ]);
+//                    if ($validator->fails()) {
+//                        $errors = array_merge($errors, $validator->errors());
+//                        save_old_input();
+//                    }
+//                    if (strlen($mobile) !== 11 || !ctype_digit($mobile)) {
+//                        $errors[] = __('phone_invalid');
+//                    }
+//                    if (empty($errors)) {
+//                        if ($setVisit->save()) {
+//                            clear_old_input();
+//                            $_SESSION['flash_success'] = __('add_category_message');
+//                            redirect("/admin/bookings/create");
+//                            exit;
+//                        } else {
+//                            $errors[] = __('user_save_error');
+//                        }
+//                    }
+//                } else {
+//                    $errors[] = __('not_found');
+//                }
+//            }
+//            else {
+//                $firstName = $_POST['first_name_modal'] ?? '';
+//                $lastName = $_POST['last_name_modal'] ?? '';
+//                $phoneNumber = $_POST['phone_number_modal'] ?? '';
+//                $user = new User([
+//                    'first_name' => $firstName,
+//                    'last_name' => $lastName,
+//                    'birth_date' => '',
+//                    'phone_number' => $phoneNumber,
+//                    'register_datetime' => date('Y-m-d H:i:s'),
+//                    'password' => '123456',
+//                    'salon_id' => 1,
+//                    'postal_address' => '',
+//                    'national_code' => '',
+//                    'has_launch_time' => '',
+//                    'launch_time' => '',
+//                    'has_dinner_time' => '',
+//                    'dinner_time' => '',
+//                    'follow_shift_from' => '',
+//                    'user_type' => UserType::CUSTOMER,
+//                    'is_active' => 1,
+//                    'deleted' => 0
+//                ]);
+//                $validator = new Validator($_POST, [
+//                    'first_name_modal' => 'required|min:2|max:40',
+//                    'last_name_modal' => 'required|min:2|max:40',
+//                ]);
+//                if ($validator->fails()) {
+//                    $errors = array_merge($errors, $validator->errors());
+//                    save_old_input();
+//
+//                }
+//                if (empty($errors)) {
+//                    if ($user->save()) {
+//                        clear_old_input();
+//                        $newPhonNumber = $phoneNumber;
+//                        $newFirstName  = $firstName;
+//                        $newLastName   = $lastName;
+//                    } else {
+//                        $errors[] = __('user_save_error');
+//                    }
+//
+//                }
+//
+//
+//            }
         }
         $this->view('admin/booking/newBooking', [
             'title' => __('new_booking'),
@@ -135,9 +275,12 @@ class AdminBookingController extends Controller
             'employees' => $employees,
             'services' => $services,
             'durations' => $durations,
-            'search' => $search,
             'lang' => $lang,
+            'newPhonNumber' => $newPhonNumber,
+            'newFirstName' => $newFirstName,
+            'newLastName' => $newLastName,
             'errors' => $errors,
+
         ]);
     }
     public function searchUser($phone)
@@ -422,5 +565,12 @@ class AdminBookingController extends Controller
             echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
             exit;
         }
+    }
+    public function addUser()
+    {
+        $phone_number = $_POST['phone_number'];
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        var_dump($phone_number);
     }
 }

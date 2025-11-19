@@ -313,4 +313,7 @@ return [
     'change_status_rserve' => 'Change Status',
     'has_not' => 'has\'not',
     'not_found' => 'Information not found',
+    'date_time' => 'Date / Time',
+    'clean' => 'Clean',
+    'final_reserve' => 'Final Reservation',
 ];

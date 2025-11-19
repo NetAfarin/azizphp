@@ -322,4 +322,7 @@ return [
     'change_status_rserve' => 'تغییر وضعیت',
     'has_not' => 'ندارد',
     'date' => 'تاریخ',
+    'date_time' => 'تاریخ / ساعت',
+    'clean' => 'پاک کردن',
+    'final_reserve' => 'رزرو نهایی',
 ];
