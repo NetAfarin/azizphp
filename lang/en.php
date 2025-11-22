@@ -316,4 +316,9 @@ return [
     'date_time' => 'Date / Time',
     'clean' => 'Clean',
     'final_reserve' => 'Final Reservation',
+    'date' => 'Date',
+    'employee_priority' => 'Employee Priority',
+    'time_priority' => 'Time Priority',
+    'booking_created' => 'Booking Created Successfully',
+
 ];

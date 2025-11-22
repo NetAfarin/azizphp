@@ -4923,7 +4923,7 @@ S2.define('select2/i18n/en',[],function () {
       return message;
     },
     noResults: function () {
-      return 'No results found';
+      return 'اطلاعاتی یافت نشد';
     },
     searching: function () {
       return 'Searching…';

@@ -204,7 +204,7 @@ class User extends Model
     }
     public static function getUserDataByPhone($phone): array
     {
-        $results = User::query()->where("phone_number", "=", $phone)->where("deleted", "=", "0")->get();
+        $results = User::query()->where("phone_number", "=", $phone)->where("user_type" ,"=" ,UserType::CUSTOMER)->get();
         return array_map(function($item) {
             return [
                 'id'   => $item->id,

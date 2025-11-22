@@ -321,6 +321,8 @@ class UserController extends Controller
                 $errors[] = __('phone_taken');
                 save_old_input();
             }
+            //TODO complete this section
+            vd(shamsi_to_miladi($birth_date));
             if (empty($errors)) {
                 $user = new User([
                 'salon_id' => 1,
@@ -423,14 +425,12 @@ class UserController extends Controller
         if ($getStatus != 0) {
             $query = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus);
             if (!empty($search)) {
-                $query = $query->whereLike("ut.first_name", $search);
+                $query = $query->whereLike("c.first_name", $search);
             }
         } else {
             $query = ServiceVisitRelation::visitsDetails();
-//            vd($query->paginate($page, $perPage));
-
             if (!empty($search)) {
-                $query = $query->whereLike("user_table.first_name", $search);
+                $query = $query->whereLike("c.first_name", $search);
             }
         }
         $pagination = $query->paginate($page, $perPage);

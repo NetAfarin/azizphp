@@ -1094,15 +1094,21 @@ html[lang="en"] .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
 /*    color: #000000;*/
 /*    pointer-events: none;*/
 /*}*/
-.html[lang="en"] .input-with-icon-left i{
+html[lang="en"] .input-with-icon-left i{
      position: absolute;
+    right: 15px;
+    color: #000000;
+    pointer-events: none;
+}
+html[lang="fa"] .input-with-icon-left i{
+    position: absolute;
     left: 15px;
     color: #000000;
     pointer-events: none;
 }
-.input-with-icon-left input {
-    padding-left: 40px;
-}
+/*.input-with-icon-left input {*/
+/*    padding-left: 40px;*/
+/*}*/
 
 hr {
     margin: 1rem 0;

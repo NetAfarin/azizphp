@@ -28,20 +28,22 @@ class PreBooking extends Model
         $results =  PreBooking::query()
             ->select(['*'])
             ->where('employee_booking_list_table.user_id', '=' ,  $id)
+            ->orderBy('date', 'ASC')
+            ->groupBy('date')
             ->get();
         return array_map(function($item) {
             return [
-                'id'   => $item->id,
+                'id'   => $item->date,
                 'date' => toJalali($item->date)['date'],
                 'status' => $item->status,
             ];
         }, $results);
     }
-    public static function getEmployeeTime($id):array
+    public static function getEmployeeTime($date):array
     {
         $results =  PreBooking::query()
             ->select(['*'])
-            ->where('employee_booking_list_table.id', '=' ,  $id)
+            ->where('employee_booking_list_table.date', '=' ,  $date)
             ->get();
         return array_map(function($item) {
             return [

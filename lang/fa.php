@@ -189,6 +189,7 @@ return [
     'start_time' => 'شروع ساعت کاری',
     'end_time' => 'پایان ساعت کاری',
     'close' => 'تعطیل',
+    'close2' => 'بستن',
     'add_salon_message' => 'سالن با موفقیت افزوده شد!',
     'manager_email' => 'ایمیل مدیر',
     'manager_mobile' => 'شماره موبایل مدیر',
@@ -325,4 +326,8 @@ return [
     'date_time' => 'تاریخ / ساعت',
     'clean' => 'پاک کردن',
     'final_reserve' => 'رزرو نهایی',
+    'employee_priority' => 'اولویت کارمندان',
+    'time_priority' => 'اولویت زمان',
+    'booking_created' => 'رزرو با موفقیت انجام شد.',
+
 ];

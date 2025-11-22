@@ -66,37 +66,43 @@
 }
 });
 });
+        const finalReserveModal = document.getElementById('finalReserve');
 
+        if (finalReserveModal && finalReserveModal.dataset.showModal === 'true') {
+            $('#finalReserve').modal('show');
+        }
     $('#employee_date').change(function (){
     var dateId = $(this).val();
-    console.log(dateId)
     var url = `${BASE_URL}/admin/bookings/getEmployeeTime/` + dateId;
     $.ajax({
     url: url,
     type: 'GET',
     dataType: 'json',
     success: function(response) {
+        console.log(response.data)
     const dateSelect = $('#employee_time');
     dateSelect.empty();
     (response.data || []).forEach((item, index) => {
+        const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
+
     const option2 = $('<option>', {
     value: item.id,
-    text: item.time,
+    text: optionText ,
     'data-status': item.status
 
 });
-    if(index === 0) {
-    option2.prop('selected', true);
-}
+        if (item.status == 1) {
+            option2.prop('disabled', true);
+        }
     dateSelect.append(option2);
 })
         let time = $("#employee_time option:selected").text();
         let date = $("#employee_date option:selected").text();
-        $("#getEmployeeDate").text(
-            date + ((lang === "en") ? " . Hour " : " . ساعت ") + time.match(/\d{1,2}:\d{2}/)
-        );
-       console.log("time: " , time)
-       console.log("date: " , date)
+        if((time !="") && date !=""){
+            $("#getEmployeeDate").text(
+                date+ ((lang === "en") ? " / Hour " : " / ساعت ") + time.match(/\d{1,2}:\d{2}/)
+            );
+        }
     },
     error: function(xhr, status, error) {
     console.log('❌ خطا در دریافت پاسخ:');
@@ -123,10 +129,10 @@
             return;
         }
     if ($icon.hasClass('fa-xmark')) {
-    $('#search').val('');
-    $('#phone_number').val('');
-    $('#first_name').val('');
-    $('#last_name').val('');
+    $('#search').val('').prop('disabled', false);
+    $('#phone_number').val('').prop('disabled', false);
+    $('#first_name').val('').prop('disabled', false);
+    $('#last_name').val('').prop('disabled', false);
     $icon.removeClass('fa-xmark').addClass('fa-search');
     return;
 }
@@ -136,15 +142,16 @@
     type: 'GET',
     dataType: 'json',
     success: function(data) {
-    console.log(data);
+        console.log(data)
     if (data.data.length > 0) {
-    $('#first_name').val(data.data[0].first_name);
-    $('#last_name').val(data.data[0].last_name);
-    $('#phone_number').val(mobile);
-} else {
+    $('#first_name').val(data.data[0].first_name).prop('disabled', true);
+    $('#last_name').val(data.data[0].last_name).prop('disabled', true);
+        $('#fullName').text(data.data[0].first_name + " " + data.data[0].last_name);
+    $('#phone_number').val(mobile).prop('disabled', true);
+    } else {
         $('#notFoundModal').data('mobile', mobile);
         $('#notFoundModal').modal('show');
-}
+    }
 },
     error: function(xhr, status, error) {
     console.error('❌ Error:', error);
@@ -152,13 +159,15 @@
 }
 });
 });
-        $('#submitButton').click(function(e) {
+     $('#submitButton').click(function(e) {
             e.preventDefault();
             var selectedOption = $('#employee_time option:selected');
             var status = selectedOption.data('status');
             if (status == 1) {
                 $('#reserveModal').modal('show');
             } else {
+                $('#first_name').prop('disabled', false);
+                $('#last_name').prop('disabled', false);
                 $('form').submit();
             }
         });
@@ -171,11 +180,14 @@
         var mobile = $('#notFoundModal').data('mobile');
         $('#notFoundModal').modal('hide');
         $('#phone_number_modal').val(mobile);
-        $('#phone_number_modal').prop('readonly', true);
         $('#createUserModal').modal('show');
 
     });
+    $('#createUserModal').on('shown.bs.modal', function() {
+        $('#phone_number_modal').prop('disabled', true);
+    });
     $('#createUserModal').on('click', '.btn-modal', function() {
+        $('#phone_number_modal').prop('disabled', false);
         $('form').submit();
     });
     function switchTab(index) {
@@ -222,5 +234,5 @@
     }
     function getLangFromURL() {
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('lang') || urlParams.get('language') || 'en'; // پیش‌فرض انگلیسی
+        return urlParams.get('lang') || urlParams.get('language') || 'fa';
     }
