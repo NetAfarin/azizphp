@@ -84,6 +84,7 @@ $(document).ready(function() {
         if (optionId == "1") {
                 switchBox.style.display = "block";
             shiftTitle.style.display = "block";
+            section.style.display = "block";
 
             if (switchData.checked) {
                 table.style.display = "none";
@@ -94,6 +95,7 @@ $(document).ready(function() {
             switchBox.style.display = "none";
             table.style.display = "none";
             shiftTitle.style.display = "none";
+            section.style.display = "none";
         }
     }
 

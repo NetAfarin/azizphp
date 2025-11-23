@@ -64,7 +64,7 @@ if (!empty($_GET['url'])) {
 <!--    </div>-->
 <!--</nav>-->
 <?php if (!empty($_SESSION['flash_success'])): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="flash-message">
         <?= htmlspecialchars($_SESSION['flash_success']) ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -72,10 +72,18 @@ if (!empty($_GET['url'])) {
 <?php endif; ?>
 
 <?php if (!empty($_SESSION['flash_error'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert"  id="flash-message">
         <?= htmlspecialchars($_SESSION['flash_error']) ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <?php unset($_SESSION['flash_error']); ?>
 <?php endif; ?>
+<script>
+    setTimeout(function() {
+        const flashMessage = document.getElementById('flash-message');
+        if (flashMessage) {
+            flashMessage.remove();
+        }
+    }, 2000);
+</script>
 <script> const BASE_URL = "<?= BASE_URL?>";</script>

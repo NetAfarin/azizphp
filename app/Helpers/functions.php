@@ -213,3 +213,14 @@ function toJalali($datetime , $separator = "/") {
         'time' => $time
     ];
 }
+function convertToEnglish($text) {
+    $persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+    $arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    $englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    $result = $text;
+    $result = str_replace($persianNumbers, $englishNumbers, $result);
+    $result = str_replace($arabicNumbers, $englishNumbers, $result);
+
+    return $result;
+}

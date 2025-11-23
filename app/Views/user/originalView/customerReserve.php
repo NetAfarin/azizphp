@@ -34,7 +34,7 @@
                     </div>
                     <?php if ((empty($fromDate)) && empty($toDate)): ?>
                         <div class="col">
-                            <button class="btn btn-primary buttonSqaure">فیلتر</button>
+                            <button class="btn btn-primary buttonSqaure"><?= __("filter")?></button>
                         </div>
                     <?php else: ?>
                         <button class="btn btn-primary buttonSqaure" type="button">
@@ -85,6 +85,26 @@
                    class="text-decoration-none">
                     <?= __("cancelled") ?> (<?= $allCancelledVisitsSize ?>)
                 </a>
+                <div class="vertical-separator"></div>
+                <a href="?filter=verify<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?><?= ((!empty($originalFromDate)) && (!empty($originalToDate))) ? "&from_date=" . urlencode($originalFromDate) . "&" . "to_date=" . urlencode($originalToDate) : "" ?>"
+                   class="text-decoration-none">
+                    <?= __("verify") ?> (<?= $allVerifySize ?>)
+                </a>
+                  <div class="vertical-separator"></div>
+                <a href="?filter=in_progress<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?><?= ((!empty($originalFromDate)) && (!empty($originalToDate))) ? "&from_date=" . urlencode($originalFromDate) . "&" . "to_date=" . urlencode($originalToDate) : "" ?>"
+                   class="text-decoration-none">
+                    <?= __("in_progress") ?> (<?= $allInProgressVisits ?>)
+                </a>
+                <div class="vertical-separator"></div>
+                <a href="?filter=no_show<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?><?= ((!empty($originalFromDate)) && (!empty($originalToDate))) ? "&from_date=" . urlencode($originalFromDate) . "&" . "to_date=" . urlencode($originalToDate) : "" ?>"
+                   class="text-decoration-none">
+                    <?= __("no_show") ?> (<?= $allNoShowSize ?>)
+                </a>
+                <div class="vertical-separator"></div>
+                <a href="?filter=rescheduled<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?><?= ((!empty($originalFromDate)) && (!empty($originalToDate))) ? "&from_date=" . urlencode($originalFromDate) . "&" . "to_date=" . urlencode($originalToDate) : "" ?>"
+                   class="text-decoration-none">
+                    <?= __("rescheduled") ?> (<?= $allRescheduledSize ?>)
+                </a>
             </div>
             <?php if (isset($_GET['search'])): ?>
                 <div><?php printf(__("item"), $searchItems) ?></div>
@@ -98,9 +118,7 @@
                         <table class="table custom-table">
                             <thead class="table-primary ">
                             <tr>
-                                <th><input class="form-check-input checkBox" type="checkbox" value="" id="allReserve">
-                                    <label for="allReserve"><?= __("row") ?></label>
-                                </th>
+                                <th><label for="allReserve"><?= __("row") ?></label></th>
                                 <th class="text-center">
                                     <a href="<?= $sortServiceUrl ?>"
                                        class="text-decoration-none text-white d-flex justify-content-center align-items-center">
@@ -174,13 +192,7 @@
                             ?>
                             <?php foreach ($allReserve as $service): ?>
                                 <tr>
-                                    <td>
-                                        <input class="form-check-input checkBox" type="checkbox" value=""
-                                               id="tableService<?= $count ?>">
-                                        <label class="form-check-label" for="tableService<?= $count ?>">
-                                            <?= htmlspecialchars($count) ?>
-                                        </label>
-                                    </td>
+                                    <td><?= htmlspecialchars($count) ?></td>
                                     <td><?= $service->service ?></td>
                                     <td><?= $service->employeeFirstName ?>  <?= $service->employeeLastName ?></td>
                                     <td>123456</td>
@@ -239,7 +251,7 @@
                                                             </div>
                                                             <button class="btn btn-outline-primary px-5 mt-4"
                                                                     style="margin-top: 35px;"
-                                                                    data-bs-dismiss="modal"><?= __("close") ?></button>
+                                                                    data-bs-dismiss="modal"><?= __("close2") ?></button>
                                                         </div>
                                                     </div>
                                                 </div>

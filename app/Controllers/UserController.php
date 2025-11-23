@@ -303,9 +303,9 @@ class UserController extends Controller
         $userRole = UserType::all();
         $lang = $_SESSION['lang'] ?? 'fa';
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
-           $firstName = trim($_POST['firstname']);
-           $lastname = trim($_POST['lastname']);
-           $nationalCode = trim($_POST['nationalCode']);
+           $firstName = trim($_POST['first_name']);
+           $lastname = trim($_POST['last_name']);
+           $nationalCode = trim($_POST['national_code']);
            $phoneNumber = trim($_POST['phoneNumber']);
            $postal_address = trim($_POST['address']);
            $role = trim($_POST['role']);
@@ -317,12 +317,28 @@ class UserController extends Controller
             $startTime = $_POST['startTime']?? [];
             $endTime = $_POST['endTime']?? [];
             $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
+            $validator = new Validator($_POST, [
+                'first_name' => 'required|min:2|max:40',
+                'last_name' => 'required|min:2|max:40',
+                'national_code' => 'required|min:2|max:40',
+                'address' => 'required|min:1',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
             if (User::query()->where('phone_number', '=', $phoneNumber)->get()) {
                 $errors[] = __('phone_taken');
                 save_old_input();
             }
-            //TODO complete this section
-            vd(shamsi_to_miladi($birth_date));
+            if($birth_date!= ""){
+                $year =convertToEnglish(explode("-", $birth_date))[0];
+                $month =convertToEnglish(explode("-", $birth_date))[1];
+                $day =convertToEnglish(explode("-", $birth_date))[2];
+                $dateArray =jalali_to_gregorian($year, $month, $day);
+                $miladiBirthDate = sprintf('%04d-%02d-%02d',$dateArray[0], $dateArray[1], $dateArray[2]);
+            }
             if (empty($errors)) {
                 $user = new User([
                 'salon_id' => 1,
@@ -330,7 +346,7 @@ class UserController extends Controller
                 'last_name' => $lastname,
                 'phone_number' => $phoneNumber,
                 'national_code' => $nationalCode,
-                'birth_date' => $birth_date,
+                'birth_date' => (($birth_date == "") ? '' : $miladiBirthDate),
                 'password' => password_hash("123456" , PASSWORD_DEFAULT),
                 'postal_address' => $postal_address,
                 'register_datetime' => date('Y-m-d H:i:s'),
@@ -392,6 +408,7 @@ class UserController extends Controller
             'userRole' => $userRole,
             'user' => $user,
             'durations' => $durations,
+            'errors' => $errors,
         ]);
     }
     public function dashboard()
@@ -867,8 +884,13 @@ class UserController extends Controller
         $allSearchData = ServiceVisitRelation::visitsDetails();
         $allReserve2= ServiceVisitRelation::visitsDetails();
         $allReserveVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(1);
+        $allVerifyVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(2);
         $allCancelledVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(3);
+        $allInProgressVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(4);
         $allDoneVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(5);
+        $allNoShowVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(6);
+        $allRescheduledVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(7);
+
         $sortByColumn = "vt.visit_datetime";
         if ($sortBy === 'service') {
             $sortByColumn = $lang == 'fa' ? 'st.fa_title' : 'st.en_title';
@@ -881,8 +903,12 @@ class UserController extends Controller
         $allSearchData = ServiceVisitRelation::visitsDetails();
         $allReserve= ServiceVisitRelation::visitsDetails();
         $allReserveVisits= ServiceVisitRelation::visitsDetailsWithStatusType(1);
+        $allVerifyVisits= ServiceVisitRelation::visitsDetailsWithStatusType(2);
         $allCancelledVisits= ServiceVisitRelation::visitsDetailsWithStatusType(3);
+        $allInProgressVisits= ServiceVisitRelation::visitsDetailsWithStatusType(4);
         $allDoneVisits= ServiceVisitRelation::visitsDetailsWithStatusType(5);
+        $allNoShowVisits= ServiceVisitRelation::visitsDetailsWithStatusType(6);
+        $allRescheduledVisits= ServiceVisitRelation::visitsDetailsWithStatusType(7);
         if ($search !== '') {
             $allSearchData->whereLike($column, $search);
             $allReserve->whereLike($column, $search);
@@ -905,23 +931,32 @@ class UserController extends Controller
             $allDoneVisits2->where("vt.visit_datetime" ,">=", $fromDate)->where("vt.visit_datetime" ,"<=", $toDate);
             $allCancelledVisits2->where("vt.visit_datetime" ,">=", $fromDate)->where("vt.visit_datetime" ,"<=", $toDate);
         }
-
-        if($filter == "all" || empty($filter)) {
-          $pagination = $allReserve2->paginate($page, $perPage);
-      }
-        else if ($filter === 'reserved') {
-           $pagination = $allReserveVisits2->paginate($page, $perPage);
-        } else if ($filter === 'done') {
-           $pagination = $allDoneVisits2->paginate($page, $perPage);
-       }
-        else if ($filter === 'cancelled') {
-            $pagination = $allCancelledVisits2->paginate($page, $perPage);
-        }
+          switch ($filter){
+            case 'all': $pagination = $allReserve2->paginate($page, $perPage);
+                break;
+              case 'reserved': $pagination = $allReserveVisits2->paginate($page, $perPage);
+                  break;
+              case 'done': $pagination = $allDoneVisits2->paginate($page, $perPage);
+                  break;
+              case 'cancelled': $pagination = $allCancelledVisits2->paginate($page, $perPage);
+                  break;
+              case 'verify': $pagination = $allVerifyVisits2->paginate($page, $perPage);
+                  break;
+              case 'no_show': $pagination = $allNoShowVisits2->paginate($page, $perPage);
+                  break;
+              case 'rescheduled': $pagination = $allRescheduledVisits2->paginate($page, $perPage);
+                  break;
+              case 'in_progress':$pagination =  $allInProgressVisits2->paginate($page, $perPage);
+          }
         $searchItems = sizeof($allSearchData->get());
         $allVisitsSize = sizeof($allReserve->get());
         $allReserveVisitsSize = sizeof($allReserveVisits->get());
         $allCancelledVisitsSize = sizeof($allCancelledVisits->get());
         $allDoneSize = sizeof($allDoneVisits->get());
+        $allVerifySize = sizeof($allVerifyVisits->get());
+        $allInProgressSize = sizeof($allInProgressVisits->get());
+        $allNoShowSize = sizeof($allNoShowVisits->get());
+        $allRescheduledSize = sizeof($allRescheduledVisits->get());
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/customerReserve', [
             'title' => __('booking_list'),
@@ -945,6 +980,10 @@ class UserController extends Controller
             'visitsReserved' => $allReserveVisitsSize,
             'allCancelledVisitsSize' => $allCancelledVisitsSize,
             'allDoneVisitsSize' => $allDoneSize,
+            'allVerifySize' => $allVerifySize,
+            'allInProgressVisits' => $allInProgressSize,
+            'allNoShowSize' => $allNoShowSize,
+            'allRescheduledSize' => $allRescheduledSize,
             'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter, $lang),
         ]);
     }

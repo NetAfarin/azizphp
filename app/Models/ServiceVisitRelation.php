@@ -75,7 +75,8 @@ class ServiceVisitRelation extends Model
             ->join("user_table AS ut", "ut.id", "=", "service_visit_relation_table.employee_id")
             ->join("user_table AS c", "c.id", "=", "vt.customer_id")
             ->join("service_table", "service_table.id", "=", "service_visit_relation_table.service_id")
-            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status");
+            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
+            ->orderBy("vt.visit_datetime", "DESC");
     }
     public static function visitsDetailsWithStatusType($type)
     {
@@ -97,7 +98,8 @@ class ServiceVisitRelation extends Model
             ->join("user_table AS c", "c.id", "=", "vt.customer_id")
             ->join("service_table", "service_table.id", "=", "service_visit_relation_table.service_id")
             ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
-            -> where('service_visit_relation_table.visit_status', "=",$type);
+            -> where('service_visit_relation_table.visit_status', "=",$type)
+            ->orderBy("vt.visit_datetime", "DESC");
     }
     public static function getVisitsNumberToday()
     {

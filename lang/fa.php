@@ -329,5 +329,9 @@ return [
     'employee_priority' => 'اولویت کارمندان',
     'time_priority' => 'اولویت زمان',
     'booking_created' => 'رزرو با موفقیت انجام شد.',
+    'verify' => 'تایید شده',
+    'no_show' => 'عدم حضور',
+    'rescheduled' => 'موکول شده',
+    'in_progress' => 'در حال انجام',
 
 ];

@@ -5,18 +5,27 @@
      <div class="row mt-5">
          <div class="col-6">
              <label for="username"><?= __("name") ?> <span class="bullet-color"> *</span></label>
-             <input type="text" class="form-control" id="username" name="firstname">
+             <input type="text" class="form-control" id="username" name="first_name">
+             <?php if (!empty($errors['first_name'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
+             <?php endif; ?>
          </div>
          <div class="col-6">
              <label for="lastname"><?= __("last_name") ?><span class="bullet-color"> *</span></label>
-             <input type="text" class="form-control" id="lastname" name="lastname">
+             <input type="text" class="form-control" id="lastname" name="last_name">
+             <?php if (!empty($errors['last_name'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['last_name'][0]) ?></div>
+             <?php endif; ?>
          </div>
      </div>
      <div class="row mt-5">
          <div class="col-6">
              <label for="national-code"><?= __("national_code") ?><span
                          class="bullet-color"> *</span></label>
-             <input type="text" class="form-control ltr-input" id="national-code" name="nationalCode">
+             <input type="text" class="form-control ltr-input" id="national-code" name="national_code">
+             <?php if (!empty($errors['national_code'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['national_code'][0]) ?></div>
+             <?php endif; ?>
          </div>
          <div class="col-6">
              <label for="birthday-date"><?= __("birth_date") ?><span class="bullet-color"> *</span></label>
@@ -24,6 +33,9 @@
                  <input type="text" id="birth_date_picker" class="form-control" name="birth_date">
                  <i class="fa fa-calendar icon-color"></i>
              </div>
+             <?php if (!empty($errors['birth_date'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['birth_date'][0]) ?></div>
+             <?php endif; ?>
 
          </div>
      </div>
@@ -31,6 +43,9 @@
          <div class="col-6">
              <label for="phone-number"><?= __("phone_number") ?><span class="bullet-color"> *</span></label>
              <input type="text" class="form-control ltr-input" id="phone-number" name="phoneNumber">
+             <?php if (!empty($errors['phoneNumber'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['phoneNumber'][0]) ?></div>
+             <?php endif; ?>
          </div>
          <div class="col-6">
              <label for="userRole"><?= __("role") ?><span class="bullet-color"> *</span></label>
@@ -41,21 +56,28 @@
                      </option>
                  <?php endforeach;?>
              </select>
+             <?php if (!empty($errors['role'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['role'][0]) ?></div>
+             <?php endif; ?>
          </div>
      </div>
      <div class="row mt-5">
          <div class="col-12">
              <label for="address"><?= __("postal_address") ?><span class="bullet-color"> *</span></label>
              <input type="text" class="form-control" id="user-role" name="address">
+             <?php if (!empty($errors['address'])): ?>
+                 <div class="text-danger small"><?= htmlspecialchars($errors['address'][0]) ?></div>
+             <?php endif; ?>
          </div>
      </div>
+     <div id="employeeSection">
      <div class="row mt-5">
          <div class="col-12">
              <hr>
          </div>
      </div>
      <div class="row mt-5"><h4><?= __("job_information") ?></h4></div>
-     <div class="row mt-5">
+     <div class="row mt-5" >
          <div class="col-6">
              <label for="break_time" class="form-label"><?= __("break_time") ?></label>
              <select class="js-example-basic-single w-100" name="breakTime" id="break_time">
@@ -82,7 +104,7 @@
          </div>
          <div id="services_table_wrapper" class="mt-3"></div>
      </div>
-     <div class="mt-5" id="employeeSection">
+     <div class="mt-5" >
          <span id="shiftTitle"><?= __("shift") ?></span>
          <div class="form-check  switch-input form-switch mt-2">
              <input class="switch-input form-check-input" type="checkbox" role="switch" id="switchBox" name="followSalon" checked>
@@ -105,7 +127,7 @@
                          <td><?= $day ?></td>
                          <td>
                              <div class="custom-time-container time-with-icon">
-                                 <input type="time" name="endTime[]" class="form-control time-input" id="timeIcon">
+                                 <input type="time" name="startTime[]" class="form-control time-input" id="timeIcon">
                              </div>
                          </td>
                          <td>
@@ -130,6 +152,7 @@
                  </table>
              </div>
          </div>
+     </div>
      </div>
      <button class="btn btn-primary mt-5 px-5" type="submit"><?=__("add")?></button>
  </form>

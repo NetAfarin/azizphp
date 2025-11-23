@@ -320,5 +320,10 @@ return [
     'employee_priority' => 'Employee Priority',
     'time_priority' => 'Time Priority',
     'booking_created' => 'Booking Created Successfully',
-
+    'verify' => 'Verified',
+    'no_show' => 'No Show',
+    'rescheduled' => 'Rescheduled',
+    'in_progress' => 'In Progress',
+    'close2' => 'Close',
+    'filter' => 'Filter',
 ];
