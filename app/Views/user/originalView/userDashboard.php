@@ -69,7 +69,7 @@
                 <div class="py-3 px-3  text-start fw-bold">نظر شما مهم است!</div>
                 <div class="p-2 text-secondary text-center ">رنگ موی شما ۲ روز پیش انجام شد. لطفاً تجربه‌تان را به اشتراک بگذارید.</div>
                 <div class="p-2 text-secondary text-center">
-                    <button  class="btn btn-primary mt-2 mb-3">ثبت نظر</button>
+                    <a href="/fw/user/submit/comment"><button  class="btn btn-primary mt-2 mb-3">ثبت نظر</button></a>
                 </div>
             </div>
             <div class="mt-5">
@@ -119,50 +119,48 @@
 
         <div class="col-lg-4 col-sm-12 col-md-4">
             <div class="mt-5">
-                <div class="shadow-md bg-white rounded py-4 px-3 tips ">
-                    <h4 class="text-start pb-2">نکات مهم</h4>
-                    <ul class="list-unstyled d-flex flex-column align-items-end" style="direction: ltr; gap: 25px;">
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                <div class="shadow-md bg-white rounded py-4 px-4 vh-100">
+                    <h4 class="text-start mb-3"><?= __("lastest_news") ?></h4>
+                    <ul class="list-unstyled bg-white " >
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">ضدعفونی ابزارها تا ساعت ۹ انجام شود</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">شروع ساعت کاری در تاریخ ۶ شهریور ساعت ۸:۰۰ میباشد</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
                         </li>
 
-
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.موها را بعد از کراتین مرطوب نگه دارید</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-2">
-                            <span class="mx-2">.مراقبت از ناخن‌ها بعد از مانیکور ضروری است</span>
-                            <i class="fa fa-circle text-primary ms-2"></i>
+                        <li class="d-flex align-items-center">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
                         </li>
-
                     </ul>
                 </div>
             </div>

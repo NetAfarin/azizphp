@@ -172,7 +172,7 @@ class User extends Model
     {
         return User::query()
             ->select([
-                'utt.title AS user_type',
+                (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title').' AS user_type',
                 'utt.id As type_id',
                 'user_table.id',
                 'user_table.first_name',

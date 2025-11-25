@@ -565,6 +565,11 @@ body, * {
     justify-content: center;
     align-items: center;
 }
+.space-between{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .modal-body2 {
   padding:35px;
 }
@@ -922,6 +927,25 @@ hr {
     padding: 0.5rem 1rem;
 
 }
+.minus.dropdown-toggle::after {
+    display: none !important;
+}
+.minus.dropdown-toggle[aria-expanded="false"]::before {
+    content: "\2b";
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--bs-primary);
+    font-family: "Font Awesome 6 Pro";
+
+}
+
+.minus.dropdown-toggle[aria-expanded="true"]::before {
+    content: "\f068";
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--bs-primary);
+    font-family: "Font Awesome 6 Pro";
+}
 .dropdown-toggle::after {
     display: inline-block;
     color: var(--bs-primary);
@@ -1043,15 +1067,14 @@ nav .nav-item:hover{
      align-items: center;
      justify-content: center;
  }
-.nav-item.dropdown > a.dropdown-toggle {
+.menu-drop-down .nav-item.dropdown > a.dropdown-toggle {
     border-right: 4px solid transparent;
     transition: border-color 0.3s;
 }
-
-html[lang="fa"] .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
+html[lang="fa"] .menu-drop-down .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
     border-right: 4px solid var(--bs-primary);
 }
-html[lang="en"] .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
+html[lang="en"] .menu-drop-down .nav-item.dropdown > a.dropdown-toggle[aria-expanded="true"] {
     border-left: 4px solid var(--bs-primary);
 }
 .ltr-icon{
@@ -1274,6 +1297,14 @@ html[lang="en"] .dropdown-item.for-table{
     border: none;
     margin-inline: calc(-1 * 20px);
 }
+.divider-surveys {
+    height: 1px;
+    background-color: #D9D9D9;
+    border: none;
+    /*margin: 8px 0;*/
+    list-style: none;
+}
+
 .divider_lg{
     width: calc(100% + 2 * 15);
     height: 1px;
@@ -1617,6 +1648,22 @@ html[lang="en"] .pagination li:last-child{
     position: absolute;
     z-index: 1030;
 }
-.dropdown-item.for-table {
 
+.form-check-input:checked[type=radio] {
+    background-color: var(--bs-primary);
+}
+.survey-link:hover{
+    color: black;
+}
+.survey-link:focus{
+    color: black;
+}
+#submenu > li.divider-surveys {
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.form-check-inline .form-check-label{
+    color: black;
 }

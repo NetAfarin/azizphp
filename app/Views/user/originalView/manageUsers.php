@@ -55,6 +55,10 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                         <a href="?filter=employees<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none text-dark"><?= __("employee") ?> (<?= $employeesSize ?>)</a>
                         <div class="vertical-separator"></div>
                         <a href="?filter=operators<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none text-dark"><?= __("operator") ?> (<?= $operatorsSize ?>)</a>
+                        <div class="vertical-separator"></div>
+                        <a href="?filter=manager<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none text-dark"><?= __("manager") ?> (<?= $adminsSize ?>)</a>
+                        <div class="vertical-separator"></div>
+                        <a href="?filter=super-admin<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>" class="text-decoration-none text-dark"><?= __("super_admin") ?> (<?= $superAdminsSize ?>)</a>
                     </div>
                     <?php if(isset($_GET['search'])): ?>
                         <div><?php printf( __("item"), $searchSize) ?></div>
@@ -100,7 +104,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                         <i class="fas fa-caret-down mx-1"></i>
                                     <?php endif; ?>
                                 </a>
-                            </th>                            <th><?= __("phone_number") ?></th>
+                            </th><th><?= __("phone_number") ?></th>
                             <th><?= __("role") ?></th>
                             <th><?= __("score") ?> <i class="fas fa-sort-amount-down-alt mx-1"></th>
                             <th><?= __("services") ?></th>

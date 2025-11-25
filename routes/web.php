@@ -52,6 +52,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(func
     Route::get('/user/logout', [UserController::class, 'logout']);
     Route::get('/user/show/{id}', [UserController::class, 'showProfile']);
     Route::get('/user/reserve', [UserController::class, 'reserveList']);
+    Route::get('/user/submit/comment', [UserController::class, 'submitComment']);
 });
 
 // Admin POST routes (CSRF + RateLimit)

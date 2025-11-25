@@ -326,4 +326,7 @@ return [
     'in_progress' => 'In Progress',
     'close2' => 'Close',
     'filter' => 'Filter',
+    'super_admin' => 'Super Admin',
+    'manager' => 'Manager',
+    'survey' => 'Survey',
 ];

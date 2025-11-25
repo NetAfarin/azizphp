@@ -512,9 +512,11 @@ class UserController extends Controller
         $column = $lang == "fa" ? "user_table.first_name" : 'user_table.last_name';
         $userType = UserType::all();
         $allUsers2 = User::getAllUserWithDetails();
-        $customerData = User::getSomeUserWithDetails(2 );
-        $employeesData = User::getSomeUserWithDetails(1 );
-        $operatorsData = User::getSomeUserWithDetails(3 );
+        $customerData = User::getSomeUserWithDetails(UserType::CUSTOMER);
+        $employeesData = User::getSomeUserWithDetails(UserType::EMPLOYEE);
+        $operatorsData = User::getSomeUserWithDetails(UserType::OPERATOR);
+        $adminData = User::getSomeUserWithDetails(UserType::ADMIN);
+        $superAdminData = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
         $sortByColumn = "user_table.first_name";
         if (!empty($sortBy)) {
             if ($sortBy == 'first_name') {
@@ -528,13 +530,16 @@ class UserController extends Controller
         $allUsers2->orderBy($sortByColumn, $sortOrder);
         $allSearchData = User::getAllUserWithDetails();
         $users = User::getAllUserWithDetails();
-        $customers = User::getSomeUserWithDetails(2 );
-        $employees = User::getSomeUserWithDetails(1 );
-        $operators = User::getSomeUserWithDetails(3 );
-
+        $customers = User::getSomeUserWithDetails(UserType::CUSTOMER);
+        $employees = User::getSomeUserWithDetails(UserType::EMPLOYEE);
+        $operators = User::getSomeUserWithDetails(UserType::OPERATOR);
+        $admin = User::getSomeUserWithDetails(UserType::ADMIN);
+        $superAdmin = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
         if ($search !== '') {
             $allSearchData->whereLike($column, $search);
             $users->whereLike($column, $search);
+            $admin->whereLike($column, $search);
+            $superAdmin->whereLike($column, $search);
             $customers->whereLike($column, $search);
             $employees->whereLike($column, $search);
             $operators->whereLike($column, $search);
@@ -551,6 +556,10 @@ class UserController extends Controller
             $pagination = $employeesData->paginate($page, $perPage);
         }else if ($filter == "operators") {
             $pagination = $operatorsData->paginate($page, $perPage);
+        }else if ($filter == "super-admin") {
+            $pagination = $adminData->paginate($page, $perPage);
+        }else if ($filter == "manager") {
+            $pagination = $superAdminData->paginate($page, $perPage);
         }
 
         $searchSize = sizeof($allSearchData->get());
@@ -558,6 +567,8 @@ class UserController extends Controller
         $customersSize = sizeof($customers->get());
         $employeesSize = sizeof($employees->get());
         $operatorsSize = sizeof($operators->get());
+        $adminsSize = sizeof($admin->get());
+        $superAdminsSize = sizeof($superAdmin->get());
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/manageUsers', [
             'title' => __('manage_users'),
@@ -570,6 +581,8 @@ class UserController extends Controller
             'customersSize' => $customersSize,
             'employeesSize' => $employeesSize,
             'operatorsSize' => $operatorsSize,
+            'adminsSize' => $adminsSize,
+            'superAdminsSize' => $superAdminsSize,
             'searchSize' => $searchSize,
             'pagination' => $pagination,
             'per_page' => $perPage,
@@ -985,6 +998,22 @@ class UserController extends Controller
             'allNoShowSize' => $allNoShowSize,
             'allRescheduledSize' => $allRescheduledSize,
             'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter, $lang),
+        ]);
+    }
+
+    public function submitComment()
+    {
+        $doneVisits = ServiceVisitRelation::query()->select(["ut.first_name as employeeFirstName, ut.last_name as employeeLastName , vt.visit_datetime as visitDatetime , ut.last_name , st.fa_title as service"])
+        ->join("user_table as ut", "ut.id" , "=" ,"service_visit_relation_table.employee_id")
+        ->join("service_table as st", "st.id" , "=" ,"service_visit_relation_table.service_id")
+        ->join("visit_table as vt", "vt.id" , "=" ,"service_visit_relation_table.visit_id")
+        ->where("service_visit_relation_table.visit_status" , "=" ,5)
+        ->first();
+        $this->view('user/originalView/submitComment', [
+            'title' => __('survey'),
+            'first_name' => $_SESSION['user_name'] ?? "",
+            'last_name' => $_SESSION['last_name'] ?? "",
+            'doneVisits' => $doneVisits,
         ]);
     }
 

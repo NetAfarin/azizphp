@@ -333,5 +333,9 @@ return [
     'no_show' => 'عدم حضور',
     'rescheduled' => 'موکول شده',
     'in_progress' => 'در حال انجام',
+    'filter' => 'فیلتر',
+    'super_admin' => 'سوپر ادمین',
+    'manager' => 'مدیر',
+    'survey' => 'نظرسنجی',
 
 ];

@@ -62,11 +62,10 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                 <img src="<?= asset('img/delarose-black.png') ?>" style="height: 200px; object-fit: contain"
                      class="mt-4">
                 <nav class="topnav navbar navbar-light">
-                    <ul class="navbar-nav flex-fill w-100 mb-2" style="margin:0;">
+                    <ul class="navbar-nav flex-fill w-100 mb-2 menu-drop-down" style="margin:0;">
                         <?php foreach($menuItems as $item): ?>
                             <?php if(isset($item['submenu'])): ?>
                                 <?php
-                                // بررسی می‌کنیم آیا یکی از زیرمنوها فعال است
                                 $isSubActive = false;
                                 foreach($item['submenu'] as $sub) {
                                     if($sub['link'] === $currentUrl) {
@@ -76,7 +75,7 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                                 }
                                 $parentClass = $isSubActive ? 'active-menu' : '';
                                 ?>
-                                <li class="nav-item dropdown <?= $parentClass ?>">
+                                <li class="nav-item dropdown menu-drop-down <?= $parentClass ?>">
                                     <a href="#<?= str_replace(' ', '', $item['title']) ?>"
                                        data-bs-toggle="collapse"
                                        aria-expanded="<?= $isSubActive ? 'true' : 'false' ?>"
