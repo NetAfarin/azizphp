@@ -557,9 +557,9 @@ class UserController extends Controller
         }else if ($filter == "operators") {
             $pagination = $operatorsData->paginate($page, $perPage);
         }else if ($filter == "super-admin") {
-            $pagination = $adminData->paginate($page, $perPage);
-        }else if ($filter == "manager") {
             $pagination = $superAdminData->paginate($page, $perPage);
+        }else if ($filter == "manager") {
+            $pagination = $adminData->paginate($page, $perPage);
         }
 
         $searchSize = sizeof($allSearchData->get());

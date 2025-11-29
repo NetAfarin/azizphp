@@ -17,7 +17,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                class="justify-content d-flex dropdown-toggle  survey-link nav-link minus ">
                 <span class="mx-2">از خدمات ما راضی بودید؟</span>
             </a>
-            <ul class="collapse list-unstyled bg-white w-100 rounded px-3" id="submenu">
+            <ul class="collapse list-unstyled bg-white w-100 rounded" id="submenu">
                 <li class="divider-surveys"></li>
                 <li class="nav-item">
                     <div class="form-check form-check-inline">

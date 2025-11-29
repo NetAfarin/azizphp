@@ -1355,7 +1355,7 @@ html[lang="en"] .dropdown-item.for-table{
 }
 
 span.select2{
-    /*width: 100% !important;*/
+    width: 100% !important;
 }
 .select2-container--default .select2-selection--multiple{
     border-radius: var(--bs-border-radius);
@@ -1658,12 +1658,15 @@ html[lang="en"] .pagination li:last-child{
 .survey-link:focus{
     color: black;
 }
-#submenu > li.divider-surveys {
-    margin-left: -16px !important;
-    margin-right: -16px !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+#submenu > li/*.divider-surveys*/ {
+    /*margin-left: -16px !important;*/
+    /*margin-right: -16px !important;*/
+    /*padding-left: 0 !important;*/
+    padding: 0 1.3rem;
 }
 .form-check-inline .form-check-label{
     color: black;
 }
+/* .select2  .select2-container .select2-container--default .fullSelect{*/
+/*    width: 100% !important;*/
+/*}*/

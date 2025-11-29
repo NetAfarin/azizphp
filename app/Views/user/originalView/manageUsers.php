@@ -166,15 +166,9 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                         <ul class="dropdown-menu dropdown-menu-end p-0 action-menu" aria-labelledby="navbarDropdownMenuLink">
 
                                             <li>
-                                                <a class="dropdown-item text-start editServiceBtn"
-                                                   type="button"
-                                                   data-bs-target="#editModal"
-                                                   data-bs-toggle="modal"
-                                                   data-id="<?= $user->id ?>">
+                                                <a class="dropdown-item text-start editServiceBtn" href="/fw/admin/user/edit/<?= $user->id ?>">
                                                     <?= __("edit") ?>
                                                 </a>
-                                                <meta name="csrf-token" content="{{ csrf_token() }}">
-
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li><a class="dropdown-item text-start " data-bs-toggle="modal" data-bs-target="#showDialogDelete<?= $user->id ?>"><?=__("delete")?></a></li>
@@ -198,53 +192,6 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                         </div>
                                     </div>
                                 </form>
-                                <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <form id="editForm" method="post" >
-                                                <?= csrf_field() ?>
-                                                <input type="hidden" name="id" id="user_id">
-                                                <div class="modal-body2">
-                                                    <span class="center"><?= __("edit") ?></span>
-                                                    <input type="hidden" name="id" id="user_id">
-                                                    <div class="mt-4">
-                                                        <label for="first_name"><?= __("first_name") ?><span class="bullet-color"> *</span></label>
-                                                        <input type="text" class="form-control" name="first_name" id="first_name">
-                                                    </div>
-                                                    <div class="mt-4">
-                                                        <label for="last_name"><?= __("last_name") ?><span class="bullet-color"> *</span></label>
-                                                        <input type="text" class="form-control" name="last_name" id="last_name">
-                                                    </div>
-                                                    <div class="mt-4">
-                                                        <label for="phone_number"><?= __("phone_number") ?><span class="bullet-color"> *</span></label>
-                                                        <input type="text" class="form-control" name="phone_number" id="phone_number" >
-                                                    </div>
-                                                    <div class="mt-4">
-                                                        <label><?= __("user_type") ?><span class="bullet-color"> *</span></label>
-                                                        <select class="form-control" name="roles" id="user_role">
-                                                            <?php foreach ($userType as $role): ?>
-                                                                <option value="<?= $role->id ?>"<?= ($role->id == ($user->user_type ?? 0) ? 'selected' : '') ?>>
-                                                                    <?= ($lang == "fa") ? htmlspecialchars($role->title ?? '') : htmlspecialchars($role->en_title) ?>
-
-                                                                </option>
-                                                            <?php endforeach; ?>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="row g-2 px-5 mt-4">
-                                                        <div class="col-6">
-                                                            <button type="submit" class="btn btn-primary w-100 py-2"><?= __("edit_service") ?></button>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <button type="button" class="btn btn-outline-secondary w-100 py-2" data-bs-dismiss="modal"><?= __("cancel") ?></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                        </div>
-                                        </form>
-                                    </div>
-                                </div>
                                 <?php $count++ ?>
                         <?php endforeach;?>
 
@@ -289,19 +236,39 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
     document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
         const button = event.relatedTarget;
         const userId = button.dataset.id;
-
+        const userType = button.dataset.userType;
         fetch(`${BASE_URL}/admin/user/getUserData/${userId}`)
             .then(res => res.json())
             .then(data => {
-                document.getElementById('user_id').value = data.id || '';
-                document.getElementById('first_name').value = data.first_name || '';
-                document.getElementById('last_name').value = data.last_name || '';
-                document.getElementById('phone_number').value = data.phone_number || '';
-                document.getElementById('user_role').value = data.role_id || '';
-
+                $('#user_id').val(data.id || '');
+                $('#first_name').val(data.first_name || '');
+                $('#last_name').val(data.last_name || '');
+                $('#phone_number').val(data.phone_number || '');
+                $('#user_role').val(data.role_id || '').trigger('change');
             })
             .catch(error => console.error('Error fetching service:', error));
+        // $("#showEmployeeServices").appendChild(':as')
     });
+
+
+
+
+
+
+    // $('#editModal').on('shown.bs.modal', function (event) {
+    //     const button = event.relatedTarget;
+    //     const userId = button.dataset.id;
+    //     fetch(`${BASE_URL}/admin/user/getUserData/${userId}`)
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             $('#user_id').val(data.id || '');
+    //             $('#first_name').val(data.first_name || '');
+    //             $('#last_name').val(data.last_name || '');
+    //             $('#phone_number').val(data.phone_number || '');
+    //             $('#user_role').val(data.role_id || '').trigger('change');
+    //         })
+    //         .catch(error => console.error('Error fetching service:', error));
+    // });
 
     document.getElementById('editForm').addEventListener('submit', function(e) {
         e.preventDefault();

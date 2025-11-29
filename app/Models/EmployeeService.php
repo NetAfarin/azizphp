@@ -26,6 +26,10 @@ class EmployeeService extends Model
         'fa_title',
         'first_name',
         'last_name',
+        'start_day_of_week',
+        'off_day',
+        'start_time',
+        'end_time',
     ];
     public static function getEmployeeService($id) : array
     {

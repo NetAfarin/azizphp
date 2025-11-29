@@ -7,6 +7,7 @@ use App\Core\Logger;
 use App\Core\Validator;
 use App\Models\Duration;
 use App\Models\EmployeeService;
+use App\Models\EmployeeTable;
 use App\Models\Holiday;
 use App\Models\PreBooking;
 use App\Models\Salon;
@@ -103,6 +104,56 @@ class AdminController extends Controller
             'employeeServicesData' => $employeeServicesData,
             'durations' => $durations,
         ]);
+    }
+    public function editUser2($id)
+    {
+        $user = User::find((int)$id);
+        if (!$user) {
+            $_SESSION['flash_error'] = __('user_not_found');
+            redirect("/admin/users");
+            exit;
+        }
+        $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
+        $userTypes = UserType::all();
+        $groupedServices = Service::groupedForSelect();
+        $categoryService = Service::query()->where("parent_id" , "<>" , "0")->get();
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $durations = Duration::all();
+        foreach ($employeeServicesData as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
+        $employeeTimeWorkData = EmployeeService::query()->select(['st.*'])->join('employee_table AS st','st.user_id','=','employee_service_table.user_id')->where('st.user_id', '=', $id)->get() ?? [];
+
+        $timeByDay = [];
+        foreach ($employeeTimeWorkData as $time) {
+            $timeByDay[$time->start_day_of_week] = [
+                'start_time' => substr($time->start_time, 0, 5),
+                'end_time' => substr($time->end_time, 0, 5),
+                'off_day' => $time->off_day
+            ];
+        }
+        $timesForView = [];
+        foreach ($days as $index => $day) {
+            $timesForView[$index] = $timeByDay[$index] ?? [
+                'start_time' => '',
+                'end_time' => '',
+                'off_day' => 0
+            ];
+        }
+
+        $this->view('user/originalView/editUser', [
+            'title' => __('edit_user'),
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'groupedServices' => $groupedServices,
+            'selectedServiceIds' => $selectedServiceIds,
+            'employeeServicesData' => $employeeServicesData,
+            'durations' => $durations,
+            'services' => $categoryService,
+            'days' => $days,
+            'timesForView' => $timesForView,
+
+            ]);
     }
 
     public function updateUser($id)

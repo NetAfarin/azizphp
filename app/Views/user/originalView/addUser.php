@@ -123,30 +123,33 @@
                      </thead>
                      <tbody>
                      <?php foreach ($days as $index => $day): ?>
-                     <tr>
-                         <td><?= $day ?></td>
-                         <td>
-                             <div class="custom-time-container time-with-icon">
-                                 <input type="time" name="startTime[]" class="form-control time-input" id="timeIcon">
-                             </div>
-                         </td>
-                         <td>
-                             <div class="custom-time-container time-with-icon">
-                                 <input type="time" name="endTime[]" class="form-control time-input" id="timeIcon">
-                             </div>
-                         </td>
-                         <td>
-                           <div class="d-flex justify-content-center align-items-center">
-                               <div class="form-check tick">
-                                   <label class="form-check-label m-0" for="holiday-<?= $index ?>">
-                                      <?=__("close")?>
-                                   </label>
-                                   <input class="form-check-input" type="checkbox" id="holiday-<?= $index ?>" name="holiday[<?= $index ?>]" value="1">
-                               </div>
-                           </div>
-                         </td>
+                         <tr>
+                             <td><?= $day ?></td>
+                             <td>
+                                 <div class="custom-time-container time-with-icon">
+                                     <input type="time" name="startTime[]" id="startTime-<?= $index ?>" class="form-control time-input">
+                                 </div>
+                             </td>
+                             <td>
+                                 <div class="custom-time-container time-with-icon">
+                                     <input type="time" name="endTime[]" id="endTime-<?= $index ?>" class="form-control time-input">
+                                 </div>
+                             </td>
+                             <td>
+                                 <div class="d-flex justify-content-center align-items-center">
+                                     <div class="form-check tick">
+                                         <label class="form-check-label m-0" for="holiday-<?= $index ?>">
+                                             <?=__("close")?>
+                                         </label>
+                                         <input class="form-check-input holiday-checkbox" type="checkbox"
+                                                id="holiday-<?= $index ?>"
+                                                name="holiday[<?= $index ?>]"
+                                                data-id="<?= $index ?>">
+                                     </div>
+                                 </div>
+                             </td>
 
-                     </tr>
+                         </tr>
                      <?php endforeach;?>
                      </tbody>
                  </table>
@@ -166,7 +169,21 @@
 <script>
 
     $(document).ready(function() {
+        const holidayCheckBox = $('.holiday-checkbox');
+        holidayCheckBox.each(function() {
+            var index = $(this).data('id');
+            if ($(this).is(':checked')) {
+                console.log($(this).data('index'))
 
+                $('#startTime-' + index).prop('disabled', true);
+                $('#endTime-' + index).prop('disabled', true);
+            }
+        });
+        holidayCheckBox.change(function() {
+            var index = $(this).data('id');
+            $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
+            $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
+        });
         $('#multiple-select-field').on('change', function() {
             const selectedOptions = $(this).select2('data');
             const $wrapper = $('#services_table_wrapper');

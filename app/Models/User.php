@@ -26,7 +26,7 @@ class User extends Model
         'follow_shift_from_salon',
         'user_type',
         'is_active',
-        'deleted'
+        'deleted',
     ];
     protected array $virtualKeys = [
         'services',
@@ -35,6 +35,17 @@ class User extends Model
         'user_type',
         'result',
         'role_id',
+        'price',
+        'service_id',
+        'estimated_duration',
+        'fa_title',
+        'en_title',
+        'start_day_of_week',
+        'off_day',
+        'start_time',
+        'end_time',
+        'duration'
+
     ];
 
     public static function findByPhone(string $phone): ?self

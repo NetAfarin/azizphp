@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    $('.js-example-basic-single2').select2({
+        dropdownParent: $('#editModal'),
+        minimumResultsForSearch: Infinity,
+    });
     $("#birth_date_picker").persianDatepicker({
         format: 'YYYY-MM-DD',
         autoClose: true,
