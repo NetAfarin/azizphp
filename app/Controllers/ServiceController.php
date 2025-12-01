@@ -487,6 +487,12 @@ class ServiceController extends Controller
         }
 
         $category = Service::find((int)$id);
+        $stmt = Service::query()->where("parent_id", "=", $category->id)->get();
+        if (sizeof($stmt) > 0) {
+            $_SESSION['flash_error'] = sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
+            redirect("/admin/services/create");
+            exit;
+        }
         if (!$category) {
             $_SESSION['flash_error'] = __('category_not_found');
             redirect("/admin/services/create");

@@ -119,6 +119,7 @@ class AdminController extends Controller
         $categoryService = Service::query()->where("parent_id" , "<>" , "0")->get();
         $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
         $durations = Duration::all();
+        $selectedServiceIds = [];
         foreach ($employeeServicesData as $service) {
             $selectedServiceIds[] = $service->service_id;
         }

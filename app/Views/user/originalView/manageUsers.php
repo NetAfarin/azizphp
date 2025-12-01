@@ -5,13 +5,15 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
     <div class="mt-5"><a href="<?= BASE_URL ?>/admin/user/add">
             <button class="btn btn-outline-primary py-2"><?= __("add_new_user") ?></button>
         </a></div>
-    <div class="mt-4 testi">
-        <label for="paginationOption"><?= __("item_per_page") ?></label>
-        <select class="js-example-basic-single sectionPagination" name="state" id="itemsInPage">
-            <?php foreach ($allowedPerPage as $opt): ?>
-                <option value="<?= $opt ?>" <?= $per_page === $opt ? 'selected' : '' ?>><?= $opt ?></option>
-            <?php endforeach; ?>
-        </select>
+    <div class="d-flex  align-items-baseline gap-2 mt-5">
+        <label for="itemsInPage"><?= __("item_per_page") ?></label>
+        <div>
+            <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
+                <?php foreach ($allowedPerPage as $opt): ?>
+                    <option value="<?= $opt ?>" <?= $per_page === $opt ? 'selected' : '' ?>><?= $opt ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
     </div>
     <div class="mt-4">
         <div class="col-12 ">

@@ -64,15 +64,16 @@ if (!empty($publicErrors)): ?>
     </div>
 </form>
 <div class="col mt-5">
-           <div class="testi d-flex align-items-baseline">
-               <label for="itemsInPage" class="px-2"><?= __("item_per_page") ?></label>
-
+    <div class="d-flex  align-items-baseline gap-2">
+        <label for="itemsInPage"><?= __("item_per_page") ?></label>
+        <div>
+            <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
+                <?php foreach ($allowedPerPage as $opt): ?>
+                    <option value="<?= $opt ?>" <?= $per_page === $opt ? 'selected' : '' ?>><?= $opt ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
     </div>
-    <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
-        <?php foreach ($allowedPerPage as $opt): ?>
-            <option value="<?= $opt ?>" <?= $per_page === $opt ? 'selected' : '' ?>><?= $opt ?></option>
-        <?php endforeach; ?>
-    </select>
     <div class="mt-4">
         <div class="custom-part-with-border">
             <div class="d-flex  justify-content-between gap-sm-2">
