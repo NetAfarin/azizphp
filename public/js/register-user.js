@@ -118,11 +118,7 @@ $(document).ready(function() {
 });
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownLinks = document.querySelectorAll('.nav-item.dropdown > a.dropdown-toggle[href^="#"]');
-
-    // مسیر فعلی بدون query string
     const currentPath = window.location.pathname;
-
-    // ابتدا بررسی لینک‌های زیرمنو برای حالت اولیه
     document.querySelectorAll('.nav-item.dropdown ul li a').forEach(subLink => {
         const subHref = subLink.getAttribute('href');
         if (subHref === currentPath) {
@@ -136,15 +132,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
-
-    // اضافه کردن behavior برای باز و بسته شدن منوها (accordion)
     dropdownLinks.forEach(link => {
         const collapseId = link.getAttribute('href');
         const collapseEl = document.querySelector(collapseId);
         if (!collapseEl) return;
 
         collapseEl.addEventListener('shown.bs.collapse', function () {
-            // بستن سایر collapseها
             dropdownLinks.forEach(otherLink => {
                 const otherCollapseEl = document.querySelector(otherLink.getAttribute('href'));
                 if (!otherCollapseEl || otherCollapseEl === collapseEl) return;
@@ -164,16 +157,16 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-var selectAllUsers = document.getElementById("allUsers");
-var selectAllServices = document.getElementById("allServices");
-selectAllUsers.addEventListener("change", function () {
-    var table = this.closest("table");
-    var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-    checkboxes.forEach(cb => cb.checked = selectAllUsers.checked);
-});
-selectAllServices.addEventListener("change", function () {
-    var table = this.closest("table");
-    var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-    checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
-});
+//
+// var selectAllUsers = document.getElementById("allUsers");
+// var selectAllServices = document.getElementById("allServices");
+// selectAllUsers.addEventListener("change", function () {
+//     var table = this.closest("table");
+//     var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+//     checkboxes.forEach(cb => cb.checked = selectAllUsers.checked);
+// });
+// selectAllServices.addEventListener("change", function () {
+//     var table = this.closest("table");
+//     var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+//     checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
+// });

@@ -105,14 +105,15 @@ class AdminController extends Controller
             'durations' => $durations,
         ]);
     }
-    public function editUser2($id)
+    public function editUser2( $id)
     {
         $user = User::find((int)$id);
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
-            redirect("/admin/users");
+            redirect("/admin/user/manage");
             exit;
         }
+        $errors = [];
         $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
@@ -124,13 +125,107 @@ class AdminController extends Controller
             $selectedServiceIds[] = $service->service_id;
         }
         $employeeTimeWorkData = EmployeeService::query()->select(['st.*'])->join('employee_table AS st','st.user_id','=','employee_service_table.user_id')->where('st.user_id', '=', $id)->get() ?? [];
+        $employeeServicesData2 = EmployeeService::query()
+            ->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id' ,'left')
+            ->join('duration_table AS dur', 'dur.id', '=', 'employee_service_table.estimated_duration' , 'left')
+            ->select([
+                'employee_service_table.*',
+                (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title',
+                'dur.title as durationTitle , dur.id as duration_id',
+            ])
+            ->where('user_id', '=', $id)
+            ->where('employee_service_table.deleted', '=', 0)
+            ->get();
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $firstName = trim($_POST['first_name'] ?? '');
+            $lastName = trim($_POST['last_name'] ?? '');
+            $nationalCode = trim($_POST['national_code'] ?? '');
+            $birthDate = trim($_POST['birth_date'] ?? '');
+            $phoneNumber = trim($_POST['phone_number'] ?? '');
+            $address = trim($_POST['address'] ?? '');
+            $breakTime = trim($_POST['breakTime'] ?? '');
+            $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
+            $selectedServiceIds = $_POST['services'] ?? [];
+            $servicePrices = $_POST['service_prices'] ?? [];
+            $serviceDuration = $_POST['duration'] ?? [];
+            $holidayRaw = $_POST['holiday'] ?? [];
+            $startTime = $_POST['startTime']?? [];
+            $endTime = $_POST['endTime']?? [];
+            $holiday = array_map(function ($value) {
+                return ($value === "on") ? 1 : 0;
+            }, $holidayRaw);
+            $existingServiceIds = array_map(fn($item) => (int)$item->service_id, $employeeServicesData2);
+            $selectedServiceIds = array_map('intval', $selectedServiceIds);
+            $servicesToAdd = array_diff($selectedServiceIds, $existingServiceIds);
+            $servicesToRemove = array_diff($existingServiceIds, $selectedServiceIds);
+            $unchangedServices = array_intersect($existingServiceIds, $selectedServiceIds);
+            if($birthDate != ""){
+                $parts = convertToEnglish(explode("-", $birthDate));
+                $year = $parts[0] ?? 0;
+                $month = $parts[1] ?? 1;
+                $day = $parts[2] ?? 1;
+                $dateArray = jalali_to_gregorian($year, $month, $day);
+                $miladiBirthDate = sprintf('%04d-%02d-%02d', $dateArray[0], $dateArray[1], $dateArray[2]);
+            }
+            if (empty($errors)) {
+                $user->first_name = $firstName;
+                $user->last_name = $lastName;
+                $user->national_code = $nationalCode;
+                $user->phone_number = $phoneNumber;
+                $user->postal_address = $address;
+                $user->birth_date = (($birthDate == "") ? '' : $miladiBirthDate);
+                $user->update_time = date('Y-m-d H:i:s');
+                $serviceIntPrices = array_map('intval', $servicePrices);
+                $serviceIntDurations = array_map('intval', $serviceDuration);
+                if ($user->save()) {
+                    if($user->user_type == UserType::EMPLOYEE){
+                            $user->syncEmployeeServicesWithDetails2($unchangedServices , $servicesToAdd ,  $serviceIntPrices, $serviceIntDurations);
+                    }
 
+                    if($user->user_type == UserType::EMPLOYEE && $followSalon == 0){
+                        foreach ($days as $index => $day) {
+                            $employeeTable = EmployeeTable::query()
+                                ->where('user_id', '=', $id)
+                                ->where('start_day_of_week', '=', $index)
+                                ->first();
+                            if (!empty($employeeTable)) {
+                                $employeeTable->user_id = $id;
+                                $employeeTable->start_day_of_week = $index;
+                                $employeeTable->off_day = $holiday[$index] ?? 1;
+                                $employeeTable->start_time = $startTime[$index] ?? '00:00';
+                                $employeeTable->end_time = $endTime[$index] ?? '23:59';
+                                $employeeTable->save();
+
+                            }
+                        }
+                    }
+                    $_SESSION['flash_success'] = __('user_update');
+                    redirect("/admin/user/manage");
+                    exit;
+                }
+                else {
+                    $errors[] = __('save_error');
+                }
+            }
+
+
+
+
+
+        } else {
+            clear_old_input();
+        }
+        $selectedServiceIds= [];
+        foreach ($employeeServicesData2 as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
         $timeByDay = [];
         foreach ($employeeTimeWorkData as $time) {
-            $timeByDay[$time->start_day_of_week] = [
-                'start_time' => substr($time->start_time, 0, 5),
-                'end_time' => substr($time->end_time, 0, 5),
-                'off_day' => $time->off_day
+            $dayIndex = (int)$time->start_day_of_week + 1;
+            $timeByDay[$dayIndex] = [
+                'start_time' => date('H:i', strtotime($time->start_time)),
+                'end_time' => date('H:i', strtotime($time->end_time)),
+                'off_day'   => $time->off_day
             ];
         }
         $timesForView = [];
@@ -141,7 +236,7 @@ class AdminController extends Controller
                 'off_day' => 0
             ];
         }
-
+        vd($timesForView);
         $this->view('user/originalView/editUser', [
             'title' => __('edit_user'),
             'user' => $user,
@@ -153,6 +248,8 @@ class AdminController extends Controller
             'services' => $categoryService,
             'days' => $days,
             'timesForView' => $timesForView,
+            'errors' => $errors,
+            'employeeServices' => $employeeServicesData2,
 
             ]);
     }

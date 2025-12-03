@@ -197,6 +197,17 @@ function renderPagination($totalPages, $currentPage, $perPage, $search = '', $so
     return $final;
 }
 function toJalali($datetime , $separator = "/") {
+    if (
+        empty($datetime) ||
+        $datetime === "0000-00-00 00:00:00" ||
+        $datetime === "0000-00-00" ||
+        $datetime === "00:00:00"
+    ) {
+        return [
+            'date' => '',
+            'time' => ''
+        ];
+    }
     if (!$datetime instanceof DateTime) {
         $datetime = new DateTime($datetime);
     }

@@ -30,6 +30,8 @@ class EmployeeService extends Model
         'off_day',
         'start_time',
         'end_time',
+        'durationTitle',
+        'duration_id',
     ];
     public static function getEmployeeService($id) : array
     {

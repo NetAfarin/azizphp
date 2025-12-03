@@ -93,8 +93,9 @@ class User extends Model
             ->where('employee_service_table.user_id', '=', $this->id)
             ->get();
     }
-    public function syncEmployeeServicesWithDetails(array $newServiceIds, array $prices, array $durations): void
+    public function syncEmployeeServicesWithDetails(array $newServiceIds, array $prices, array $durations ): void
     {
+
         $userId = $this->id;
 
         $current = EmployeeService::query()
@@ -106,12 +107,11 @@ class User extends Model
             $currentMap[$es->service_id] = $es;
         }
 
-        foreach ($currentMap as $sid => $es) {
-            if (!in_array($sid, $newServiceIds)) {
-                $es->delete();
-            }
-        }
-
+//        foreach ($currentMap as $sid => $es) {
+//            if (!in_array($sid, $newServiceIds)) {
+//                $es->delete();
+//            }
+//        }
         foreach ($newServiceIds as $sid) {
             $price = $prices[$sid] ?? null;
             $durationId = $durations[$sid] ?? null;
@@ -137,9 +137,82 @@ class User extends Model
                     'service_id' => $sid,
                     'price' => $price,
                     'estimated_duration' => $durationId,
+                    'deleted' => 0,
                 ]);
                 $es->save();
             }
+        }
+    }
+    public function syncEmployeeServicesWithDetails2( array $unchangedServices , array $newServiceIds , array $prices, array $durations ): void
+
+    {
+        $userId = $this->id;
+
+        $current = EmployeeService::query()
+            ->where('user_id', '=', $userId)
+            ->get();
+
+        $currentMap = [];
+        foreach ($current as $es) {
+            $currentMap[$es->service_id] = $es;
+        }
+
+//        foreach ($currentMap as $sid => $es) {
+//            if (!in_array($sid, $newServiceIds)) {
+//                $es->delete();
+//            }
+//        }
+        if(!empty($newServiceIds)){
+            foreach ($newServiceIds as $sid) {
+                $price = $prices[$sid] ?? null;
+                $durationId = $durations[$sid] ?? null;
+                if (isset($currentMap[$sid])) {
+                    $changed = false;
+                    if ($currentMap[$sid]->price != $price) {
+                        $currentMap[$sid]->price = $price;
+                        $changed = true;
+                    }
+                    if ($currentMap[$sid]->estimated_duration != $durationId) {
+                        $currentMap[$sid]->estimated_duration = $durationId;
+                        $changed = true;
+                    }
+
+                    if ($changed) {
+                        $currentMap[$sid]->save();
+                    }
+                } else {
+                    $es = new EmployeeService([
+                        'user_id' => $userId,
+                        'service_id' => $sid,
+                        'price' => $price,
+                        'estimated_duration' => $durationId,
+                        'deleted' => 0,
+                    ]);
+                    $es->save();
+                }
+            }
+        }
+        if(!empty($unchangedServices)){
+            foreach ($unchangedServices as $sid) {
+                $price = $prices[$sid] ?? null;
+                $durationId = $durations[$sid] ?? null;
+                if (isset($currentMap[$sid])) {
+                    $changed = false;
+                    if ($currentMap[$sid]->price != $price) {
+                        $currentMap[$sid]->price = $price;
+                        $changed = true;
+                    }
+                    if ($currentMap[$sid]->estimated_duration != $durationId) {
+                        $currentMap[$sid]->estimated_duration = $durationId;
+                        $changed = true;
+                    }
+
+                    if ($changed) {
+                        $currentMap[$sid]->save();
+                    }
+                }
+        }
+
         }
     }
 

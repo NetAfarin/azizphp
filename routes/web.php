@@ -58,6 +58,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(func
 // Admin POST routes (CSRF + RateLimit)
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, /*RateLimiterMiddleware::class*/])->group(function () {
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
+    Route::post('/admin/user/update/{id}', [UserController::class, 'updateUser2']);
+    Route::post('/admin/bookings/addUser', [AdminBookingController::class, 'addUser']);
     Route::post('/admin/user/delete/{id}', [AdminController::class, 'deleteUser']);
     Route::post('/admin/user/register/{userType}', [AdminController::class, 'addUser']);
     Route::post('/admin/bookings/store', [AdminBookingController::class, 'store']);
@@ -66,9 +68,9 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/services/category/delete/{id}', [ServiceController::class, 'deleteCategory']);
     Route::post('/admin/services/create', [ServiceController::class, 'addService']);
     Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
+    Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
     Route::post('/admin/services/update/{id}', [ServiceController::class, 'updateService']);
     Route::post('/operator/dashboard/changeStatus/{id}', [UserController::class, 'updateStatusType']);
-    Route::post('/admin/user/update/{id}', [UserController::class, 'updateUser2']);
     Route::post('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
     Route::post('/admin/salon/create', [SuperAdminController::class, 'createSalon']);
     Route::post('/admin/salon/edit/{id}', [SuperAdminController::class, 'updateSalon']);
@@ -76,6 +78,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/sa/salon/create', [SuperAdminController::class, 'createSalon']);
     Route::post('/admin/bookings/create', [AdminBookingController::class, 'createReserve']);
     Route::post('/admin/bookings/add/user', [AdminBookingController::class, 'addUser']);
+    Route::post('/admin/user/edit/{id}', [AdminController::class, 'editUser2']);
 
 });
 

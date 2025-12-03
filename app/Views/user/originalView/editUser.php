@@ -5,14 +5,14 @@
     <div class="row mt-5">
         <div class="col-6">
             <label for="username"><?= __("name") ?> <span class="bullet-color"> *</span></label>
-            <input type="text" class="form-control" id="username" name="first_name" value="<?= $user->first_name?> ">
+            <input type="text" class="form-control" id="username" name="first_name" value="<?=$user->first_name?>">
             <?php if (!empty($errors['first_name'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
             <?php endif; ?>
         </div>
         <div class="col-6">
             <label for="lastname"><?= __("last_name") ?><span class="bullet-color"> *</span></label>
-            <input type="text" class="form-control" id="lastname" name="last_name" value="<?= $user->last_name?> ">
+            <input type="text" class="form-control" id="lastname" name="last_name" value="<?=$user->last_name?>">
             <?php if (!empty($errors['last_name'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['last_name'][0]) ?></div>
             <?php endif; ?>
@@ -22,7 +22,7 @@
         <div class="col-6">
             <label for="national-code"><?= __("national_code") ?><span
                     class="bullet-color"> *</span></label>
-            <input type="text" class="form-control ltr-input" id="national-code" name="national_code" value="<?= $user->national_code?> ">
+            <input type="text" class="form-control ltr-input" id="national-code" name="national_code" value="<?=$user->national_code?>">
             <?php if (!empty($errors['national_code'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['national_code'][0]) ?></div>
             <?php endif; ?>
@@ -30,7 +30,7 @@
         <div class="col-6">
             <label for="birthday-date"><?= __("birth_date") ?><span class="bullet-color"> *</span></label>
             <div class="input-with-icon-left">
-                <input type="text" id="birth_date_picker" class="form-control" name="birth_date" value="<?= $user->birth_date?> ">
+                <input type="text" id="birth_date_picker" class="form-control" name="birth_date" value="<?= ($user->birth_date != "") ? toJalali($user->birth_date)['date'] : "0000-00-00"?> ">
                 <i class="fa fa-calendar icon-color"></i>
             </div>
             <?php if (!empty($errors['birth_date'])): ?>
@@ -42,14 +42,14 @@
     <div class="row mt-5">
         <div class="col-6">
             <label for="phone-number"><?= __("phone_number") ?><span class="bullet-color"> *</span></label>
-            <input type="text" class="form-control ltr-input" id="phone-number" name="phoneNumber" value="<?= $user->phone_number?> ">
-            <?php if (!empty($errors['phoneNumber'])): ?>
+            <input type="text" class="form-control ltr-input" id="phone_number" name="phone_number" value="<?= $user->phone_number?>">
+            <?php if (!empty($errors['phone_number'])): ?>
                 <div class="text-danger small"><?= htmlspecialchars($errors['phoneNumber'][0]) ?></div>
             <?php endif; ?>
         </div>
         <div class="col-6">
             <label for="userRole"><?= __("role") ?><span class="bullet-color"> *</span></label>
-            <select class="js-example-basic-single w-100"  id="userRole" name="role">
+            <select class="js-example-basic-single w-100"  id="userRole" name="role" disabled>
                 <?php foreach ($userTypes as $role): ?>
                     <option value="<?= $role->id ?>"  <?= ($role->id == $user->user_type) ? 'selected' : '' ?>>
                         <?= ($lang == "fa") ? htmlspecialchars($role->title ?? '') : htmlspecialchars($role->en_title) ?>
@@ -91,7 +91,7 @@
                 <div class="mb-3" id="employee_services_section" >
                     <label for="multiple-select-field" class="form-label"><?= __("skills") ?><span
                             class="bullet-color"> *</span></label>
-                    <select class="js-example-basic-single" multiple name="service[]" >
+                    <select class="js-example-basic-single" id="multi-services" multiple name="services[]" >
                         <?php foreach ($services as $service): ?>
                             <option value="<?= $service->id ?>" <?= in_array($service->id, $selectedServiceIds) ? 'selected' : '' ?>>
                                 <?= ($lang =="fa" ? $service->fa_title : $service->en_title) ?>
@@ -101,12 +101,47 @@
 
                 </div>
             </div>
-            <div id="services_table_wrapper" class="mt-3"></div>
+            <div id="services_table_wrapper" class="mt-3">
+
+                <div class="table-wrapper">
+                    <table class="table transparent custom-table">
+                        <thead>
+                        <tr>
+                            <th>نام سرویس</th>
+                            <th>قیمت (تومان)</th>
+                            <th>مدت زمان</th>
+                            <th>حذف</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($employeeServices as $service): ?>
+                            <tr data-id="<?= $service->service_id ?>">
+                                <td><?= $service->title ?></td>
+                                <td>
+                                    <input type="number" name="service_prices[<?= $service->service_id ?>]" value="<?= $service->price ?>" class="form-control">
+                                </td>
+                                <td>
+                                    <select class="duration-select" name="duration[<?= $service->service_id ?>]">
+                                        <?php foreach ($durations as $d): ?>
+                                            <option value="<?= $d->id ?>" <?= ($d->id == $service->duration_id) ? 'selected' : '' ?>>
+                                                <?= $d->title ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>
+                            </tr>
+
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="mt-5" >
             <span id="shiftTitle"><?= __("shift") ?></span>
             <div class="form-check  switch-input form-switch mt-2">
-                <input class="switch-input form-check-input" type="checkbox" role="switch" id="switchBox" name="followSalon" checked>
+                <input class="switch-input form-check-input" type="checkbox" role="switch" id="switchBox" name="followSalon" <?= ($user->follow_shift_from_salon ==  1) ? "checked" : "" ?>>
                 <label class="switch-input form-check-label" for="switchBox"></label>
             </div>
             <div class="table-wrapper mt-3" id="workTable">
@@ -157,31 +192,76 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-primary mt-5 px-5" type="submit"><?=__("add")?></button>
+    <button class="btn btn-primary mt-5 px-5" type="submit"><?=__("edit_user")?></button>
 </form>
 
 
 </div>
 </div>
-
 </body>
 <script>
     $(document).ready(function () {
+        const holidayCheckBox = $('.holiday-checkbox');
+        holidayCheckBox.each(function() {
+            var index = $(this).data('id');
+            if ($(this).is(':checked')) {
+                $('#startTime-' + index).val('').prop('disabled', true);
+                $('#endTime-' + index).val('').prop('disabled', true);
+            }
+        });
+        holidayCheckBox.change(function() {
+            var index = $(this).data('id');
+            $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
+            $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
+        });
         $('.js-example-basic-single').select2({
             minimumResultsForSearch: Infinity,
         });
-        const holidayCheckBox = $('.holiday-checkbox');
-           holidayCheckBox.each(function() {
-                var index = $(this).data('id');
-                if ($(this).is(':checked')) {
-                    $('#startTime-' + index).prop('disabled', true).val('--:--');
-                    $('#endTime-' + index).prop('disabled', true).val('--:--');
-                }
-            });
-                holidayCheckBox.change(function() {
-                var index = $(this).data('id');
-                $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
-                $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
-            });
+        $('.duration-select').select2({
+            minimumResultsForSearch: Infinity,
+        });
+        $('#multi-services').on('select2:select', function(e) {
+            let id = e.params.data.id;
+            let title = e.params.data.text;
+
+            let durationOptionsHTML = `<?php foreach ($durations as $i): ?>
+              <option value="<?= $i->id ?>"><?= $i->title ?></option>
+                 <?php endforeach; ?>`;
+                 if($('#services_table_wrapper tbody tr[data-id="'+id+'"]').length === 0) {
+
+                let row = `<tr data-id="${id}">
+            <td>${title}</td>
+            <td><input type="text" min="0" class="form-control" name="service_prices[]" required></td>
+            <td>
+                <select name="service_durations[]" class="duration-select-js" required>
+                    ${durationOptionsHTML}
+                </select>
+            </td>
+            <td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>
+        </tr>`;
+                     $('#services_table_wrapper tbody').append(row);
+                     $('#services_table_wrapper tbody tr[data-id="' + id + '"] .duration-select-js').select2({
+                         minimumResultsForSearch: Infinity,
+                     });
+                 }
+
+        });
+
+        $(document).on('click', '.remove-row', function () {
+            let row = $(this).closest('tr');
+            let id = row.data('id');
+            row.remove();
+            let selectedValues = $('#multi-services').val();
+            selectedValues = selectedValues.filter(v => v != id);
+
+            $('#multi-services').val(selectedValues).trigger('change');
+        });
+
+        $('#multi-services').on('select2:unselect', function (e) {
+            let id = e.params.data.id;
+            $('#services_table_wrapper tbody tr[data-id="'+id+'"]').remove();
+        });
+
     });
 </script>
+<script src="<?= asset('/js/register-user.js') ?>"></script>

@@ -1,6 +1,6 @@
     $(document).ready(function (){
         let lang = getLangFromURL();
-        getDetails(["first_name", "last_name"], "fullName");
+        // getDetails(["first_name", "last_name"], "fullName");
 
     $('#service_id').change(function() {
             let text = $("#service_id option:selected").text();
@@ -133,6 +133,7 @@
     $('#phone_number').val('').prop('disabled', false);
     $('#first_name').val('').prop('disabled', false);
     $('#last_name').val('').prop('disabled', false);
+    $('#fullName').text(''); // ← درست
     $icon.removeClass('fa-xmark').addClass('fa-search');
     return;
 }
@@ -145,8 +146,10 @@
         console.log(data)
     if (data.data.length > 0) {
     $('#first_name').val(data.data[0].first_name).prop('disabled', true);
+    $('#first_name_hidden').val(data.data[0].first_name);
     $('#last_name').val(data.data[0].last_name).prop('disabled', true);
-        $('#fullName').text(data.data[0].first_name + " " + data.data[0].last_name);
+    $('#last_name_hidden').val(data.data[0].last_name);
+    $('#fullName').text(data.data[0].first_name + " " + data.data[0].last_name);
     $('#phone_number').val(mobile).prop('disabled', true);
     } else {
         $('#notFoundModal').data('mobile', mobile);
@@ -159,18 +162,7 @@
 }
 });
 });
-     $('#submitButton').click(function(e) {
-            e.preventDefault();
-            var selectedOption = $('#employee_time option:selected');
-            var status = selectedOption.data('status');
-            if (status == 1) {
-                $('#reserveModal').modal('show');
-            } else {
-                $('#first_name').prop('disabled', false);
-                $('#last_name').prop('disabled', false);
-                $('form').submit();
-            }
-        });
+
 });
     $('#notFoundModal').on('hidden.bs.modal', function() {
     $('#search').val('');
@@ -187,9 +179,19 @@
         $('#phone_number_modal').prop('disabled', true);
     });
     $('#createUserModal').on('click', '.btn-modal', function() {
-        $('#phone_number_modal').prop('disabled', false);
-        $('form').submit();
+        var phone = $('#phone_number_modal').val();
+        var firstName = $('#first_name_modal').val();
+        var lastName = $('#last_name_modal').val();
+        $('#phone_number_hidden').val(phone);
+        $('#phone_number').val(phone).prop('disabled', true);
+        $('#first_name').val(firstName).prop('disabled', true);
+        $('#last_name').val(lastName).prop('disabled', true);
+        $('#fullName').text(firstName + " " + lastName);
+
+
+        $('#createUserModal').modal('hide');
     });
+
     function switchTab(index) {
     $('#circle0, #circle1').removeClass('active');
     $('#circle' + index).addClass('active');

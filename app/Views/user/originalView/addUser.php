@@ -165,6 +165,7 @@
 </div>
 </body>
 <script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;
+
 </script>
 <script>
 

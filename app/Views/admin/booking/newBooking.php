@@ -57,25 +57,18 @@ if (!empty($publicErrors)): ?>
                     </div>
                     <div class="mt-5">
                     <label for="phone_number"><?= __('phone_number') ?><span class="bullet-color"> *</span></label>
-                    <input type="text" class="form-control" id="phone_number" name="phone_number" <?= !empty($newPhonNumber) ? 'readonly' : '' ?>>
-                    <?php if (!empty($errors['phone_number'])): ?>
-                        <div class="text-danger small"><?= htmlspecialchars($errors['phone_number'][0]) ?></div>
-                    <?php endif; ?>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" readonly >
                 </div>
                 <div class="row mt-5">
                     <div class="col-6">
                         <label for="first_name"><?= __('first_name') ?><span class="bullet-color"> *</span></label>
-                        <input type="text" class="form-control"  id="first_name" name="first_name">
-                        <?php if (!empty($errors['first_name'])): ?>
-                            <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
-                        <?php endif; ?>
+                        <input type="text" class="form-control"  id="first_name" name="first_name" readonly>
+                        <input type="hidden" class="form-control"  id="first_name_hidden" name="first_name_hidden">
                     </div>
                     <div class="col-6">
                         <label for="last_name"><?= __('last_name') ?><span class="bullet-color"> *</span></label>
-                        <input type="text" class="form-control" id="last_name" name="last_name">
-                        <?php if (!empty($errors['last_name'])): ?>
-                            <div class="text-danger small"><?= htmlspecialchars($errors['last_name'][0]) ?></div>
-                        <?php endif; ?>
+                        <input type="text" class="form-control" id="last_name" name="last_name" readonly>
+                        <input type="hidden" class="form-control"  id="last_name_hidden" name="last_name_hidden">
                     </div>
                 </div>
                 <h6 class="fw-bold mt-5"><?= __("choose_service")?></h6>
@@ -108,6 +101,9 @@ if (!empty($publicErrors)): ?>
                             <label for="time"><?= __('time') ?><span class="bullet-color"> *</span></label>
                             <select class="js-example-basic-single form-select w-100" name="time"  id="employee_time">
                             </select>
+                            <?php if (!empty($errors['time'])): ?>
+                                <div class="text-danger small"><?= htmlspecialchars($errors['time'][0]) ?></div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -130,15 +126,6 @@ if (!empty($publicErrors)): ?>
                     </div>
                 <button class="btn btn-primary mt-4 px-4" type="submit" id="submitButton"><?= __("final_reserve") ?></button>
                 <button class="btn btn-outline-secondary mt-4 px-4" type="button"><?= __("clean") ?></button>
-                    <div class="modal fade borderless-modal" id="reserveModal" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body custom-modal-body mt-4 mb-4">
-                                    <h4 class="fw-bold">این ساعت قبلا رزرو شده است</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="modal fade borderless-modal" id="notFoundModal" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -158,14 +145,13 @@ if (!empty($publicErrors)): ?>
                     <div class="modal fade" id="finalReserve" tabindex="-1"  data-show-modal="<?= $showReservationModal ? 'true' : 'false' ?>">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <input type="hidden" name="id" id="status_id">
                                 <div class="modal-body2">
                                     <h5 class="center fw-bold">رزرو با موفقیت انجام شد</h5>
                                     <div class="reserveDerailsModal rounded text-start">
                                         <div class="d-flex flex-column align-items-start gap-2 p-3">
                                             <h6 class="fw-bold">خلاصه رزرو</h6>
-                                            <div> <?= __("customer") ?>: <span id="fullName"><?= $reservationData['fullName'] ?? '' ?></span></div>
-                                            <div> <?= __("service") ?>: <span id="fullName"><?= $reservationData['service'] ?? '' ?></span></div>
+                                            <div> <?= __("customer") ?>: <span><?= $reservationData['fullName'] ?? '' ?></span></div>
+                                            <div> <?= __("service") ?>: <span ><?= $reservationData['service'] ?? '' ?></span></div>
                                             <div> <?= __("employee") ?>: <span id="getEmployee"><?= $reservationData['employee'] ?? '' ?></span></div>
                                             <div>  <?= __("date_time") ?>: <span id="getEmployeeDate"><?= (toJalali($reservationData['dateTime'])['date'] ?? '') ." / ". toJalali($reservationData['dateTime'])['time'] ?? '' ?></span></div>
                                         </div>
@@ -185,12 +171,11 @@ if (!empty($publicErrors)): ?>
                     <div class="modal fade" id="createUserModal" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <input type="hidden" name="id" id="add_user">
                                 <div class="modal-body2">
                                     <span class="center"><?= __("add_user") ?></span>
-                                    <input type="hidden" name="id" id="add_user">
                                     <div class="mt-4">
                                         <label for="phone_number_modal"><?= __("phone_number") ?><span class="bullet-color"> *</span></label>
+                                        <input type="hidden" name="phone_number_hidden"  id="phone_number_hidden">
                                         <input type="text" class="form-control" name="phone_number_modal" id="phone_number_modal">
                                     </div>
                                     <div class="mt-4">
