@@ -236,7 +236,6 @@ class AdminController extends Controller
                 'off_day' => 0
             ];
         }
-        vd($timesForView);
         $this->view('user/originalView/editUser', [
             'title' => __('edit_user'),
             'user' => $user,
