@@ -1670,3 +1670,33 @@ html[lang="en"] .pagination li:last-child{
 /* .select2  .select2-container .select2-container--default .fullSelect{*/
 /*    width: 100% !important;*/
 /*}*/
+.mdtp__wrapper[data-theme='custom'] .mdtp__time_holder {
+    background-color: var(--bs-primary) !important;
+}
+
+.mdtp__wrapper[data-theme='custom'] .mdtp__clock .mdtp__am.active,
+.mdtp__wrapper[data-theme='custom'] .mdtp__clock .mdtp__pm.active {
+    background-color: var(--bs-primary) !important;
+}
+
+.mdtp__wrapper[data-theme='custom'] .mdtp__button {
+    color: var(--bs-primary) !important;
+}
+
+html[lang="fa"] .mdtp__time_holder,
+html[lang="en"] .mdtp__time_holder {
+    direction: ltr;
+}
+
+.mdtp__wrapper[data-theme='custom'] .mdtp__digit.active:before {
+    background-color: var(--bs-primary) !important;
+}
+
+.mdtp__wrapper[data-theme='custom'] .mdtp__digit.active span,
+.mdtp__wrapper[data-theme='custom'] .mdtp__clock .mdtp__digit:not(.digit--disabled) span:hover {
+    background-color: var(--bs-primary) !important;
+    color: #fff !important;
+}
+.mdtp__clock .mdtp__clock_dot {
+background-color: var(--bs-primary) !important;
+}

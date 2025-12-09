@@ -126,8 +126,27 @@
                          <tr>
                              <td><?= $day ?></td>
                              <td>
-                                 <div class="custom-time-container time-with-icon">
-                                     <input type="time" name="startTime[<?= $index ?>]" id="startTime-<?= $index ?>" class="form-control time-input">
+<!--                                 <div class="custom-time-container time-with-icon">-->
+<!--                                     <input type="time" name="startTime[--><?php //= $index ?><!--]" id="startTime---><?php //= $index ?><!--" class="form-control time-input">-->
+                                     <div class="custom-time-container time-with-icon">
+<!--                                         <input-->
+<!--                                                 type="text"-->
+<!--                                                 id="timepicker"-->
+<!--                                                 class="form-control"-->
+<!--                                                 placeholder="انتخاب ساعت"-->
+<!--                                                 data-mdb-timepicker-init-->
+<!--                                         />-->
+
+                                         <div style="width: 22rem;" class="form-outline timepicker" data-mdb-timepicker-init="" data-mdb-input-init="" data-mdb-input-initialized="true" data-mdb-timepicker-initialized="true">
+                                             <input type="text" class="form-control timepicker-input" id="form1">
+                                             <button id="timepicker-toggle-627857" tabindex="0" type="button" class="timepicker-toggle-button" data-mdb-toggle="timepicker" aria-label="Open Timepicker" style="pointer-events: auto;">
+                                                 <i class="far fa-clock fa-sm timepicker-icon"></i>
+                                             </button>
+
+                                             <label class="form-label" for="form1" style="margin-left: 0px;">Select a time</label>
+                                             <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 81.6px;"></div><div class="form-notch-trailing"></div></div></div>
+
+                                         <!--                                     </div>-->
                                  </div>
                              </td>
                              <td>
@@ -164,12 +183,47 @@
 </div>
 </div>
 </body>
-<script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;
-
+<script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // به صورت خودکار با data-mdb-timepicker-init مقداردهی می‌شود
+        // یا دستی:
+        const timepickerEl = document.getElementById('form1');
+        const timepicker = new mdb.Timepicker(timepickerEl, {
+            format: '24', // یا '12' ساعت
+        });
+    });
 </script>
 <script>
 
     $(document).ready(function() {
+        // $('.time-picker').each(function() {
+        //     $(this).mdtimepicker({
+        //         timeFormat: 'hh:mm', // 24 ساعته
+        //         theme: 'custom',
+        //         readOnly: true
+        //     });
+        //
+        //
+        //     $(this).on('click', function() {
+        //         $(this).mdtimepicker('show');
+        //     });
+        // });
+        $("#birth_date_picker2").persianDatepicker({
+            format: 'YYYY-MM-DD',
+            autoClose: true,
+            initialValue: false,
+            altField: '#birth_date',
+            altFormat: 'YYYY-MM-DD',
+            calendar: {
+                persian: {
+                    locale: 'fa'
+                },
+                gregorian: {
+                    locale: 'en'
+                }
+            }
+        });
         const holidayCheckBox = $('.holiday-checkbox');
         holidayCheckBox.each(function() {
             var index = $(this).data('id');
@@ -254,9 +308,9 @@
         });
 
     });
-    document.getElementById('timeIcon').addEventListener('click', function() {
-        document.getElementById('timeInput').showPicker();
-    });
+    // document.getElementById('timeIcon').addEventListener('click', function() {
+    //     document.getElementById('timeInput').showPicker();
+    // });
 
 </script>
 <script src="<?= asset('/js/register-user.js') ?>"></script>
