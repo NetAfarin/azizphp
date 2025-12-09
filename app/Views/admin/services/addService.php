@@ -249,10 +249,10 @@ if (!empty($publicErrors)): ?>
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-body custom-modal-body mt-4 mb-4">
-                                                <h4 class="fw-bold">آیا از حذف خدمت هستید؟</h4>
+                                                <h4 class="fw-bold text-center"><?=__("confirm_delete_service")?></h4>
                                                 <div class="d-flex gap-4 mt-5">
-                                                    <button type="submit" class="btn btn-primary btn-modal">بله</button>
-                                                    <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">خیر</button>
+                                                    <button type="submit" class="btn btn-primary btn-modal"><?= __("yes") ?></button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal"><?= __("no") ?></button>
                                                 </div>
                                             </div>
                                         </div>

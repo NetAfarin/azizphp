@@ -195,7 +195,6 @@ class AdminBookingController extends Controller
                     }
 
                     $_SESSION['reservation_success'] = true;
-
                     $_SESSION['reservation_data'] = [
                         'fullName' =>
                             (empty($newFirstName) && empty($newLastName))
@@ -219,8 +218,6 @@ class AdminBookingController extends Controller
             unset($_SESSION['reservation_success']);
             unset($_SESSION['reservation_data']);
         }
-
-
         $this->view('admin/booking/newBooking', [
             'title' => __('new_booking'),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",

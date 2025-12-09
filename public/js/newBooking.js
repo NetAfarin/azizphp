@@ -1,210 +1,351 @@
-$(document).ready(function (){
-    let lang = getLangFromURL();
-    // getDetails(["first_name", "last_name"], "fullName");
-
-    $('#service_id').change(function() {
-        let text = $("#service_id option:selected").text();
-        $("#getService").text(text);
-        var serviceId = $(this).val();
-        if (!serviceId) {
-            console.log('سرویس انتخاب نشده');
-            return;
-        }
-        var url = `${BASE_URL}/admin/bookings/get/` + serviceId;
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                $('#employee_time, #employee_date').empty();
-                $('#employee_select').empty().append(
-                    (response.data || []).map((item, index) =>
-                        $('<option>', {
-                            value: item.id,
-                            text: item.first_name,
-                            selected: index === 0,
-                        })
-                    )
-                ).trigger('change');
-            },
-            error: function(xhr, status, error) {
-                console.log('❌ خطا در دریافت پاسخ:');
-                console.log('   وضعیت:', status);
-                console.log('   خطا:', error);
-                console.log('   پاسخ سرور:', xhr.responseText);
-                console.log('   کد وضعیت:', xhr.status);
-            }
-        });
-    });
-    $('#employee_select').change(function (){
-        let serviceId = $("#service_id").val();
-        var employeeId = $(this).val();
-        var url = `${BASE_URL}/admin/bookings/getEmployeeDate/${employeeId}/${serviceId}`;
-        let text = $("#employee_select option:selected").text();
-        $("#getEmployee").text(text);
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                $('#employee_date').empty().append(
-                    (response.data || []).map((item, index) =>
-                        $('<option>', {
-                            value: item.id,
-                            text: item.date,
-                            selected: index === 0,
-                        })
-                    )
-                ).trigger('change');
-            },
-
-            error: function(xhr, status, error) {
-                console.log('❌ خطا در دریافت پاسخ:');
-                console.log('   وضعیت:', status);
-                console.log('   خطا:', error);
-                console.log('   پاسخ سرور:', xhr.responseText);
-                console.log('   کد وضعیت:', xhr.status);
-            }
-        });
-    });
-    const finalReserveModal = document.getElementById('finalReserve');
-
-    if (finalReserveModal && finalReserveModal.dataset.showModal === 'true') {
-        $('#finalReserve').modal('show');
-    }
-    $('#employee_date').change(function (){
-        var dateId = $(this).val();
-        var url = `${BASE_URL}/admin/bookings/getEmployeeTime/` + dateId;
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                console.log(response.data)
-                const dateSelect = $('#employee_time');
-                console.log(dateSelect)
-                dateSelect.empty();
-                (response.data || []).forEach((item, index) => {
-                    const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
-
-                    const option2 = $('<option>', {
-                        value: item.id,
-                        text: optionText ,
-                        'data-status': item.status
-
-                    });
-                    if (item.status == 1) {
-                        option2.prop('disabled', true);
-                    }
-                    dateSelect.append(option2);
-                })
-                let time = $("#employee_time option:selected").text();
-                let date = $("#employee_date option:selected").text();
-
-                if (time !== "" && date !== "") {
-                    $("#getEmployeeDate").text(
-                        date + ((lang === "en") ? " / Hour " : " / ساعت ") + time.match(/\d{1,2}:\d{2}/)
-                    );
-                }
-                $("#employee_time, #employee_date").on('change', function() {
-                    let time = $("#employee_time option:selected").text();
-                    let date = $("#employee_date option:selected").text();
-
-                    if (time !== "" && date !== "") {
-                        $("#getEmployeeDate").text(
-                            date + ((lang === "en") ? " / Hour " : " / ساعت ") + time.match(/\d{1,2}:\d{2}/)
-                        );
-                    }
-                });
-
-            },
-            error: function(xhr, status, error) {
-                console.log('❌ خطا در دریافت پاسخ:');
-                console.log('   وضعیت:', status);
-                console.log('   خطا:', error);
-                console.log('   پاسخ سرور:', xhr.responseText);
-                console.log('   کد وضعیت:', xhr.status);
-            }
-        });
-
-    });
+$(document).ready(function () {
     $('.js-example-basic-single').select2({
         minimumResultsForSearch: Infinity,
-
-
     });
+    const modal = $('#finalReserve');
+    if (modal.data('show-modal')) {
+        modal.modal('show');
+        console.log("ساخص ئخیشم")
+    }
+    let lang = getLangFromURL();
+    $('.search-block').each(function () {
+        const $form = $(this);
 
-    $('#service_id').trigger('change');
-    $('#btn-search').on('click', function() {
-        var $icon = $(this).find('i');
-        var mobile = $('#search').val();
-        if (!mobile || !/^\d{11}$/.test(mobile)) {
-            showBootstrapAlert('شماره موبایل وارد شده صحیح نمیباشد.');
-            return;
-        }
-        if ($icon.hasClass('fa-xmark')) {
-            $('#search').val('').prop('disabled', false);
-            $('#phone_number').val('').prop('disabled', false);
-            $('#first_name').val('').prop('disabled', false);
-            $('#last_name').val('').prop('disabled', false);
-            $('#fullName').text(''); // ← درست
-            $icon.removeClass('fa-xmark').addClass('fa-search');
-            return;
-        }
-        $icon.removeClass('fa-search').addClass('fa-xmark');
-        $.ajax({
-            url: `${BASE_URL}/admin/bookings/searchUser/${mobile}`,
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                console.log(data)
-                if (data.data.length > 0) {
-                    $('#first_name').val(data.data[0].first_name).prop('disabled', true);
-                    $('#first_name_hidden').val(data.data[0].first_name);
-                    $('#last_name').val(data.data[0].last_name).prop('disabled', true);
-                    $('#last_name_hidden').val(data.data[0].last_name);
-                    $('#fullName').text(data.data[0].first_name + " " + data.data[0].last_name);
-                    $('#phone_number').val(mobile).prop('disabled', true);
-                } else {
-                    $('#notFoundModal').data('mobile', mobile);
-                    $('#notFoundModal').modal('show');
+        $form.find('.service_select').change(function () {
+            const serviceId = $(this).val();
+            const $getService = $form.find('.getService');
+            $getService.text($(this).find('option:selected').text());
+
+            if (!serviceId) return;
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/get/${serviceId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    const $employeeSelect = $form.find('.employee_select');
+                    const $employeeDate = $form.find('.employee_date');
+                    const $employeeTime = $form.find('.employee_time');
+
+                    $employeeSelect.empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.first_name,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+
+                    $employeeDate.empty();
+                    $employeeTime.empty();
+
+                    // بارگذاری دیفالت تاریخ و زمان کارمند اول
+                    const firstEmployeeId = $employeeSelect.val();
+                    if (firstEmployeeId) {
+                        $form.find('.employee_select').trigger('change');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت پاسخ:', status, error);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('❌ Error:', error);
-                $icon.removeClass('fa-xmark').addClass('fa-search');
-            }
+            });
         });
+
+        $form.find('.employee_select').change(function () {
+            const employeeId = $(this).val();
+            const serviceId = $form.find('.service_select').val();
+            const $getEmployee = $form.find('.getEmployee');
+            $getEmployee.text($(this).find('option:selected').text());
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/getEmployeeDate/${employeeId}/${serviceId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    const $employeeDate = $form.find('.employee_date');
+                    $employeeDate.empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.date,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت پاسخ:', status, error);
+                }
+            });
+        });
+
+        $form.find('.employee_date').change(function () {
+            const dateId = $(this).val();
+            const $employeeTime = $form.find('.employee_time');
+            const $getEmployeeDate = $form.find('.getEmployeeDate');
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/getEmployeeTime/${dateId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    $employeeTime.empty();
+                    (response.data || []).forEach((item) => {
+                        const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
+                        const $option = $('<option>', {
+                            value: item.id,
+                            text: optionText,
+                            'data-status': item.status
+                        });
+                        if (item.status == 1) $option.prop('disabled', true);
+                        $employeeTime.append($option);
+                    });
+
+                    updateEmployeeDateDisplay();
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت پاسخ:', status, error);
+                }
+            });
+
+            function updateEmployeeDateDisplay() {
+                const time = $employeeTime.find('option:selected').text();
+                const date = $form.find('.employee_date option:selected').text();
+                if (time && date) {
+                    $getEmployeeDate.text(date + (lang === "en" ? " / Hour " : " / ساعت ") + time.match(/\d{1,2}:\d{2}/));
+                }
+            }
+
+            $employeeTime.add($form.find('.employee_date')).off('change.update').on('change.update', updateEmployeeDateDisplay);
+        });
+
+        $form.find('.btn-search-btn').click(function () {
+            const $icon = $(this).find('i');
+            const mobile = $form.find('.search-input').val();
+            const $phone = $form.find('.phone_number');
+            const $firstName = $form.find('.first_name');
+            const $firstNameHidden = $form.find('.first_name_hidden');
+            const $lastName = $form.find('.last_name');
+            const $lastNameHidden = $form.find('.last_name_hidden');
+            const $fullName = $form.find('.fullName');
+
+            if (!mobile || !/^\d{11}$/.test(mobile)) {
+                showBootstrapAlert('شماره موبایل وارد شده صحیح نمیباشد.');
+                return;
+            }
+
+            if ($icon.hasClass('fa-xmark')) {
+                $form.find('.search-input').val('').prop('disabled', false);
+                $phone.val('').prop('disabled', false);
+                $firstName.val('').prop('disabled', false);
+                $lastName.val('').prop('disabled', false);
+                $fullName.text('');
+                $icon.removeClass('fa-xmark').addClass('fa-search');
+                return;
+            }
+
+            $icon.removeClass('fa-search').addClass('fa-xmark');
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/searchUser/${mobile}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.data.length > 0) {
+                        $firstName.val(data.data[0].first_name).prop('disabled', true);
+                        $firstNameHidden.val(data.data[0].first_name);
+                        $lastName.val(data.data[0].last_name).prop('disabled', true);
+                        $lastNameHidden.val(data.data[0].last_name);
+                        $fullName.text(data.data[0].first_name + " " + data.data[0].last_name);
+                        $phone.val(mobile).prop('disabled', true);
+                    } else {
+                        $('#notFoundModal').data('mobile', mobile).modal('show');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ Error:', error);
+                    $icon.removeClass('fa-xmark').addClass('fa-search');
+                }
+            });
+        });
+        const $serviceSelect = $form.find('.service_select');
+        if (!$serviceSelect.val()) {
+            $serviceSelect.val($serviceSelect.find('option').first().val());
+        }
+        $serviceSelect.trigger('change');
+    });
+    $('.block-with-time_priority').each(function () {
+        const $form = $(this);
+
+        $form.find('.service_select').change(function () {
+            const serviceId = $(this).val();
+            const $getService = $form.find('.getService');
+            $getService.text($(this).find('option:selected').text());
+
+            if (!serviceId) return;
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/get/${serviceId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    const $employeeSelect = $form.find('.employee_select');
+                    const $employeeDate = $form.find('.employee_date');
+                    const $employeeTime = $form.find('.employee_time');
+
+                    $employeeSelect.empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.first_name,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+
+                    $employeeDate.empty();
+                    $employeeTime.empty();
+                    const firstEmployeeId = $employeeSelect.val();
+                    if (firstEmployeeId) {
+                        $form.find('.employee_select').trigger('change');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت پاسخ:', status, error);
+                }
+            });
+        });
+
+        $form.find('.employee_select').change(function () {
+            const employeeId = $(this).val();
+            const serviceId = $form.find('.service_select').val();
+            const $getEmployee = $form.find('.getEmployee');
+            $getEmployee.text($(this).find('option:selected').text());
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/getEmployeeDate/${employeeId}/${serviceId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    const $employeeDate = $form.find('.employee_date');
+                    $employeeDate.empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.date,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت پاسخ:', status, error);
+                }
+            });
+        });
+
+        $form.find('.employee_date').change(function () {
+            const dateId = $(this).val();
+            const $employeeTime = $form.find('.employee_time');
+            const $getEmployeeDate = $form.find('.getEmployeeDate');
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/getEmployeeTime/${dateId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    $employeeTime.empty();
+                    (response.data || []).forEach((item) => {
+                        const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
+                        const $option = $('<option>', {
+                            value: item.id,
+                            text: optionText,
+                            'data-status': item.status
+                        });
+                        if (item.status == 1) $option.prop('disabled', true);
+                        $employeeTime.append($option);
+                    });
+
+                    updateEmployeeDateDisplay();
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت پاسخ:', status, error);
+                }
+            });
+
+            function updateEmployeeDateDisplay() {
+                const time = $employeeTime.find('option:selected').text();
+                const date = $form.find('.employee_date option:selected').text();
+                if (time && date) {
+                    $getEmployeeDate.text(date + (lang === "en" ? " / Hour " : " / ساعت ") + time.match(/\d{1,2}:\d{2}/));
+                }
+            }
+
+            $employeeTime.add($form.find('.employee_date')).off('change.update').on('change.update', updateEmployeeDateDisplay);
+        });
+
+        $form.find('.btn-search-btn').click(function () {
+            const $icon = $(this).find('i');
+            const mobile = $form.find('.search-input').val();
+            const $phone = $form.find('.phone_number');
+            const $firstName = $form.find('.first_name');
+            const $firstNameHidden = $form.find('.first_name_hidden');
+            const $lastName = $form.find('.last_name');
+            const $lastNameHidden = $form.find('.last_name_hidden');
+            const $fullName = $form.find('.fullName');
+
+            if (!mobile || !/^\d{11}$/.test(mobile)) {
+                showBootstrapAlert('شماره موبایل وارد شده صحیح نمیباشد.');
+                return;
+            }
+
+            if ($icon.hasClass('fa-xmark')) {
+                $form.find('.search-input').val('').prop('disabled', false);
+                $phone.val('').prop('disabled', false);
+                $firstName.val('').prop('disabled', false);
+                $lastName.val('').prop('disabled', false);
+                $fullName.text('');
+                $icon.removeClass('fa-xmark').addClass('fa-search');
+                return;
+            }
+
+            $icon.removeClass('fa-search').addClass('fa-xmark');
+
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/searchUser/${mobile}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.data.length > 0) {
+                        $firstName.val(data.data[0].first_name).prop('disabled', true);
+                        $firstNameHidden.val(data.data[0].first_name);
+                        $lastName.val(data.data[0].last_name).prop('disabled', true);
+                        $lastNameHidden.val(data.data[0].last_name);
+                        $fullName.text(data.data[0].first_name + " " + data.data[0].last_name);
+                        $phone.val(mobile).prop('disabled', true);
+                    } else {
+                        $('#notFoundModal').data('mobile', mobile).modal('show');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ Error:', error);
+                    $icon.removeClass('fa-xmark').addClass('fa-search');
+                }
+            });
+        });
+
+        const $serviceSelect = $form.find('.service_select');
+        if (!$serviceSelect.val()) {
+            $serviceSelect.val($serviceSelect.find('option').first().val());
+        }
+        $serviceSelect.trigger('change');
     });
 
-});
-$('#notFoundModal').on('hidden.bs.modal', function() {
-    $('#search').val('');
-    $('#btn-search').find('i').removeClass('fa-xmark').addClass('fa-search');
-});
-$('#notFoundModal').on('click', '.show-modal', function() {
-    var mobile = $('#notFoundModal').data('mobile');
-    $('#notFoundModal').modal('hide');
-    $('#phone_number_modal').val(mobile);
-    $('#createUserModal').modal('show');
-
-});
-$('#createUserModal').on('shown.bs.modal', function() {
-    $('#phone_number_modal').prop('disabled', true);
-});
-$('#createUserModal').on('click', '.btn-modal', function() {
-    var phone = $('#phone_number_modal').val();
-    var firstName = $('#first_name_modal').val();
-    var lastName = $('#last_name_modal').val();
-    $('#phone_number_hidden').val(phone);
-    $('#phone_number').val(phone).prop('disabled', true);
-    $('#first_name').val(firstName).prop('disabled', true);
-    $('#last_name').val(lastName).prop('disabled', true);
-    $('#fullName').text(firstName + " " + lastName);
 
 
-    $('#createUserModal').modal('hide');
 });
+
 
 function switchTab(index) {
     $('#circle0, #circle1').removeClass('active');
