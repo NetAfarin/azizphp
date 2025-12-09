@@ -297,7 +297,7 @@ class UserController extends Controller
         $salonId = $_SESSION['salon_id'] ?? 0;
         $salon = Salon::find($salonId);
         $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
-//        $days=rotateArray($days,$salon->start_day_of_week);
+        $days=rotateArray($days,$salon->start_day_of_week);
         $durations = Duration::all();
         $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
         $userRole = UserType::all();
@@ -314,6 +314,9 @@ class UserController extends Controller
             $service_prices    = $_POST['service_prices'] ?? [];
             $service_durations = $_POST['service_durations'] ?? [];
             $employeeHolidays = $_POST['holiday'] ?? [];
+            $holiday = array_map(function ($value) {
+                return ($value === "on") ? 1 : 0;
+            }, $employeeHolidays);
             $startTime = $_POST['startTime']?? [];
             $endTime = $_POST['endTime']?? [];
             $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
@@ -339,6 +342,7 @@ class UserController extends Controller
                 $dateArray =jalali_to_gregorian($year, $month, $day);
                 $miladiBirthDate = sprintf('%04d-%02d-%02d',$dateArray[0], $dateArray[1], $dateArray[2]);
             }
+
             if (empty($errors)) {
                 $user = new User([
                 'salon_id' => 1,
@@ -355,9 +359,10 @@ class UserController extends Controller
                 'deleted' => 0,
                 'is_active' => 1
             ]);
+
             if ($user->save()) {
                 $userId = $user->id;
-                if($role == "1"  && $followSalon == 1){
+                if($role == UserType::EMPLOYEE ){
                     foreach ($serviceChosen as $index => $serviceId) {
                         $price = $service_prices[$index] ?? null;
                         $duration = $service_durations[$index] ?? null;
@@ -372,19 +377,21 @@ class UserController extends Controller
                         ]);
                         $employeeService->save();
                     }
-                } else{
-                    foreach ($days as $index => $day) {
-                        $off = $employeeHolidays[$index] ?? 0;
-                        $startTimeWork = $startTime[$index] ?? '00:00';
-                        $endTimeWork   = $endTime[$index] ?? '23:59';
-                        $employeeTable = new EmployeeTable([
-                            'user_id' => $userId,
-                            'start_day_of_week' => $index,
-                            'off_day' => $off,
-                            'start_time' => $startTimeWork,
-                            'end_time' => $endTimeWork,
-                        ]);
-                         $employeeTable->save();
+
+                    if($followSalon == 0){
+                        foreach ($days as $index => $day) {
+                            $off = $holiday[$index] ?? 0;
+                            $startTimeWork = $startTime[$index] ?? '00:00';
+                            $endTimeWork = $endTime[$index] ?? '00:00';
+                            $employeeTable = new EmployeeTable([
+                                'user_id' => $userId,
+                                'start_day_of_week' => $index,
+                                'off_day' => $off,
+                                'start_time' => $startTimeWork,
+                                'end_time' => $endTimeWork,
+                            ]);
+                            $employeeTable->save();
+                        }
                     }
                 }
                 clear_old_input();
@@ -509,7 +516,7 @@ class UserController extends Controller
         if (isset($_GET['search']) && empty($search)) {
             header("Location: " . "?page=$page&per_page=$perPage");
         }
-        $column = $lang == "fa" ? "user_table.first_name" : 'user_table.last_name';
+        $column = $lang == "fa" ? "user_table.first_name" : 'user_table.first_name';
         $userType = UserType::all();
         $allUsers2 = User::getAllUserWithDetails();
         $customerData = User::getSomeUserWithDetails(UserType::CUSTOMER);
@@ -546,6 +553,8 @@ class UserController extends Controller
             $operatorsData->whereLike($column, $search);
             $customerData->whereLike($column, $search);
             $employeesData->whereLike($column, $search);
+            $superAdminData->whereLike($column, $search);
+            $adminData->whereLike($column, $search);
             $allUsers2->whereLike($column, $search);
         }
         if ($filter == "all" || empty($filter)) {
@@ -561,7 +570,6 @@ class UserController extends Controller
         }else if ($filter == "manager") {
             $pagination = $adminData->paginate($page, $perPage);
         }
-
         $searchSize = sizeof($allSearchData->get());
         $usersSize = sizeof($users->get());
         $customersSize = sizeof($customers->get());
@@ -648,7 +656,7 @@ class UserController extends Controller
         session_unset();
         session_destroy();
 
-        redirect("/user/login?lang={$lang}");
+        redirect("/user/login2?lang={$lang}");
         exit;
     }
 

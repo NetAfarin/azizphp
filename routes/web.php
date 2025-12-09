@@ -25,9 +25,6 @@ use App\Middlewares\SaRoleMiddleware;
         Route::get('/user/login2', [UserController::class, 'loginPage']);
         Route::get('/user/register2', [UserController::class, 'registerPage']);
         Route::get('/user/otp', [UserController::class, 'otpPage']);
-        Route::get('/admin/user/add', [UserController::class, 'add']);
-        Route::get('/user/dashboard', [UserController::class, 'dashboard']);
-        Route::get('/operator/dashboard', [UserController::class, 'operatorDashboard']);
         Route::get('/', [HomeController::class, 'index']);
     });
 //Route::middleware([GuestMiddleware::class])->group(function () {
@@ -88,7 +85,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceId']);
     Route::get('/admin/bookings/searchUser/{phone}', [AdminBookingController::class, 'searchUser']);
     Route::get('/admin/bookings/getEmployeeTime/{id}', [AdminBookingController::class, 'getEmployeeTime']);
-    Route::get('/admin/bookings/getEmployeeDate/{id}', [AdminBookingController::class, 'getEmployeeDate']);
+    Route::get('/admin/bookings/getEmployeeDate/{id}/{serviceId}', [AdminBookingController::class, 'getEmployeeDate']);
     Route::get('/admin/panel', [AdminController::class, 'panel']);
     Route::get('/admin/users', [AdminController::class, 'usersList']);
 //    Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser']);
@@ -112,7 +109,9 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/bookings/settings', [AdminController::class, 'bookingSettings']);
     Route::get('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
     Route::get('/admin/user/manage', [UserController::class, 'manageUsers']);
-
+    Route::get('/admin/user/add', [UserController::class, 'add']);
+    Route::get('/user/dashboard', [UserController::class, 'dashboard']);
+    Route::get('/operator/dashboard', [UserController::class, 'operatorDashboard']);
 });
 
 // Admin GET routes

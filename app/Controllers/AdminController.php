@@ -114,7 +114,10 @@ class AdminController extends Controller
             exit;
         }
         $errors = [];
+        $salonId = $_SESSION['salon_id'] ?? 0;
+        $salon = Salon::find($salonId);
         $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
+        $days=rotateArray($days,$salon->start_day_of_week);
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
         $categoryService = Service::query()->where("parent_id" , "<>" , "0")->get();
@@ -147,7 +150,7 @@ class AdminController extends Controller
             $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
             $selectedServiceIds = $_POST['services'] ?? [];
             $servicePrices = $_POST['service_prices'] ?? [];
-            $serviceDuration = $_POST['duration'] ?? [];
+            $serviceDuration = $_POST['service_durations'] ?? [];
             $holidayRaw = $_POST['holiday'] ?? [];
             $startTime = $_POST['startTime']?? [];
             $endTime = $_POST['endTime']?? [];
@@ -175,14 +178,10 @@ class AdminController extends Controller
                 $user->postal_address = $address;
                 $user->birth_date = (($birthDate == "") ? '' : $miladiBirthDate);
                 $user->update_time = date('Y-m-d H:i:s');
-                $serviceIntPrices = array_map('intval', $servicePrices);
-                $serviceIntDurations = array_map('intval', $serviceDuration);
                 if ($user->save()) {
                     if($user->user_type == UserType::EMPLOYEE){
-                            $user->syncEmployeeServicesWithDetails2($unchangedServices , $servicesToAdd ,  $serviceIntPrices, $serviceIntDurations);
-                    }
-
-                    if($user->user_type == UserType::EMPLOYEE && $followSalon == 0){
+                            $user->syncEmployeeServicesWithDetails2($unchangedServices , $servicesToAdd ,  $servicePrices, $serviceDuration);
+                    } else if($followSalon == 0){
                         foreach ($days as $index => $day) {
                             $employeeTable = EmployeeTable::query()
                                 ->where('user_id', '=', $id)
@@ -191,7 +190,7 @@ class AdminController extends Controller
                             if (!empty($employeeTable)) {
                                 $employeeTable->user_id = $id;
                                 $employeeTable->start_day_of_week = $index;
-                                $employeeTable->off_day = $holiday[$index] ?? 1;
+                                $employeeTable->off_day = $holiday[$index] ;
                                 $employeeTable->start_time = $startTime[$index] ?? '00:00';
                                 $employeeTable->end_time = $endTime[$index] ?? '23:59';
                                 $employeeTable->save();
@@ -199,7 +198,7 @@ class AdminController extends Controller
                             }
                         }
                     }
-                    $_SESSION['flash_success'] = __('user_update');
+                    $_SESSION['flash_success'] = __('user_updated');
                     redirect("/admin/user/manage");
                     exit;
                 }
@@ -221,7 +220,7 @@ class AdminController extends Controller
         }
         $timeByDay = [];
         foreach ($employeeTimeWorkData as $time) {
-            $dayIndex = (int)$time->start_day_of_week + 1;
+            $dayIndex = (int)$time->start_day_of_week;
             $timeByDay[$dayIndex] = [
                 'start_time' => date('H:i', strtotime($time->start_time)),
                 'end_time' => date('H:i', strtotime($time->end_time)),
@@ -277,7 +276,6 @@ class AdminController extends Controller
             $servicePrices = $_POST['service_prices'] ?? [];
 
             $serviceDurations = $_POST['service_durations'] ?? [];
-
             foreach ($newServices as $sid) {
                 if (!isset($servicePrices[$sid]) || !is_numeric($servicePrices[$sid])) {
                     $errors[] = sprintf(__('price_required_for_service'), $sid);
@@ -552,7 +550,7 @@ class AdminController extends Controller
                     'employee_service_id' => $employeeServiceId,
                     'time' => $time,
                     'date' => $date,
-                    'status' => 1,
+                    'status' => 2,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);

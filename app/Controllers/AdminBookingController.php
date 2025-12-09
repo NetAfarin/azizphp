@@ -154,6 +154,8 @@ class AdminBookingController extends Controller
             }
             $validator = new Validator($_POST, [
                 'time' => 'required|min:1|max:40',
+                'first_name_hidden' => 'required|min:1|max:40',
+                'last_name_hidden' => 'required|min:1|max:40',
             ]);
             if ($validator->fails()) {
                 $errors = array_merge($errors, $validator->errors());
@@ -188,6 +190,7 @@ class AdminBookingController extends Controller
 
                     if ($relation->save()) {
                         $getVisitDate->status = 1;
+                        $_SESSION['flash_success'] = __('booking_success');
                         $getVisitDate->save();
                     }
 
@@ -235,7 +238,7 @@ class AdminBookingController extends Controller
     public function getServiceId($id)
     {
         header('Content-Type: application/json');
-        $getEmployeeService = EmployeeService::getEmployeeService((int)$id);
+        $getEmployeeService = EmployeeBookingListTable::getEmployeeService((int)$id);
         echo json_encode([
             'success' => true,
             'data' => $getEmployeeService
@@ -253,10 +256,10 @@ class AdminBookingController extends Controller
         ]);
     }
 
-    public function getEmployeeDate($id)
+    public function getEmployeeDate($id , $serviceId)
     {
         header('Content-Type: application/json');
-        $getEmployeeTime = PreBooking::getEmployeeDate((int)$id);
+        $getEmployeeTime = PreBooking::getEmployeeDate((int)$id , (int)$serviceId);
         echo json_encode([
             'success' => true,
             'data' => $getEmployeeTime

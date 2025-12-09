@@ -165,31 +165,16 @@ class User extends Model
         if(!empty($newServiceIds)){
             foreach ($newServiceIds as $sid) {
                 $price = $prices[$sid] ?? null;
-                $durationId = $durations[$sid] ?? null;
-                if (isset($currentMap[$sid])) {
-                    $changed = false;
-                    if ($currentMap[$sid]->price != $price) {
-                        $currentMap[$sid]->price = $price;
-                        $changed = true;
-                    }
-                    if ($currentMap[$sid]->estimated_duration != $durationId) {
-                        $currentMap[$sid]->estimated_duration = $durationId;
-                        $changed = true;
-                    }
-
-                    if ($changed) {
-                        $currentMap[$sid]->save();
-                    }
-                } else {
+                $durationId = (int)$durations[$sid] ?? 0;
                     $es = new EmployeeService([
                         'user_id' => $userId,
                         'service_id' => $sid,
                         'price' => $price,
+                        'update_time' => date('Y-m-d H:i:s'),
                         'estimated_duration' => $durationId,
                         'deleted' => 0,
                     ]);
                     $es->save();
-                }
             }
         }
         if(!empty($unchangedServices)){
@@ -208,6 +193,7 @@ class User extends Model
                     }
 
                     if ($changed) {
+                        $currentMap[$sid]->update_time = date('Y-m-d H:i:s');
                         $currentMap[$sid]->save();
                     }
                 }

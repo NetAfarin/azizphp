@@ -3,6 +3,10 @@ $(document).ready(function () {
         dropdownParent: $('#editModal'),
         minimumResultsForSearch: Infinity,
     });
+    $('.js-example-basic-single').select2({
+        // dropdownParent: $('#editModal'),
+        minimumResultsForSearch: Infinity,
+    });
     $("#birth_date_picker").persianDatepicker({
         format: 'YYYY-MM-DD',
         autoClose: true,

@@ -23,11 +23,13 @@ class PreBooking extends Model
         'fa_title',
         'en_title'
     ];
-    public static function getEmployeeDate($id):array
+    public static function getEmployeeDate($id , $serviceId):array
     {
         $results =  PreBooking::query()
             ->select(['*'])
+            ->join('employee_service_table as est', 'est.id', '=', 'employee_booking_list_table.employee_service_id')
             ->where('employee_booking_list_table.user_id', '=' ,  $id)
+            ->where('est.service_id', '=' ,  $serviceId)
             ->orderBy('date', 'ASC')
             ->groupBy('date')
             ->get();

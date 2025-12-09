@@ -55,7 +55,4 @@ class EmployeeService extends Model
             ];
         }, $results);
     }
-
-
-
 }

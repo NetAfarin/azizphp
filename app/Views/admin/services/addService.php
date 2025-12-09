@@ -259,6 +259,7 @@ if (!empty($publicErrors)): ?>
                                     </div>
                                 </div>
                             </form>
+
                             <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -287,7 +288,8 @@ if (!empty($publicErrors)): ?>
 
                                                 <div class="mt-4">
                                                     <label><?= __("select_category") ?><span class="bullet-color"> *</span></label>
-                                                    <select class="form-control" name="category" id="category_modal" <?php /*= ($service->parent_id == 0)  ? 'disabled' : '' */?>>
+                                                    <select  class="js-example-basic-single2 form-select w-100"  name="service">
+<!--                                                    <select class="a  form-control" name="category" id="category_modal" --><?php ///*= ($service->parent_id == 0)  ? 'disabled' : '' */?><!-->-->
                                                         <?php foreach ($services as $ser): ?>
                                                             <option value="<?= $ser->id ?>"
                                                                 <?= ($ser->id == ($service->parent_id ?? 0) ? 'selected' : '') ?>>
@@ -333,138 +335,8 @@ if (!empty($publicErrors)): ?>
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const filter = urlParams.get('filter') || 'all';
-    const links = document.querySelectorAll('#filterLinks a');
-
-    links.forEach(link => {
-        link.classList.remove('text-primary');
-        link.classList.add('text-dark');
-        const href = new URL(link.href);
-        if(href.searchParams.get('filter') === filter) {
-            link.classList.remove('text-dark');
-            link.classList.add('text-primary');
-        }
-    });
-    document.getElementById('editModal').addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const serviceId = button.dataset.id;
-
-        fetch(`${BASE_URL}/admin/services/getService/${serviceId}`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('service_id').value = data.id;
-                document.getElementById('fa_title_modal').value = data.fa_title;
-                document.getElementById('en_title_modal').value = data.en_title;
-
-                const checkBox = document.getElementById('checkBoxCategory');
-                const categorySelect = document.getElementById('category_modal');
-                const isCategory = (parseInt(data.parent_id) === 0);
-                checkBox.checked = isCategory;
-                categorySelect.disabled = isCategory;
-
-                if (!isCategory) {
-                    categorySelect.value = data.parent_id;
-                } else {
-                    categorySelect.value = '';
-                }
-                checkBox.addEventListener('change', function() {
-                    categorySelect.disabled = this.checked;
-                    if (this.checked) {
-                        categorySelect.value = '';
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching service:', error));
-    });
-
-
-    document.getElementById('editForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        const serviceId = document.getElementById('service_id').value;
-        const isCategory = document.getElementById('checkBoxCategory').checked ? 1 : 0;
-        const categoryValue = document.getElementById('category_modal').value || 0;
-
-        formData.append('checkBoxCategory', isCategory);
-        formData.append('category_modal', categoryValue);
-
-        fetch(`${BASE_URL}/admin/services/update/${serviceId}`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    $('#editModal').modal('hide');
-                    location.reload();
-                } else {
-                    alert(data.message || 'خطا در بروزرسانی سرویس');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('خطا در بروزرسانی سرویس');
-            });
-    });
-
-    const lang = document.documentElement.lang;
-    const btn = document.querySelector('.btn-search');
-
-    if (lang === 'en') {
-        btn.classList.add('ltr-input');
-    }
-
-
-    var selectAllServices = document.getElementById("allServices");
-    selectAllServices.addEventListener("change", function () {
-        var table = this.closest("table");
-        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-        checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
-    });
-    function toggleCategoryDisplay() {
-        const switchInput = document.getElementById('serviceCategory');
-        const categoryElement = document.getElementById('category');
-
-        if (switchInput.checked) {
-            categoryElement.style.display = 'block';
-        } else {
-            categoryElement.style.display = 'none';
-        }
-    }
-
-    const switchInput = document.getElementById('serviceCategory');
-    const categoryElement = document.getElementById('category');
-
-    switchInput.addEventListener('click', function() {
-        if (this.checked) {
-            categoryElement.disabled = true;
-            categoryElement.classList.add('selected');
-        } else {
-            categoryElement.disabled = false;
-            categoryElement.classList.remove('selected');
-        }
-    });
-    $('#itemsInPage').on('change', function () {
-        var perPage = $(this).val();
-        var url = new URL(window.location.href);
-        url.searchParams.set('per_page', perPage);
-        url.searchParams.set('page', 1);
-        window.location.href = url.toString();
-    });
-
-
-</script>
-
-
 </div>
 </div>
+<script src="<?= asset('/js/edit-service.js') ?>"></script>
 </body>
-<script src="<?= asset('/js/register-user.js') ?>"></script>
+

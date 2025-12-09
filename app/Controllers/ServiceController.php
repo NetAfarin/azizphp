@@ -282,15 +282,30 @@ class ServiceController extends Controller
 
         if ($isCategory === 1) {
             $service->parent_id = 0;
-        } else {
+        }
+        else {
+            $stmt = Service::query()->where("parent_id", "=", $service->id)->where("deleted" , "=" , "0")->get();
+            if(sizeof($stmt) > 0){
+                $_SESSION['flash_error'] = sprintf(__('edit_category_not_allowed'), sizeof($stmt));
+                echo json_encode([
+                    'success' => false,
+                    'reload'  => true
+                ]);
+                exit;
+            }
             $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
         }
 
         if ($service->save()) {
-            echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
+
+            $_SESSION['flash_success'] = "بروزرسانی با موفقیت انجام شد";
+            echo json_encode([
+                "success" => true,
+            ]);
             exit;
         } else {
-            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
+            $_SESSION['flash_error'] = "خطا در ذخیره‌سازی";
+            echo json_encode(['success' => false]);
             exit;
         }
     }
@@ -487,7 +502,7 @@ class ServiceController extends Controller
         }
 
         $category = Service::find((int)$id);
-        $stmt = Service::query()->where("parent_id", "=", $category->id)->get();
+        $stmt = Service::query()->where("parent_id", "=", $category->id)->where("deleted" , "=" , "0")->get();
         if (sizeof($stmt) > 0) {
             $_SESSION['flash_error'] = sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
             redirect("/admin/services/create");

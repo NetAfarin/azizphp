@@ -235,3 +235,22 @@ function convertToEnglish($text) {
 
     return $result;
 }
+enum Type {
+    case ERROR;
+    case SUCCESS;
+}
+function showToast(Type $type = Type::SUCCESS, string $text = ''): string
+{
+    $bg = $type === Type::SUCCESS ? 'text-bg-success' : 'text-bg-danger';
+
+    return "
+        <div class='toast-container position-fixed top-0 end-0 p-3'>
+            <div id='showToast' class='toast align-items-center $bg border-0' role='alert' aria-live='assertive' aria-atomic='true'>
+                <div class='d-flex'>
+                    <div class='toast-body'>$text</div>
+                    <button type='button' class='btn-close btn-close-white me-2 m-auto' data-bs-dismiss='toast'></button>
+                </div>
+            </div>
+        </div>
+    ";
+}

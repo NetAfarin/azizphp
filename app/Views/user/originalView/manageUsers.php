@@ -132,7 +132,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                             <td><?= $user->user_type ?></td>
                             <td>
                                 <?php if($user->type_id == UserType::EMPLOYEE): ?>
-                                    <?php if(($user->result != "")): ?>
+                                    <?php if(!empty($user->result)): ?>
                                         <?= $user->result ?>
                                     <?php else: ?>
                                         <?=__("has_not")?>
@@ -144,18 +144,22 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                             </td>
                             <td>
                                 <?php if($user->type_id == UserType::EMPLOYEE): ?>
-                                    <?php
-                                    $services = $user->services_name ? explode(', ', $user->services_name) : [];
-                                    foreach($services as $service): ?>
-                                        <div class="badge bg-badge-gray"><?= htmlspecialchars($service) ?></div>
-                                    <?php endforeach; ?>
+                            <?php $services = $user->services_name ? explode(', ', $user->services_name) : [];
+                                    ?>
+                                    <?php if(!empty($services)): ?>
+                                        <?php foreach($services as $service): ?>
+                                            <div class="badge bg-badge-gray"><?= htmlspecialchars($service) ?></div>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     -
                                 <?php endif; ?>
                             </td>
 
                             <td>
-                                <div class="d-flex justify-content-center gap-1">
+                                <div class="dropdown d-flex justify-content-center align-items-center">
                                     <div class="dropdown">
                                         <button class="btn btn-active activities-icon"
                                                 id="navbarDropdownMenuLink"
@@ -165,10 +169,10 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                             <i class="fa fa-ellipsis-vertical fs-4"></i>
                                         </button>
 
-                                        <ul class="dropdown-menu dropdown-menu-end p-0 action-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <ul class="dropdown-menu dropdown-menu-start  p-0 action-menu " style="position: absolute;">
 
                                             <li>
-                                                <a class="dropdown-item text-start editServiceBtn" href="/fw/admin/user/edit/<?= $user->id ?>">
+                                                <a class="dropdown-item for-table d-flex align-items-center" href="/fw/admin/user/edit/<?= $user->id ?>">
                                                     <?= __("edit") ?>
                                                 </a>
                                             </li>
@@ -310,3 +314,4 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
     });
 </script>
 <script src="<?= asset('/js/register-user.js') ?>"></script>
+<script src="<?= asset('/js/operator.js') ?>"></script>

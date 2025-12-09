@@ -127,12 +127,12 @@
                              <td><?= $day ?></td>
                              <td>
                                  <div class="custom-time-container time-with-icon">
-                                     <input type="time" name="startTime[]" id="startTime-<?= $index ?>" class="form-control time-input">
+                                     <input type="time" name="startTime[<?= $index ?>]" id="startTime-<?= $index ?>" class="form-control time-input">
                                  </div>
                              </td>
                              <td>
                                  <div class="custom-time-container time-with-icon">
-                                     <input type="time" name="endTime[]" id="endTime-<?= $index ?>" class="form-control time-input">
+                                     <input type="time" name="endTime[<?= $index ?>]" id="endTime-<?= $index ?>" class="form-control time-input">
                                  </div>
                              </td>
                              <td>
@@ -259,5 +259,4 @@
     });
 
 </script>
-
 <script src="<?= asset('/js/register-user.js') ?>"></script>

@@ -337,5 +337,9 @@ return [
     'super_admin' => 'سوپر ادمین',
     'manager' => 'مدیر',
     'survey' => 'نظرسنجی',
-
+    'edit_category_not_allowed' => 'این دسته بندی به عنوان والد %s خدمت استفاده شده است و اجازه ی ویرایش ندارد.',
+    'customer_not_found' => 'مشتری با این مشخصات یافت نشد!',
+    'booking_success' => 'رزرو با موفقیت انجام شد',
+    'booking_details' => 'جزئیات رزرو',
+    'create_user' => 'ایجاد مشتری',
 ];

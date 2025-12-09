@@ -121,7 +121,7 @@
                                     <input type="number" name="service_prices[<?= $service->service_id ?>]" value="<?= $service->price ?>" class="form-control">
                                 </td>
                                 <td>
-                                    <select class="duration-select" name="duration[<?= $service->service_id ?>]">
+                                    <select class="duration-select" name="service_durations[<?= $service->service_id ?>]">
                                         <?php foreach ($durations as $d): ?>
                                             <option value="<?= $d->id ?>" <?= ($d->id == $service->duration_id) ? 'selected' : '' ?>>
                                                 <?= $d->title ?>
@@ -161,12 +161,12 @@
                                 <td><?= $day ?></td>
                                 <td>
                                     <div class="custom-time-container time-with-icon">
-                                        <input type="time" name="startTime[]" id="startTime-<?= $index ?>" class="form-control time-input" value="<?= $timesForView[$index]['start_time'] ?>">
+                                        <input type="time" name="startTime[<?= $index ?>]" id="startTime-<?= $index ?>" class="form-control time-input" value="<?= $timesForView[$index]['start_time'] ?>">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="custom-time-container time-with-icon">
-                                        <input type="time" name="endTime[]" id="endTime-<?= $index ?>" class="form-control time-input" value="<?= $timesForView[$index]['end_time'] ?>">
+                                        <input type="time" name="endTime[<?= $index ?>]" id="endTime-<?= $index ?>" class="form-control time-input" value="<?= $timesForView[$index]['end_time'] ?>">
                                     </div>
                                 </td>
                                 <td>
@@ -231,9 +231,9 @@
 
                 let row = `<tr data-id="${id}">
             <td>${title}</td>
-            <td><input type="text" min="0" class="form-control" name="service_prices[]" required></td>
+            <td><input type="text" min="0" class="form-control" name="service_prices[${id}]" required></td>
             <td>
-                <select name="service_durations[]" class="duration-select-js" required>
+                <select name="service_durations[${id}]" class="duration-select-js" required>
                     ${durationOptionsHTML}
                 </select>
             </td>

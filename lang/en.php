@@ -329,4 +329,8 @@ return [
     'super_admin' => 'Super Admin',
     'manager' => 'Manager',
     'survey' => 'Survey',
+    'customer_not_found' => 'Customer not found!',
+    'booking_success' => 'Booking completed successfully',
+    'booking_details' => 'Booking Details',
+    'create_user' => 'Create Customer',
 ];

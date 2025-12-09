@@ -12,24 +12,7 @@ if (!empty($publicErrors)): ?>
         </ul>
     </div>
 <?php endif; ?>
-<?php if (!empty($_SESSION['flash_success'])): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= htmlspecialchars($_SESSION['flash_success']) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <?php unset($_SESSION['flash_success']); ?>
-<?php endif; ?>
-
-<?php if (!empty($_SESSION['flash_error'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?= htmlspecialchars($_SESSION['flash_error']) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <?php unset($_SESSION['flash_error']); ?>
-<?php endif; ?>
-
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
-
 <div class="col-12 mt-5 bg-white shadow-md rounded p-3">
     <div class="d-flex justify-content-around align-items-center">
         <div class="tab-item text-center d-flex" onclick="switchTab(0)">
@@ -64,11 +47,17 @@ if (!empty($publicErrors)): ?>
                         <label for="first_name"><?= __('first_name') ?><span class="bullet-color"> *</span></label>
                         <input type="text" class="form-control"  id="first_name" name="first_name" readonly>
                         <input type="hidden" class="form-control"  id="first_name_hidden" name="first_name_hidden">
+                        <?php if (!empty($errors['first_name_hidden'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['time'][0]) ?></div>
+                        <?php endif; ?>
                     </div>
                     <div class="col-6">
                         <label for="last_name"><?= __('last_name') ?><span class="bullet-color"> *</span></label>
                         <input type="text" class="form-control" id="last_name" name="last_name" readonly>
                         <input type="hidden" class="form-control"  id="last_name_hidden" name="last_name_hidden">
+                        <?php if (!empty($errors['last_name_hidden'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['time'][0]) ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <h6 class="fw-bold mt-5"><?= __("choose_service")?></h6>
@@ -130,13 +119,12 @@ if (!empty($publicErrors)): ?>
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-body custom-modal-body mt-5 mb-5">
-                                    <h5 class="fw-bold">مشتری با این مشخصات یافت نشد!</h5>
-
+                                    <h5 class="fw-bold"><?= __("customer_not_found") ?></h5>
                                     <div class="d-flex gap-4 mt-5">
-                                        <button type="button" class="btn btn-primary btn-modal" data-bs-toggle="modal" data-bs-target="#createUserModal">
-                                            ایجاد مشتری
+                                        <button type="button" class="btn btn-primary show-modal btn-modal"  data-bs-target="#createUserModal">
+                                            <?= __("create_user") ?>
                                         </button>
-                                        <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal">انصراف</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal"><?= __("cancel") ?></button>
                                     </div>
                                 </div>
                             </div>
@@ -146,10 +134,10 @@ if (!empty($publicErrors)): ?>
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-body2">
-                                    <h5 class="center fw-bold">رزرو با موفقیت انجام شد</h5>
+                                    <h5 class="center fw-bold"><?= __("booking_success") ?></h5>
                                     <div class="reserveDerailsModal rounded text-start">
                                         <div class="d-flex flex-column align-items-start gap-2 p-3">
-                                            <h6 class="fw-bold">خلاصه رزرو</h6>
+                                            <h6 class="fw-bold"><?= __("booking_details") ?></h6>
                                             <div> <?= __("customer") ?>: <span><?= $reservationData['fullName'] ?? '' ?></span></div>
                                             <div> <?= __("service") ?>: <span ><?= $reservationData['service'] ?? '' ?></span></div>
                                             <div> <?= __("employee") ?>: <span id="getEmployee"><?= $reservationData['employee'] ?? '' ?></span></div>
