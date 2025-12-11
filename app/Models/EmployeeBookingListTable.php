@@ -88,7 +88,7 @@ class EmployeeBookingListTable extends Model
             ->get();
         return array_map(function($item) {
             return [
-                'id'   => $item->time,
+                'id'   => $item->id,
                 'time'   => $item->time,
                  'status' => $item->status,
             ];
@@ -104,7 +104,7 @@ class EmployeeBookingListTable extends Model
             ])
             ->join('user_table as ut', 'ut.id', '=', 'employee_booking_list_table.user_id')
             ->where('employee_booking_list_table.date', '=', $date)
-            ->where('employee_booking_list_table.time', '=', $time)
+            ->where('employee_booking_list_table.id', '=', $time)
 //            ->groupBy('ut.id')
             ->get();
 

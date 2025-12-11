@@ -284,8 +284,6 @@ if (!empty($publicErrors)): ?>
                                                                id="checkBoxCategory" name="checkBoxCategory">
                                                     </div>
                                                 </div>
-
-
                                                 <div class="mt-4">
                                                     <label><?= __("select_category") ?><span class="bullet-color"> *</span></label>
                                                     <select  class="js-example-basic-single2 form-select w-100" name="service">

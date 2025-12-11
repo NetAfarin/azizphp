@@ -29,37 +29,26 @@ $(document).ready(function () {
                 $('#fa_title_modal').val(data.fa_title);
                 $('#en_title_modal').val(data.en_title);
 
+
                 const checkBox = $('#checkBoxCategory');
                 const categorySelect = $('select[name="service"]');
-
-                // گرفتن کانتینر Select2
-                const select2Container = categorySelect.next('.select2');
-
-                const isCategory = parseInt(data.parent_id) === 0;
-
+                const isCategory = (parseInt(data.parent_id) === 0);
                 checkBox.prop('checked', isCategory);
-
                 if (isCategory) {
-                    // چون کتگوری هست → سلکت کامل مخفی شود
+                    categorySelect.val(null).trigger('change');
                     categorySelect.prop('disabled', true);
-                    select2Container.hide();
                 } else {
-                    // چون کتگوری نیست → سلکت نمایش داده شود و مقدار parent ست شود
+                    categorySelect.val(1).trigger('change');
                     categorySelect.prop('disabled', false);
-                    categorySelect.val(data.parent_id).trigger('change.select2');
-                    select2Container.show();
                 }
-
-                // وقتی چک‌باکس را تغییر میدهیم
                 checkBox.off('change').on('change', function () {
                     if (this.checked) {
-                        // مخفی کردن کامل سلکت
-                        categorySelect.prop('disabled', true).val(null).trigger('change.select2');
-                        select2Container.hide();
+                        categorySelect.val(null).trigger('change');
+                        categorySelect.prop('disabled', true);
+
                     } else {
-                        // نمایش مجدد سلکت
                         categorySelect.prop('disabled', false);
-                        select2Container.show();
+                        categorySelect.val(1).trigger('change');
                     }
                 });
 

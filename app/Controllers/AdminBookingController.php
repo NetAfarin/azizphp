@@ -188,7 +188,6 @@ class AdminBookingController extends Controller
                         'employee_id' => $employeeId,
                         'deleted' => 0,
                     ]);
-
                     if ($relation->save()) {
                         $getVisitDate->status = 1;
                         $_SESSION['flash_success'] = __('booking_success');

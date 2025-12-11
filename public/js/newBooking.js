@@ -83,7 +83,6 @@ $(document).ready(function () {
             const dateId = $(this).val();
             const $employeeTime = $form.find('.employee_time');
             const $getEmployeeDate = $form.find('.getEmployeeDate');
-
             $.ajax({
                 url: `${BASE_URL}/admin/bookings/getEmployeeTime/${dateId}`,
                 type: 'GET',
@@ -91,6 +90,8 @@ $(document).ready(function () {
                 success: function (response) {
                     $employeeTime.empty();
                     (response.data || []).forEach((item) => {
+                        console.log(typeof item.status, item.status)
+
                         const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
                         const $option = $('<option>', {
                             value: item.id,
@@ -221,12 +222,15 @@ $(document).ready(function () {
                     const $employeeTime = $form.find('.employee_time2');
                     $employeeTime.empty().append(
                         (response.data || []).map((item, index) => {
+                            console.log(item.status)
                             const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
-                            return $('<option>', {
+                            const $option = $('<option>', {
                                 value: item.id,
                                 text: optionText,
                                 'data-status': item.status
                             });
+                            if (item.status == 1) $option.prop('disabled', true);
+                            $employeeTime.append($option);
                         })
                     ).trigger('change');
                     const firstTimeId = $employeeTime.val();
