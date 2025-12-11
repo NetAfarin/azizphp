@@ -968,9 +968,13 @@ hr {
 
 .sidebar-full-height {
     height: 100vh;
-    overflow-y: auto;
     position: sticky;
     top: 0;
+    overflow: hidden;
+}
+.sidebar-scroll {
+    height: 100%;
+    overflow-y: auto;
 }
 
 .justify-content{
@@ -1400,14 +1404,12 @@ span.select2{
     color: var(--bs-primary);
 }
 ::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
     background-color:var(--bs-table-line);
 }
-
-
 .select2-selection .select2-selection--single{
     justify-content: center;
 }
@@ -1699,4 +1701,7 @@ html[lang="en"] .mdtp__time_holder {
 }
 .mdtp__clock .mdtp__clock_dot {
 background-color: var(--bs-primary) !important;
+}
+.iconPointer{
+    cursor: pointer;
 }

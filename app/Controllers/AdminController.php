@@ -163,7 +163,7 @@ class AdminController extends Controller
             $servicesToRemove = array_diff($existingServiceIds, $selectedServiceIds);
             $unchangedServices = array_intersect($existingServiceIds, $selectedServiceIds);
             if($birthDate != ""){
-                $parts = convertToEnglish(explode("-", $birthDate));
+                $parts = convertToEnglish(explode("/", $birthDate));
                 $year = $parts[0] ?? 0;
                 $month = $parts[1] ?? 1;
                 $day = $parts[2] ?? 1;

@@ -225,7 +225,12 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
 </div>
 </body>
 <script>
-
+    var selectAllServices = document.getElementById("allUsers");
+    selectAllServices.addEventListener("change", function () {
+        var table = this.closest("table");
+        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
+        checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
+    });
     const urlParams = new URLSearchParams(window.location.search);
     const filter = urlParams.get('filter') || 'all';
     const links = document.querySelectorAll('#filterLinks a');
@@ -255,26 +260,6 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             .catch(error => console.error('Error fetching service:', error));
         // $("#showEmployeeServices").appendChild(':as')
     });
-
-
-
-
-
-
-    // $('#editModal').on('shown.bs.modal', function (event) {
-    //     const button = event.relatedTarget;
-    //     const userId = button.dataset.id;
-    //     fetch(`${BASE_URL}/admin/user/getUserData/${userId}`)
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             $('#user_id').val(data.id || '');
-    //             $('#first_name').val(data.first_name || '');
-    //             $('#last_name').val(data.last_name || '');
-    //             $('#phone_number').val(data.phone_number || '');
-    //             $('#user_role').val(data.role_id || '').trigger('change');
-    //         })
-    //         .catch(error => console.error('Error fetching service:', error));
-    // });
 
     document.getElementById('editForm').addEventListener('submit', function(e) {
         e.preventDefault();

@@ -152,19 +152,19 @@ if (!empty($publicErrors)): ?>
                             <div class="col-6">
                                 <label><?= __("date") ?><span class="bullet-color"> *</span></label>
                                 <div class="input-with-icon-left">
-                                    <select class="js-example-basic-single form-select w-100 employee_date" name="date"></select>
+                                    <select class="js-example-basic-single form-select w-100 employee_date2" name="date"></select>
                                     <i class="fa fa-calendar icon-color"></i>
                                 </div>                            </div>
                             <div class="col-6">
                                 <label><?= __('time') ?><span class="bullet-color"> *</span></label>
-                                <select class="js-example-basic-single form-select w-100 employee_time" name="time"></select>
+                                <select class="js-example-basic-single form-select w-100 employee_time2" name="time"></select>
                             </div>
                         </div>
                     </div>
                     <h6 class="fw-bold mt-5"><?= __("choose_employee")?></h6>
                     <div class="mt-4">
                         <label><?= __('employee') ?><span class="bullet-color"> *</span></label>
-                        <select class="js-example-basic-single form-select w-100 employee_select" name="employee"></select>
+                        <select class="js-example-basic-single form-select w-100 employee_select2" name="employee"></select>
                     </div>
                     <div class="mt-4 rounded p-4" style="background: #F3F1F1">
                         <div class="col">

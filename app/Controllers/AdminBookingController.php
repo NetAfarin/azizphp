@@ -129,10 +129,10 @@ class AdminBookingController extends Controller
             }
             else {
                 $user = new User([
-                    'first_name' => $newFirstName,
-                    'last_name' => $newLastName,
+                    'first_name' => $fnHidden,
+                    'last_name' => $flHidden,
                     'birth_date' => '',
-                    'phone_number' => $phoneNumber,
+                    'phone_number' => $finalPhone,
                     'register_datetime' => date('Y-m-d H:i:s'),
                     'password' => '123456',
                     'salon_id' => 1,
@@ -147,9 +147,11 @@ class AdminBookingController extends Controller
                     'is_active' => 1,
                     'deleted' => 0
                 ]);
-
-                if (empty($errors) && !$user->save()) {
-                    $errors[] = __('user_save_error');
+                if (empty($errors)) {
+                    $saved = $user->save();
+                    if (!$saved) {
+                        $errors[] = __('user_save_error');
+                    }
                 }
             }
             $validator = new Validator($_POST, [
@@ -165,7 +167,6 @@ class AdminBookingController extends Controller
                 $getVisitDate = PreBooking::query()->where("id", "=", $time)->first();
                 $dateTime = $date . " " . (($getVisitDate) ? $getVisitDate->time : '');
                 $customerId = $checkedUser ? $checkedUser->id : $user->id;
-
                 $visit = new VisitTable([
                     'registrant_user_id' => $registrant,
                     'customer_id' => $customerId,
@@ -206,7 +207,8 @@ class AdminBookingController extends Controller
                         'dateTime' => $dateTime
                     ];
                 }
-            }
+                }
+
         }
         $showReservationModal = false;
         $reservationData = [];
@@ -234,6 +236,7 @@ class AdminBookingController extends Controller
 
     public function getServiceId($id)
     {
+
         header('Content-Type: application/json');
         $getEmployeeService = EmployeeBookingListTable::getEmployeeService((int)$id);
         echo json_encode([
@@ -241,6 +244,36 @@ class AdminBookingController extends Controller
             'data' => $getEmployeeService
         ]);
 
+    }
+    public function getServiceByDate($id)
+    {
+
+        header('Content-Type: application/json');
+        $getEmployeeDate = EmployeeBookingListTable::getEmployeeDate((int)$id);
+        echo json_encode([
+            'success' => true,
+            'data' => $getEmployeeDate
+        ]);
+    }
+    public function getEmployeeByDateTime($date , $time)
+    {
+
+        header('Content-Type: application/json');
+        $getEmployeeDate = EmployeeBookingListTable::getEmployeeByDateTime($date , $time);
+        echo json_encode([
+            'success' => true,
+            'data' => $getEmployeeDate
+        ]);
+    }
+    public function getServiceByTime($id)
+    {
+
+        header('Content-Type: application/json');
+        $getEmployeeDate = EmployeeBookingListTable::getEmployeeTime($id);
+        echo json_encode([
+            'success' => true,
+            'data' => $getEmployeeDate
+        ]);
     }
 
     public function getEmployeeTime($id)

@@ -108,5 +108,6 @@ class ServiceVisitRelation extends Model
             ->join("visit_table", "visit_table.id", "=", "service_visit_relation_table.visit_id")
             ->where("DATE_FORMAT(visit_table.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))
             ->get();
+
     }
 }

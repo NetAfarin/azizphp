@@ -83,6 +83,9 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class])->group(function () {
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser2']);
     Route::get('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceId']);
+    Route::get('/admin/bookings/get/date/{id}', [AdminBookingController::class, 'getServiceByDate']);
+    Route::get('/admin/bookings/get/employee/{dateId}/{timeId}', [AdminBookingController::class, 'getEmployeeByDateTime']);
+    Route::get('/admin/bookings/get/time/{id}', [AdminBookingController::class, 'getServiceByTime']);
     Route::get('/admin/bookings/searchUser/{phone}', [AdminBookingController::class, 'searchUser']);
     Route::get('/admin/bookings/getEmployeeTime/{id}', [AdminBookingController::class, 'getEmployeeTime']);
     Route::get('/admin/bookings/getEmployeeDate/{id}/{serviceId}', [AdminBookingController::class, 'getEmployeeDate']);

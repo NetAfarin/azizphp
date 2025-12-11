@@ -28,6 +28,8 @@ class EmployeeBookingListTable extends Model
         'end_time',
         'durationTitle',
         'duration_id',
+        'date',
+        'time',
     ];
     public static function getEmployeeService($id) : array
     {
@@ -55,5 +57,66 @@ class EmployeeBookingListTable extends Model
             ];
         }, $results);
     }
+    public static function getEmployeeDate($id) : array
+    {
+        $results = EmployeeBookingListTable::query()
+            ->select([
+                '*'
+            ])
+            ->join('employee_service_table as est', 'est.id', '=', 'employee_booking_list_table.employee_service_id')
+            ->join('service_table as st', 'st.id', '=', 'est.service_id')
+            ->where('est.service_id', '=', $id)
+            ->groupBy('employee_booking_list_table.date')
+            ->get();
+
+
+        return array_map(function($item) {
+            return [
+                'id'   => $item->date,
+                'date'   => toJalali($item->date)['date'],
+            ];
+        }, $results);
+
+}
+    public static function getEmployeeTime($id) : array
+    {
+        $results = EmployeeBookingListTable::query()
+            ->select([
+                '*'
+            ])
+            ->where('date', '=', $id)
+            ->get();
+        return array_map(function($item) {
+            return [
+                'id'   => $item->time,
+                'time'   => $item->time,
+                 'status' => $item->status,
+            ];
+        }, $results);
+    }
+    public static function getEmployeeByDateTime($date , $time) : array
+    {
+        $results = EmployeeBookingListTable::query()
+            ->select([
+                'ut.id',
+                'ut.first_name as first_name',
+                'ut.last_name as last_name'
+            ])
+            ->join('user_table as ut', 'ut.id', '=', 'employee_booking_list_table.user_id')
+            ->where('employee_booking_list_table.date', '=', $date)
+            ->where('employee_booking_list_table.time', '=', $time)
+//            ->groupBy('ut.id')
+            ->get();
+
+        return array_map(function($item) {
+            return [
+                'id'   => $item->id,
+                'first_name' => $item->first_name,
+                'last_name'  => $item->last_name
+            ];
+        }, $results);
+    }
+
+
 }
 

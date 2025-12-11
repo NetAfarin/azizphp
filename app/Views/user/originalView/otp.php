@@ -80,7 +80,7 @@ if (!empty($publicErrors)): ?>
                                 </label>
                                 <div class="input-with-icon">
                                     <input type="password" class="form-control ltr-input" id="passwordInput" name="password">
-                                    <i class="fa fa-eye" id="togglePassword"></i>
+                                    <i class="fa fa-eye iconPointer" id="togglePassword"></i>
                                 </div>
                                 <?php if (!empty($errors['password'])) : ?>
                                     <div class="text-danger small"><?= htmlspecialchars($errors['password'][0]) ?></div>

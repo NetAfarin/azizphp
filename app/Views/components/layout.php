@@ -42,8 +42,7 @@ $menuItems = [
         'title' => __('collapse_menu'),
         'link' => '#'
     ],
-];
-$currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/services/create
+];$currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 ?>
 
 <?php $lang = $_SESSION['lang'] ?? 'fa'; ?>
@@ -58,7 +57,9 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
 
     <div class="row">
         <div class="col-lg-3 col-md-3 col-xl-3 col-xxl-2 px-4 d-none d-lg-block">
-            <div class="bg-white d-flex flex-column gap-5 pb-4 sidebar-full-height menu-border-radius">
+            <div class="bg-white d-flex flex-column  pb-4 sidebar-full-height menu-border-radius">
+                <div class="sidebar-scroll">
+
                 <img src="<?= asset('img/delarose-black.png') ?>" style="height: 200px; object-fit: contain"
                      class="mt-4">
                 <nav class="topnav navbar navbar-light">
@@ -66,14 +67,31 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                         <?php foreach($menuItems as $item): ?>
                             <?php if(isset($item['submenu'])): ?>
                                 <?php
+                                $isParentActive = false;
                                 $isSubActive = false;
-                                foreach($item['submenu'] as $sub) {
-                                    if($sub['link'] === $currentUrl) {
+                                if (strpos($currentUrl, '/fw/admin/user/edit') === 0) {
+                                    if ($item['title'] === __('manage_users')) {
+                                        $isParentActive = true;
                                         $isSubActive = true;
-                                        break;
+                                    }
+                                } else {
+                                    foreach ($item['submenu'] as $sub) {
+                                        if ($sub['link'] === $currentUrl) {
+                                            $isParentActive = true;
+                                            $isSubActive = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!$isParentActive && isset($item['link']) && $item['link'] !== '#') {
+                                        if (strpos($currentUrl, $item['link']) === 0) {
+                                            $isParentActive = true;
+                                        }
                                     }
                                 }
-                                $parentClass = $isSubActive ? 'active-menu' : '';
+
+                                $parentClass = $isParentActive ? 'active-menu' : '';
+                                $collapseShow = $isParentActive ? 'show' : '';
+                                $ariaExpanded = $isParentActive ? 'true' : 'false';
                                 ?>
                                 <li class="nav-item dropdown menu-drop-down <?= $parentClass ?>">
                                     <a href="#<?= str_replace(' ', '', $item['title']) ?>"
@@ -85,13 +103,23 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                                     </a>
                                     <ul class="collapse list-unstyled  w-100 <?= $isSubActive ? 'show' : '' ?>" id="<?= str_replace(' ', '', $item['title']) ?>">
                                         <?php foreach($item['submenu'] as $sub): ?>
-                                            <?php $activeClass = ($sub['link'] === $currentUrl) ? 'text-primary' : ''; ?>
+
+                                            <?php
+                                            $isEditPage = strpos($currentUrl, '/fw/admin/user/edit') === 0;
+                                            $activeClass = ($sub['link'] === $currentUrl) ? 'text-primary' : '';
+                                            if ($isEditPage && $sub['link'] === '/fw/admin/user/manage') {
+                                                $activeClass = 'text-primary';
+                                            }
+                                            ?>
+
                                             <li class="nav-item">
                                                 <a class="nav-link <?= $activeClass ?>" href="<?= $sub['link'] ?>">
                                                     <span class="mx-2 under"><?= $sub['title'] ?></span>
                                                 </a>
                                             </li>
+
                                         <?php endforeach; ?>
+
                                     </ul>
                                 </li>
                             <?php else: ?>
@@ -111,6 +139,7 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                     <i class="fa-solid fa-right-from-bracket icon-color"></i>
                     <span class="item-text"><?= __("logout") ?></span>
                 </a>
+            </div>
             </div>
         </div>
         <div class="col-lg-9 col-md-12 col-xl-9 col-xxl-10 px-3">
@@ -155,21 +184,37 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                     </div>
                     <div class="offcanvas-body p-0">
                         <nav class="topnav navbar navbar-light">
-                            <ul class="navbar-nav flex-fill w-100 mb-2" style="margin:0;">
+                            <ul class="navbar-nav flex-fill w-100 mb-2 menu-drop-down" style="margin:0;">
                                 <?php foreach($menuItems as $item): ?>
                                     <?php if(isset($item['submenu'])): ?>
                                         <?php
-                                        // بررسی می‌کنیم آیا یکی از زیرمنوها فعال است
+                                        $isParentActive = false;
                                         $isSubActive = false;
-                                        foreach($item['submenu'] as $sub) {
-                                            if($sub['link'] === $currentUrl) {
+                                        if (strpos($currentUrl, '/fw/admin/user/edit') === 0) {
+                                            if ($item['title'] === __('manage_users')) {
+                                                $isParentActive = true;
                                                 $isSubActive = true;
-                                                break;
+                                            }
+                                        } else {
+                                            foreach ($item['submenu'] as $sub) {
+                                                if ($sub['link'] === $currentUrl) {
+                                                    $isParentActive = true;
+                                                    $isSubActive = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!$isParentActive && isset($item['link']) && $item['link'] !== '#') {
+                                                if (strpos($currentUrl, $item['link']) === 0) {
+                                                    $isParentActive = true;
+                                                }
                                             }
                                         }
-                                        $parentClass = $isSubActive ? 'active-menu' : '';
+
+                                        $parentClass = $isParentActive ? 'active-menu' : '';
+                                        $collapseShow = $isParentActive ? 'show' : '';
+                                        $ariaExpanded = $isParentActive ? 'true' : 'false';
                                         ?>
-                                        <li class="nav-item dropdown <?= $parentClass ?>">
+                                        <li class="nav-item dropdown menu-drop-down <?= $parentClass ?>">
                                             <a href="#<?= str_replace(' ', '', $item['title']) ?>"
                                                data-bs-toggle="collapse"
                                                aria-expanded="<?= $isSubActive ? 'true' : 'false' ?>"
@@ -179,13 +224,23 @@ $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // /fw/admin/ser
                                             </a>
                                             <ul class="collapse list-unstyled  w-100 <?= $isSubActive ? 'show' : '' ?>" id="<?= str_replace(' ', '', $item['title']) ?>">
                                                 <?php foreach($item['submenu'] as $sub): ?>
-                                                    <?php $activeClass = ($sub['link'] === $currentUrl) ? 'text-primary' : ''; ?>
+
+                                                    <?php
+                                                    $isEditPage = strpos($currentUrl, '/fw/admin/user/edit') === 0;
+                                                    $activeClass = ($sub['link'] === $currentUrl) ? 'text-primary' : '';
+                                                    if ($isEditPage && $sub['link'] === '/fw/admin/user/manage') {
+                                                        $activeClass = 'text-primary';
+                                                    }
+                                                    ?>
+
                                                     <li class="nav-item">
                                                         <a class="nav-link <?= $activeClass ?>" href="<?= $sub['link'] ?>">
                                                             <span class="mx-2 under"><?= $sub['title'] ?></span>
                                                         </a>
                                                     </li>
+
                                                 <?php endforeach; ?>
+
                                             </ul>
                                         </li>
                                     <?php else: ?>

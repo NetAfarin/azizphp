@@ -5,7 +5,6 @@ $(document).ready(function () {
     const modal = $('#finalReserve');
     if (modal.data('show-modal')) {
         modal.modal('show');
-        console.log("ساخص ئخیشم")
     }
     let lang = getLangFromURL();
     $('.search-block').each(function () {
@@ -177,58 +176,18 @@ $(document).ready(function () {
     });
     $('.block-with-time_priority').each(function () {
         const $form = $(this);
-
         $form.find('.service_select').change(function () {
             const serviceId = $(this).val();
             const $getService = $form.find('.getService');
             $getService.text($(this).find('option:selected').text());
 
             if (!serviceId) return;
-
             $.ajax({
-                url: `${BASE_URL}/admin/bookings/get/${serviceId}`,
+                url: `${BASE_URL}/admin/bookings/get/date/${serviceId}`,
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    const $employeeSelect = $form.find('.employee_select');
-                    const $employeeDate = $form.find('.employee_date');
-                    const $employeeTime = $form.find('.employee_time');
-
-                    $employeeSelect.empty().append(
-                        (response.data || []).map((item, index) =>
-                            $('<option>', {
-                                value: item.id,
-                                text: item.first_name,
-                                selected: index === 0,
-                            })
-                        )
-                    ).trigger('change');
-
-                    $employeeDate.empty();
-                    $employeeTime.empty();
-                    const firstEmployeeId = $employeeSelect.val();
-                    if (firstEmployeeId) {
-                        $form.find('.employee_select').trigger('change');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('❌ خطا در دریافت پاسخ:', status, error);
-                }
-            });
-        });
-
-        $form.find('.employee_select').change(function () {
-            const employeeId = $(this).val();
-            const serviceId = $form.find('.service_select').val();
-            const $getEmployee = $form.find('.getEmployee');
-            $getEmployee.text($(this).find('option:selected').text());
-
-            $.ajax({
-                url: `${BASE_URL}/admin/bookings/getEmployeeDate/${employeeId}/${serviceId}`,
-                type: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    const $employeeDate = $form.find('.employee_date');
+                    const $employeeDate = $form.find('.employee_date2');
                     $employeeDate.empty().append(
                         (response.data || []).map((item, index) =>
                             $('<option>', {
@@ -238,6 +197,13 @@ $(document).ready(function () {
                             })
                         )
                     ).trigger('change');
+
+                    // $employeeDate.empty();
+                    // $employeeTime.empty();
+                    // const firstEmployeeId = $employeeSelect.val();
+                    // if (firstEmployeeId) {
+                    //     $form.find('.employee_select').trigger('change');
+                    // }
                 },
                 error: function (xhr, status, error) {
                     console.error('❌ خطا در دریافت پاسخ:', status, error);
@@ -245,45 +211,63 @@ $(document).ready(function () {
             });
         });
 
-        $form.find('.employee_date').change(function () {
-            const dateId = $(this).val();
-            const $employeeTime = $form.find('.employee_time');
-            const $getEmployeeDate = $form.find('.getEmployeeDate');
-
+        $form.find('.employee_date2').change(function () {
+            const selectedId = $(this).val();
             $.ajax({
-                url: `${BASE_URL}/admin/bookings/getEmployeeTime/${dateId}`,
+                url: `${BASE_URL}/admin/bookings/get/time/${selectedId}`,
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    $employeeTime.empty();
-                    (response.data || []).forEach((item) => {
-                        const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
-                        const $option = $('<option>', {
-                            value: item.id,
-                            text: optionText,
-                            'data-status': item.status
-                        });
-                        if (item.status == 1) $option.prop('disabled', true);
-                        $employeeTime.append($option);
-                    });
-
-                    updateEmployeeDateDisplay();
+                    const $employeeTime = $form.find('.employee_time2');
+                    $employeeTime.empty().append(
+                        (response.data || []).map((item, index) => {
+                            const optionText = item.status == 1 ? item.time + ' (رزرو شده)' : item.time;
+                            return $('<option>', {
+                                value: item.id,
+                                text: optionText,
+                                'data-status': item.status
+                            });
+                        })
+                    ).trigger('change');
+                    const firstTimeId = $employeeTime.val();
+                    if (firstTimeId) {
+                        loadEmployees(selectedId, firstTimeId);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error('❌ خطا در دریافت پاسخ:', status, error);
                 }
             });
-
-            function updateEmployeeDateDisplay() {
-                const time = $employeeTime.find('option:selected').text();
-                const date = $form.find('.employee_date option:selected').text();
-                if (time && date) {
-                    $getEmployeeDate.text(date + (lang === "en" ? " / Hour " : " / ساعت ") + time.match(/\d{1,2}:\d{2}/));
-                }
-            }
-
-            $employeeTime.add($form.find('.employee_date')).off('change.update').on('change.update', updateEmployeeDateDisplay);
         });
+        $form.find('.employee_time2').change(function () {
+            const selectedDateId = $form.find('.employee_date2').val();
+            const selectedTimeId = $(this).val();
+            if (selectedDateId && selectedTimeId) {
+                loadEmployees(selectedDateId, selectedTimeId);
+            }
+        });
+        function loadEmployees(dateId, timeId) {
+            $.ajax({
+                url: `${BASE_URL}/admin/bookings/get/employee/${dateId}/${timeId}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    const $employeeSelect = $form.find('.employee_select2');
+                    $employeeSelect.empty().append(
+                        (response.data || []).map((item, index) =>
+                            $('<option>', {
+                                value: item.id,
+                                text: item.first_name,
+                                selected: index === 0,
+                            })
+                        )
+                    ).trigger('change');
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ خطا در دریافت کارمندان:', status, error);
+                }
+            });
+        }
 
         $form.find('.btn-search-btn').click(function () {
             const $icon = $(this).find('i');
@@ -334,7 +318,29 @@ $(document).ready(function () {
                 }
             });
         });
+        $('#notFoundModal').on('click', '.show-modal', function() {
+            var mobile = $('#notFoundModal').data('mobile');
+            $('#notFoundModal').modal('hide');
+            $('#phone_number_modal').val(mobile);
+            $('#createUserModal').modal('show');
 
+        });
+        $('#createUserModal').on('shown.bs.modal', function() {
+            $('#phone_number_modal').prop('disabled', true);
+        });
+        $('#createUserModal').on('click', '.btn-modal', function() {
+            var phone = $('#phone_number_modal').val();
+            var firstName = $('#first_name_modal').val();
+            var lastName = $('#last_name_modal').val();
+            $('.phone_number_hidden').val(phone);
+            $('.phone_number').val(phone).prop('disabled', true);
+            $('.first_name_hidden').val(firstName);
+            $('.first_name').val(firstName).prop('disabled', true);
+            $('.last_name_hidden').val(lastName);
+            $('.last_name').val(lastName).prop('disabled', true);
+            $('.fullName').text(firstName + " " + lastName);
+            $('#createUserModal').modal('hide');
+        });
         const $serviceSelect = $form.find('.service_select');
         if (!$serviceSelect.val()) {
             $serviceSelect.val($serviceSelect.find('option').first().val());
@@ -369,25 +375,6 @@ function showBootstrapAlert(message) {
     setTimeout(function() {
         $('.alert').alert('close');
     }, 2000);
-}
-function getDetails(getValues, result) {
-
-    if (!Array.isArray(getValues)) {
-        getValues = [getValues];
-    }
-
-    function updateResult() {
-        let combined = "";
-
-        getValues.forEach(function(id) {
-            combined += $(`#${id}`).val() + " ";
-        });
-
-        $(`#${result}`).text(combined.trim());
-    }
-    getValues.forEach(function(id) {
-        $(`#${id}`).on("change keyup", updateResult);
-    });
 }
 function getLangFromURL() {
     const urlParams = new URLSearchParams(window.location.search);

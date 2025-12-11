@@ -288,8 +288,7 @@ if (!empty($publicErrors)): ?>
 
                                                 <div class="mt-4">
                                                     <label><?= __("select_category") ?><span class="bullet-color"> *</span></label>
-                                                    <select  class="js-example-basic-single2 form-select w-100"  name="service">
-<!--                                                    <select class="a  form-control" name="category" id="category_modal" --><?php ///*= ($service->parent_id == 0)  ? 'disabled' : '' */?><!-->-->
+                                                    <select  class="js-example-basic-single2 form-select w-100" name="service">
                                                         <?php foreach ($services as $ser): ?>
                                                             <option value="<?= $ser->id ?>"
                                                                 <?= ($ser->id == ($service->parent_id ?? 0) ? 'selected' : '') ?>>
