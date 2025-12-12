@@ -357,13 +357,29 @@ body, * {
     --bs-gradient: none;
     --bs-btn-disabled-opacity: 1;
 }
-.form-control {
+html[lang="en"] .form-control {
     height: 50px;
     font-size: 0.90rem;
     border-radius: 8px;
     border: var(--bs-border-width) solid var(--bs-input-border);
-    text-align: start;
+    text-align: left;
+    direction: ltr;
+}
+html[lang="fa"] .form-control {
+    height: 50px;
+    font-size: 0.90rem;
+    border-radius: 8px;
+    border: var(--bs-border-width) solid var(--bs-input-border);
+    text-align: right;
     direction: rtl;
+}
+html[lang="fa"] .ltr-input {
+    text-align: left !important;
+    direction: ltr;
+}
+html[lang="en"] .ltr-input {
+    text-align: left !important;
+    direction: ltr;
 }
 .form-control:hover {
     border-color: var(--bs-primary) !important;
@@ -395,10 +411,7 @@ body, * {
     box-shadow: 0 0 0.25rem 0 var(--bs-danger) !important;
     background-position: right calc(.375em + .1875rem) center;
 }
-.ltr-input {
-    text-align: left !important;
-    direction: ltr;
-}
+
 .input-group-text {
     background-color: #fff;
     border: #fff;

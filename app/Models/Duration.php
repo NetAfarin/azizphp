@@ -12,5 +12,6 @@ class Duration extends Model
         'id',
         'title',
         'duration',
+        'en_title',
     ];
 }

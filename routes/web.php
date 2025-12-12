@@ -111,8 +111,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::get('/admin/components', [AdminController::class, 'components']);
     Route::get('/admin/bookings/settings', [AdminController::class, 'bookingSettings']);
     Route::get('/admin/bookings/set/{employeeId}', [AdminController::class, 'bookingsSet']);
-    Route::get('/admin/user/manage', [UserController::class, 'manageUsers']);
-    Route::get('/admin/user/add', [UserController::class, 'add']);
+    Route::get('/admin/user/manage', [AdminController::class, 'manageUsers']);
+    Route::get('/admin/user/add', [AdminController::class, 'add']);
     Route::get('/user/dashboard', [UserController::class, 'dashboard']);
     Route::get('/operator/dashboard', [UserController::class, 'operatorDashboard']);
 });

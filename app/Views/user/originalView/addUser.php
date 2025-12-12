@@ -5,7 +5,7 @@
      <div class="row mt-5">
          <div class="col-6">
              <label for="username"><?= __("name") ?> <span class="bullet-color"> *</span></label>
-             <input type="text" class="form-control" id="username" name="first_name">
+             <input type="text" class="form-control " id="username" name="first_name">
              <?php if (!empty($errors['first_name'])): ?>
                  <div class="text-danger small"><?= htmlspecialchars($errors['first_name'][0]) ?></div>
              <?php endif; ?>
@@ -49,7 +49,7 @@
          </div>
          <div class="col-6">
              <label for="userRole"><?= __("role") ?><span class="bullet-color"> *</span></label>
-             <select class="js-example-basic-single w-100"  id="userRole" name="role">
+             <select class="userRoleSelect w-100"  id="userRole" name="role">
                  <?php foreach ($userRole as $role): ?>
                      <option value="<?= $role->id ?>">
                          <?= ($lang == "fa") ? htmlspecialchars($role->title ?? '') : htmlspecialchars($role->en_title) ?>
@@ -80,7 +80,7 @@
      <div class="row mt-5" >
          <div class="col-6">
              <label for="break_time" class="form-label"><?= __("break_time") ?></label>
-             <select class="js-example-basic-single w-100" name="breakTime" id="break_time">
+             <select class="userBreakTimeSelect w-100" name="breakTime" id="break_time">
                  <option value="1">12 و نیم الی 13 ونیم</option>
                  <option value="2">13 و نیم الی 14 ونیم</option>
                  <option value="3">14 و نیم الی 15 ونیم</option>
@@ -99,7 +99,9 @@
                          </option>
                      <?php endforeach;?>
                  </select>
-
+                 <?php if (!empty($errors['service'])): ?>
+                     <div class="text-danger small"><?= htmlspecialchars($errors['service'][0]) ?></div>
+                 <?php endif; ?>
              </div>
          </div>
          <div id="services_table_wrapper" class="mt-3"></div>
@@ -126,9 +128,9 @@
                          <tr>
                              <td><?= $day ?></td>
                              <td>
-<!--                                 <div class="custom-time-container time-with-icon">-->
-<!--                                     <input type="time" name="startTime[--><?php //= $index ?><!--]" id="startTime---><?php //= $index ?><!--" class="form-control time-input">-->
-                                     <div class="custom-time-container time-with-icon">
+                                 <div class="custom-time-container time-with-icon">
+                                     <input type="time" name="startTime[<?= $index ?>]" id="startTime-<?= $index ?>" class="form-control time-input">
+<!--                                     <div class="custom-time-container time-with-icon">-->
 <!--                                         <input-->
 <!--                                                 type="text"-->
 <!--                                                 id="timepicker"-->
@@ -137,17 +139,17 @@
 <!--                                                 data-mdb-timepicker-init-->
 <!--                                         />-->
 
-                                         <div style="width: 22rem;" class="form-outline timepicker" data-mdb-timepicker-init="" data-mdb-input-init="" data-mdb-input-initialized="true" data-mdb-timepicker-initialized="true">
-                                             <input type="text" class="form-control timepicker-input" id="form1">
-                                             <button id="timepicker-toggle-627857" tabindex="0" type="button" class="timepicker-toggle-button" data-mdb-toggle="timepicker" aria-label="Open Timepicker" style="pointer-events: auto;">
-                                                 <i class="far fa-clock fa-sm timepicker-icon"></i>
-                                             </button>
-
-                                             <label class="form-label" for="form1" style="margin-left: 0px;">Select a time</label>
-                                             <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 81.6px;"></div><div class="form-notch-trailing"></div></div></div>
+<!--                                         <div style="width: 22rem;" class="form-outline timepicker" data-mdb-timepicker-init="" data-mdb-input-init="" data-mdb-input-initialized="true" data-mdb-timepicker-initialized="true">-->
+<!--                                             <input type="text" class="form-control timepicker-input" id="form1">-->
+<!--                                             <button id="timepicker-toggle-627857" tabindex="0" type="button" class="timepicker-toggle-button" data-mdb-toggle="timepicker" aria-label="Open Timepicker" style="pointer-events: auto;">-->
+<!--                                                 <i class="far fa-clock fa-sm timepicker-icon"></i>-->
+<!--                                             </button>-->
+<!---->
+<!--                                             <label class="form-label" for="form1" style="margin-left: 0px;">Select a time</label>-->
+<!--                                             <div class="form-notch"><div class="form-notch-leading" style="width: 9px;"></div><div class="form-notch-middle" style="width: 81.6px;"></div><div class="form-notch-trailing"></div></div></div>-->
 
                                          <!--                                     </div>-->
-                                 </div>
+<!--                                 </div>-->
                              </td>
                              <td>
                                  <div class="custom-time-container time-with-icon">
@@ -156,11 +158,11 @@
                              </td>
                              <td>
                                  <div class="d-flex justify-content-center align-items-center">
-                                     <div class="form-check tick">
-                                         <label class="form-check-label m-0" for="holiday-<?= $index ?>">
+                                     <div class="form-check tick ">
+                                         <label class="form-check-label iconPointer m-0" for="holiday-<?= $index ?>">
                                              <?=__("close")?>
                                          </label>
-                                         <input class="form-check-input holiday-checkbox" type="checkbox"
+                                         <input class="form-check-input iconPointer holiday-checkbox" type="checkbox"
                                                 id="holiday-<?= $index ?>"
                                                 name="holiday[<?= $index ?>]"
                                                 data-id="<?= $index ?>">
@@ -183,134 +185,5 @@
 </div>
 </div>
 </body>
-<script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title], $durations), JSON_UNESCAPED_UNICODE) ?>;</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // به صورت خودکار با data-mdb-timepicker-init مقداردهی می‌شود
-        // یا دستی:
-        const timepickerEl = document.getElementById('form1');
-        const timepicker = new mdb.Timepicker(timepickerEl, {
-            format: '24', // یا '12' ساعت
-        });
-    });
-</script>
-<script>
-
-    $(document).ready(function() {
-        // $('.time-picker').each(function() {
-        //     $(this).mdtimepicker({
-        //         timeFormat: 'hh:mm', // 24 ساعته
-        //         theme: 'custom',
-        //         readOnly: true
-        //     });
-        //
-        //
-        //     $(this).on('click', function() {
-        //         $(this).mdtimepicker('show');
-        //     });
-        // });
-        $("#birth_date_picker2").persianDatepicker({
-            format: 'YYYY-MM-DD',
-            autoClose: true,
-            initialValue: false,
-            altField: '#birth_date',
-            altFormat: 'YYYY-MM-DD',
-            calendar: {
-                persian: {
-                    locale: 'fa'
-                },
-                gregorian: {
-                    locale: 'en'
-                }
-            }
-        });
-        const holidayCheckBox = $('.holiday-checkbox');
-        holidayCheckBox.each(function() {
-            var index = $(this).data('id');
-            if ($(this).is(':checked')) {
-                console.log($(this).data('index'))
-
-                $('#startTime-' + index).prop('disabled', true);
-                $('#endTime-' + index).prop('disabled', true);
-            }
-        });
-        holidayCheckBox.change(function() {
-            var index = $(this).data('id');
-            $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
-            $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
-        });
-        $('#multiple-select-field').on('change', function() {
-            const selectedOptions = $(this).select2('data');
-            const $wrapper = $('#services_table_wrapper');
-
-            if (selectedOptions.length === 0) {
-                $wrapper.html('');
-                return;
-            }
-
-            let tableHTML = `
-            <div class="table-wrapper">
-                <table class="table transparent custom-table">
-                    <thead>
-                        <tr>
-                            <th>نام سرویس</th>
-                            <th>قیمت (تومان)</th>
-                            <th>مدت زمان</th>
-                            <th>حذف</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-
-            selectedOptions.forEach(opt => {
-                let durationOptionsHTML = '';
-                durations.forEach(d => {
-                    durationOptionsHTML += `<option value="${d.id}">${d.title}</option>`;
-                });
-
-                tableHTML += `
-                <tr data-service-id="${opt.id}">
-                    <td>${opt.text}</td>
-                    <td>
-                        <input type="text" min="0" class="form-control" name="service_prices[]" required>
-                    </td>
-                    <td>
-                        <select name="service_durations[]" class="js-duration-select" required>
-                            ${durationOptionsHTML}
-                        </select>
-                    </td>
-                    <td>
-                        <i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i>
-                    </td>
-                </tr>
-            `;
-            });
-
-            tableHTML += '</tbody></table></div>';
-            $wrapper.html(tableHTML);
-
-            $('.js-duration-select').select2({
-                placeholder: "انتخاب مدت زمان",
-                width: '100%',
-                minimumResultsForSearch: Infinity
-            });
-        });
-
-        $(document).on('click', '.remove-row', function() {
-            const $row = $(this).closest('tr');
-            const serviceId = $row.data('service-id');
-
-            $row.remove();
-            const $select = $('#multiple-select-field');
-            let selectedValues = $select.val() || [];
-            selectedValues = selectedValues.filter(id => id !== String(serviceId));
-            $select.val(selectedValues).trigger('change');
-        });
-
-    });
-    // document.getElementById('timeIcon').addEventListener('click', function() {
-    //     document.getElementById('timeInput').showPicker();
-    // });
-
-</script>
-<script src="<?= asset('/js/register-user.js') ?>"></script>
+<script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title , 'en_title' => $d->en_title], $durations), JSON_UNESCAPED_UNICODE) ?>;</script>
+<script src="<?= asset('/js/add-user.js') ?>"></script>

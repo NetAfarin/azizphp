@@ -105,152 +105,6 @@ class AdminController extends Controller
             'durations' => $durations,
         ]);
     }
-    public function editUser2( $id)
-    {
-        $user = User::find((int)$id);
-        if (!$user) {
-            $_SESSION['flash_error'] = __('user_not_found');
-            redirect("/admin/user/manage");
-            exit;
-        }
-        $errors = [];
-        $salonId = $_SESSION['salon_id'] ?? 0;
-        $salon = Salon::find($salonId);
-        $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
-        $days=rotateArray($days,$salon->start_day_of_week);
-        $userTypes = UserType::all();
-        $groupedServices = Service::groupedForSelect();
-        $categoryService = Service::query()->where("parent_id" , "<>" , "0")->get();
-        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
-        $durations = Duration::all();
-        $selectedServiceIds = [];
-        foreach ($employeeServicesData as $service) {
-            $selectedServiceIds[] = $service->service_id;
-        }
-        $employeeTimeWorkData = EmployeeService::query()->select(['st.*'])->join('employee_table AS st','st.user_id','=','employee_service_table.user_id')->where('st.user_id', '=', $id)->get() ?? [];
-        $employeeServicesData2 = EmployeeService::query()
-            ->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id' ,'left')
-            ->join('duration_table AS dur', 'dur.id', '=', 'employee_service_table.estimated_duration' , 'left')
-            ->select([
-                'employee_service_table.*',
-                (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title',
-                'dur.title as durationTitle , dur.id as duration_id',
-            ])
-            ->where('user_id', '=', $id)
-            ->where('employee_service_table.deleted', '=', 0)
-            ->get();
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $firstName = trim($_POST['first_name'] ?? '');
-            $lastName = trim($_POST['last_name'] ?? '');
-            $nationalCode = trim($_POST['national_code'] ?? '');
-            $birthDate = trim($_POST['birth_date'] ?? '');
-            $phoneNumber = trim($_POST['phone_number'] ?? '');
-            $address = trim($_POST['address'] ?? '');
-            $breakTime = trim($_POST['breakTime'] ?? '');
-            $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
-            $selectedServiceIds = $_POST['services'] ?? [];
-            $servicePrices = $_POST['service_prices'] ?? [];
-            $serviceDuration = $_POST['service_durations'] ?? [];
-            $holidayRaw = $_POST['holiday'] ?? [];
-            $startTime = $_POST['startTime']?? [];
-            $endTime = $_POST['endTime']?? [];
-            $holiday = array_map(function ($value) {
-                return ($value === "on") ? 1 : 0;
-            }, $holidayRaw);
-            $existingServiceIds = array_map(fn($item) => (int)$item->service_id, $employeeServicesData2);
-            $selectedServiceIds = array_map('intval', $selectedServiceIds);
-            $servicesToAdd = array_diff($selectedServiceIds, $existingServiceIds);
-            $servicesToRemove = array_diff($existingServiceIds, $selectedServiceIds);
-            $unchangedServices = array_intersect($existingServiceIds, $selectedServiceIds);
-            if($birthDate != ""){
-                $parts = convertToEnglish(explode("/", $birthDate));
-                $year = $parts[0] ?? 0;
-                $month = $parts[1] ?? 1;
-                $day = $parts[2] ?? 1;
-                $dateArray = jalali_to_gregorian($year, $month, $day);
-                $miladiBirthDate = sprintf('%04d-%02d-%02d', $dateArray[0], $dateArray[1], $dateArray[2]);
-            }
-            if (empty($errors)) {
-                $user->first_name = $firstName;
-                $user->last_name = $lastName;
-                $user->national_code = $nationalCode;
-                $user->phone_number = $phoneNumber;
-                $user->postal_address = $address;
-                $user->birth_date = (($birthDate == "") ? '' : $miladiBirthDate);
-                $user->update_time = date('Y-m-d H:i:s');
-                if ($user->save()) {
-                    if($user->user_type == UserType::EMPLOYEE){
-                            $user->syncEmployeeServicesWithDetails2($unchangedServices , $servicesToAdd ,  $servicePrices, $serviceDuration);
-                    } else if($followSalon == 0){
-                        foreach ($days as $index => $day) {
-                            $employeeTable = EmployeeTable::query()
-                                ->where('user_id', '=', $id)
-                                ->where('start_day_of_week', '=', $index)
-                                ->first();
-                            if (!empty($employeeTable)) {
-                                $employeeTable->user_id = $id;
-                                $employeeTable->start_day_of_week = $index;
-                                $employeeTable->off_day = $holiday[$index] ;
-                                $employeeTable->start_time = $startTime[$index] ?? '00:00';
-                                $employeeTable->end_time = $endTime[$index] ?? '23:59';
-                                $employeeTable->save();
-
-                            }
-                        }
-                    }
-                    $_SESSION['flash_success'] = __('user_updated');
-                    redirect("/admin/user/manage");
-                    exit;
-                }
-                else {
-                    $errors[] = __('save_error');
-                }
-            }
-
-
-
-
-
-        } else {
-            clear_old_input();
-        }
-        $selectedServiceIds= [];
-        foreach ($employeeServicesData2 as $service) {
-            $selectedServiceIds[] = $service->service_id;
-        }
-        $timeByDay = [];
-        foreach ($employeeTimeWorkData as $time) {
-            $dayIndex = (int)$time->start_day_of_week;
-            $timeByDay[$dayIndex] = [
-                'start_time' => date('H:i', strtotime($time->start_time)),
-                'end_time' => date('H:i', strtotime($time->end_time)),
-                'off_day'   => $time->off_day
-            ];
-        }
-        $timesForView = [];
-        foreach ($days as $index => $day) {
-            $timesForView[$index] = $timeByDay[$index] ?? [
-                'start_time' => '',
-                'end_time' => '',
-                'off_day' => 0
-            ];
-        }
-        $this->view('user/originalView/editUser', [
-            'title' => __('edit_user'),
-            'user' => $user,
-            'userTypes' => $userTypes,
-            'groupedServices' => $groupedServices,
-            'selectedServiceIds' => $selectedServiceIds,
-            'employeeServicesData' => $employeeServicesData,
-            'durations' => $durations,
-            'services' => $categoryService,
-            'days' => $days,
-            'timesForView' => $timesForView,
-            'errors' => $errors,
-            'employeeServices' => $employeeServicesData2,
-
-            ]);
-    }
 
     public function updateUser($id)
     {
@@ -627,6 +481,410 @@ class AdminController extends Controller
             'selectedServiceIds' => $selectedServiceIds,
             'employeeServicesData' => $employeeServicesData,
             'durations' => $durations,
+        ]);
+    }
+    public function add()
+    {
+        $errors = [];
+        $user = User::find($_SESSION['user_id']);
+        $salonId = $_SESSION['salon_id'] ?? 0;
+        $salon = Salon::find($salonId);
+        $days = APP_LANG == "fa" ? ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'] : ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        $days = rotateArray($days, $salon->start_day_of_week);
+        $durations = Duration::all();
+        $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
+        $userRole = UserType::all();
+        $lang = $_SESSION['lang'] ?? 'fa';
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $firstName = trim($_POST['first_name']);
+            $lastname = trim($_POST['last_name']);
+            $nationalCode = trim($_POST['national_code']);
+            $phoneNumber = trim($_POST['phoneNumber']);
+            $postal_address = trim($_POST['address']);
+            $role = trim($_POST['role']);
+            $birth_date = trim($_POST['birth_date']);
+            $serviceChosen = $_POST['service'] ?? [];
+            $service_prices = $_POST['service_prices'] ?? [];
+            $service_durations = $_POST['service_durations'] ?? [];
+            $employeeHolidays = $_POST['holiday'] ?? [];
+            $holiday = array_map(function ($value) {
+                return ($value === "on") ? 1 : 0;
+            }, $employeeHolidays);
+            $startTime = $_POST['startTime'] ?? [];
+            $endTime = $_POST['endTime'] ?? [];
+            $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
+            $validator = new Validator($_POST, [
+                'first_name' => 'required|min:2|max:40',
+                'last_name' => 'required|min:2|max:40',
+                'national_code' => 'required|min:2|max:40',
+                'address' => 'required|min:1',
+                'phoneNumber' => 'required|max:11',
+                'service' => 'required',
+            ]);
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
+            if(!empty($phoneNumber)) {
+                if (User::query()->where('phone_number', '=', $phoneNumber)->get()) {
+                    $errors[] = __('phone_taken');
+                    $_SESSION['flash_error'] = __('phone_taken');
+                    save_old_input();
+                }
+            }
+            if ($birth_date != "") {
+                $miladiBirthDate = getMiladiBirthDate($birth_date);
+            }
+
+            if (empty($errors)) {
+                $user = new User([
+                    'salon_id' => 1,
+                    'first_name' => $firstName,
+                    'last_name' => $lastname,
+                    'phone_number' => $phoneNumber,
+                    'national_code' => $nationalCode,
+                    'birth_date' => (($birth_date == "") ? '' : $miladiBirthDate),
+                    'password' => password_hash("123456", PASSWORD_DEFAULT),
+                    'postal_address' => $postal_address,
+                    'register_datetime' => date('Y-m-d H:i:s'),
+                    'user_type' => $role,
+                    'follow_shift_from_salon' => $followSalon,
+                    'deleted' => 0,
+                    'is_active' => 1
+                ]);
+
+                if ($user->save()) {
+                    $userId = $user->id;
+                    if ($role == UserType::EMPLOYEE) {
+                        foreach ($serviceChosen as $index => $serviceId) {
+                            $price = $service_prices[$index] ?? null;
+                            $duration = $service_durations[$index] ?? null;
+                            $employeeService = new EmployeeService([
+                                'service_id' => $serviceId,
+                                'user_id' => $userId,
+                                'price' => $price,
+                                'update_time' => date('Y-m-d H:i:s'),
+                                'estimated_duration' => $duration,
+                                'deleted' => 0,
+                                'is_active' => 1
+                            ]);
+                            $employeeService->save();
+                        }
+
+                        if ($followSalon == 0) {
+                            foreach ($days as $index => $day) {
+                                $off = $holiday[$index] ?? 0;
+                                $startTimeWork = $startTime[$index] ?? '00:00';
+                                $endTimeWork = $endTime[$index] ?? '00:00';
+                                $employeeTable = new EmployeeTable([
+                                    'user_id' => $userId,
+                                    'start_day_of_week' => $index,
+                                    'off_day' => $off,
+                                    'start_time' => $startTimeWork,
+                                    'end_time' => $endTimeWork,
+                                ]);
+                                $employeeTable->save();
+                            }
+                        }
+                    }
+                    clear_old_input();
+                    $_SESSION['flash_success'] = __('register_success');
+                    redirect("/admin/user/add");
+                    exit;
+                } else {
+                    $errors[] = __('user_save_error');
+                }
+            }
+
+        }
+
+        $this->view('user/originalView/addUser', [
+            'title' => __('add_user'),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
+            'lang' => $lang,
+            'services' => $service,
+            'days' => $days,
+            'userRole' => $userRole,
+            'user' => $user,
+            'durations' => $durations,
+            'errors' => $errors,
+        ]);
+    }
+    public function manageUsers()
+    {
+        $lang = $_SESSION['lang'] ?? 'fa';
+        $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
+        $filter = trim($_GET['filter'] ?? 'all');
+        $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
+        $sortFirstNameUrl = (BASE_URL . '/admin/user/manage?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortLastNameUrl = (BASE_URL . '/admin/user/manage?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $allowedPerPage = [1, 10, 20, 50, 100];
+        $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+        if (!in_array($perPage, $allowedPerPage, true)) {
+            $redirectUrl = '?page=1&per_page=10';
+            if ($search !== '') {
+                $redirectUrl .= '&search=' . urlencode($search);
+            }
+            header("Location: " . $redirectUrl);
+            exit;
+        }
+        if (isset($_GET['search']) && empty($search)) {
+            header("Location: " . "?page=$page&per_page=$perPage");
+        }
+        $userType = UserType::all();
+        $allUsers2 = User::getAllUserWithDetails();
+        $customerData = User::getSomeUserWithDetails(UserType::CUSTOMER);
+        $employeesData = User::getSomeUserWithDetails(UserType::EMPLOYEE);
+        $operatorsData = User::getSomeUserWithDetails(UserType::OPERATOR);
+        $adminData = User::getSomeUserWithDetails(UserType::ADMIN);
+        $superAdminData = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
+        $sortByColumn = "user_table.first_name";
+        if (!empty($sortBy)) {
+            if ($sortBy == 'first_name') {
+                $sortByColumn = $sortBy;
+            } else if ($sortBy == 'last_name') {
+                $sortByColumn = 'last_name';
+            } else if ($sortBy == 'user_role') {
+                $sortByColumn = 'user_role';
+            }
+        }
+        $allUsers2->orderBy($sortByColumn, $sortOrder);
+        $allSearchData = User::getAllUserWithDetails();
+        $users = User::getAllUserWithDetails();
+        $customers = User::getSomeUserWithDetails(UserType::CUSTOMER);
+        $employees = User::getSomeUserWithDetails(UserType::EMPLOYEE);
+        $operators = User::getSomeUserWithDetails(UserType::OPERATOR);
+        $admin = User::getSomeUserWithDetails(UserType::ADMIN);
+        $superAdmin = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
+        $column = $lang == "fa" ? "user_table.first_name" : 'user_table.first_name';
+
+        if ($search !== '') {
+            $allSearchData->whereLike($column, $search);
+            $users->whereLike($column, $search);
+            $admin->whereLike($column, $search);
+            $superAdmin->whereLike($column, $search);
+            $customers->whereLike($column, $search);
+            $employees->whereLike($column, $search);
+            $operators->whereLike($column, $search);
+            $operatorsData->whereLike($column, $search);
+            $customerData->whereLike($column, $search);
+            $employeesData->whereLike($column, $search);
+            $superAdminData->whereLike($column, $search);
+            $adminData->whereLike($column, $search);
+            $allUsers2->whereLike($column, $search);
+        }
+        if ($filter == "all" || empty($filter)) {
+            $pagination = $allUsers2->paginate($page, $perPage);
+        } else if ($filter == "customers") {
+            $pagination = $customerData->paginate($page, $perPage);
+        } else if ($filter == "employees") {
+            $pagination = $employeesData->paginate($page, $perPage);
+        } else if ($filter == "operators") {
+            $pagination = $operatorsData->paginate($page, $perPage);
+        } else if ($filter == "super-admin") {
+            $pagination = $superAdminData->paginate($page, $perPage);
+        } else if ($filter == "manager") {
+            $pagination = $adminData->paginate($page, $perPage);
+        }
+        $searchSize = sizeof($allSearchData->get());
+        $usersSize = sizeof($users->get());
+        $customersSize = sizeof($customers->get());
+        $employeesSize = sizeof($employees->get());
+        $operatorsSize = sizeof($operators->get());
+        $adminsSize = sizeof($admin->get());
+        $superAdminsSize = sizeof($superAdmin->get());
+        $totalPages = ceil($pagination['total'] / $perPage);
+        $this->view('user/originalView/manageUsers', [
+            'title' => __('manage_users'),
+            'search' => $search,
+            'page' => $totalPages,
+            'lang' => $lang,
+            'filter' => $filter,
+            'users' => $pagination['data'],
+            'allUsers' => $usersSize,
+            'customersSize' => $customersSize,
+            'employeesSize' => $employeesSize,
+            'operatorsSize' => $operatorsSize,
+            'adminsSize' => $adminsSize,
+            'superAdminsSize' => $superAdminsSize,
+            'searchSize' => $searchSize,
+            'pagination' => $pagination,
+            'per_page' => $perPage,
+            'sortBy' => $sortBy,
+            'userType' => $userType,
+            'sortFirstNameUrl' => $sortFirstNameUrl,
+            'sortLastNameUrl' => $sortLastNameUrl,
+            'allowedPerPage' => $allowedPerPage,
+            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter, $lang),
+            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
+            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
+        ]);
+    }
+    public function editUser2( $id)
+    {
+        $user = User::find((int)$id);
+        if (!$user) {
+            $_SESSION['flash_error'] = __('user_not_found');
+            redirect("/admin/user/manage");
+            exit;
+        }
+        $errors = [];
+        $salonId = $_SESSION['salon_id'] ?? 0;
+        $salon = Salon::find($salonId);
+        $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
+        $days=rotateArray($days,$salon->start_day_of_week);
+        $userTypes = UserType::all();
+        $groupedServices = Service::groupedForSelect();
+        $categoryService = Service::query()->where("parent_id" , "<>" , "0")->get();
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $durations = Duration::all();
+        $selectedServiceIds = [];
+        foreach ($employeeServicesData as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
+        $employeeTimeWorkData = EmployeeService::query()->select(['st.*'])->join('employee_table AS st','st.user_id','=','employee_service_table.user_id')->where('st.user_id', '=', $id)->get() ?? [];
+        $employeeServicesData2 = EmployeeService::query()
+            ->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id' ,'left')
+            ->join('duration_table AS dur', 'dur.id', '=', 'employee_service_table.estimated_duration' , 'left')
+            ->select([
+                'employee_service_table.*',
+                (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title',
+                'dur.title as durationTitle , dur.id as duration_id',
+            ])
+            ->where('user_id', '=', $id)
+            ->where('employee_service_table.deleted', '=', 0)
+            ->get();
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $firstName = trim($_POST['first_name'] ?? '');
+            $lastName = trim($_POST['last_name'] ?? '');
+            $nationalCode = trim($_POST['national_code'] ?? '');
+            $birthDate = trim($_POST['birth_date'] ?? '');
+            $phoneNumber = trim($_POST['phone_number'] ?? '');
+            $address = trim($_POST['address'] ?? '');
+            $breakTime = trim($_POST['breakTime'] ?? '');
+            $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
+            $selectedServiceIds = $_POST['services'] ?? [];
+            $servicePrices = $_POST['service_prices'] ?? [];
+            $serviceDuration = $_POST['service_durations'] ?? [];
+            $holidayRaw = $_POST['holiday'] ?? [];
+            $startTime = $_POST['startTime']?? [];
+            $endTime = $_POST['endTime']?? [];
+            $holiday = array_map(function ($value) {
+                return ($value === "on") ? 1 : 0;
+            }, $holidayRaw);
+            $existingServiceIds = array_map(fn($item) => (int)$item->service_id, $employeeServicesData2);
+            $selectedServiceIds = array_map('intval', $selectedServiceIds);
+            $servicesToAdd = array_diff($selectedServiceIds, $existingServiceIds);
+            $servicesToRemove = array_diff($existingServiceIds, $selectedServiceIds);
+            $unchangedServices = array_intersect($existingServiceIds, $selectedServiceIds);
+            if ($birthDate != "") {
+                $miladiBirthDate = getMiladiBirthDate($birthDate);
+            }
+            if (!empty($phoneNumber)) {
+                $exists = User::query()
+                    ->where('phone_number', '=' , $phoneNumber)
+                    ->where('id', '!=', $id)
+                    ->get();
+
+                if ($exists) {
+                    $errors[] = __('phone_taken');
+                    $_SESSION['flash_error'] = __('phone_taken');
+                    save_old_input();
+                }
+            }
+            $validator = new Validator($_POST, [
+                'first_name' => 'required|min:2|max:40',
+                'last_name' => 'required|min:2|max:40',
+                'national_code' => 'required|min:2|max:40',
+                'address' => 'required|min:1',
+                'phone_number' => 'required|max:11',
+            ]);
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
+            if (empty($errors)) {
+                $user->first_name = $firstName;
+                $user->last_name = $lastName;
+                $user->national_code = $nationalCode;
+                $user->phone_number = $phoneNumber;
+                $user->postal_address = $address;
+                $user->birth_date = (($birthDate == "") ? '' : $miladiBirthDate);
+                $user->update_time = date('Y-m-d H:i:s');
+                if ($user->save()) {
+                    if($user->user_type == UserType::EMPLOYEE){
+                        $user->syncEmployeeServicesWithDetails2($unchangedServices , $servicesToAdd ,  $servicePrices, $serviceDuration);
+                    } else if($followSalon == 0){
+                        foreach ($days as $index => $day) {
+                            $employeeTable = EmployeeTable::query()
+                                ->where('user_id', '=', $id)
+                                ->where('start_day_of_week', '=', $index)
+                                ->first();
+                            if (!empty($employeeTable)) {
+                                $employeeTable->user_id = $id;
+                                $employeeTable->start_day_of_week = $index;
+                                $employeeTable->off_day = $holiday[$index] ;
+                                $employeeTable->start_time = $startTime[$index] ?? '00:00';
+                                $employeeTable->end_time = $endTime[$index] ?? '23:59';
+                                $employeeTable->save();
+
+                            }
+                        }
+                    }
+                    $_SESSION['flash_success'] = __('user_updated');
+                    redirect("/admin/user/manage");
+                    exit;
+                }
+                else {
+                    $errors[] = __('save_error');
+                }
+            }
+
+
+
+
+
+        } else {
+            clear_old_input();
+        }
+        $selectedServiceIds= [];
+        foreach ($employeeServicesData2 as $service) {
+            $selectedServiceIds[] = $service->service_id;
+        }
+        $timeByDay = [];
+        foreach ($employeeTimeWorkData as $time) {
+            $dayIndex = (int)$time->start_day_of_week;
+            $timeByDay[$dayIndex] = [
+                'start_time' => date('H:i', strtotime($time->start_time)),
+                'end_time' => date('H:i', strtotime($time->end_time)),
+                'off_day'   => $time->off_day
+            ];
+        }
+        $timesForView = [];
+        foreach ($days as $index => $day) {
+            $timesForView[$index] = $timeByDay[$index] ?? [
+                'start_time' => '',
+                'end_time' => '',
+                'off_day' => 0
+            ];
+        }
+        $this->view('user/originalView/editUser', [
+            'title' => __('edit_user'),
+            'user' => $user,
+            'userTypes' => $userTypes,
+            'groupedServices' => $groupedServices,
+            'selectedServiceIds' => $selectedServiceIds,
+            'employeeServicesData' => $employeeServicesData,
+            'durations' => $durations,
+            'services' => $categoryService,
+            'days' => $days,
+            'timesForView' => $timesForView,
+            'errors' => $errors,
+            'employeeServices' => $employeeServicesData2,
         ]);
     }
 

@@ -123,7 +123,7 @@ if (!empty($publicErrors)): ?>
         <div class="mt-5">
             <?php if(!empty($allServices)): ?>
             <div class="table-wrapper">
-                    <div class="table-responsive ">
+                    <div class="<!--table-responsive -->">
                     <table class="table custom-table">
                     <thead class="table-primary ">
                     <tr>

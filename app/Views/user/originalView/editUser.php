@@ -1,4 +1,5 @@
-<?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
+<?php use App\Models\UserType;
+include BASE_PATH . '/app/Views/components/layout.php'; ?>
 <form method="post">
     <?= csrf_field() ?>
     <div class="mt-5"><h4><?= __("basic_data") ?></h4></div>
@@ -107,10 +108,10 @@
                     <table class="table transparent custom-table">
                         <thead>
                         <tr>
-                            <th>نام سرویس</th>
-                            <th>قیمت (تومان)</th>
-                            <th>مدت زمان</th>
-                            <th>حذف</th>
+                            <th><?=__("service_title") ?></th>
+                            <th><?=__("price_toman") ?></th>
+                            <th><?=__("duration") ?></th>
+                            <th><?=__("delete") ?></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -124,7 +125,7 @@
                                     <select class="duration-select" name="service_durations[<?= $service->service_id ?>]">
                                         <?php foreach ($durations as $d): ?>
                                             <option value="<?= $d->id ?>" <?= ($d->id == $service->duration_id) ? 'selected' : '' ?>>
-                                                <?= $d->title ?>
+                                                <?= ($lang == 'fa') ? $d->title : $d->en_title ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -198,70 +199,4 @@
 
 </div>
 </div>
-</body>
-<script>
-    $(document).ready(function () {
-        const holidayCheckBox = $('.holiday-checkbox');
-        holidayCheckBox.each(function() {
-            var index = $(this).data('id');
-            if ($(this).is(':checked')) {
-                $('#startTime-' + index).val('').prop('disabled', true);
-                $('#endTime-' + index).val('').prop('disabled', true);
-            }
-        });
-        holidayCheckBox.change(function() {
-            var index = $(this).data('id');
-            $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
-            $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
-        });
-        $('.js-example-basic-single').select2({
-            minimumResultsForSearch: Infinity,
-        });
-        $('.duration-select').select2({
-            minimumResultsForSearch: Infinity,
-        });
-        $('#multi-services').on('select2:select', function(e) {
-            let id = e.params.data.id;
-            let title = e.params.data.text;
-
-            let durationOptionsHTML = `<?php foreach ($durations as $i): ?>
-              <option value="<?= $i->id ?>"><?= $i->title ?></option>
-                 <?php endforeach; ?>`;
-                 if($('#services_table_wrapper tbody tr[data-id="'+id+'"]').length === 0) {
-
-                let row = `<tr data-id="${id}">
-            <td>${title}</td>
-            <td><input type="text" min="0" class="form-control" name="service_prices[${id}]" required></td>
-            <td>
-                <select name="service_durations[${id}]" class="duration-select-js" required>
-                    ${durationOptionsHTML}
-                </select>
-            </td>
-            <td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>
-        </tr>`;
-                     $('#services_table_wrapper tbody').append(row);
-                     $('#services_table_wrapper tbody tr[data-id="' + id + '"] .duration-select-js').select2({
-                         minimumResultsForSearch: Infinity,
-                     });
-                 }
-
-        });
-
-        $(document).on('click', '.remove-row', function () {
-            let row = $(this).closest('tr');
-            let id = row.data('id');
-            row.remove();
-            let selectedValues = $('#multi-services').val();
-            selectedValues = selectedValues.filter(v => v != id);
-
-            $('#multi-services').val(selectedValues).trigger('change');
-        });
-
-        $('#multi-services').on('select2:unselect', function (e) {
-            let id = e.params.data.id;
-            $('#services_table_wrapper tbody tr[data-id="'+id+'"]').remove();
-        });
-
-    });
-</script>
-<script src="<?= asset('/js/register-user.js') ?>"></script>
+<script src="<?= asset('/js/edit-user.js') ?>"></script>

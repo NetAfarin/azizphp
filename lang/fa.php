@@ -342,4 +342,5 @@ return [
     'booking_success' => 'رزرو با موفقیت انجام شد',
     'booking_details' => 'جزئیات رزرو',
     'create_user' => 'ایجاد مشتری',
+    'price_toman' => 'قیمت (تومان)',
 ];

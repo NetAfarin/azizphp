@@ -1,12 +1,14 @@
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
 <div class="mt-5">
-    <div class="testi d-flex align-items-baseline">
-        <label for="itemsInPage" class="px-2"><?= __("item_per_page") ?></label>
-        <select class="js-example-basic-single sectionPagination" id="itemsInPage" name="state">
-            <?php foreach ($allowedPerPage as $opt): ?>
-                <option value="<?= $opt ?>" <?= $perPage === $opt ? 'selected' : '' ?>><?= $opt ?></option>
-            <?php endforeach; ?>
-        </select>
+    <div class="d-flex  align-items-baseline gap-2 mt-5">
+        <label for="itemsInPage"><?= __("item_per_page") ?></label>
+        <div>
+            <select class="perPageSelect sectionPagination" id="itemsInPage" name="state">
+                <?php foreach ($allowedPerPage as $opt): ?>
+                    <option value="<?= $opt ?>" <?= $perPage === $opt ? 'selected' : '' ?>><?= $opt ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
     </div>
     <div class="custom-part-with-border mt-4">
         <div class="d-flex  justify-content-between gap-sm-2">
@@ -277,98 +279,7 @@
     </div>
 
 </div>
-
-
-</body>
-
-<script>
-    $('#filterDate').on('click', function () {
-        const fromDate = $('#birth_date_picker').val();
-        const toDate = $('#birth_date_picker2').val();
-
-        $.ajax({
-            url: '/your/filter/url',
-            method: 'GET',
-            data: {from_date: fromDate, to_date: toDate},
-            success: function (response) {
-                console.log(response);
-            },
-            error: function () {
-                alert('خطا در دریافت داده‌ها');
-            }
-        });
-    });
-    $(document).ready(function () {
-        $("#birth_date_picker").persianDatepicker({
-            format: 'YYYY-MM-DD',
-            autoClose: true,
-            initialValue: false,
-            altField: '#birth_date',
-            altFormat: 'YYYY-MM-DD',
-            calendar: {
-                persian: {
-                    locale: 'fa'
-                },
-                gregorian: {
-                    locale: 'en'
-                }
-            }
-        });
-        $("#birth_date_picker2").persianDatepicker({
-            format: 'YYYY-MM-DD',
-            autoClose: true,
-            initialValue: false,
-            altField: '#birth_date',
-            altFormat: 'YYYY-MM-DD',
-            calendar: {
-                persian: {
-                    locale: 'fa'
-                },
-                gregorian: {
-                    locale: 'en'
-                }
-            }
-        });
-        $('#itemsInPage').on('change', function () {
-            var perPage = $(this).val();
-            var url = new URL(window.location.href);
-            url.searchParams.set('per_page', perPage);
-            url.searchParams.set('page', 1);
-            window.location.href = url.toString();
-        });
-
-        $('.js-example-basic-single').select2({
-            minimumResultsForSearch: Infinity,
-        });
-    });
-    const urlParams = new URLSearchParams(window.location.search);
-    const filter = urlParams.get('filter') || 'all';
-    const links = document.querySelectorAll('#filterLinks a');
-
-    links.forEach(link => {
-        link.classList.remove('text-primary', 'text-dark');
-        const href = new URL(link.href);
-        if (href.searchParams.get('filter') === filter) {
-            link.classList.add('text-primary');
-        } else {
-            link.classList.add('text-dark');
-        }
-    });
-    var selectAllServices = document.getElementById("allReserve");
-    selectAllServices.addEventListener("change", function () {
-        var table = this.closest("table");
-        var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-        checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
-    });
-    const lang = document.documentElement.lang;
-    const btn = document.querySelector('.btn-search');
-    if (btn && lang === 'en') {
-        btn.classList.add('ltr-input');
-    }
-
-
-</script>
-
-
 </div>
 </div>
+<script src="<?= asset('js/manage-booking.js') ?>"></script>
+

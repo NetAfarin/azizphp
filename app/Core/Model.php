@@ -171,7 +171,16 @@ abstract class Model
         return $this;
     }
 
-
+    public function orWhereLike(string $column, string $value): static
+    {
+        $this->wheres[] = [
+            'type' => 'OR',
+            'column' => $column,
+            'operator' => 'LIKE',
+            'value' => "%$value%"
+        ];
+        return $this;
+    }
     public function whereNotLike(string $column, string $value): static
     {
         $this->wheres[] = ['column' => $column, 'operator' => 'NOT LIKE', 'value' => "%$value%"];

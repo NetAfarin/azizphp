@@ -333,4 +333,6 @@ return [
     'booking_success' => 'Booking completed successfully',
     'booking_details' => 'Booking Details',
     'create_user' => 'Create Customer',
+    'price_toman' => 'Price (Toman)',
+
 ];

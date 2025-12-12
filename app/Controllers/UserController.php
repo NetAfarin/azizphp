@@ -103,6 +103,7 @@ class UserController extends Controller
             'success' => $success
         ]);
     }
+
     public function login(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -110,8 +111,8 @@ class UserController extends Controller
         }
         if (isset($_SESSION['user_id'])) {
             $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
-                ? '/admin/panel' :((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false)?'/sa/dashboard': '/home/index');
-            redirect( $redirect);
+                ? '/admin/panel' : ((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false) ? '/sa/dashboard' : '/home/index');
+            redirect($redirect);
             exit;
         }
 
@@ -143,42 +144,43 @@ class UserController extends Controller
 //                        if (!defined('SALON_ID')) {
 //                        define('SALON_ID', 'sa');}
 //                    }
-                        $_SESSION['user_id'] = $user->id;
-                        $_SESSION['salon_id'] = $user->salon_id;
-                        $_SESSION['user_name'] = $user->first_name;
-                        $_SESSION['is_admin'] = $user->isAdmin();
-                        $_SESSION['is_operator'] = $user->isOperator();
-                        $_SESSION['is_super_admin'] = $user->isSuperAdmin();
-                        $_SESSION['is_support'] = $user->isSupport();
+                    $_SESSION['user_id'] = $user->id;
+                    $_SESSION['salon_id'] = $user->salon_id;
+                    $_SESSION['user_name'] = $user->first_name;
+                    $_SESSION['is_admin'] = $user->isAdmin();
+                    $_SESSION['is_operator'] = $user->isOperator();
+                    $_SESSION['is_super_admin'] = $user->isSuperAdmin();
+                    $_SESSION['is_support'] = $user->isSupport();
 
-                        $user_type = UserType::find($user->user_type);
-                        $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
-                        clear_old_input();
-                        $redirect =($user->isSuperAdmin() || $user->isSupport())?"/sa/dashboard":( ($user->isAdmin() || $user->isOperator())
-                            ? "/admin/panel" : "/home/index");
-                        redirect( $redirect,($user->isSuperAdmin() || $user->isSupport()));
-                        exit;
+                    $user_type = UserType::find($user->user_type);
+                    $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
+                    clear_old_input();
+                    $redirect = ($user->isSuperAdmin() || $user->isSupport()) ? "/sa/dashboard" : (($user->isAdmin() || $user->isOperator())
+                        ? "/admin/panel" : "/home/index");
+                    redirect($redirect, ($user->isSuperAdmin() || $user->isSupport()));
+                    exit;
                 } else {
                     $errors[] = __('login_failed');
                 }
             }
         }
 
-       $this->view('user/login', [
+        $this->view('user/login', [
             'title' => __('login'),
             'errors' => $errors
         ]);
     }
+
     public function loginPage(): void
     {
-        $errors=[];
+        $errors = [];
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         if (isset($_SESSION['user_id'])) {
             $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
-                ? '/admin/panel' :((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false)?'/sa/dashboard': '/home/index');
-            redirect( $redirect);
+                ? '/admin/panel' : ((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false) ? '/sa/dashboard' : '/home/index');
+            redirect($redirect);
             exit;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -210,7 +212,7 @@ class UserController extends Controller
                     $user_type = UserType::find($user->user_type);
                     $_SESSION['user_role'] = $user_type->en_title ?? 'guest';
                     clear_old_input();
-                    redirect( "/user/otp");
+                    redirect("/user/otp");
                     exit;
                 } else {
 
@@ -222,9 +224,10 @@ class UserController extends Controller
 
         $this->view('user/originalView/loginPage', [
             'title' => __('login'),
-            'errors' =>$errors,
+            'errors' => $errors,
         ]);
     }
+
     public function registerPage()
     {
         $errors = [];
@@ -234,11 +237,11 @@ class UserController extends Controller
         }
         if (isset($_SESSION['user_id'])) {
             $redirect = (($_SESSION['is_admin'] || $_SESSION['is_operator']) ?? false)
-                ? '/admin/panel' :((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false)?'/sa/dashboard': '/home/index');
-            redirect( $redirect);
+                ? '/admin/panel' : ((($_SESSION['is_super_admin'] || $_SESSION['is_support']) ?? false) ? '/sa/dashboard' : '/home/index');
+            redirect($redirect);
             exit;
         }
-        if(isset($_SESSION['phone_number'])){
+        if (isset($_SESSION['phone_number'])) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $first_name = trim($_POST['first_name'] ?? '');
                 $last_name = trim($_POST['last_name'] ?? '');
@@ -281,7 +284,7 @@ class UserController extends Controller
             } else {
                 clear_old_input();
             }
-        }else{
+        } else {
             redirect("/user/login2");
         }
 
@@ -290,134 +293,8 @@ class UserController extends Controller
             'errors' => $errors,
         ]);
     }
-    public function add()
-    {
-        $errors = [];
-        $user = User::find($_SESSION['user_id']);
-        $salonId = $_SESSION['salon_id'] ?? 0;
-        $salon = Salon::find($salonId);
-        $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
-        $days=rotateArray($days,$salon->start_day_of_week);
-        $durations = Duration::all();
-        $service = Service::query()->where('parent_id', '<>', 0)->where("deleted", "=", 0)->get();
-        $userRole = UserType::all();
-        $lang = $_SESSION['lang'] ?? 'fa';
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-           $firstName = trim($_POST['first_name']);
-           $lastname = trim($_POST['last_name']);
-           $nationalCode = trim($_POST['national_code']);
-           $phoneNumber = trim($_POST['phoneNumber']);
-           $postal_address = trim($_POST['address']);
-           $role = trim($_POST['role']);
-           $birth_date = trim($_POST['birth_date']);
-            $serviceChosen     = $_POST['service'] ?? [];
-            $service_prices    = $_POST['service_prices'] ?? [];
-            $service_durations = $_POST['service_durations'] ?? [];
-            $employeeHolidays = $_POST['holiday'] ?? [];
-            $holiday = array_map(function ($value) {
-                return ($value === "on") ? 1 : 0;
-            }, $employeeHolidays);
-            $startTime = $_POST['startTime']?? [];
-            $endTime = $_POST['endTime']?? [];
-            $followSalon = isset($_POST['followSalon']) && $_POST['followSalon'] === 'on' ? 1 : 0;
-            $validator = new Validator($_POST, [
-                'first_name' => 'required|min:2|max:40',
-                'last_name' => 'required|min:2|max:40',
-                'national_code' => 'required|min:2|max:40',
-                'address' => 'required|min:1',
-            ]);
 
-            if ($validator->fails()) {
-                $errors = array_merge($errors, $validator->errors());
-                save_old_input();
-            }
-            if (User::query()->where('phone_number', '=', $phoneNumber)->get()) {
-                $errors[] = __('phone_taken');
-                save_old_input();
-            }
-            if($birth_date!= ""){
-                $year =convertToEnglish(explode("-", $birth_date))[0];
-                $month =convertToEnglish(explode("-", $birth_date))[1];
-                $day =convertToEnglish(explode("-", $birth_date))[2];
-                $dateArray =jalali_to_gregorian($year, $month, $day);
-                $miladiBirthDate = sprintf('%04d-%02d-%02d',$dateArray[0], $dateArray[1], $dateArray[2]);
-            }
 
-            if (empty($errors)) {
-                $user = new User([
-                'salon_id' => 1,
-                'first_name' => $firstName,
-                'last_name' => $lastname,
-                'phone_number' => $phoneNumber,
-                'national_code' => $nationalCode,
-                'birth_date' => (($birth_date == "") ? '' : $miladiBirthDate),
-                'password' => password_hash("123456" , PASSWORD_DEFAULT),
-                'postal_address' => $postal_address,
-                'register_datetime' => date('Y-m-d H:i:s'),
-                'user_type' => $role,
-                'follow_shift_from_salon' => $followSalon,
-                'deleted' => 0,
-                'is_active' => 1
-            ]);
-
-            if ($user->save()) {
-                $userId = $user->id;
-                if($role == UserType::EMPLOYEE ){
-                    foreach ($serviceChosen as $index => $serviceId) {
-                        $price = $service_prices[$index] ?? null;
-                        $duration = $service_durations[$index] ?? null;
-                        $employeeService = new EmployeeService([
-                            'service_id' => $serviceId,
-                            'user_id' => $userId,
-                            'price' => $price,
-                            'update_time' => date('Y-m-d H:i:s'),
-                            'estimated_duration' => $duration,
-                            'deleted' => 0,
-                            'is_active' => 1
-                        ]);
-                        $employeeService->save();
-                    }
-
-                    if($followSalon == 0){
-                        foreach ($days as $index => $day) {
-                            $off = $holiday[$index] ?? 0;
-                            $startTimeWork = $startTime[$index] ?? '00:00';
-                            $endTimeWork = $endTime[$index] ?? '00:00';
-                            $employeeTable = new EmployeeTable([
-                                'user_id' => $userId,
-                                'start_day_of_week' => $index,
-                                'off_day' => $off,
-                                'start_time' => $startTimeWork,
-                                'end_time' => $endTimeWork,
-                            ]);
-                            $employeeTable->save();
-                        }
-                    }
-                }
-                clear_old_input();
-                $_SESSION['flash_success'] = __('register_success');
-                redirect("/admin/user/add");
-                exit;
-            } else {
-                $errors[] = __('user_save_error');
-            }
-                }
-
-        }
-
-        $this->view('user/originalView/addUser', [
-            'title' => __('add_user'),
-            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
-            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
-            'lang' => $lang,
-            'services' => $service,
-            'days' => $days,
-            'userRole' => $userRole,
-            'user' => $user,
-            'durations' => $durations,
-            'errors' => $errors,
-        ]);
-    }
     public function dashboard()
     {
         $this->view('user/originalView/userDashboard', [
@@ -426,6 +303,7 @@ class UserController extends Controller
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
     }
+
     public function operatorDashboard()
     {
         $allowedPerPage = [1, 10, 20, 50, 100];
@@ -434,7 +312,7 @@ class UserController extends Controller
         $search = trim($_GET['search'] ?? '');
         $getStatus = isset($_GET['status']) ? (int)$_GET['status'] : 0;
         $lang = $_SESSION['lang'] ?? 'fa';
-        $column =  "ut.first_name" ;
+        $column = "ut.first_name";
         if (!in_array($perPage, $allowedPerPage, true)) {
             $redirectUrl = '?page=1&per_page=10';
             if ($search !== '') {
@@ -468,8 +346,8 @@ class UserController extends Controller
             "=", date("Y-m-d", strtotime("-1 day")))->get());
         $todayVisitsCount = ServiceVisitRelation::getVisitsNumberToday();
         $visitStatus = VisitStatus::all();
-        $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))->get());
-        $pendingServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(2)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))->get());
+        $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
+        $pendingServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(2)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
         $customersCount = sizeof(User::all());
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [
@@ -492,118 +370,6 @@ class UserController extends Controller
             'page' => $totalPages
         ]);
     }
-    public function manageUsers()
-    {
-        $lang = $_SESSION['lang'] ?? 'fa';
-        $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
-        $filter = trim($_GET['filter'] ?? 'all');
-        $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
-        $sortFirstNameUrl = (BASE_URL . '/admin/user/manage?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $sortLastNameUrl = (BASE_URL . '/admin/user/manage?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $allowedPerPage = [1, 10, 20, 50, 100];
-        $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
-        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-
-        if (!in_array($perPage, $allowedPerPage, true)) {
-            $redirectUrl = '?page=1&per_page=10';
-            if ($search !== '') {
-                $redirectUrl .= '&search=' . urlencode($search);
-            }
-            header("Location: " . $redirectUrl);
-            exit;
-        }
-        if (isset($_GET['search']) && empty($search)) {
-            header("Location: " . "?page=$page&per_page=$perPage");
-        }
-        $column = $lang == "fa" ? "user_table.first_name" : 'user_table.first_name';
-        $userType = UserType::all();
-        $allUsers2 = User::getAllUserWithDetails();
-        $customerData = User::getSomeUserWithDetails(UserType::CUSTOMER);
-        $employeesData = User::getSomeUserWithDetails(UserType::EMPLOYEE);
-        $operatorsData = User::getSomeUserWithDetails(UserType::OPERATOR);
-        $adminData = User::getSomeUserWithDetails(UserType::ADMIN);
-        $superAdminData = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
-        $sortByColumn = "user_table.first_name";
-        if (!empty($sortBy)) {
-            if ($sortBy == 'first_name') {
-                $sortByColumn = $sortBy;
-            } else if ($sortBy == 'last_name') {
-                $sortByColumn = 'last_name';
-            } else if ($sortBy == 'user_role') {
-                $sortByColumn = 'user_role';
-            }
-        }
-        $allUsers2->orderBy($sortByColumn, $sortOrder);
-        $allSearchData = User::getAllUserWithDetails();
-        $users = User::getAllUserWithDetails();
-        $customers = User::getSomeUserWithDetails(UserType::CUSTOMER);
-        $employees = User::getSomeUserWithDetails(UserType::EMPLOYEE);
-        $operators = User::getSomeUserWithDetails(UserType::OPERATOR);
-        $admin = User::getSomeUserWithDetails(UserType::ADMIN);
-        $superAdmin = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
-        if ($search !== '') {
-            $allSearchData->whereLike($column, $search);
-            $users->whereLike($column, $search);
-            $admin->whereLike($column, $search);
-            $superAdmin->whereLike($column, $search);
-            $customers->whereLike($column, $search);
-            $employees->whereLike($column, $search);
-            $operators->whereLike($column, $search);
-            $operatorsData->whereLike($column, $search);
-            $customerData->whereLike($column, $search);
-            $employeesData->whereLike($column, $search);
-            $superAdminData->whereLike($column, $search);
-            $adminData->whereLike($column, $search);
-            $allUsers2->whereLike($column, $search);
-        }
-        if ($filter == "all" || empty($filter)) {
-            $pagination = $allUsers2->paginate($page, $perPage);
-        }else if ($filter == "customers") {
-            $pagination = $customerData->paginate($page, $perPage);
-        }else if ($filter == "employees") {
-            $pagination = $employeesData->paginate($page, $perPage);
-        }else if ($filter == "operators") {
-            $pagination = $operatorsData->paginate($page, $perPage);
-        }else if ($filter == "super-admin") {
-            $pagination = $superAdminData->paginate($page, $perPage);
-        }else if ($filter == "manager") {
-            $pagination = $adminData->paginate($page, $perPage);
-        }
-        $searchSize = sizeof($allSearchData->get());
-        $usersSize = sizeof($users->get());
-        $customersSize = sizeof($customers->get());
-        $employeesSize = sizeof($employees->get());
-        $operatorsSize = sizeof($operators->get());
-        $adminsSize = sizeof($admin->get());
-        $superAdminsSize = sizeof($superAdmin->get());
-        $totalPages = ceil($pagination['total'] / $perPage);
-        $this->view('user/originalView/manageUsers', [
-            'title' => __('manage_users'),
-            'search' => $search,
-            'page' => $totalPages,
-            'lang' => $lang,
-            'filter' => $filter,
-            'users' => $pagination['data'],
-            'allUsers' => $usersSize,
-            'customersSize' => $customersSize,
-            'employeesSize' => $employeesSize,
-            'operatorsSize' => $operatorsSize,
-            'adminsSize' => $adminsSize,
-            'superAdminsSize' => $superAdminsSize,
-            'searchSize' => $searchSize,
-            'pagination' => $pagination,
-            'per_page' => $perPage,
-            'sortBy' => $sortBy,
-            'userType' => $userType,
-            'sortFirstNameUrl' => $sortFirstNameUrl,
-            'sortLastNameUrl' => $sortLastNameUrl,
-            'allowedPerPage' => $allowedPerPage,
-            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter ,$lang),
-            'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",
-            'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
-        ]);
-    }
     public function otpPage()
     {
         $errors = [];
@@ -611,7 +377,7 @@ class UserController extends Controller
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        if(isset($_SESSION['phone_number'])) {
+        if (isset($_SESSION['phone_number'])) {
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $password = $_POST['password'] ?? '';
@@ -739,6 +505,7 @@ class UserController extends Controller
             'errors' => $errors
         ]);
     }
+
     public function tickets()
     {
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
@@ -748,7 +515,7 @@ class UserController extends Controller
             header("Location: ?page=1&per_page=10");
             exit;
         }
-        $pagination = Ticket::query()->where('user_id','=',$user->id)->paginate($page, $perPage);
+        $pagination = Ticket::query()->where('user_id', '=', $user->id)->paginate($page, $perPage);
 
         $this->view('user/tickets',
             ['title' => __('ticket_list'),
@@ -758,6 +525,7 @@ class UserController extends Controller
                 'allowedPerPage' => $allowedPerPage
             ]);
     }
+
     public function getUserData($id)
     {
         $user = User::query()
@@ -767,7 +535,7 @@ class UserController extends Controller
                 'user_table.last_name',
                 'user_table.phone_number',
                 'utt.id as role_id',
-                (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title').' AS user_type'
+                (APP_LANG === 'fa' ? 'utt.title' : 'utt.en_title') . ' AS user_type'
             ])
             ->join('user_type_table as utt', 'user_table.user_type', '=', 'utt.id')
             ->where('user_table.id', '=', $id)
@@ -784,52 +552,54 @@ class UserController extends Controller
         exit;
     }
 
-    public function updateService($id){
-            header('Content-Type: application/json');
-            $errors = [];
+    public function updateService($id)
+    {
+        header('Content-Type: application/json');
+        $errors = [];
 
-            $service = User::find($id);
-            if (!$service) {
-                echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
-                exit;
-            }
+        $service = User::find($id);
+        if (!$service) {
+            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
+            exit;
+        }
 
-            $editFaTitle = trim($_POST['fa_title'] ?? '');
-            $editEnTitle = trim($_POST['en_title'] ?? '');
-            $isCategory = (int)($_POST['checkBoxCategory'] ?? 0);
-            $categoryModal = $_POST['category_modal'] ?? null;
+        $editFaTitle = trim($_POST['fa_title'] ?? '');
+        $editEnTitle = trim($_POST['en_title'] ?? '');
+        $isCategory = (int)($_POST['checkBoxCategory'] ?? 0);
+        $categoryModal = $_POST['category_modal'] ?? null;
 
-            $validator = new Validator($_POST, [
-                'fa_title' => 'required|min:2|max:40',
-                'en_title' => 'required|min:2|max:40',
-            ]);
+        $validator = new Validator($_POST, [
+            'fa_title' => 'required|min:2|max:40',
+            'en_title' => 'required|min:2|max:40',
+        ]);
 
-            if ($validator->fails()) {
-                $errors = array_merge($errors, $validator->errors());
-                echo json_encode(['success' => false, 'message' => $errors]);
-                exit;
-            }
-            $service->fa_title = $editFaTitle;
-            $service->en_title = $editEnTitle;
-            $service->service_key = "";
+        if ($validator->fails()) {
+            $errors = array_merge($errors, $validator->errors());
+            echo json_encode(['success' => false, 'message' => $errors]);
+            exit;
+        }
+        $service->fa_title = $editFaTitle;
+        $service->en_title = $editEnTitle;
+        $service->service_key = "";
 
-            if ($isCategory === 1) {
-                $service->parent_id = 0;
-            } else {
-                $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
-            }
+        if ($isCategory === 1) {
+            $service->parent_id = 0;
+        } else {
+            $service->parent_id = !empty($categoryModal) ? $categoryModal : $service->parent_id;
+        }
 
-            if ($service->save()) {
-                echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
-                exit;
-            } else {
-                echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
-                exit;
-            }
+        if ($service->save()) {
+            echo json_encode(['success' => true, 'message' => 'بروزرسانی با موفقیت انجام شد']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره‌سازی']);
+            exit;
+        }
     }
 
 
-    public function updateUser2($id){
+    public function updateUser2($id)
+    {
         header('Content-Type: application/json');
         $errors = [];
 
@@ -868,6 +638,7 @@ class UserController extends Controller
             exit;
         }
     }
+
     public function updateStatusType($id)
     {
         header('Content-Type: application/json');
@@ -879,13 +650,14 @@ class UserController extends Controller
         }
         $statusType = (int)($_POST['status_id'] ?? 0);
         $getStatus->visit_status = $statusType;
-            if ($getStatus->save()) {
-                echo json_encode(['success' => true, 'message' =>  'ikj']);
-                exit;
-            }else{
-                echo json_encode(['success' => false, 'message' => 'خطا در به روز رسانی']);
-            }
+        if ($getStatus->save()) {
+            echo json_encode(['success' => true, 'message' => 'ikj']);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'خطا در به روز رسانی']);
         }
+    }
+
     public function reserveList()
     {
         $lang = $_SESSION['lang'] ?? 'fa';
@@ -901,16 +673,16 @@ class UserController extends Controller
         $sortEmployeeUrl = BASE_URL . '/user/reserve?sortby=employee&sortorder=' . (($sortBy == 'employee' && $sortOrder == 'asc') ? 'desc' : 'asc');
         $sortDateUrl = BASE_URL . '/user/reserve?sortby=date&sortorder=' . (($sortBy == 'date' && $sortOrder == 'asc') ? 'desc' : 'asc');
         $fromDate = $_GET['from_date'] ?? null;
-        $toDate   = $_GET['to_date'] ?? null;
+        $toDate = $_GET['to_date'] ?? null;
         $allSearchData = ServiceVisitRelation::visitsDetails();
-        $allReserve2= ServiceVisitRelation::visitsDetails();
-        $allReserveVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(1);
-        $allVerifyVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(2);
-        $allCancelledVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(3);
-        $allInProgressVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(4);
-        $allDoneVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(5);
-        $allNoShowVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(6);
-        $allRescheduledVisits2= ServiceVisitRelation::visitsDetailsWithStatusType(7);
+        $allReserve2 = ServiceVisitRelation::visitsDetails();
+        $allReserveVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(1);
+        $allVerifyVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(2);
+        $allCancelledVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(3);
+        $allInProgressVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(4);
+        $allDoneVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(5);
+        $allNoShowVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(6);
+        $allRescheduledVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(7);
 
         $sortByColumn = "vt.visit_datetime";
         if ($sortBy === 'service') {
@@ -922,14 +694,14 @@ class UserController extends Controller
         }
         $column = $lang == "fa" ? "service_table.fa_title" : 'st.fa_title';
         $allSearchData = ServiceVisitRelation::visitsDetails();
-        $allReserve= ServiceVisitRelation::visitsDetails();
-        $allReserveVisits= ServiceVisitRelation::visitsDetailsWithStatusType(1);
-        $allVerifyVisits= ServiceVisitRelation::visitsDetailsWithStatusType(2);
-        $allCancelledVisits= ServiceVisitRelation::visitsDetailsWithStatusType(3);
-        $allInProgressVisits= ServiceVisitRelation::visitsDetailsWithStatusType(4);
-        $allDoneVisits= ServiceVisitRelation::visitsDetailsWithStatusType(5);
-        $allNoShowVisits= ServiceVisitRelation::visitsDetailsWithStatusType(6);
-        $allRescheduledVisits= ServiceVisitRelation::visitsDetailsWithStatusType(7);
+        $allReserve = ServiceVisitRelation::visitsDetails();
+        $allReserveVisits = ServiceVisitRelation::visitsDetailsWithStatusType(1);
+        $allVerifyVisits = ServiceVisitRelation::visitsDetailsWithStatusType(2);
+        $allCancelledVisits = ServiceVisitRelation::visitsDetailsWithStatusType(3);
+        $allInProgressVisits = ServiceVisitRelation::visitsDetailsWithStatusType(4);
+        $allDoneVisits = ServiceVisitRelation::visitsDetailsWithStatusType(5);
+        $allNoShowVisits = ServiceVisitRelation::visitsDetailsWithStatusType(6);
+        $allRescheduledVisits = ServiceVisitRelation::visitsDetailsWithStatusType(7);
         if ($search !== '') {
             $allSearchData->whereLike($column, $search);
             $allReserve->whereLike($column, $search);
@@ -946,29 +718,37 @@ class UserController extends Controller
             list($jy1, $jm1, $jd1) = explode('-', $fromDate);
             list($jy2, $jm2, $jd2) = explode('-', $toDate);
             $fromDate = jalali_to_gregorian($jy1, $jm1, $jd1, '-');
-            $toDate   = jalali_to_gregorian($jy2, $jm2, $jd2, '-');
-            $allReserve2->where("vt.visit_datetime" ,">=", $fromDate)->where("vt.visit_datetime" ,"<=", $toDate);
-            $allReserveVisits2->where("vt.visit_datetime" ,">=", $fromDate)->where("vt.visit_datetime" ,"<=", $toDate);
-            $allDoneVisits2->where("vt.visit_datetime" ,">=", $fromDate)->where("vt.visit_datetime" ,"<=", $toDate);
-            $allCancelledVisits2->where("vt.visit_datetime" ,">=", $fromDate)->where("vt.visit_datetime" ,"<=", $toDate);
+            $toDate = jalali_to_gregorian($jy2, $jm2, $jd2, '-');
+            $allReserve2->where("vt.visit_datetime", ">=", $fromDate)->where("vt.visit_datetime", "<=", $toDate);
+            $allReserveVisits2->where("vt.visit_datetime", ">=", $fromDate)->where("vt.visit_datetime", "<=", $toDate);
+            $allDoneVisits2->where("vt.visit_datetime", ">=", $fromDate)->where("vt.visit_datetime", "<=", $toDate);
+            $allCancelledVisits2->where("vt.visit_datetime", ">=", $fromDate)->where("vt.visit_datetime", "<=", $toDate);
         }
-          switch ($filter){
-            case 'all': $pagination = $allReserve2->paginate($page, $perPage);
+        switch ($filter) {
+            case 'all':
+                $pagination = $allReserve2->paginate($page, $perPage);
                 break;
-              case 'reserved': $pagination = $allReserveVisits2->paginate($page, $perPage);
-                  break;
-              case 'done': $pagination = $allDoneVisits2->paginate($page, $perPage);
-                  break;
-              case 'cancelled': $pagination = $allCancelledVisits2->paginate($page, $perPage);
-                  break;
-              case 'verify': $pagination = $allVerifyVisits2->paginate($page, $perPage);
-                  break;
-              case 'no_show': $pagination = $allNoShowVisits2->paginate($page, $perPage);
-                  break;
-              case 'rescheduled': $pagination = $allRescheduledVisits2->paginate($page, $perPage);
-                  break;
-              case 'in_progress':$pagination =  $allInProgressVisits2->paginate($page, $perPage);
-          }
+            case 'reserved':
+                $pagination = $allReserveVisits2->paginate($page, $perPage);
+                break;
+            case 'done':
+                $pagination = $allDoneVisits2->paginate($page, $perPage);
+                break;
+            case 'cancelled':
+                $pagination = $allCancelledVisits2->paginate($page, $perPage);
+                break;
+            case 'verify':
+                $pagination = $allVerifyVisits2->paginate($page, $perPage);
+                break;
+            case 'no_show':
+                $pagination = $allNoShowVisits2->paginate($page, $perPage);
+                break;
+            case 'rescheduled':
+                $pagination = $allRescheduledVisits2->paginate($page, $perPage);
+                break;
+            case 'in_progress':
+                $pagination = $allInProgressVisits2->paginate($page, $perPage);
+        }
         $searchItems = sizeof($allSearchData->get());
         $allVisitsSize = sizeof($allReserve->get());
         $allReserveVisitsSize = sizeof($allReserveVisits->get());
@@ -1012,11 +792,11 @@ class UserController extends Controller
     public function submitComment()
     {
         $doneVisits = ServiceVisitRelation::query()->select(["ut.first_name as employeeFirstName, ut.last_name as employeeLastName , vt.visit_datetime as visitDatetime , ut.last_name , st.fa_title as service"])
-        ->join("user_table as ut", "ut.id" , "=" ,"service_visit_relation_table.employee_id")
-        ->join("service_table as st", "st.id" , "=" ,"service_visit_relation_table.service_id")
-        ->join("visit_table as vt", "vt.id" , "=" ,"service_visit_relation_table.visit_id")
-        ->where("service_visit_relation_table.visit_status" , "=" ,5)
-        ->first();
+            ->join("user_table as ut", "ut.id", "=", "service_visit_relation_table.employee_id")
+            ->join("service_table as st", "st.id", "=", "service_visit_relation_table.service_id")
+            ->join("visit_table as vt", "vt.id", "=", "service_visit_relation_table.visit_id")
+            ->where("service_visit_relation_table.visit_status", "=", 5)
+            ->first();
         $this->view('user/originalView/submitComment', [
             'title' => __('survey'),
             'first_name' => $_SESSION['user_name'] ?? "",
@@ -1024,6 +804,5 @@ class UserController extends Controller
             'doneVisits' => $doneVisits,
         ]);
     }
-
 }
 

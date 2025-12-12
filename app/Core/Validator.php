@@ -20,8 +20,17 @@ class Validator
         foreach ($this->rules as $field => $rules) {
             $rules = explode('|', $rules);
             foreach ($rules as $rule) {
-                if ($rule === 'required' && empty(trim($this->data[$field] ?? ''))) {
-                    $this->errors[$field][] = __('validation_required', ['field' => __('field_' . $field)]);
+                if ($rule === 'required') {
+                    $value = $this->data[$field] ?? null;
+                    if (is_array($value)) {
+                        if (count($value) === 0) {
+                            $this->errors[$field][] = __('validation_required', ['field' => __('field_' . $field)]);
+                        }
+                        continue;
+                    }
+                    if ($value === null || trim((string)$value) === '') {
+                        $this->errors[$field][] = __('validation_required', ['field' => __('field_' . $field)]);
+                    }
                 }
 
                 if ($rule === 'phone' && !preg_match('/^\d{11}$/', $this->data[$field] ?? '')) {

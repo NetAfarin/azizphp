@@ -4,8 +4,11 @@ $(document).ready(function () {
         minimumResultsForSearch: Infinity,
     });
     $('.js-example-basic-single').select2({
-        // dropdownParent: $('#editModal'),
         minimumResultsForSearch: Infinity,
+    });
+    $('#multiple-select-field').select2({
+        minimumResultsForSearch: Infinity,
+        dropdownParent: $(document.body)
     });
     $("#birth_date_picker").persianDatepicker({
         format: 'YYYY-MM-DD',
@@ -112,14 +115,6 @@ $(document).ready(function() {
     updateTableDisplay();
 });
 
-$(document).ready(function () {
-    $('#multiple-select-field').select2()
-})
-$(document).ready(function() {
-    $('.js-example-basic-single').select2({
-        minimumResultsForSearch: Infinity,
-    });
-});
 document.addEventListener('DOMContentLoaded', function () {
     const dropdownLinks = document.querySelectorAll('.nav-item.dropdown > a.dropdown-toggle[href^="#"]');
     const currentPath = window.location.pathname;
@@ -160,17 +155,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-//
-// var selectAllUsers = document.getElementById("allUsers");
-// var selectAllServices = document.getElementById("allServices");
-// selectAllUsers.addEventListener("change", function () {
-//     var table = this.closest("table");
-//     var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-//     checkboxes.forEach(cb => cb.checked = selectAllUsers.checked);
-// });
-// selectAllServices.addEventListener("change", function () {
-//     var table = this.closest("table");
-//     var checkboxes = table.querySelectorAll("tbody input[type='checkbox']");
-//     checkboxes.forEach(cb => cb.checked = selectAllServices.checked);
-// });

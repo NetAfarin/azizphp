@@ -87,7 +87,8 @@ if (!function_exists('getUrl')) {
     }
 }
 if (!function_exists('rotateArray')) {
-    function rotateArray(array $arr, int $shift=1): array {
+    function rotateArray(array $arr, int $shift = 1): array
+    {
         $count = count($arr);
         if ($count === 0) return $arr;
         $shift = $shift % $count;
@@ -132,7 +133,8 @@ function weekDay($lang = 'fa')
         ];
     }
 }
-function renderPagination($totalPages, $currentPage, $perPage, $search = '', $sortBy = '', $sortOrder = '', $filter = '' , $lang = "fa"): string
+
+function renderPagination($totalPages, $currentPage, $perPage, $search = '', $sortBy = '', $sortOrder = '', $filter = '', $lang = "fa"): string
 {
     $final = '<ul class="pagination">';
     $pages = [];
@@ -143,7 +145,7 @@ function renderPagination($totalPages, $currentPage, $perPage, $search = '', $so
     } elseif ($currentPage == 2) {
         $start = 2;
         $end = min(3, $totalPages - 1);
-    }elseif ($currentPage == $totalPages) {
+    } elseif ($currentPage == $totalPages) {
         $start = max(2, $totalPages - 2);
         $end = $totalPages - 1;
     } else {
@@ -173,7 +175,7 @@ function renderPagination($totalPages, $currentPage, $perPage, $search = '', $so
     foreach ($pages as $p) {
         if ($p === '...') {
             $final .= "<li class='dots'>...</li>";
-        }else if ($p == $currentPage) {
+        } else if ($p == $currentPage) {
             $final .= "<li class='active-page'><a href='javascript:void(0)'>$p</a></li>";
         } else {
             $active = ($p == $currentPage) ? 'active-page' : '';
@@ -196,7 +198,9 @@ function renderPagination($totalPages, $currentPage, $perPage, $search = '', $so
     $final .= '</ul>';
     return $final;
 }
-function toJalali($datetime , $separator = "/") {
+
+function toJalali($datetime, $separator = "/")
+{
     if (
         empty($datetime) ||
         $datetime === "0000-00-00 00:00:00" ||
@@ -215,16 +219,18 @@ function toJalali($datetime , $separator = "/") {
     $time = $datetime->format('H:i');
     list($gy, $gm, $gd) = explode('-', $gregorianDate);
     $jalaliDateArray = gregorian_to_jalali($gy, $gm, $gd);
-    $year  = str_pad($jalaliDateArray[0], 4, '0', STR_PAD_LEFT);
+    $year = str_pad($jalaliDateArray[0], 4, '0', STR_PAD_LEFT);
     $month = str_pad($jalaliDateArray[1], 2, '0', STR_PAD_LEFT);
-    $day   = str_pad($jalaliDateArray[2], 2, '0', STR_PAD_LEFT);
+    $day = str_pad($jalaliDateArray[2], 2, '0', STR_PAD_LEFT);
     $jalaliDate = "{$year}$separator{$month}$separator{$day}";
     return [
         'date' => $jalaliDate,
         'time' => $time
     ];
 }
-function convertToEnglish($text) {
+
+function convertToEnglish($text)
+{
     $persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
     $arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     $englishNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -235,10 +241,13 @@ function convertToEnglish($text) {
 
     return $result;
 }
-enum Type {
+
+enum Type
+{
     case ERROR;
     case SUCCESS;
 }
+
 function showToast(Type $type = Type::SUCCESS, string $text = ''): string
 {
     $bg = $type === Type::SUCCESS ? 'text-bg-success' : 'text-bg-danger';
@@ -253,4 +262,16 @@ function showToast(Type $type = Type::SUCCESS, string $text = ''): string
             </div>
         </div>
     ";
+}
+
+function getMiladiBirthDate(string $birthDate): string
+{
+    $date = convertToEnglish($birthDate);
+    $newDate = preg_split('/[-\/]/', $date);
+    $year = $newDate[0];
+    $month = $newDate[1];
+    $day = $newDate[2];
+    $dateArray = jalali_to_gregorian($year, $month, $day);
+    $miladiBirthDate = sprintf('%04d-%02d-%02d', $dateArray[0], $dateArray[1], $dateArray[2]);
+    return $miladiBirthDate;
 }
