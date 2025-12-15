@@ -73,5 +73,5 @@ if (!empty($publicErrors)): ?>
     <?php endforeach; ?>
 `;
 </script>
-<script src="<?=asset("/js/edit-user.js")?>"></script>
+<script src="<?= asset('/js/service/edit-service.js') ?>"></script>
 

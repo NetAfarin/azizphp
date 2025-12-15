@@ -15,19 +15,29 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             </select>
         </div>
     </div>
+    <form method="post"
+          action="<?= BASE_URL ?>/admin/users/delete"
+          id="groupActionForm">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" id="groupActionInput">
+    </form>
     <div class="mt-4">
         <div class="col-12 ">
             <div class="custom-part-with-border ">
                 <div class="d-flex  flex-wrap justify-content-between gap-sm-2">
                     <div class="d-flex">
-                        <select class="groupWorkSelect halfSelectForm" name="state">
-                            <option><?= __("group_work") ?></option>
+                        <select class="groupWorkSelect halfSelectForm"
+                                onchange="document.getElementById('groupActionInput').value = this.value">
+                            <option value="delete"><?= __("delete") ?></option>
                             <option><?= __("group_work") ?></option>
                             <option><?= __("group_work") ?></option>
                         </select>
-
-                        <button class="btn btn-primary mx-1"
-                                style="width: 59px;height: 50px;"><?= __("execution") ?></button>
+                        <button type="submit"
+                                form="groupActionForm"
+                                class="btn btn-primary mx-1"
+                                style="width: 59px;height: 50px;">
+                            <?= __("execution") ?>
+                        </button>
                     </div>
                     <form method="get" class="d-flex align-items-center gap-2 mb-2">
                         <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
@@ -49,6 +59,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                         </div>
                     </form>
                 </div>
+
                 <div class="d-flex flex-wrap justify-content-between mt-5">
                     <div class="d-flex" id="filterLinks">
                         <a href="?filter=all<?= (!empty($search)) ? "&search=" . urlencode($search) : "" ?>"
@@ -133,7 +144,11 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                         <?php foreach ($users as $user): ?>
                             <tr>
                                 <td>
-                                    <input class="form-check-input checkBox" type="checkbox" value=""
+                                    <input class="form-check-input checkBox"
+                                           type="checkbox"
+                                           name="users[]"
+                                           value="<?= $user->id ?>"
+                                           form="groupActionForm"
                                            id="tableService<?= $count ?>">
                                     <label class="form-check-label" for="tableService<?= $count ?>">
                                         <?= htmlspecialchars($count) ?>
@@ -245,4 +260,4 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
 </div>
 </div>
 </div>
-<script src="<?= asset('/js/manage-users.js') ?>"></script>
+<script src="<?= asset('/js/user/manage-users.js') ?>"></script>

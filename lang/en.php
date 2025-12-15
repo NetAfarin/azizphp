@@ -334,5 +334,5 @@ return [
     'booking_details' => 'Booking Details',
     'create_user' => 'Create Customer',
     'price_toman' => 'Price (Toman)',
-
+    'user_doesnt_selected' => 'No User Selected!',
 ];

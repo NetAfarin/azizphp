@@ -338,6 +338,7 @@ class ServiceController extends Controller
         }
         $errors = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            vd($_POST);
             $fa_title = $_POST['fa_title'];
             $en_title = $_POST['en_title'];
             $categoryId = $_POST['category'] ?? '';

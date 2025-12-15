@@ -281,5 +281,5 @@
 </div>
 </div>
 </div>
-<script src="<?= asset('js/manage-booking.js') ?>"></script>
+<script src="<?= asset('js/booking/manage-booking.js') ?>"></script>
 

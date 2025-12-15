@@ -261,5 +261,5 @@ if (!empty($publicErrors)): ?>
 </div>
 </div>
 </div>
-<script src="<?= asset('js/newBooking.js') ?>"></script>
+<script src="<?= asset('js/booking/newBooking.js') ?>"></script>
 

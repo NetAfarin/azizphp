@@ -128,9 +128,10 @@
                          <tr>
                              <td><?= $day ?></td>
                              <td>
-                                 <div class="custom-time-container time-with-icon">
-                                     <input type="time" name="startTime[<?= $index ?>]" id="startTime-<?= $index ?>" class="form-control time-input">
-<!--                                     <div class="custom-time-container time-with-icon">-->
+<!--                                 <div class="custom-time-container time-with-icon">-->
+<!--                                     <input type="time" name="startTime[--><?php //= $index ?><!--]" id="startTime---><?php //= $index ?><!--" class="form-control time-input">-->
+                                 <input class="time" type="text" value="14:30" data-toggle="modal" data-target="#timePickerModal" readonly />
+                                     <!--                                     <div class="custom-time-container time-with-icon">-->
 <!--                                         <input-->
 <!--                                                 type="text"-->
 <!--                                                 id="timepicker"-->
@@ -180,10 +181,112 @@
      </div>
      <button class="btn btn-primary mt-5 px-5" type="submit"><?=__("add")?></button>
  </form>
-
+<div class="modal fade" id="timePickerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">انتخاب زمان</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="clockpicker-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" id="confirmTime">تایید</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>
 </div>
 </body>
 <script> window.durations = <?= json_encode(array_map(fn($d) => ['id' => $d->id, 'title' => $d->title , 'en_title' => $d->en_title], $durations), JSON_UNESCAPED_UNICODE) ?>;</script>
-<script src="<?= asset('/js/add-user.js') ?>"></script>
+<script>
+    $(document).ready(function() {
+        console.log("heyyy bro!")
+        $('.time').clockpicker({
+            placement: 'bottom',
+            align: 'left',
+            autoclose: true,
+            donetext: 'Done',
+            afternoonHoursInOuterCircle: false,
+            alwaysSelectHoursFirst: true,
+            autosize: false,
+            colors: {
+                buttonTextColor: '#0797FF',
+                clockFaceColor: '#EEEEEE',
+                clockInnerCircleTextColor: '#888888',
+                clockInnerCircleUnselectableTextColor: '#CCCCCC',
+                clockOuterCircleTextColor: '#000000',
+                clockOuterCircleUnselectableTextColor: '#CCCCCC',
+                hoverCircleColor: '#DDDDDD',
+                popupBackgroundColor: '#FFFFFF',
+                popupHeaderBackgroundColor: '#0797FF',
+                popupHeaderTextColor: '#FFFFFF',
+                selectorColor: '#0797FF',
+                selectorNumberColor: '#FFFFFF',
+                signButtonColor: '#FFFFFF',
+                signButtonBackgroundColor: '#0797FF'
+            },
+
+            // Determine whether to show browser's context menu on right click
+            contextmenu: false,
+
+            // If true, the hours can be greater than 23.
+            duration: false,
+
+            // If true, the duration can be negative.
+            // This settings only has effect if the setting duration is set to true.
+            durationNegative: false,
+
+
+            // hides the unselectable number
+            hideUnselectableNumbers: false,
+
+            // i18n
+            i18n: {
+                okButton: 'OK',
+                cancelButton: 'Cancel'
+            },
+
+            // min/max times
+            maximum: '23:59',
+            minimum: '-23:59',
+
+            // animation speed when switching modes
+            modeSwitchSpeed: 500,
+
+            // only shows clock on mobile device
+            onlyShowClockOnMobile: false,
+
+            // callbacks
+            onAdjust: function(newVal, oldVal) { /*console.log('Value adjusted from ' + oldVal + ' to ' + newVal + '.');*/ },
+            onChange: function(newVal, oldVal) { /*console.log('Value changed from ' + oldVal + ' to ' + newVal + '.');*/ },
+            onClose: function() { },
+            onModeSwitch: function() { },
+            onOpen: function() { },
+
+            // width of the popup in the Desktop
+            popupWidthOnDesktop: 200,
+
+            // precision
+            precision: 1,
+
+            // if this option is set to true, a user cannot empty the field by hitting delete or backspace.
+            required: false,
+
+            // custom separator
+            separator: ':',
+
+            // if true, positive durations use the plus sign (+) as a prefix.
+            useDurationPlusSign: false,
+
+            // if true, the mobile phone vibrates while changing the time.
+            vibrate: true
+
+        });
+    });
+</script>
+<script src="<?= asset('/js/user/add-user.js') ?>"></script>

@@ -199,4 +199,4 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
 </div>
 </div>
-<script src="<?= asset('/js/edit-user.js') ?>"></script>
+<script src="<?= asset('/js/user/edit-user.js') ?>"></script>

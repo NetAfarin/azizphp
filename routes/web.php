@@ -76,6 +76,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/bookings/create', [AdminBookingController::class, 'createReserve']);
     Route::post('/admin/bookings/add/user', [AdminBookingController::class, 'addUser']);
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'editUser2']);
+    Route::post('/admin/users/delete', [AdminController::class, 'deleteUsers']);
 
 });
 

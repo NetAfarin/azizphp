@@ -79,13 +79,16 @@ if (!empty($publicErrors)): ?>
             <div class="d-flex  justify-content-between gap-sm-2">
                 <div class="d-flex">
                     <select class="js-example-basic-single halfSelectForm" name="state" id="xx">
-                        <option><?= __("group_work") ?></option>
+                        <option value="delete"><?= __("delete") ?></option>
                         <option><?= __("group_work") ?></option>
                         <option><?= __("group_work") ?></option>
                     </select>
 
-                    <button class="btn btn-primary mx-2" style="width: 59px;height: 50px;"><?= __("execution") ?></button>
-                </div>
+                    <button type="submit"
+                            class="btn btn-primary mx-1"
+                            style="width: 59px;height: 50px;">
+                        <?= __("execution") ?>
+                    </button>                </div>
                 <form method="get" class="d-flex align-items-center gap-2 mb-2">
                     <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
                     <div class="input-group">
@@ -183,7 +186,7 @@ if (!empty($publicErrors)): ?>
                     <?php foreach ($allServices as $service): ?>
                         <tr>
                             <td>
-                                <input class="form-check-input checkBox" type="checkbox" value="" id="tableService<?= $count?>">
+                                <input class="form-check-input checkBox" type="checkbox" value="<?= $service->id ?>" name="serviceId" id="tableService<?= $count?>">
                                 <label class="form-check-label" for="tableService<?= $count?>">
                                     <?=  htmlspecialchars($count)?>
                                 </label>
@@ -334,6 +337,6 @@ if (!empty($publicErrors)): ?>
 </div>
 </div>
 </div>
-<script src="<?= asset('/js/edit-service.js') ?>"></script>
+<script src="<?= asset('/js/service/edit-service.js') ?>"></script>
 </body>
 

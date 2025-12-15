@@ -18,6 +18,9 @@ if (!empty($_GET['url'])) {
 
 <html lang="<?= $lang ?>" dir="<?= $dir ?>">
 <head>
+    <style>
+        html { visibility: hidden; }
+    </style>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($title) ?></title>
     <link href="<?= asset($dir === 'rtl' ?"css/bootstrap5.3.8.rtl.min.css":"css/bootstrap5.3.8.min.css"); ?>" rel="stylesheet">
@@ -25,12 +28,13 @@ if (!empty($_GET['url'])) {
     <link href="<?= asset('css/FontAwesomePro/css/all.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/style.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/theme.css')?>" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/gh/dmuy/MDTimePicker@latest/mdtimepicker.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!--    <link href="https://cdn.jsdelivr.net/gh/dmuy/MDTimePicker@latest/mdtimepicker.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.3.0/mdb.min.css" rel="stylesheet"/>
+
+    <!-- فقط اسکریپت‌هایی که باید در head باشند -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 <!--<nav class="navbar navbar-light bg-light mb-4">-->
 <!--    <div class="container-fluid d-flex justify-content-between align-items-center">-->
@@ -63,6 +67,7 @@ if (!empty($_GET['url'])) {
 <!--        </div>-->
 <!--    </div>-->
 <!--</nav>-->
+<body>
 <?php if (!empty($_SESSION['flash_success'])): ?>
     <?= showToast(type: Type::SUCCESS, text: $_SESSION['flash_success']) ?>
     <?php unset($_SESSION['flash_success']); ?>

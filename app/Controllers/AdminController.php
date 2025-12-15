@@ -388,7 +388,7 @@ class AdminController extends Controller
             $endDate = trim($_POST['endDate'] ?? '');
             $selectedList = $_POST['selected'] ?? [];
             $data = [];
-            foreach ($selectedList as  $json_string) {
+            foreach ($selectedList as $json_string) {
                 $data = json_decode($json_string, true);
             }
             $date = $data['date'];
@@ -423,22 +423,22 @@ class AdminController extends Controller
             clear_old_input();
         }
 
-        $salon = Salon::find(/*(int)$user->salon_id*/1);
+        $salon = Salon::find(/*(int)$user->salon_id*/ 1);
         $holidays = Holiday::all();
         $userTypes = UserType::all();
         $employeeServicesData = EmployeeService::query()
-            ->join('service_table AS srv','srv.id','=','employee_service_table.service_id')
-            ->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])
+            ->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id')
+            ->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title'])
             ->where('user_id', '=', $employeeId)->get() ?? [];
         $i1 = intval(date('w')) - intval($salon->start_day_of_week);
-        $todayIndex = $i1<0? $i1+7:$i1;
+        $todayIndex = $i1 < 0 ? $i1 + 7 : $i1;
         $today = new DateTime('today');
         $deltaToWeekStart = $todayIndex;
         $weekStart = (clone $today)->modify("-{$deltaToWeekStart} days");
         $prebookingList = PreBooking::query()
             ->select(["employee_booking_list_table.*,est.service_id,srv.*"])
-            ->join('employee_service_table AS est','est.id','=','employee_service_id')
-            ->join('service_table AS srv','srv.id','=','est.service_id')
+            ->join('employee_service_table AS est', 'est.id', '=', 'employee_service_id')
+            ->join('service_table AS srv', 'srv.id', '=', 'est.service_id')
             ->where('employee_booking_list_table.user_id', '=', $employeeId)
             ->where('date', '>=', $weekStart->format('Y-m-d'))
             ->get();
@@ -453,6 +453,7 @@ class AdminController extends Controller
             'employeeServicesData' => $employeeServicesData,
         ]);
     }
+
     public function bookingsSettings()
     {
         $user = User::find((int)$id);
@@ -465,8 +466,8 @@ class AdminController extends Controller
 
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
-        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
-        $selectedServiceIds =[];
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $selectedServiceIds = [];
         $durations = Duration::all();
 
         foreach ($employeeServicesData as $service) {
@@ -483,6 +484,7 @@ class AdminController extends Controller
             'durations' => $durations,
         ]);
     }
+
     public function add()
     {
         $errors = [];
@@ -525,7 +527,7 @@ class AdminController extends Controller
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
-            if(!empty($phoneNumber)) {
+            if (!empty($phoneNumber)) {
                 if (User::query()->where('phone_number', '=', $phoneNumber)->get()) {
                     $errors[] = __('phone_taken');
                     $_SESSION['flash_error'] = __('phone_taken');
@@ -611,6 +613,7 @@ class AdminController extends Controller
             'errors' => $errors,
         ]);
     }
+
     public function manageUsers()
     {
         $lang = $_SESSION['lang'] ?? 'fa';
@@ -724,7 +727,8 @@ class AdminController extends Controller
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
     }
-    public function editUser2( $id)
+
+    public function editUser2($id)
     {
         $user = User::find((int)$id);
         if (!$user) {
@@ -735,21 +739,21 @@ class AdminController extends Controller
         $errors = [];
         $salonId = $_SESSION['salon_id'] ?? 0;
         $salon = Salon::find($salonId);
-        $days =APP_LANG=="fa"? [ 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'] : [ 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI','SAT'];
-        $days=rotateArray($days,$salon->start_day_of_week);
+        $days = APP_LANG == "fa" ? ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'] : ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        $days = rotateArray($days, $salon->start_day_of_week);
         $userTypes = UserType::all();
         $groupedServices = Service::groupedForSelect();
-        $categoryService = Service::query()->where("parent_id" , "<>" , "0")->get();
-        $employeeServicesData = EmployeeService::query()->join('service_table AS srv','srv.id','=','employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title').' AS title'])->where('user_id', '=', $id)->get() ?? [];
+        $categoryService = Service::query()->where("parent_id", "<>", "0")->get();
+        $employeeServicesData = EmployeeService::query()->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id')->select(['employee_service_table.*', (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title'])->where('user_id', '=', $id)->get() ?? [];
         $durations = Duration::all();
         $selectedServiceIds = [];
         foreach ($employeeServicesData as $service) {
             $selectedServiceIds[] = $service->service_id;
         }
-        $employeeTimeWorkData = EmployeeService::query()->select(['st.*'])->join('employee_table AS st','st.user_id','=','employee_service_table.user_id')->where('st.user_id', '=', $id)->get() ?? [];
+        $employeeTimeWorkData = EmployeeService::query()->select(['st.*'])->join('employee_table AS st', 'st.user_id', '=', 'employee_service_table.user_id')->where('st.user_id', '=', $id)->get() ?? [];
         $employeeServicesData2 = EmployeeService::query()
-            ->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id' ,'left')
-            ->join('duration_table AS dur', 'dur.id', '=', 'employee_service_table.estimated_duration' , 'left')
+            ->join('service_table AS srv', 'srv.id', '=', 'employee_service_table.service_id', 'left')
+            ->join('duration_table AS dur', 'dur.id', '=', 'employee_service_table.estimated_duration', 'left')
             ->select([
                 'employee_service_table.*',
                 (APP_LANG === 'fa' ? 'srv.fa_title' : 'srv.en_title') . ' AS title',
@@ -758,7 +762,7 @@ class AdminController extends Controller
             ->where('user_id', '=', $id)
             ->where('employee_service_table.deleted', '=', 0)
             ->get();
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $firstName = trim($_POST['first_name'] ?? '');
             $lastName = trim($_POST['last_name'] ?? '');
             $nationalCode = trim($_POST['national_code'] ?? '');
@@ -771,8 +775,8 @@ class AdminController extends Controller
             $servicePrices = $_POST['service_prices'] ?? [];
             $serviceDuration = $_POST['service_durations'] ?? [];
             $holidayRaw = $_POST['holiday'] ?? [];
-            $startTime = $_POST['startTime']?? [];
-            $endTime = $_POST['endTime']?? [];
+            $startTime = $_POST['startTime'] ?? [];
+            $endTime = $_POST['endTime'] ?? [];
             $holiday = array_map(function ($value) {
                 return ($value === "on") ? 1 : 0;
             }, $holidayRaw);
@@ -786,7 +790,7 @@ class AdminController extends Controller
             }
             if (!empty($phoneNumber)) {
                 $exists = User::query()
-                    ->where('phone_number', '=' , $phoneNumber)
+                    ->where('phone_number', '=', $phoneNumber)
                     ->where('id', '!=', $id)
                     ->get();
 
@@ -816,9 +820,9 @@ class AdminController extends Controller
                 $user->birth_date = (($birthDate == "") ? '' : $miladiBirthDate);
                 $user->update_time = date('Y-m-d H:i:s');
                 if ($user->save()) {
-                    if($user->user_type == UserType::EMPLOYEE){
-                        $user->syncEmployeeServicesWithDetails2($unchangedServices , $servicesToAdd ,  $servicePrices, $serviceDuration);
-                    } else if($followSalon == 0){
+                    if ($user->user_type == UserType::EMPLOYEE) {
+                        $user->syncEmployeeServicesWithDetails2($unchangedServices, $servicesToAdd, $servicePrices, $serviceDuration);
+                    } else if ($followSalon == 0) {
                         foreach ($days as $index => $day) {
                             $employeeTable = EmployeeTable::query()
                                 ->where('user_id', '=', $id)
@@ -827,7 +831,7 @@ class AdminController extends Controller
                             if (!empty($employeeTable)) {
                                 $employeeTable->user_id = $id;
                                 $employeeTable->start_day_of_week = $index;
-                                $employeeTable->off_day = $holiday[$index] ;
+                                $employeeTable->off_day = $holiday[$index];
                                 $employeeTable->start_time = $startTime[$index] ?? '00:00';
                                 $employeeTable->end_time = $endTime[$index] ?? '23:59';
                                 $employeeTable->save();
@@ -838,20 +842,16 @@ class AdminController extends Controller
                     $_SESSION['flash_success'] = __('user_updated');
                     redirect("/admin/user/manage");
                     exit;
-                }
-                else {
+                } else {
                     $errors[] = __('save_error');
                 }
             }
 
 
-
-
-
         } else {
             clear_old_input();
         }
-        $selectedServiceIds= [];
+        $selectedServiceIds = [];
         foreach ($employeeServicesData2 as $service) {
             $selectedServiceIds[] = $service->service_id;
         }
@@ -861,7 +861,7 @@ class AdminController extends Controller
             $timeByDay[$dayIndex] = [
                 'start_time' => date('H:i', strtotime($time->start_time)),
                 'end_time' => date('H:i', strtotime($time->end_time)),
-                'off_day'   => $time->off_day
+                'off_day' => $time->off_day
             ];
         }
         $timesForView = [];
@@ -886,6 +886,41 @@ class AdminController extends Controller
             'errors' => $errors,
             'employeeServices' => $employeeServicesData2,
         ]);
+    }
+
+    public function deleteUsers()
+    {
+        $usersId = $_POST['users'] ?? [];
+        $action = (!empty($_POST['action'])) ? $_POST['action'] : 'delete';
+        $messageSuccess = "";
+        $messageError = "";
+        if(!empty($usersId)){
+        if($action == "delete"){
+            foreach ($usersId as $id) {
+                $id = (int)$id;
+                $user = User::find($id);
+                if (!empty($user)) {
+                    if ($user->user_type == UserType::ADMIN) {
+                        $messageError = __('cannot_delete_admin');
+                    }else if($user->id == $_SESSION['id']){
+                        $messageError = __('cannot_delete_self');
+                    }else{
+                        $user->deleted = 1;
+                        $user->save();
+                        $messageSuccess= __('user_deleted');
+                    }
+                }
+                $_SESSION['flash_success'] = $messageSuccess;
+                if(!empty($messageError)){
+                    $_SESSION['flash_error'] = $messageError;
+                }
+            }
+            redirect("/admin/user/manage");
+        }
+        }else{
+            $_SESSION['flash_error'] = __('user_doesnt_selected');
+            redirect("/admin/user/manage");
+        }
     }
 
 }
