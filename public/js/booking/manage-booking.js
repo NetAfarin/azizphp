@@ -2,29 +2,29 @@ $(document).ready(function () {
     $('.perPageSelect').select2({
         minimumResultsForSearch: Infinity,
     });
-    $("#birth_date_picker").persianDatepicker({
-        format: 'YYYY-MM-DD',
-        autoClose: true,
-        initialValue: false,
-        altField: '#birth_date',
-        altFormat: 'YYYY-MM-DD',
-        calendar: {
-            persian: { locale: 'fa' },
-            gregorian: { locale: 'en' }
-        }
-    });
-
-    $("#birth_date_picker2").persianDatepicker({
-        format: 'YYYY-MM-DD',
-        autoClose: true,
-        initialValue: false,
-        altField: '#birth_date',
-        altFormat: 'YYYY-MM-DD',
-        calendar: {
-            persian: { locale: 'fa' },
-            gregorian: { locale: 'en' }
-        }
-    });
+    // $("#birth_date_picker").persianDatepicker({
+    //     format: 'YYYY-MM-DD',
+    //     autoClose: true,
+    //     initialValue: false,
+    //     altField: '#birth_date',
+    //     altFormat: 'YYYY-MM-DD',
+    //     calendar: {
+    //         persian: { locale: 'fa' },
+    //         gregorian: { locale: 'en' }
+    //     }
+    // });
+    //
+    // $("#birth_date_picker2").persianDatepicker({
+    //     format: 'YYYY-MM-DD',
+    //     autoClose: true,
+    //     initialValue: false,
+    //     altField: '#birth_date',
+    //     altFormat: 'YYYY-MM-DD',
+    //     calendar: {
+    //         persian: { locale: 'fa' },
+    //         gregorian: { locale: 'en' }
+    //     }
+    // });
     $('#itemsInPage').on('change', function () {
         var perPage = $(this).val();
         var url = new URL(window.location.href);

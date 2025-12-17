@@ -501,7 +501,7 @@ class AdminController extends Controller
             $firstName = trim($_POST['first_name']);
             $lastname = trim($_POST['last_name']);
             $nationalCode = trim($_POST['national_code']);
-            $phoneNumber = trim($_POST['phoneNumber']);
+            $phoneNumber = trim($_POST['phone_number']);
             $postal_address = trim($_POST['address']);
             $role = trim($_POST['role']);
             $birth_date = trim($_POST['birth_date']);
@@ -519,14 +519,16 @@ class AdminController extends Controller
                 'first_name' => 'required|min:2|max:40',
                 'last_name' => 'required|min:2|max:40',
                 'national_code' => 'required|min:2|max:40',
-                'address' => 'required|min:1',
-                'phoneNumber' => 'required|max:11',
+                'postal_address' => 'required|min:1',
+                'phone_number' => 'required|max:11',
                 'service' => 'required',
             ]);
             if ($validator->fails()) {
+
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
+
             if (!empty($phoneNumber)) {
                 if (User::query()->where('phone_number', '=', $phoneNumber)->get()) {
                     $errors[] = __('phone_taken');

@@ -22,14 +22,16 @@ class Validator
             foreach ($rules as $rule) {
                 if ($rule === 'required') {
                     $value = $this->data[$field] ?? null;
+
                     if (is_array($value)) {
                         if (count($value) === 0) {
-                            $this->errors[$field][] = __('validation_required', ['field' => __('field_' . $field)]);
+                            $this->errors[$field][] = __('validation_required', ['field' => __($field)]);
                         }
                         continue;
                     }
                     if ($value === null || trim((string)$value) === '') {
-                        $this->errors[$field][] = __('validation_required', ['field' => __('field_' . $field)]);
+
+                        $this->errors[$field][] = __('validation_required', ['field' => __( $field)]);
                     }
                 }
 
@@ -40,7 +42,7 @@ class Validator
                 if (str_starts_with($rule, 'not')) {
                     $not = (int)explode(':', $rule)[1];
                     if($not == $this->data[$field]){
-                        $this->errors[$field][] = __('validation_required', ['field' => __('field_' . $field)]);
+                        $this->errors[$field][] = __('validation_required', ['field' => __($field)]);
                     }
 
                 }

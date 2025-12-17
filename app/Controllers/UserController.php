@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Validator;
+use App\Models\AwarenessSourceTable;
 use App\Models\Booking;
 use App\Models\Duration;
 use App\Models\EmployeeService;
@@ -803,6 +804,20 @@ class UserController extends Controller
             'last_name' => $_SESSION['last_name'] ?? "",
             'doneVisits' => $doneVisits,
         ]);
+    }
+    public function submitRank()
+    {
+        $lang =$_GET['lang'] ?? "fa";
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            vd($_POST);
+        }
+        $source = AwarenessSourceTable::all();
+        $this->view('user/rank',
+            ['title' => __('ticket_list'),
+                'source' => $source,
+                'lang' => $lang,
+
+            ]);
     }
 }
 

@@ -139,7 +139,9 @@
     --action-menu:#EBEAEA;
     --bs-pagination-border-radius: 8px;
 }
-
+body{
+    background: #E9F3F9; padding: 30px 20px 30px 20px
+}
 body, * {
     font-family: myFont, serif;
 }
@@ -1495,9 +1497,9 @@ html[lang="en"] .time-with-icon::after {
     left: auto;
     right: 10px;
 }
-.time-input {
+html[lang="fa"] .time-input {
     direction: rtl;
-    text-align: right;
+    text-align: left;
     padding-left: 40px;
     padding-right: 10px;
 }
@@ -1717,4 +1719,86 @@ background-color: var(--bs-primary) !important;
 }
 .iconPointer{
     cursor: pointer;
+}
+.clockpicker-popover {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+    margin: 0 !important;
+    opacity: 0;
+    transition: opacity 0.3s ease !important;
+}
+
+.clockpicker-popover.show {
+    opacity: 1;
+}
+/*.clockpicker-popover .popover-title {*/
+/*     background-color: #f8f8f8 !important;*/
+/*    color: #999;*/
+/*    font-size: 24px;*/
+/*    font-weight: 700;*/
+/*    line-height: 30px;*/
+/*    text-align: center;*/
+/*    direction: ltr;*/
+
+/*}*/
+/*.clockpicker-tick.active,.clockpicker-tick:hover {*/
+/*    background-color: #D9D9D9 !important;*/
+/*}*/
+/*.clockpicker-canvas line {*/
+/*    stroke: var(--bs-primary) !important;*/
+/*    stroke-width: 1;*/
+/*    stroke-linecap: round*/
+/*}*/
+/*.clockpicker-canvas-bearing,.clockpicker-canvas-fg {*/
+/*    stroke: none;*/
+/*    fill: var(--bs-primary) !important;*/
+/*}*/
+
+/*.clockpicker-canvas-bg {*/
+/*    stroke: none;*/
+/*    fill: var(--bs-primary) !important;*/
+/*}*/
+/*.popover.clockpicker-popover.bottom.clockpicker-align-right {*/
+/*    border-radius: 8px;*/
+/*    overflow: hidden;*/
+/* }*/
+
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    color: #ddd;
+    font-size: 22px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: gold;
+    text-shadow: 0 0 10px gold;
+}
+
+.star-rating label:hover {
+    transform: scale(1.1);
+}
+.form-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+textarea{
+    resize: none;
+    overflow-y: hidden;
+
 }

@@ -46,7 +46,7 @@ $menuItems = [
 ?>
 
 <?php $lang = $_SESSION['lang'] ?? 'fa'; ?>
-<body style="background: #E9F3F9; padding: 30px 20px 30px 20px">
+<body>
 <div class="container-fluid">
     <div class="d-lg-none">
         <button class="btn btn-primary icon-hamburger" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar"

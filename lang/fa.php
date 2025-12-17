@@ -343,5 +343,4 @@ return [
     'booking_details' => 'جزئیات رزرو',
     'create_user' => 'ایجاد مشتری',
     'price_toman' => 'قیمت (تومان)',
-    'user_doesnt_selected' => 'کاربری انتخاب نشده است!',
 ];

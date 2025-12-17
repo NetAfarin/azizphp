@@ -37,7 +37,7 @@ Route::middleware([InstanceMiddleware::class,GuestMiddleware::class, CsrfMiddlew
     Route::post('/user/login2', [UserController::class, 'loginPage']);
     Route::post('/user/register', [UserController::class, 'register']);
     Route::post('/user/register2', [UserController::class, 'registerPage']);
-    Route::post('/admin/user/add', [UserController::class, 'add']);
+//    Route::post('/admin/user/add', [UserController::class, 'add']);
     Route::post('/user/otp', [UserController::class, 'otpPage']);
 });
 
@@ -54,6 +54,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class])->group(func
 
 // Admin POST routes (CSRF + RateLimit)
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class, CsrfMiddleware::class, /*RateLimiterMiddleware::class*/])->group(function () {
+    Route::post('/user/submit/rank', [UserController::class, 'submitRank']);
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'updateUser']);
     Route::post('/admin/user/update/{id}', [UserController::class, 'updateUser2']);
     Route::post('/admin/bookings/addUser', [AdminBookingController::class, 'addUser']);
@@ -77,11 +78,13 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/bookings/add/user', [AdminBookingController::class, 'addUser']);
     Route::post('/admin/user/edit/{id}', [AdminController::class, 'editUser2']);
     Route::post('/admin/users/delete', [AdminController::class, 'deleteUsers']);
+    Route::post('/admin/user/add', [AdminController::class, 'add']);
 
 });
 
 // Admin GET routes
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class])->group(function () {
+    Route::get('/user/submit/rank', [UserController::class, 'submitRank']);
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser2']);
     Route::get('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceId']);
     Route::get('/admin/bookings/get/date/{id}', [AdminBookingController::class, 'getServiceByDate']);

@@ -28,7 +28,7 @@ if (!empty($_GET['url'])) {
     <link href="<?= asset('css/FontAwesomePro/css/all.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/style.css')?>" rel="stylesheet" />
     <link href="<?= asset('css/theme.css')?>" rel="stylesheet" />
-<!--    <link href="https://cdn.jsdelivr.net/gh/dmuy/MDTimePicker@latest/mdtimepicker.min.css" rel="stylesheet">-->
+    <link href="https://cdn.jsdelivr.net/gh/dmuy/MDTimePicker@latest/mdtimepicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/9.3.0/mdb.min.css" rel="stylesheet"/>

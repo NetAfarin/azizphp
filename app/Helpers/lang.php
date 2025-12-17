@@ -1,6 +1,7 @@
 <?php
 function __($key, array $replace = []): string
 {
+
     static $translations;
 
     if (!$translations) {
