@@ -12,6 +12,7 @@ use App\Models\Holiday;
 use App\Models\PreBooking;
 use App\Models\Salon;
 use App\Models\Service;
+use App\Models\ServiceVisitRelation;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UserType;

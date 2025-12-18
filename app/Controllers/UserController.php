@@ -12,6 +12,7 @@ use App\Models\EmployeeTable;
 use App\Models\Salon;
 use App\Models\Service;
 use App\Models\ServiceVisitRelation;
+use App\Models\SurveysTable;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Middlewares\RoleMiddleware;
@@ -304,6 +305,58 @@ class UserController extends Controller
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
     }
+    public function updateStatusType($id)
+    {
+        header('Content-Type: application/json');
+        $getId = (int)$id;
+        $getStatus = ServiceVisitRelation::find($getId);
+        if (!$getStatus) {
+            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
+            exit;
+        }
+
+        $statusType = (int)($_POST['status_id'] ?? 0);
+        $employeeId = (int)($_POST['employee_id'] ?? 0);
+        $dateTime = ($_POST['register_datetime'] ?? "00:00:00");
+
+        $getStatus->visit_status = $statusType;
+
+        if($statusType == 5){
+            $survey = new SurveysTable([
+                'service_visit_relation_id' => $getStatus->id, // نه 0
+                'salon_id' => $getStatus->salon_id ?? 1, // بهتره از دیتابیس بخونید
+                'employee_id' => $employeeId, // نه 0
+                'register_datetime' => $dateTime, // نه رشته خالی
+                'submitted' => 0,
+                'link' => "a", // این احتمالاً باید لینک واقعی باشد
+                'submit_datetime' => date('Y-m-d H:i:s'),
+                'survey_datetime' => date('Y-m-d H:i:s'),
+                'deleted' => 0
+            ]);
+
+            if ($survey->save()) {
+                // اول survey رو ذخیره می‌کنیم
+                if ($getStatus->save()) {
+                    echo json_encode(['success' => true, 'message' => "وضعیت و نظرسنجی با موفقیت ثبت شد"]);
+                    exit;
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'خطا در ذخیره وضعیت']);
+                    exit;
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'خطا در ایجاد نظرسنجی']);
+                exit;
+            }
+        }
+
+        if ($getStatus->save()) {
+            echo json_encode(['success' => true, 'message' => "وضعیت با موفقیت به روز شد"]);
+            exit;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'خطا در به روز رسانی']);
+            exit;
+        }
+    }
 
     public function operatorDashboard()
     {
@@ -337,14 +390,8 @@ class UserController extends Controller
             }
         }
         $pagination = $query->paginate($page, $perPage);
-
-
-        $doneServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where(
-            "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')",
-            "=", date("Y-m-d", strtotime("-1 day")))->get());
-        $cancelledServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(3)->where(
-            "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')",
-            "=", date("Y-m-d", strtotime("-1 day")))->get());
+        $doneServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d", strtotime("-1 day")))->get());
+        $cancelledServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(3)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d", strtotime("-1 day")))->get());
         $todayVisitsCount = ServiceVisitRelation::getVisitsNumberToday();
         $visitStatus = VisitStatus::all();
         $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
@@ -640,24 +687,6 @@ class UserController extends Controller
         }
     }
 
-    public function updateStatusType($id)
-    {
-        header('Content-Type: application/json');
-        $getId = (int)$id;
-        $getStatus = ServiceVisitRelation::find($getId);
-        if (!$getStatus) {
-            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
-            exit;
-        }
-        $statusType = (int)($_POST['status_id'] ?? 0);
-        $getStatus->visit_status = $statusType;
-        if ($getStatus->save()) {
-            echo json_encode(['success' => true, 'message' => 'ikj']);
-            exit;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'خطا در به روز رسانی']);
-        }
-    }
 
     public function reserveList()
     {

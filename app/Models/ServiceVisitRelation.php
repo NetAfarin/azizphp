@@ -30,6 +30,7 @@ class ServiceVisitRelation extends Model
         'visitDate',
         'registerDatetime',
         'visitDatetime',
+        'employeeId',
     ];
 
     public function visit()
@@ -61,6 +62,7 @@ class ServiceVisitRelation extends Model
             ->select([
                 "service_visit_relation_table.id as id",
                 "ut.first_name AS employeeFirstName",
+                "ut.id AS employeeId",
                 "ut.last_name AS employeeLastName",
                 (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as service",
                 (APP_LANG == "fa" ? "vst.fa_title" : "vst.en_title")." as visitStatus",
@@ -84,6 +86,7 @@ class ServiceVisitRelation extends Model
             ->select([
                 "service_visit_relation_table.id as id",
                 "ut.first_name AS employeeFirstName",
+                "ut.id AS employeeId",
                 "ut.last_name AS employeeLastName",
                 (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as service",
                 (APP_LANG == "fa" ? "vst.fa_title" : "vst.en_title")." as visitStatus",

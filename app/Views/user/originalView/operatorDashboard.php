@@ -123,6 +123,9 @@
                                           href="#"
                                           data-bs-toggle="modal"
                                           data-bs-target="#changeStatusModal"
+                                          data-employee_id="<?= $item->employeeId ?>"
+                                          data-register_datetime="<?= $item->registerDatetime ?>"
+                                          data-status="<?= $item->visitStatusId ?>"
                                           data-id="<?= $item->id ?>">
                                            <i class="fa fa-pen mx-2"></i>
                                            <?= __("change_status_rserve") ?>
@@ -169,6 +172,8 @@
                                        <form id="changeStatusForm" method="post" >
                                            <?= csrf_field() ?>
                                            <input type="hidden" name="id" id="status_id">
+                                           <input type="hidden" name="employee_id" id="employee_id">
+                                           <input type="hidden" name="register_datetime" id="register_datetime">
                                            <div class="modal-body2">
                                                <h5 class="center fw-bold"><?= __("change_status_rserve") ?></h5>
                                                <div class="reserveDerailsModal rounded text-start">
@@ -176,7 +181,7 @@
                                                        <select class="js-example-basic-single " name="status_id" id="changeStatusSelect">
                                                            <option value="all"><?= __("all_status") ?></option>
                                                            <?php foreach ($visitStatus as $status):?>
-                                                               <option value="<?= $status->id ?>" <?= ( $status->id == $item->visitStatusId) ? 'selected' : ''  ?>>
+                                                               <option value="<?= $status->id ?>">
                                                                    <?= (APP_LANG == 'fa') ? $status->fa_title : $status->en_title ?>
                                                                </option>
                                                            <?php endforeach ?>
