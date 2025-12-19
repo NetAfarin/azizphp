@@ -37,9 +37,11 @@ $(document).ready(function() {
         $('#changeStatusSelect').val(statusId).trigger('change');
     });
 
-    $('#changeStatusForm').on('submit', function(e) {
-        e.preventDefault();
-        var formData = new FormData($(this).get(0));
+    $('#changeStatusForm')
+        .off('submit')
+        .on('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData($(this).get(0));
         var serviceId = $('#status_id').val();
         var selectedValue = $('#changeStatusSelect').val();
         if (selectedValue !== 'all') {

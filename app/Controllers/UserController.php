@@ -323,37 +323,24 @@ class UserController extends Controller
 
         if($statusType == 5){
             $survey = new SurveysTable([
-                'service_visit_relation_id' => $getStatus->id, // نه 0
-                'salon_id' => $getStatus->salon_id ?? 1, // بهتره از دیتابیس بخونید
-                'employee_id' => $employeeId, // نه 0
-                'register_datetime' => $dateTime, // نه رشته خالی
+                'service_visit_relation_id' => $getStatus->id,
+                'salon_id' => $getStatus->salon_id ?? 1,
+                'employee_id' => $employeeId,
+                'register_datetime' => $dateTime,
                 'submitted' => 0,
-                'link' => "a", // این احتمالاً باید لینک واقعی باشد
+                'link' => randomString(),
                 'submit_datetime' => date('Y-m-d H:i:s'),
                 'survey_datetime' => date('Y-m-d H:i:s'),
                 'deleted' => 0
             ]);
-
-            if ($survey->save()) {
-                // اول survey رو ذخیره می‌کنیم
-                if ($getStatus->save()) {
-                    echo json_encode(['success' => true, 'message' => "وضعیت و نظرسنجی با موفقیت ثبت شد"]);
-                    exit;
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'خطا در ذخیره وضعیت']);
-                    exit;
-                }
-            } else {
-                echo json_encode(['success' => false, 'message' => 'خطا در ایجاد نظرسنجی']);
-                exit;
-            }
+            $survey->save();
         }
-
         if ($getStatus->save()) {
-            echo json_encode(['success' => true, 'message' => "وضعیت با موفقیت به روز شد"]);
+            echo json_encode(['success' => true, 'message' => "وضعیت و نظرسنجی با موفقیت ثبت شد"]);
             exit;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'خطا در به روز رسانی']);
+        }
+        else {
+            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره وضعیت']);
             exit;
         }
     }

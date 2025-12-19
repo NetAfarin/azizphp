@@ -275,3 +275,7 @@ function getMiladiBirthDate(string $birthDate): string
     $miladiBirthDate = sprintf('%04d-%02d-%02d', $dateArray[0], $dateArray[1], $dateArray[2]);
     return $miladiBirthDate;
 }
+function randomString($length = 6) {
+    $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return substr(str_shuffle($characters), 0, $length);
+}
