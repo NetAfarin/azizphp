@@ -12,6 +12,9 @@
                             <input type="radio" id="service_quality<?=$i?>" name="service_quality" value="<?=$i?>">
                             <label for="service_quality<?=$i?>"><i class="far fa-star"></i></label>
                         <?php endfor; ?>
+                            <?php if (!empty($errors['service_quality'])): ?>
+                                <div class="text-danger small"><?= htmlspecialchars($errors['service_quality'][0]) ?></div>
+                            <?php endif; ?>
                         </div>
                         </div>
                 <div class="d-flex justify-content-between align-items-center my-4">
@@ -21,15 +24,23 @@
                             <input type="radio" id="tools_quality<?=$i?>" name="tools_quality" value="<?=$i?>">
                             <label for="tools_quality<?=$i?>"><i class="far fa-star"></i></label>
                         <?php endfor; ?>
+                        <?php if (!empty($errors['tools_quality'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['tools_quality'][0]) ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center my-4">
                     <span>رفتار کارمند:<span class="bullet-color"> *</span></span>
                     <div class="star-rating">
                         <?php for ($i = 5; $i >= 1; $i--): ?>
-                            <input type="radio" id="employee_behavior<?=$i?>" name="employee_behavior" value="<?=$i?>">
+                            <input type="radio" id=
+                            "employee_behavior<?=$i?>" name="employee_behavior" value="<?=$i?>">
                             <label for="employee_behavior<?=$i?>"><i class="far fa-star"></i></label>
                         <?php endfor; ?>
+                        <?php if (!empty($errors['employee_behavior'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['employee_behavior'][0]) ?></div>
+                        <?php endif; ?>
+
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center my-4">
@@ -39,6 +50,9 @@
                             <input type="radio" id="time<?=$i?>" name="time" value="<?=$i?>">
                             <label for="time<?=$i?>"><i class="far fa-star"></i></label>
                         <?php endfor; ?>
+                        <?php if (!empty($errors['time'])): ?>
+                            <div class="text-danger small"><?= htmlspecialchars($errors['time'][0]) ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="my-4">
@@ -48,10 +62,13 @@
                         <option value="<?= $item->id ?>"><?=($lang == "fa")  ? $item->fa_title : $item->en_title ?></option>
                         <?php endforeach;?>
                     </select>
+                    <?php if (!empty($errors['servisourcece_quality'])): ?>
+                        <div class="text-danger small"><?= htmlspecialchars($errors['source'][0]) ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="my-4">
                     <label for="exampleFormControlTextarea1" class="form-label">نظرات و پیشنهادات</label>
-                    <textarea class="form-control auto-expand"></textarea>
+                    <textarea class="form-control auto-expand" name="suggestions"></textarea>
                 </div>
                 </div>
 

@@ -318,7 +318,7 @@ class UserController extends Controller
         $statusType = (int)($_POST['status_id'] ?? 0);
         $employeeId = (int)($_POST['employee_id'] ?? 0);
         $dateTime = ($_POST['register_datetime'] ?? "00:00:00");
-
+        //todo agar anjam shode bod, baz betone edit kone?
         $getStatus->visit_status = $statusType;
 
         if($statusType == 5){
@@ -336,11 +336,13 @@ class UserController extends Controller
             $survey->save();
         }
         if ($getStatus->save()) {
-            echo json_encode(['success' => true, 'message' => "وضعیت و نظرسنجی با موفقیت ثبت شد"]);
+            echo json_encode(['success' => true]);
+            $_SESSION['flash_success'] = __('status_change_successfully');
             exit;
         }
         else {
-            echo json_encode(['success' => false, 'message' => 'خطا در ذخیره وضعیت']);
+            echo json_encode(['success' => false]);
+            $_SESSION['flash_danger'] = __('status_cant_change');
             exit;
         }
     }
@@ -824,14 +826,58 @@ class UserController extends Controller
     public function submitRank()
     {
         $lang =$_GET['lang'] ?? "fa";
+        $link =$_GET['link'] ?? "";
+        $errors = [];
+        $survey = SurveysTable::query()->where("link" , "=" , $link)->first();
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
-            vd($_POST);
+            $qualityScore = $_POST['service_quality'] ?? "";
+            $toolsScore = $_POST['tools_quality']?? "";
+            $employeeBehavior = $_POST['employee_behavior']?? "";
+            $onTimeScore = $_POST['time']?? "";
+            $source = $_POST['source']?? "";
+            $suggestions = $_POST['suggestions']?? "";
+            //todo add these words to fa.php for show error fields
+            $validator = new Validator($_POST, [
+                'service_quality' => 'required|min:1|max:5',
+                'tools_quality' => 'required|min:1|max:5',
+                'employee_behavior' => 'required|min:1|max:5',
+                'time' => 'required|min:1|max:5',
+                'source' => 'required|min:1|max:5',
+                'suggestions' => 'required|min:1|max:5',
+            ]);
+
+            if ($validator->fails()) {
+                $errors = array_merge($errors, $validator->errors());
+                save_old_input();
+            }
+            if(!empty($errors)){
+                if($survey->submitted != 1){
+                    $survey->quality_score_id = $qualityScore;
+                    $survey->behavior_score = $employeeBehavior;
+                    $survey->onTime_score = $onTimeScore;
+                    $survey->tools_score = $toolsScore;
+                    $survey->feedback_text = $suggestions;
+                    $survey->awareness_source_id = $source;
+                    $survey->submitted = 1;
+                    if($survey->save()){
+                        $_SESSION["flash_success"] = __("your_survey_has_been_saved");
+                        redirect("/");
+                    }
+                }else{
+                    $_SESSION["flash_error"] = __("survey_already_submitted");
+                }
+
+            }else{
+                $_SESSION["flash_error"] = __("not_found");
+                redirect("/");
+            }
         }
         $source = AwarenessSourceTable::all();
         $this->view('user/rank',
             ['title' => __('ticket_list'),
                 'source' => $source,
                 'lang' => $lang,
+                'errors' => $errors,
 
             ]);
     }

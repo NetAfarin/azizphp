@@ -335,4 +335,8 @@ return [
     'create_user' => 'Create Customer',
     'price_toman' => 'Price (Toman)',
     'user_doesnt_selected' => 'No User Selected!',
+    'status_change_successfully' => 'Status Change Successfully!',
+    'status_cant_change' => 'Update Failed!',
+    'your_survey_has_been_saved' => 'Thanks for being with us',
+    'survey_already_submitted' => 'Survey Already Submitted!',
 ];

@@ -343,4 +343,8 @@ return [
     'booking_details' => 'جزئیات رزرو',
     'create_user' => 'ایجاد مشتری',
     'price_toman' => 'قیمت (تومان)',
+    'status_change_successfully' => 'وضعیت ویزیت با موفقیت اپدیت شد!',
+    'status_cant_change' => 'خطا در به روز رسانی!',
+    'your_survey_has_been_saved' => 'با تشکر از همراهی شما',
+    'survey_already_submitted' => 'نظر شما قبلا ثبت شده است!',
 ];
