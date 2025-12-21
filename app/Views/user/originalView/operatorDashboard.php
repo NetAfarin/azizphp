@@ -46,7 +46,9 @@
                 <div class="d-flex py-4 rounded bg-white flex-column justify-content-evenly shadow-md">
                     <div class="p-2 fw-bold text-center "><?= __("click_to_create_reserve") ?></div>
                     <div class="p-2 text-secondary text-center">
-                        <button class="btn btn-primary"><?= __("create_new_reserve") ?></button>
+                        <a href="/fw/admin/bookings/create">
+                            <button class="btn btn-primary"><?= __("create_new_reserve") ?></button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -161,7 +163,7 @@
                                            </div>
                                            <button class="btn btn-outline-primary px-5 mt-4"
                                                    style="margin-top: 35px;"
-                                                   data-bs-dismiss="modal"><?= __("close") ?></button>
+                                                   data-bs-dismiss="modal"><?= __("close2") ?></button>
                                        </div>
                                    </div>
                                </div>
@@ -249,42 +251,31 @@
                     <ul class="list-unstyled bg-white " >
                         <li class="d-flex align-items-center mb-3">
                             <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">ضدعفونی ابزارها تا ساعت ۹ انجام شود</span>
+                            <span class="text-break"><?= __("tool_disinfection_time") ?></span>
                         </li>
 
                         <li class="d-flex align-items-center mb-3">
                             <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">شروع ساعت کاری در تاریخ ۶ شهریور ساعت ۸:۰۰ میباشد</span>
+                            <span class="text-break"><?= __("work_start_time") ?></span>
                         </li>
 
                         <li class="d-flex align-items-center mb-3">
                             <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
+                            <span class="text-break"><?= __("post_keratin_care") ?></span>
+                        </li>
+                        <li class="d-flex align-items-center mb-3">
+                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <span class="text-break"><?= __("tool_disinfection_time") ?></span>
                         </li>
 
                         <li class="d-flex align-items-center mb-3">
                             <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
+                            <span class="text-break"><?= __("work_start_time") ?></span>
                         </li>
 
                         <li class="d-flex align-items-center mb-3">
                             <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
-                        </li>
-
-                        <li class="d-flex align-items-center mb-3">
-                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
-                        </li>
-
-                        <li class="d-flex align-items-center mb-3">
-                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">موها را بعد از کراتین مرطوب نگه دارید.</span>
-                        </li>
-
-                        <li class="d-flex align-items-center">
-                            <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>
-                            <span class="text-break">مراقبت از ناخن‌ها بعد از مانیکور ضروری است.</span>
+                            <span class="text-break"><?= __("post_keratin_care") ?></span>
                         </li>
                     </ul>
                 </div>

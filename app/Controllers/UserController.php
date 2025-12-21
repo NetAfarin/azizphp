@@ -370,12 +370,15 @@ class UserController extends Controller
         if ($getStatus != 0) {
             $query = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus);
             if (!empty($search)) {
-                $query = $query->whereLike("c.first_name", $search);
+                $query = $query->whereLike("c.first_name", $search)->orWhereLike("service_table.fa_title", $search);
+
             }
+//            vd($query->paginate($page, $perPage));
+
         } else {
             $query = ServiceVisitRelation::visitsDetails();
             if (!empty($search)) {
-                $query = $query->whereLike("c.first_name", $search);
+                $query = $query->whereLike("c.first_name", $search)->orWhereLike("service_table.fa_title", $search);
             }
         }
         $pagination = $query->paginate($page, $perPage);
@@ -833,24 +836,24 @@ class UserController extends Controller
             $qualityScore = $_POST['service_quality'] ?? "";
             $toolsScore = $_POST['tools_quality']?? "";
             $employeeBehavior = $_POST['employee_behavior']?? "";
-            $onTimeScore = $_POST['time']?? "";
+            $onTimeScore = $_POST['on_time']?? "";
             $source = $_POST['source']?? "";
+            $other = $_POST['other']?? "";
             $suggestions = $_POST['suggestions']?? "";
             //todo add these words to fa.php for show error fields
             $validator = new Validator($_POST, [
                 'service_quality' => 'required|min:1|max:5',
                 'tools_quality' => 'required|min:1|max:5',
                 'employee_behavior' => 'required|min:1|max:5',
-                'time' => 'required|min:1|max:5',
+                'on_time' => 'required|min:1|max:5',
                 'source' => 'required|min:1|max:5',
-                'suggestions' => 'required|min:1|max:5',
             ]);
 
             if ($validator->fails()) {
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
-            if(!empty($errors)){
+            if(empty($errors)){
                 if($survey->submitted != 1){
                     $survey->quality_score_id = $qualityScore;
                     $survey->behavior_score = $employeeBehavior;
@@ -858,6 +861,7 @@ class UserController extends Controller
                     $survey->tools_score = $toolsScore;
                     $survey->feedback_text = $suggestions;
                     $survey->awareness_source_id = $source;
+                    $survey->awareness_source_text = $other;
                     $survey->submitted = 1;
                     if($survey->save()){
                         $_SESSION["flash_success"] = __("your_survey_has_been_saved");
@@ -866,10 +870,6 @@ class UserController extends Controller
                 }else{
                     $_SESSION["flash_error"] = __("survey_already_submitted");
                 }
-
-            }else{
-                $_SESSION["flash_error"] = __("not_found");
-                redirect("/");
             }
         }
         $source = AwarenessSourceTable::all();

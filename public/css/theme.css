@@ -140,7 +140,7 @@
     --bs-pagination-border-radius: 8px;
 }
 body{
-    background: #E9F3F9; padding: 30px 20px 30px 20px
+    background: #E9F3F9;
 }
 body, * {
     font-family: myFont, serif;
@@ -1766,7 +1766,10 @@ background-color: var(--bs-primary) !important;
 /*    overflow: hidden;*/
 /* }*/
 
-
+.star-rating{
+    direction: rtl;
+    text-align: right;
+}
 .star-rating input {
     display: none;
 }
