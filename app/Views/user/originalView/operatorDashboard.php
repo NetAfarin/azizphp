@@ -60,14 +60,14 @@
 
                <div class="col-lg-8 col-xxl-5  col-xl-7 col-md-7 col-sm-8">
                   <div class="d-flex align-items-center justify-content-center gap-2">
-                          <select class="js-example-basic-single halfSelectForm" name="state" id="changeStatus">
+                          <select class="js-example-basic-single halfSelectForm" name="filter" id="changeStatus">
                               <option value="all"><?= __("all_status") ?></option>
                               <?php foreach ($visitStatus as $status):?>
                               <option value="<?= $status->id ?>" <?= ( $status->id == $getStatus) ? 'selected' : ''  ?>><?= (APP_LANG == 'fa') ?$status->fa_title : $status->en_title ?></option>
                               <?php endforeach ?>
                           </select>
                       <form method="get" class="d-flex align-items-center w-100">
-                              <input type="hidden" name="status" value="<?= htmlspecialchars($getStatus) ?>">
+                              <input type="hidden" name="filter" value="<?= htmlspecialchars($getStatus) ?>">
                           <div class="input-group">
                               <input type="text" class="form-control border-end-0" name="search" id="search"
                                      value="<?= htmlspecialchars($search) ?>" placeholder="<?= __("search") ?>">
@@ -77,7 +77,8 @@
                                   </button>
                               <?php else:?>
                                   <?php if (!empty($search)): ?><button class="btn btn-search border-start-0" type="button" id="btn-delete">
-                                      <a href="?status=<?= htmlspecialchars($getStatus) ?>&page=1&per_page=<?= $per_page ?>" class="center text-decoration-none"><i class='fas fa-xmark text-primary'></i></a>
+                                      <a class="center text-decoration-none">
+                                          <i class='fas fa-xmark text-primary'></i></a>
                                       </button>
                                   <?php endif;?>
                               <?php endif; ?>

@@ -19,9 +19,9 @@ $(document).ready(function() {
     var url = new URL(window.location.href);
 
     if (getStatus === 'all') {
-    url.searchParams.delete('status');
+    url.searchParams.delete('filter');
 } else {
-    url.searchParams.set('status', getStatus);
+    url.searchParams.set('filter', getStatus);
 }
     window.location.href = url.toString();
 });
@@ -67,5 +67,67 @@ $(document).ready(function() {
             alert('لطفاً وضعیت را انتخاب کنید');
         }
     });
+
+    // var btnSearch = $('#btn-search');
+    // var btnSearchIcon = $('#btn-search i');
+    // if (btnSearch.length > 0) {
+    //     btnSearch.on('click', function(e) {
+    //         console.log("کلیک شد");
+    //     });
+    // } else {
+    //     $('#search').on('input', function() {
+    //         var searchValue = $(this).val();
+    //         var processedValue = processSearchValue(searchValue);
+    //         var btn = $('#btn-delete, #btn-search');
+    //
+    //         if(processedValue.length == 0) {
+    //             console.log("empty");
+    //             btn.find('i').removeClass('fa-xmark').addClass('fa-search');
+    //             btn.attr('id', 'btn-search').attr('type', 'submit');
+    //         } else {
+    //             console.log("has text");
+    //             btn.find('i').removeClass('fa-xmark').addClass('fa-search');
+    //             btn.attr('id', 'btn-delete').attr('type', 'submit');
+    //             // $("#btn-delete").click(function(){
+    //             //     searchValue = "";
+    //             // });
+    //         }
+    //     });
+    // }
+
+    // $(document).on('click', '#btn-delete', function(e){
+    //     e.preventDefault(); // جلوگیری از رفتار پیش‌فرض
+    //
+    //     // پاک کردن مقدار فیلد جستجو
+    //     $('#search').val('');
+    //
+    //     // تغییر آیکون به search
+    //     $('#btn-delete').find('i').removeClass('fa-xmark').addClass('fa-search');
+    //
+    //     // تغییر id و type دکمه
+    //     $('#btn-delete').attr('id', 'btn-search').attr('type', 'submit');
+    //
+    //     // پاک کردن پارامتر سرچ از URL و رفرش صفحه
+    //     var url = new URL(window.location.href);
+    //     url.searchParams.delete('search'); // یا هر پارامتری که برای جستجو استفاده می‌کنید
+    //     window.location.href = url.toString();
+    // });
+
+
+    // $('#btn-search').on('click', function() {
+    //     var btnSearchIcon = $('#btn-search i');
+    //
+    //     // بررسی می‌کنیم که آیا آیکون × نمایش داده می‌شود یا خیر
+    //     if(btnSearchIcon.hasClass('fa-xmark')) {
+    //         $('#search').val(''); // پاک کردن مقدار فیلد جستجو
+    //         $('#search').trigger('input'); // فعال کردن event input برای به‌روزرسانی آیکون
+    //         $('#search').focus(); // نگه داشتن فوکوس روی فیلد جستجو
+    //     }
+    // });
+
+
 });
 
+function processSearchValue(value) {
+    return value;
+}

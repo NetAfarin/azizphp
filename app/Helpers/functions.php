@@ -134,7 +134,7 @@ function weekDay($lang = 'fa')
     }
 }
 
-function renderPagination($totalPages, $currentPage, $perPage, $search = '', $sortBy = '', $sortOrder = '', $filter = '', $lang = "fa"): string
+function renderPagination($totalPages, $currentPage, $perPage, $search = '', $sortBy = '', $sortOrder = '', $filter = '',$lang = "fa"): string
 {
     $final = '<ul class="pagination">';
     $pages = [];
@@ -158,13 +158,10 @@ function renderPagination($totalPages, $currentPage, $perPage, $search = '', $so
     if ($totalPages > 1) $pages[] = $totalPages;
     $prevPage = max(1, $currentPage - 1);
     $nextPage = min($totalPages, $currentPage + 1);
-    $baseParams = [
-        'per_page' => $perPage,
-    ];
     $prevLink = "?page=$prevPage&per_page=$perPage";
     if (!empty($search)) $prevLink .= "&search=" . urlencode($search);
-    if (!empty($sortBy)) $prevLink .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
     if (!empty($filter)) $prevLink .= "&filter=$filter";
+    if (!empty($sortBy)) $prevLink .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
     $iconPre = ($lang == 'fa') ? 'fa-chevron-right' : 'fa-chevron-left';
     $iconNext = ($lang == 'fa') ? 'fa-chevron-left' : 'fa-chevron-right';
     if ($currentPage == 1) {
@@ -181,15 +178,15 @@ function renderPagination($totalPages, $currentPage, $perPage, $search = '', $so
             $active = ($p == $currentPage) ? 'active-page' : '';
             $link = "?page=$p&per_page=$perPage";
             if (!empty($search)) $link .= "&search=" . urlencode($search);
-            if (!empty($sortBy)) $link .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
             if (!empty($filter)) $link .= "&filter=$filter";
+            if (!empty($sortBy)) $link .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
             $final .= "<li class='$active'><a href='$link'>$p</a></li>";
         }
     }
     $nextLink = "?page=$nextPage&per_page=$perPage";
     if (!empty($search)) $nextLink .= "&search=" . urlencode($search);
-    if (!empty($sortBy)) $nextLink .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
     if (!empty($filter)) $nextLink .= "&filter=$filter";
+    if (!empty($sortBy)) $nextLink .= "&sortby=" . urlencode($sortBy) . "&sortorder=$sortOrder";
     if ($currentPage == $totalPages) {
         $final .= "<li><a class='disable' href='javascript:void(0)'><i class='fa-solid $iconNext'></i></a></li>";
     } else {

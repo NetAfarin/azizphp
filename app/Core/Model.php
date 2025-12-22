@@ -164,16 +164,72 @@ abstract class Model
         $this->wheres[] = ['column' => $column, 'operator' => 'IN', 'value' => $values];
         return $this;
     }
-
+    public function whereGroup(callable $callback): static
+    {
+        $this->wheres[] = [
+            'type' => 'group_start',
+            'callback' => $callback
+        ];
+        return $this;
+    }
     public function whereLike(string $column, string $value): static
     {
-        $this->wheres[] = ['column' => $column, 'operator' => 'LIKE', 'value' => "%$value%"];
+        $this->wheres[] = [
+            'type' => 'AND',
+            'column' => $column,
+            'operator' => 'LIKE',
+            'value' => "%$value%"
+        ];
         return $this;
     }
     public function orWhereLike(string $column, string $value): static
     {
-        return $this->orWhere($column, 'LIKE', "%$value%");
+        $this->wheres[] = [
+            'type' => 'OR',
+            'column' => $column,
+            'operator' => 'LIKE',
+            'value' => "%$value%"
+        ];
+        return $this;
+    }
 
+    public function whereStatusAndSearch($status, $search, array $searchColumns = [])
+    {
+        $this->where('service_visit_relation_table.visit_status', "=", $status);
+
+        if (!empty($search) && !empty($searchColumns)) {
+            // ساخت شرط‌های جستجو به صورت دستی
+            $searchConditions = [];
+
+            // شرط اول
+            $searchConditions[] = [
+                'column' => $searchColumns[0],
+                'operator' => 'LIKE',
+                'value' => "%{$search}%",
+                'boolean' => 'and',
+                'group_start' => true, // شروع گروه
+            ];
+
+            // بقیه با OR
+            for ($i = 1; $i < count($searchColumns); $i++) {
+                $searchConditions[] = [
+                    'column' => $searchColumns[$i],
+                    'operator' => 'LIKE',
+                    'value' => "%{$search}%",
+                    'boolean' => 'or',
+                ];
+            }
+
+            // پایان گروه برای آخرین شرط
+            $searchConditions[count($searchConditions) - 1]['group_end'] = true;
+
+            // اضافه کردن به wheres
+            foreach ($searchConditions as $condition) {
+                $this->wheres[] = $condition;
+            }
+        }
+
+        return $this;
     }
 
     public function whereNotLike(string $column, string $value): static
@@ -216,24 +272,94 @@ abstract class Model
         return $this;
     }
 
+//    protected function buildWhereClauseAndParams(): array
+//    {
+//        $params = [];
+//        if (empty($this->wheres)) {
+//            return ['', $params];
+//        }
+//        $parts = [];
+//        foreach ($this->wheres as $w) {
+//            $type = $w['type'] ?? 'AND';
+//            $clause = "{$w['column']} {$w['operator']} ?";
+//            if (!empty($parts)) {
+//                $parts[] = $type . ' ' . $clause;
+//            } else {
+//                $parts[] = $clause;
+//            }
+//            $params[] = $w['value'];
+//        }
+//        return [' WHERE ' . implode(' ', $parts), $params];
+//    }
     protected function buildWhereClauseAndParams(): array
     {
         $params = [];
+
         if (empty($this->wheres)) {
             return ['', $params];
         }
+
         $parts = [];
-        foreach ($this->wheres as $w) {
-            $type = $w['type'] ?? 'AND';
-            $clause = "{$w['column']} {$w['operator']} ?";
+        foreach ($this->wheres as $index => $where) {
+            if (isset($where['group_start']) && $where['group_start'] === true) {
+                $subQuery = new static();
+                $where['callback']($subQuery);
+
+                [$subWhere, $subParams] = $subQuery->buildWhereClauseAndParams();
+
+                if (!empty($subWhere)) {
+                    $subWhere = trim($subWhere);
+                    if (str_starts_with($subWhere, 'WHERE')) {
+                        $subWhere = substr($subWhere, 6);
+                    }
+
+                    $clause = "({$subWhere})";
+
+                    if (!empty($parts)) {
+                        $type = $where['type'] ?? 'AND';
+                        $parts[] = $type . ' ' . $clause;
+                    } else {
+                        $parts[] = $clause;
+                    }
+
+                    $params = array_merge($params, $subParams);
+                }
+                continue;
+            }
+
+            $type = $where['type'] ?? 'AND';
+            $clause = "{$where['column']} {$where['operator']} ?";
+
             if (!empty($parts)) {
                 $parts[] = $type . ' ' . $clause;
             } else {
                 $parts[] = $clause;
             }
-            $params[] = $w['value'];
+
+            $params[] = $where['value'];
         }
+
         return [' WHERE ' . implode(' ', $parts), $params];
+    }
+
+    public function and(callable $callback): static
+    {
+        $this->wheres[] = [
+            'type' => 'AND',
+            'group_start' => true,
+            'callback' => $callback
+        ];
+        return $this;
+    }
+
+    public function or(callable $callback): static
+    {
+        $this->wheres[] = [
+            'type' => 'OR',
+            'group_start' => true,
+            'callback' => $callback
+        ];
+        return $this;
     }
 
     protected function buildSelectSql(array &$params): string

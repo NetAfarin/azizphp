@@ -49,7 +49,7 @@ class UserController extends Controller
 
             $captcha = $_SESSION['captcha'] ?? null;
             $userCaptcha = $_POST['captcha'] ?? '';
-            if (!$captcha ||(( time() - $captcha['time'] )> 120)) {
+            if (!$captcha || ((time() - $captcha['time']) > 120)) {
                 $errors[] = __('captcha_expired');
             } elseif ($userCaptcha != $captcha['code']) {
                 $errors[] = __('captcha_invalid');
@@ -305,6 +305,7 @@ class UserController extends Controller
             'last_name' => !empty($_SESSION['last_name']) ? $_SESSION['last_name'] : "",
         ]);
     }
+
     public function updateStatusType($id)
     {
         header('Content-Type: application/json');
@@ -321,14 +322,14 @@ class UserController extends Controller
         //todo agar anjam shode bod, baz betone edit kone?
         $getStatus->visit_status = $statusType;
 
-        if($statusType == 5){
+        if ($statusType == 5) {
             $survey = new SurveysTable([
                 'service_visit_relation_id' => $getStatus->id,
                 'salon_id' => $getStatus->salon_id ?? 1,
                 'employee_id' => $employeeId,
                 'register_datetime' => $dateTime,
                 'submitted' => 0,
-                'link' => randomString(),
+                'link' => randomString(20),
                 'submit_datetime' => date('Y-m-d H:i:s'),
                 'survey_datetime' => date('Y-m-d H:i:s'),
                 'deleted' => 0
@@ -339,8 +340,7 @@ class UserController extends Controller
             echo json_encode(['success' => true]);
             $_SESSION['flash_success'] = __('status_change_successfully');
             exit;
-        }
-        else {
+        } else {
             echo json_encode(['success' => false]);
             $_SESSION['flash_danger'] = __('status_cant_change');
             exit;
@@ -353,9 +353,11 @@ class UserController extends Controller
         $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $search = trim($_GET['search'] ?? '');
-        $getStatus = isset($_GET['status']) ? (int)$_GET['status'] : 0;
+        $getStatus = isset($_GET['filter']) ? (int)$_GET['filter'] : 0;
         $lang = $_SESSION['lang'] ?? 'fa';
-        $column = "ut.first_name";
+        $searchService = ($lang == "fa") ? "service_table.fa_title" : "service_table.en_title";
+        $searchFirstName = "c.first_name";
+        $searchLastName = "c.last_name";
         if (!in_array($perPage, $allowedPerPage, true)) {
             $redirectUrl = '?page=1&per_page=10';
             if ($search !== '') {
@@ -370,15 +372,20 @@ class UserController extends Controller
         if ($getStatus != 0) {
             $query = ServiceVisitRelation::visitsDetailsWithStatusType($getStatus);
             if (!empty($search)) {
-                $query = $query->whereLike("c.first_name", $search)->orWhereLike("service_table.fa_title", $search);
-
+                $query = $query->and(function ($query) use ($search , $searchFirstName , $searchService , $searchLastName) {
+                    $query->whereLike($searchFirstName, $search)
+                           ->orWhereLike($searchLastName, $search)
+                           ->orWhereLike($searchService, $search);
+                });
             }
-//            vd($query->paginate($page, $perPage));
-
         } else {
             $query = ServiceVisitRelation::visitsDetails();
             if (!empty($search)) {
-                $query = $query->whereLike("c.first_name", $search)->orWhereLike("service_table.fa_title", $search);
+                $query = $query->and(function ($query) use ($search , $searchFirstName , $searchService , $searchLastName) {
+                    $query->whereLike($searchFirstName, $search)
+                        ->orWhereLike($searchService, $search)
+                        ->orWhereLike($searchLastName, $search);
+                });
             }
         }
         $pagination = $query->paginate($page, $perPage);
@@ -392,7 +399,7 @@ class UserController extends Controller
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [
             'title' => __('dashboard'),
-            'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $lang),
+            'renderPagination' => renderPagination(totalPages: $totalPages, currentPage: $page, perPage: $perPage, search: $search, filter: $getStatus, lang: $lang),
             'pagination' => $pagination,
             'todayVisitCount' => sizeof($todayVisitsCount),
             'doneServiceYesterday' => $doneServiceYesterday,
@@ -410,6 +417,7 @@ class UserController extends Controller
             'page' => $totalPages
         ]);
     }
+
     public function otpPage()
     {
         $errors = [];
@@ -826,20 +834,21 @@ class UserController extends Controller
             'doneVisits' => $doneVisits,
         ]);
     }
+
     public function submitRank()
     {
-        $lang =$_GET['lang'] ?? "fa";
-        $link =$_GET['link'] ?? "";
+        $lang = $_GET['lang'] ?? "fa";
+        $link = $_GET['link'] ?? "";
         $errors = [];
-        $survey = SurveysTable::query()->where("link" , "=" , $link)->first();
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $survey = SurveysTable::query()->where("link", "=", $link)->first();
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $qualityScore = $_POST['service_quality'] ?? "";
-            $toolsScore = $_POST['tools_quality']?? "";
-            $employeeBehavior = $_POST['employee_behavior']?? "";
-            $onTimeScore = $_POST['on_time']?? "";
-            $source = $_POST['source']?? "";
-            $other = $_POST['other']?? "";
-            $suggestions = $_POST['suggestions']?? "";
+            $toolsScore = $_POST['tools_quality'] ?? "";
+            $employeeBehavior = $_POST['employee_behavior'] ?? "";
+            $onTimeScore = $_POST['on_time'] ?? "";
+            $source = $_POST['source'] ?? "";
+            $other = $_POST['other'] ?? "";
+            $suggestions = $_POST['suggestions'] ?? "";
             //todo add these words to fa.php for show error fields
             $validator = new Validator($_POST, [
                 'service_quality' => 'required|min:1|max:5',
@@ -853,8 +862,8 @@ class UserController extends Controller
                 $errors = array_merge($errors, $validator->errors());
                 save_old_input();
             }
-            if(empty($errors)){
-                if($survey->submitted != 1){
+            if (empty($errors)) {
+                if ($survey->submitted != 1) {
                     $survey->quality_score_id = $qualityScore;
                     $survey->behavior_score = $employeeBehavior;
                     $survey->onTime_score = $onTimeScore;
@@ -863,11 +872,11 @@ class UserController extends Controller
                     $survey->awareness_source_id = $source;
                     $survey->awareness_source_text = $other;
                     $survey->submitted = 1;
-                    if($survey->save()){
+                    if ($survey->save()) {
                         $_SESSION["flash_success"] = __("your_survey_has_been_saved");
                         redirect("/");
                     }
-                }else{
+                } else {
                     $_SESSION["flash_error"] = __("survey_already_submitted");
                 }
             }
