@@ -238,6 +238,7 @@ class User extends Model
 ) AS s", 's.user_id', '=', 'user_table.id', 'LEFT')
             ->where("user_table.deleted", "=", "0");
     }
+
     public static function getSomeUserWithDetails($userType ): User
     {
         return User::query()

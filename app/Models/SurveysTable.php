@@ -34,6 +34,7 @@ class SurveysTable extends Model
         'customerLastName',
         'service',
         'visitDatetime',
+        'result',
     ];
 
     /**
@@ -42,7 +43,7 @@ class SurveysTable extends Model
      */
     public static function getSurveyData($link): SurveysTable
     {
-        return SurveysTable::query()->select(["st.fa_title as service, vt.visit_datetime as visitDatetime , employee.first_name as employeeName , employee.last_name as employeeLastName , customer.first_name as customerFirstName , customer.last_name as customerLastName , surveys_table.* "])
+        return SurveysTable::query()->select([(APP_LANG === 'fa' ? 'st.fa_title' : 'st.en_title').' AS service' ,"vt.visit_datetime as visitDatetime , employee.first_name as employeeName , employee.last_name as employeeLastName , customer.first_name as customerFirstName , customer.last_name as customerLastName , surveys_table.* "])
             ->join("service_visit_relation_table  as svrt", "svrt.id", "=", "surveys_table.service_visit_relation_id")
             ->join("service_table  as st", "st.id", "=", "svrt.service_id")
             ->join("visit_table  as vt", "vt.id", "=", "svrt.visit_id")

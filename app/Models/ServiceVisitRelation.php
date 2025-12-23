@@ -77,8 +77,7 @@ class ServiceVisitRelation extends Model
             ->join("user_table AS ut", "ut.id", "=", "service_visit_relation_table.employee_id")
             ->join("user_table AS c", "c.id", "=", "vt.customer_id")
             ->join("service_table", "service_table.id", "=", "service_visit_relation_table.service_id")
-            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
-            ->orderBy("vt.visit_datetime", "DESC");
+            ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status");
     }
     public static function visitsDetailsWithStatusType($type)
     {

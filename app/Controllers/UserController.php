@@ -714,43 +714,59 @@ class UserController extends Controller
         $fromDate = $_GET['from_date'] ?? null;
         $toDate = $_GET['to_date'] ?? null;
         $allSearchData = ServiceVisitRelation::visitsDetails();
+        $statusTypes = [
+            'allReserveVisits2' => VisitStatus::BOOKED,
+            'allVerifyVisits2' => VisitStatus::CONFIRMED,
+            'allCancelledVisits2' => VisitStatus::CANCELLED,
+            'allInProgressVisits2' => VisitStatus::IN_PROGRESS,
+            'allDoneVisits2' => VisitStatus::COMPLETED,
+            'allNoShowVisits2' => VisitStatus::NO_SHOW,
+            'allRescheduledVisits2' => VisitStatus::POSTPONED,
+        ];
+        $allSearchData = ServiceVisitRelation::visitsDetails();
+        $allReserve = ServiceVisitRelation::visitsDetails();
         $allReserve2 = ServiceVisitRelation::visitsDetails();
-        $allReserveVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(1);
-        $allVerifyVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(2);
-        $allCancelledVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(3);
-        $allInProgressVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(4);
-        $allDoneVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(5);
-        $allNoShowVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(6);
-        $allRescheduledVisits2 = ServiceVisitRelation::visitsDetailsWithStatusType(7);
-
-        $sortByColumn = "vt.visit_datetime";
+        foreach ($statusTypes as $variableName => $status) {
+            $$variableName = ServiceVisitRelation::visitsDetailsWithStatusType($status);
+        }
+        $sortByColumn = "vt.register_datetime";
         if ($sortBy === 'service') {
-            $sortByColumn = $lang == 'fa' ? 'st.fa_title' : 'st.en_title';
+            $sortByColumn = 'service';
         } elseif ($sortBy === 'employee') {
             $sortByColumn = 'ut.first_name';
         } elseif ($sortBy === 'date') {
             $sortByColumn = 'vt.visit_datetime';
         }
+        $allReserve2->orderBy($sortByColumn, $sortOrder);
         $service = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
         $employee = "ut.first_name" ;
-        $allSearchData = ServiceVisitRelation::visitsDetails();
-        $allReserve = ServiceVisitRelation::visitsDetails();
-        $allReserveVisits = ServiceVisitRelation::visitsDetailsWithStatusType(1);
-        $allVerifyVisits = ServiceVisitRelation::visitsDetailsWithStatusType(2);
-        $allCancelledVisits = ServiceVisitRelation::visitsDetailsWithStatusType(3);
-        $allInProgressVisits = ServiceVisitRelation::visitsDetailsWithStatusType(4);
-        $allDoneVisits = ServiceVisitRelation::visitsDetailsWithStatusType(5);
-        $allNoShowVisits = ServiceVisitRelation::visitsDetailsWithStatusType(6);
-        $allRescheduledVisits = ServiceVisitRelation::visitsDetailsWithStatusType(7);
+
+
+        $statusTypes = [
+            'allReserveVisits' => VisitStatus::BOOKED,
+            'allVerifyVisits' => VisitStatus::CONFIRMED,
+            'allCancelledVisits' => VisitStatus::CANCELLED,
+            'allInProgressVisits' => VisitStatus::IN_PROGRESS,
+            'allDoneVisits' => VisitStatus::COMPLETED,
+            'allNoShowVisits' => VisitStatus::NO_SHOW,
+            'allRescheduledVisits' => VisitStatus::POSTPONED,
+        ];
+        foreach ($statusTypes as $variableName => $status) {
+            $$variableName = ServiceVisitRelation::visitsDetailsWithStatusType($status);
+        }
         $searchableModels = [
             $allSearchData,
+            $allNoShowVisits,
             $allReserve,
+            $allRescheduledVisits,
             $allReserveVisits,
+            $allVerifyVisits,
             $allCancelledVisits,
             $allDoneVisits,
             $allReserve2,
             $allReserveVisits2,
             $allCancelledVisits2,
+            $allInProgressVisits,
             $allDoneVisits2,
         ];
         if ($search !== '') {

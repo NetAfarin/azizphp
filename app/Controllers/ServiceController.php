@@ -16,10 +16,8 @@ class ServiceController extends Controller
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
-
-        $sortTitleUrl = (BASE_URL . '/admin/services/management?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $sortCategoryUrl = (BASE_URL . '/admin/services/management?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-
+        $sortTitleUrl = (BASE_URL . '/admin/services/management?sortby=title&') . (($sortOrder == 'asc' || $sortOrder == '') ? 'sortorder=desc' : 'sortorder=asc');
+        $sortCategoryUrl = (BASE_URL . '/admin/services/management?sortby=category&') . (($sortOrder == 'asc' || $sortOrder == '') ? 'sortorder=desc' : 'sortorder=asc');
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) ? (int)$_GET['per_page'] : 10;
         $search = trim($_GET['search'] ?? '');
@@ -35,20 +33,8 @@ class ServiceController extends Controller
         if (isset($_GET['search']) && empty($search)) {
             header("Location: " . "?page=$page&per_page=$perPage");
         }
-        $services = Service::query()
-            ->select([
-                'service_table.id',
-                'service_table.service_key',
-                ($lang === 'fa' ? 'service_table.fa_title ' : 'service_table.en_title') . ' AS title',
-                'service_table.parent_id',
-                'service_table.created_at',
-                'service_table.updated_at',
-                ($lang === 'fa' ? 'p.fa_title ' : 'p.en_title') . ' AS parent_title'
-            ])
-            ->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
-            ->where('service_table.deleted', '=', 0);
-
-        $column = $lang == "fa" ? "service_table.fa_title" : 'en_title';
+        $services = Service::getAll();
+        $column = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
         if ($search !== '') {
             $services->whereLike($column, $search);
         }

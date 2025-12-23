@@ -87,11 +87,16 @@ class Service extends Model
 
     public static function getAll(): Service
     {
-        return Service::query()->select(['service_table.id', 'service_table.parent_id',
+        return Service::query()->select([
+            'service_table.id',
+            'service_table.parent_id',
+            'service_table.service_key',
+            'service_table.created_at',
+            'service_table.updated_at',
             (APP_LANG == "fa" ? "p.fa_title" : "p.en_title")." as parent_title",
             (APP_LANG == "fa" ? "service_table.fa_title" : "service_table.en_title")." as title",
             '(SELECT COUNT(*) FROM service_table AS c WHERE c.parent_id = service_table.id AND c.deleted = 0) AS childCount',
-        ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
+            ])->join('service_table AS p', 'service_table.parent_id', '=', 'p.id', 'LEFT')
             ->where('service_table.deleted', '=', 0);
     }
 }

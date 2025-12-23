@@ -623,8 +623,9 @@ class AdminController extends Controller
         $sortBy = isset($_GET['sortby']) ? $_GET['sortby'] : '';
         $filter = trim($_GET['filter'] ?? 'all');
         $sortOrder = isset($_GET['sortorder']) ? $_GET['sortorder'] : '';
-        $sortFirstNameUrl = (BASE_URL . '/admin/user/manage?sortby=title&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
-        $sortLastNameUrl = (BASE_URL . '/admin/user/manage?sortby=category&') . (($sortOrder == 'desc' || $sortOrder == '') ? 'sortorder=asc' : 'sortorder=desc');
+        $sortFirstNameUrl = (BASE_URL . '/admin/user/manage?sortby=firstname&') .(($sortOrder == 'asc' || $sortOrder == '') ? 'sortorder=desc' : 'sortorder=asc');
+        $sortLastNameUrl = (BASE_URL . '/admin/user/manage?sortby=lastname&') . (($sortOrder == 'asc' || $sortOrder == '') ? 'sortorder=desc' : 'sortorder=asc');
+        $sortScoreUrl = (BASE_URL . '/admin/user/manage?sortby=score&') . (($sortOrder == 'asc' || $sortOrder == '') ? 'sortorder=desc' : 'sortorder=asc');
         $allowedPerPage = [1, 10, 20, 50, 100];
         $perPage = isset($_GET['per_page']) && in_array((int)$_GET['per_page'], $allowedPerPage) ? (int)$_GET['per_page'] : 10;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
@@ -650,12 +651,12 @@ class AdminController extends Controller
         $superAdminData = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
         $sortByColumn = "user_table.first_name";
         if (!empty($sortBy)) {
-            if ($sortBy == 'first_name') {
-                $sortByColumn = $sortBy;
+            if ($sortBy == 'firstname') {
+                $sortByColumn = 'user_table.first_name';
             } else if ($sortBy == 'last_name') {
-                $sortByColumn = 'last_name';
-            } else if ($sortBy == 'user_role') {
-                $sortByColumn = 'user_role';
+                $sortByColumn = 'user_table.last_name';
+            } else if ($sortBy == 'score') {
+                $sortByColumn = 'result';
             }
         }
         $allUsers2->orderBy($sortByColumn, $sortOrder);
@@ -732,6 +733,8 @@ class AdminController extends Controller
             'userType' => $userType,
             'sortFirstNameUrl' => $sortFirstNameUrl,
             'sortLastNameUrl' => $sortLastNameUrl,
+            'sortScoreUrl' => $sortScoreUrl,
+            'sortOrder' => $sortOrder,
             'allowedPerPage' => $allowedPerPage,
             'renderPagination' => renderPagination($totalPages, $page, $perPage, $search, $sortBy, $sortOrder, $filter, $lang),
             'first_name' => !empty($_SESSION['user_name']) ? $_SESSION['user_name'] : "",

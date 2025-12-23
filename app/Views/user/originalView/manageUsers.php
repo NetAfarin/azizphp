@@ -42,18 +42,18 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             <div class="custom-part-with-border ">
                 <div class="d-flex  flex-wrap justify-content-between gap-sm-2">
                     <div class="d-flex">
-<!--                        <select class="groupWorkSelect halfSelectForm"-->
-<!--                                onchange="document.getElementById('groupActionInput').value = this.value">-->
-<!--                            <option value="delete">--><?php //= __("delete") ?><!--</option>-->
-<!--                            <option>--><?php //= __("group_work") ?><!--</option>-->
-<!--                            <option>--><?php //= __("group_work") ?><!--</option>-->
-<!--                        </select>-->
-<!--                        <button type="submit"-->
-<!--                                form=""-->
-<!--                                class="btn btn-primary mx-1 groupDelete"-->
-<!--                                style="width: 59px;height: 50px;">-->
-<!--                            --><?php //= __("execution") ?>
-<!--                        </button>-->
+                        <select class="groupWorkSelect halfSelectForm"
+                                onchange="document.getElementById('groupActionInput').value = this.value">
+                            <option value="delete"><?= __("delete") ?></option>
+                            <option><?= __("group_work") ?></option>
+                            <option><?= __("group_work") ?></option>
+                        </select>
+                        <button type="submit"
+                                form=""
+                                class="btn btn-primary mx-1 groupDelete"
+                                style="width: 59px;height: 50px;">
+                            <?= __("execution") ?>
+                        </button>
                     </div>
                     <form method="get" class="d-flex align-items-center gap-2 mb-2">
                         <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
@@ -117,7 +117,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                 <a href="<?= $sortFirstNameUrl ?>"
                                    class="text-decoration-none text-white d-flex justify-content-center align-items-center">
                                     <?= __('name') ?>
-                                    <?php if ($sortBy === 'first_name'): ?>
+                                    <?php if ($sortBy === 'firstname'): ?>
                                         <?php if ($sortOrder === 'asc'): ?>
                                             <i class="fa-solid fa-caret-up mx-1"></i>
                                         <?php else: ?>
@@ -132,7 +132,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                 <a href="<?= $sortLastNameUrl ?>"
                                    class="text-decoration-none text-white d-flex justify-content-center align-items-center">
                                     <?= __('last_name') ?>
-                                    <?php if ($sortBy === 'last_name'): ?>
+                                    <?php if ($sortBy === 'lastname'): ?>
                                         <?php if ($sortOrder === 'asc'): ?>
                                             <i class="fa-solid fa-caret-up mx-1"></i>
                                         <?php else: ?>
@@ -145,7 +145,21 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                             </th>
                             <th><?= __("phone_number") ?></th>
                             <th><?= __("role") ?></th>
-                            <th><?= __("score") ?> <i class="fas fa-sort-amount-down-alt mx-1"></th>
+                            <th class="text-center">
+                                <a href="<?= $sortScoreUrl ?>"
+                                   class="text-decoration-none text-white d-flex justify-content-center align-items-center">
+                                    <?= __('score') ?>
+                                    <?php if ($sortBy === 'score'): ?>
+                                        <?php if ($sortOrder === 'asc'): ?>
+                                            <i class="fa-solid fa-caret-up mx-1"></i>
+                                        <?php else: ?>
+                                            <i class="fa-solid fa-caret-down mx-1"></i>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <i class="fas fa-caret-down mx-1"></i>
+                                    <?php endif; ?>
+                                </a>
+                            </th>
                             <th><?= __("services") ?></th>
                             <th><?= __("actions") ?></th>
                         </tr>
@@ -173,16 +187,18 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                 <td><?= $user->phone_number ?></td>
                                 <td><?= $user->user_type ?></td>
                                 <td>
-                                    <?php if ($user->type_id == UserType::EMPLOYEE): ?>
-                                        <?php if (!empty($user->result)): ?>
-                                            <?= $user->result ?>
-                                        <?php else: ?>
-                                            <?= __("has_not") ?>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
+                                    <?php
+                                    if($user->type_id != UserType::EMPLOYEE){
+                                        echo "-";
+                                    }else{
+                                        if($user->result == ""){
+                                            echo __("has_not");
+                                        }else{
+                                            echo round($user->result, 1);;
+                                        }
+                                    }
 
+                                    ?>
                                 </td>
                                 <td>
                                     <?php if ($user->type_id == UserType::EMPLOYEE): ?>
