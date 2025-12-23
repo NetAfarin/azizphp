@@ -4,6 +4,14 @@
         <form method="post" class="rounded bg-white p-4 text-center shadow">
             <?= csrf_field() ?>
             <h3 class="mb-3 "><?= __("survey") ?></h3>
+            <div class="d-flex justify-content-between align-items-center">
+                <span><?= __("employee") ?>: <?= $survey->employeeName ." ". $survey->employeeLastName ?></span>
+                <span><?= __("customer") ?>: <?= $survey->customerFirstName ." ". $survey->customerLastName ?></span>
+            </div>
+            <div class="d-flex justify-content-sm-between align-items-center">
+                <span><?= __("service") ?>: <?= $survey->service ?></span>
+                <span><?= __("date") ?>: <?= toJalali($survey->visitDatetime)['date'] ?>/ <?= toJalali($survey->visitDatetime)['time'] ?></span>
+            </div>
             <div class="mx-3">
                  <div class="d-flex justify-content-between align-items-center my-4">
                         <span><?= __("service_quality") ?>:<span class="bullet-color"> *</span></span>

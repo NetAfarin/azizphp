@@ -351,4 +351,6 @@ return [
     'post_keratin_care' => 'Keeping Hair Moisturized After Keratin',
     'how_find_us' => 'How did you hear about us',
     'feedback' => 'Feedback and Suggestions',
+    'link_not_valid' => 'Link is not valid!',
+    'done_visit_cant_change' => 'This visit cannot be changed!',
 ];

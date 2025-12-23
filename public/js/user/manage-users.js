@@ -9,6 +9,12 @@ $(document).ready(function () {
         var checked = $(this).prop('checked');
         $(this).closest('table').find('tbody input[type="checkbox"]').prop('checked', checked);
     });
+    $('.groupDelete').click(function (){
+        const selectedCount = $('table tbody input[type="checkbox"]:checked').length;
+        if(selectedCount > 0){
+            $('#deleteUserModal').modal('show');
+        }
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     const filter = urlParams.get('filter') || 'all';

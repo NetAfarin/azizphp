@@ -312,16 +312,22 @@ class UserController extends Controller
         $getId = (int)$id;
         $getStatus = ServiceVisitRelation::find($getId);
         if (!$getStatus) {
-            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
             exit;
         }
-
         $statusType = (int)($_POST['status_id'] ?? 0);
         $employeeId = (int)($_POST['employee_id'] ?? 0);
         $dateTime = ($_POST['register_datetime'] ?? "00:00:00");
-        //todo agar anjam shode bod, baz betone edit kone?
-        $getStatus->visit_status = $statusType;
-
+        if($statusType == $getStatus->visit_status) {
+            echo json_encode(['success' => false ]);
+            exit;
+        }
+            if($getStatus->visit_status != 5){
+            $getStatus->visit_status = $statusType;
+        }else{
+            echo json_encode(['success' => false ]);
+            $_SESSION['flash_error'] = __('done_visit_cant_change');
+            exit;
+        }
         if ($statusType == 5) {
             $survey = new SurveysTable([
                 'service_visit_relation_id' => $getStatus->id,
@@ -336,15 +342,18 @@ class UserController extends Controller
             ]);
             $survey->save();
         }
-        if ($getStatus->save()) {
-            echo json_encode(['success' => true]);
-            $_SESSION['flash_success'] = __('status_change_successfully');
-            exit;
-        } else {
-            echo json_encode(['success' => false]);
-            $_SESSION['flash_danger'] = __('status_cant_change');
-            exit;
-        }
+            if ($getStatus->save()) {
+                echo json_encode(['success' => true]);
+                $_SESSION['flash_success'] = __('status_change_successfully');
+                exit;
+            } else {
+                echo json_encode(['success' => false]);
+                $_SESSION['flash_error'] = __('status_cant_change');
+                exit;
+            }
+
+
+
     }
 
     public function operatorDashboard()
@@ -395,7 +404,7 @@ class UserController extends Controller
         $visitStatus = VisitStatus::all();
         $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
         $pendingServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(2)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
-        $customersCount = sizeof(User::all());
+        $customersCount = sizeof(User::query()->where("user_type", "=", UserType::CUSTOMER)->where("deleted" , "=" , "0")->get());
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [
             'title' => __('dashboard'),
@@ -722,7 +731,8 @@ class UserController extends Controller
         } elseif ($sortBy === 'date') {
             $sortByColumn = 'vt.visit_datetime';
         }
-        $column = $lang == "fa" ? "service_table.fa_title" : 'st.fa_title';
+        $service = $lang == "fa" ? "service_table.fa_title" : 'service_table.en_title';
+        $employee = "ut.first_name" ;
         $allSearchData = ServiceVisitRelation::visitsDetails();
         $allReserve = ServiceVisitRelation::visitsDetails();
         $allReserveVisits = ServiceVisitRelation::visitsDetailsWithStatusType(1);
@@ -732,16 +742,24 @@ class UserController extends Controller
         $allDoneVisits = ServiceVisitRelation::visitsDetailsWithStatusType(5);
         $allNoShowVisits = ServiceVisitRelation::visitsDetailsWithStatusType(6);
         $allRescheduledVisits = ServiceVisitRelation::visitsDetailsWithStatusType(7);
+        $searchableModels = [
+            $allSearchData,
+            $allReserve,
+            $allReserveVisits,
+            $allCancelledVisits,
+            $allDoneVisits,
+            $allReserve2,
+            $allReserveVisits2,
+            $allCancelledVisits2,
+            $allDoneVisits2,
+        ];
         if ($search !== '') {
-            $allSearchData->whereLike($column, $search);
-            $allReserve->whereLike($column, $search);
-            $allReserveVisits->whereLike($column, $search);
-            $allCancelledVisits->whereLike($column, $search);
-            $allDoneVisits->whereLike($column, $search);
-            $allReserve2->whereLike($column, $search);
-            $allReserveVisits2->whereLike($column, $search);
-            $allCancelledVisits2->whereLike($column, $search);
-            $allDoneVisits2->whereLike($column, $search);
+            foreach ($searchableModels as $model) {
+                $model->and(function ($query) use ($service, $employee, $search) {
+                    $query->whereLike($service, $search)
+                        ->orWhereLike($employee, $search);
+                });
+            }
         }
 
         if (!empty($fromDate) && !empty($toDate)) {
@@ -840,55 +858,64 @@ class UserController extends Controller
         $lang = $_GET['lang'] ?? "fa";
         $link = $_GET['link'] ?? "";
         $errors = [];
-        $survey = SurveysTable::query()->where("link", "=", $link)->first();
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $qualityScore = $_POST['service_quality'] ?? "";
-            $toolsScore = $_POST['tools_quality'] ?? "";
-            $employeeBehavior = $_POST['employee_behavior'] ?? "";
-            $onTimeScore = $_POST['on_time'] ?? "";
-            $source = $_POST['source'] ?? "";
-            $other = $_POST['other'] ?? "";
-            $suggestions = $_POST['suggestions'] ?? "";
-            //todo add these words to fa.php for show error fields
-            $validator = new Validator($_POST, [
-                'service_quality' => 'required|min:1|max:5',
-                'tools_quality' => 'required|min:1|max:5',
-                'employee_behavior' => 'required|min:1|max:5',
-                'on_time' => 'required|min:1|max:5',
-                'source' => 'required|min:1|max:5',
-            ]);
-
-            if ($validator->fails()) {
-                $errors = array_merge($errors, $validator->errors());
-                save_old_input();
+        $checkLink = SurveysTable::checkLink($link);
+        if($checkLink){
+            $survey = SurveysTable::getSurveyData($link);
+            if($survey->submitted == 1){
+                $_SESSION["flash_error"] = __("survey_already_submitted");
+                redirect("/");
             }
-            if (empty($errors)) {
-                if ($survey->submitted != 1) {
-                    $survey->quality_score_id = $qualityScore;
-                    $survey->behavior_score = $employeeBehavior;
-                    $survey->onTime_score = $onTimeScore;
-                    $survey->tools_score = $toolsScore;
-                    $survey->feedback_text = $suggestions;
-                    $survey->awareness_source_id = $source;
-                    $survey->awareness_source_text = $other;
-                    $survey->submitted = 1;
-                    if ($survey->save()) {
-                        $_SESSION["flash_success"] = __("your_survey_has_been_saved");
-                        redirect("/");
-                    }
-                } else {
-                    $_SESSION["flash_error"] = __("survey_already_submitted");
+        }else{
+            $_SESSION["flash_error"] = __("link_not_valid");
+            redirect("/");
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $qualityScore = $_POST['service_quality'] ?? "";
+                $toolsScore = $_POST['tools_quality'] ?? "";
+                $employeeBehavior = $_POST['employee_behavior'] ?? "";
+                $onTimeScore = $_POST['on_time'] ?? "";
+                $source = $_POST['source'] ?? "";
+                $other = $_POST['other'] ?? "";
+                $suggestions = $_POST['suggestions'] ?? "";
+                //todo add these words to fa.php for show error fields
+                $validator = new Validator($_POST, [
+                    'service_quality' => 'required|min:1|max:5',
+                    'tools_quality' => 'required|min:1|max:5',
+                    'employee_behavior' => 'required|min:1|max:5',
+                    'on_time' => 'required|min:1|max:5',
+                    'source' => 'required|min:1|max:5',
+                ]);
+
+                if ($validator->fails()) {
+                    $errors = array_merge($errors, $validator->errors());
+                    save_old_input();
+                }
+                if (empty($errors)) {
+                        $survey->quality_score_id = $qualityScore;
+                        $survey->behavior_score = $employeeBehavior;
+                        $survey->onTime_score = $onTimeScore;
+                        $survey->tools_score = $toolsScore;
+                        $survey->feedback_text = $suggestions;
+                        $survey->awareness_source_id = $source;
+                        $survey->awareness_source_text = $other;
+                        $survey->submitted = 1;
+                        if ($survey->save()) {
+                            $_SESSION["flash_success"] = __("your_survey_has_been_saved");
+                            redirect("/");
+                        }
                 }
             }
-        }
         $source = AwarenessSourceTable::all();
         $this->view('user/rank',
             ['title' => __('ticket_list'),
                 'source' => $source,
                 'lang' => $lang,
                 'errors' => $errors,
+                'survey' => $survey,
 
             ]);
     }
+
 }
 

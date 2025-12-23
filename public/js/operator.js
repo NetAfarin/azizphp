@@ -44,7 +44,6 @@ $(document).ready(function() {
             var formData = new FormData($(this).get(0));
         var serviceId = $('#status_id').val();
         var selectedValue = $('#changeStatusSelect').val();
-        if (selectedValue !== 'all') {
             var url = BASE_URL + '/operator/dashboard/changeStatus/' + serviceId;
             $.ajax({
                 url: url,
@@ -59,13 +58,12 @@ $(document).ready(function() {
                     if (data.success) {
                         $('#changeStatusModal').modal('hide');
                         location.reload();
+                    }else {
+                        $('#changeStatusModal').modal('hide');
+                        location.reload();
                     }
                 }
             });
-            //todo nemidonam chejori handle konam
-        } else {
-            alert('لطفاً وضعیت را انتخاب کنید');
-        }
     });
 
     // var btnSearch = $('#btn-search');

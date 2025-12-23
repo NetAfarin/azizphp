@@ -15,29 +15,45 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             </select>
         </div>
     </div>
-    <form method="post"
-          action="<?= BASE_URL ?>/admin/users/delete"
-          id="groupActionForm">
-        <?= csrf_field() ?>
-        <input type="hidden" name="action" id="groupActionInput">
-    </form>
+<!--    <form method="post"-->
+<!--          action="--><?php //= BASE_URL ?><!--/admin/users/delete"-->
+<!--          id="groupActionForm">-->
+<!--        --><?php //= csrf_field() ?>
+<!--        <input type="hidden" name="action" id="groupActionInput">-->
+<!--        <div class="modal fade borderless-modal" id="deleteUserModal"-->
+<!--             tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">-->
+<!--            <div class="modal-dialog modal-dialog-centered">-->
+<!--                <div class="modal-content">-->
+<!--                    <div class="modal-body custom-modal-body mt-4 mb-4">-->
+<!--                        <h4 class="fw-bold">آیا از حذف کاربر هستید؟</h4>-->
+<!--                        <div class="d-flex gap-4 mt-5">-->
+<!--                            <button type="submit" class="btn btn-primary btn-modal">بله</button>-->
+<!--                            <button type="button" class="btn btn-outline-secondary btn-modal"-->
+<!--                                    data-bs-dismiss="modal">خیر-->
+<!--                            </button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </form>-->
     <div class="mt-4">
         <div class="col-12 ">
             <div class="custom-part-with-border ">
                 <div class="d-flex  flex-wrap justify-content-between gap-sm-2">
                     <div class="d-flex">
-                        <select class="groupWorkSelect halfSelectForm"
-                                onchange="document.getElementById('groupActionInput').value = this.value">
-                            <option value="delete"><?= __("delete") ?></option>
-                            <option><?= __("group_work") ?></option>
-                            <option><?= __("group_work") ?></option>
-                        </select>
-                        <button type="submit"
-                                form="groupActionForm"
-                                class="btn btn-primary mx-1"
-                                style="width: 59px;height: 50px;">
-                            <?= __("execution") ?>
-                        </button>
+<!--                        <select class="groupWorkSelect halfSelectForm"-->
+<!--                                onchange="document.getElementById('groupActionInput').value = this.value">-->
+<!--                            <option value="delete">--><?php //= __("delete") ?><!--</option>-->
+<!--                            <option>--><?php //= __("group_work") ?><!--</option>-->
+<!--                            <option>--><?php //= __("group_work") ?><!--</option>-->
+<!--                        </select>-->
+<!--                        <button type="submit"-->
+<!--                                form=""-->
+<!--                                class="btn btn-primary mx-1 groupDelete"-->
+<!--                                style="width: 59px;height: 50px;">-->
+<!--                            --><?php //= __("execution") ?>
+<!--                        </button>-->
                     </div>
                     <form method="get" class="d-flex align-items-center gap-2 mb-2">
                         <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
@@ -89,10 +105,8 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             </div>
         </div>
         <div class="mt-5">
-            <div class="col-lg-12 col-sm-6">
             <?php if (!empty($users)): ?>
             <div class="table-wrapper mt-3">
-                <div class="<!--table-responsive-->">
                     <table class="table custom-table">
                         <thead class="table-primary ">
                         <tr>
@@ -241,9 +255,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
                         </tbody>
                     </table>
-                </div>
             </div>
-        </div>
         </div>
     </div>
     <?php if ($page > 1): ?>

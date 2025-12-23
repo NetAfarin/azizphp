@@ -182,7 +182,6 @@
                                                <div class="reserveDerailsModal rounded text-start">
                                                    <div class="d-flex flex-column align-items-center gap-3 p-3">
                                                        <select class="js-example-basic-single " name="status_id" id="changeStatusSelect">
-                                                           <option value="all"><?= __("all_status") ?></option>
                                                            <?php foreach ($visitStatus as $status):?>
                                                                <option value="<?= $status->id ?>">
                                                                    <?= (APP_LANG == 'fa') ? $status->fa_title : $status->en_title ?>

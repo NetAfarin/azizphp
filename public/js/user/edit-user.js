@@ -169,11 +169,27 @@ $(document).ready(function () {
         let id = e.params.data.id;
         let title = e.params.data.text;
 
-        let durationOptionsHTML = `<?php foreach ($durations as $i): ?>
-              <option value="<?= $i->id ?>"><?= ($lang == 'fa') ? $i->title : $i->en_title ?></option>
-                 <?php endforeach; ?>`;
-        if($('#services_table_wrapper tbody tr[data-id="'+id+'"]').length === 0) {
+        // ساخت options از داده‌های موجود
+        let durationOptionsHTML = '';
 
+        if (Array.isArray(durationOptions)) {
+            durationOptions.forEach(function(item) {
+                // چون item یک آرایه است، باید به صورت item['key'] به آن دسترسی پیدا کنیم
+                let itemId = item.id || item['id'];
+                let itemTitle = item.title || item['title'];
+
+                // اگر زبان انگلیسی است ولی en_title ندارید، از title استفاده کنید
+                let optionTitle = (currentLang == 'fa') ? itemTitle : itemTitle;
+                // یا اگر می‌خواهید فقط برای انگلیسی نمایش متفاوت باشد:
+                // let optionTitle = itemTitle; // همیشه از title فارسی استفاده کن
+
+                if (itemId) {
+                    durationOptionsHTML += `<option value="${itemId}">${optionTitle}</option>`;
+                }
+            });
+        }
+
+        if($('#services_table_wrapper tbody tr[data-id="'+id+'"]').length === 0) {
             let row = `<tr data-id="${id}">
             <td>${title}</td>
             <td><input type="text" min="0" class="form-control" name="service_prices[${id}]" required></td>
@@ -184,14 +200,13 @@ $(document).ready(function () {
             </td>
             <td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>
         </tr>`;
+
             $('#services_table_wrapper tbody').append(row);
             $('#services_table_wrapper tbody tr[data-id="' + id + '"] .duration-select-js').select2({
                 minimumResultsForSearch: Infinity,
             });
         }
-
     });
-
 
     $('#multi-services').on('select2:unselect', function (e) {
         let id = e.params.data.id;

@@ -666,22 +666,30 @@ class AdminController extends Controller
         $operators = User::getSomeUserWithDetails(UserType::OPERATOR);
         $admin = User::getSomeUserWithDetails(UserType::ADMIN);
         $superAdmin = User::getSomeUserWithDetails(UserType::SUPER_ADMIN);
-        $column = $lang == "fa" ? "user_table.first_name" : 'user_table.first_name';
-
+        $firstName="user_table.first_name";
+        $lastName =  "user_table.last_name";
+        $searchableModels = [
+            $allSearchData,
+            $admin,
+            $superAdmin,
+            $customers,
+            $employees,
+            $operators,
+            $operatorsData,
+            $customerData,
+            $employeesData,
+            $superAdminData,
+            $adminData,
+            $allUsers2,
+            $users
+        ];
         if ($search !== '') {
-            $allSearchData->whereLike($column, $search);
-            $users->whereLike($column, $search);
-            $admin->whereLike($column, $search);
-            $superAdmin->whereLike($column, $search);
-            $customers->whereLike($column, $search);
-            $employees->whereLike($column, $search);
-            $operators->whereLike($column, $search);
-            $operatorsData->whereLike($column, $search);
-            $customerData->whereLike($column, $search);
-            $employeesData->whereLike($column, $search);
-            $superAdminData->whereLike($column, $search);
-            $adminData->whereLike($column, $search);
-            $allUsers2->whereLike($column, $search);
+            foreach ($searchableModels as $model) {
+                $model->and(function ($query) use ($firstName, $lastName, $search) {
+                    $query->whereLike($firstName, $search)
+                        ->orWhereLike($lastName, $search);
+                });
+            }
         }
         if ($filter == "all" || empty($filter)) {
             $pagination = $allUsers2->paginate($page, $perPage);

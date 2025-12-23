@@ -199,4 +199,12 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
 
 </div>
 </div>
+<script>
+        console.log("Before defining durationOptions");
+        var durationOptions = <?php echo json_encode($durations); ?>;
+        var currentLang = '<?php echo $lang; ?>';
+        console.log("After defining - durationOptions:", durationOptions);
+        console.log("Type:", typeof durationOptions);
+        console.log("Is array?", Array.isArray(durationOptions));
+</script>
 <script src="<?= asset('/js/user/edit-user.js') ?>"></script>
