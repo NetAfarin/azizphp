@@ -271,6 +271,30 @@ abstract class Model
         $this->offset = $offset;
         return $this;
     }
+    public function toJson(int $options = JSON_UNESCAPED_UNICODE): string
+    {
+        $options = $options | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+        return json_encode($this->toArray(), $options);
+    }
+
+    /**
+     * Convert model collection to JSON string with UTF-8 support
+     *
+     * @param array $models Array of model instances
+     * @param int $options JSON encoding options
+     * @return string JSON representation of the collection
+     */
+    public static function collectionToJson(array $models, int $options = JSON_UNESCAPED_UNICODE): string
+    {
+        $data = array_map(fn($model) => $model->toArray(), $models);
+        $options = $options | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+        return json_encode($data, $options);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
 
 //    protected function buildWhereClauseAndParams(): array
 //    {

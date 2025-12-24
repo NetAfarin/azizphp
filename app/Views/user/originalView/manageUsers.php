@@ -15,35 +15,34 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             </select>
         </div>
     </div>
-<!--    <form method="post"-->
-<!--          action="--><?php //= BASE_URL ?><!--/admin/users/delete"-->
-<!--          id="groupActionForm">-->
-<!--        --><?php //= csrf_field() ?>
-<!--        <input type="hidden" name="action" id="groupActionInput">-->
-<!--        <div class="modal fade borderless-modal" id="deleteUserModal"-->
-<!--             tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">-->
-<!--            <div class="modal-dialog modal-dialog-centered">-->
-<!--                <div class="modal-content">-->
-<!--                    <div class="modal-body custom-modal-body mt-4 mb-4">-->
-<!--                        <h4 class="fw-bold">آیا از حذف کاربر هستید؟</h4>-->
-<!--                        <div class="d-flex gap-4 mt-5">-->
-<!--                            <button type="submit" class="btn btn-primary btn-modal">بله</button>-->
-<!--                            <button type="button" class="btn btn-outline-secondary btn-modal"-->
-<!--                                    data-bs-dismiss="modal">خیر-->
-<!--                            </button>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </form>-->
+    <form method="post" action="<?= BASE_URL ?>/admin/users/delete"
+          id="groupActionForm">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action" id="groupActionInput">
+        <div class="modal fade borderless-modal" id="deleteUserModal"
+             tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body custom-modal-body mt-4 mb-4">
+                        <h4 class="fw-bold">آیا از حذف کاربر هستید؟</h4>
+                        <div class="d-flex gap-4 mt-5">
+                            <button type="submit" class="btn btn-primary btn-modal">بله</button>
+                            <button type="button" class="btn btn-outline-secondary btn-modal"
+                                    data-bs-dismiss="modal">خیر
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     <div class="mt-4">
         <div class="col-12 ">
             <div class="custom-part-with-border ">
                 <div class="d-flex  flex-wrap justify-content-between gap-sm-2">
                     <div class="d-flex">
                         <select class="groupWorkSelect halfSelectForm"
-                                onchange="document.getElementById('groupActionInput').value = this.value">
+                                onchange="">
                             <option value="delete"><?= __("delete") ?></option>
                             <option><?= __("group_work") ?></option>
                             <option><?= __("group_work") ?></option>
@@ -238,8 +237,13 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                                 <li>
                                                     <hr class="dropdown-divider">
                                                 </li>
-                                                <li><a class="dropdown-item text-start " data-bs-toggle="modal"
-                                                       data-bs-target="#showDialogDelete<?= $user->id ?>"><?= __("delete") ?></a>
+                                                <li>
+                                                    <a class="dropdown-item text-start delete-single-btn"
+                                                       data-bs-toggle="modal"
+                                                       data-bs-target="#deleteUserModal"
+                                                       data-user-id="<?= $user->id ?>">
+                                                        <?= __("delete") ?>
+                                                    </a>
                                                 </li>
                                             </ul>
                                         </div>

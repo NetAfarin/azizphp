@@ -908,6 +908,7 @@ class AdminController extends Controller
         $action = (!empty($_POST['action'])) ? $_POST['action'] : 'delete';
         $messageSuccess = "";
         $messageError = "";
+
         if(!empty($usersId)){
         if($action == "delete"){
             foreach ($usersId as $id) {

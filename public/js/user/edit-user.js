@@ -86,6 +86,23 @@
 //     });
 // });
 $(document).ready(function () {
+
+    // if (typeof window.durations !== 'undefined' && window.durations !== null) {
+    //
+    //     // تبدیل آبجکت به آرایه
+    //     var durationArray = Object.values(window.durations);
+    //         console.log(durationArray)
+    //     if (Array.isArray(durationArray)) {
+    //         durationArray.forEach(function(item, index) {
+    //             if (item && item.title) {
+    //                 console.log(item.title);
+    //             }
+    //         });
+    //     }
+    // }else {
+    //
+    // }
+
     // const holidayCheckBox = $('.holiday-checkbox');
     // holidayCheckBox.each(function() {
     //     var index = $(this).data('id');
@@ -165,26 +182,22 @@ $(document).ready(function () {
     $('.duration-select').select2({
         minimumResultsForSearch: Infinity,
     });
+
     $('#multi-services').on('select2:select', function(e) {
         let id = e.params.data.id;
+
         let title = e.params.data.text;
-
-        // ساخت options از داده‌های موجود
         let durationOptionsHTML = '';
-
-        if (Array.isArray(durationOptions)) {
-            durationOptions.forEach(function(item) {
-                // چون item یک آرایه است، باید به صورت item['key'] به آن دسترسی پیدا کنیم
+        if (Array.isArray(durations)) {
+            durations.forEach(function(item) {
                 let itemId = item.id || item['id'];
+
                 let itemTitle = item.title || item['title'];
-
-                // اگر زبان انگلیسی است ولی en_title ندارید، از title استفاده کنید
-                let optionTitle = (currentLang == 'fa') ? itemTitle : itemTitle;
-                // یا اگر می‌خواهید فقط برای انگلیسی نمایش متفاوت باشد:
-                // let optionTitle = itemTitle; // همیشه از title فارسی استفاده کن
-
+                let optionTitle = (lang == 'fa') ? itemTitle : itemTitle;
                 if (itemId) {
                     durationOptionsHTML += `<option value="${itemId}">${optionTitle}</option>`;
+                }else {
+                    console.log("em")
                 }
             });
         }

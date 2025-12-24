@@ -11,8 +11,17 @@ $(document).ready(function () {
     });
     $('.groupDelete').click(function (){
         const selectedCount = $('table tbody input[type="checkbox"]:checked').length;
+
         if(selectedCount > 0){
             $('#deleteUserModal').modal('show');
+            document.getElementById('deleteUserModal').addEventListener('show.bs.modal', function (event) {
+                // دکمه‌ای که modal را فراخوانی کرده
+                var button = event.relatedTarget;
+                // دریافت user-id از data attribute
+                var userId = button.getAttribute('data-user-id');
+                // قرار دادن user-id در فیلد مخفی فرم
+                document.getElementById('deleteUserIdInput').value = userId;
+            });
         }
     });
 
