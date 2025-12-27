@@ -361,4 +361,6 @@ return [
     'feedback' => 'نظرات و پیشنهادات',
     'link_not_valid' => 'لینک معتبر نیست!',
     'done_visit_cant_change' => 'این ویزیت انجام شده است. نمیتوانید عوض کنید!',
+    'users_deleted' => '%s کاربر با موفقیت حذف شدند',
+    'services_deleted' => '%s خدمات  با موفقیت حذف شدند',
 ];

@@ -15,7 +15,64 @@ $(document).ready(function () {
             $(this).removeClass('text-dark').addClass('text-primary');
         }
     });
+    let servicesId = [];
+    $('.groupDelete').click(function (event) {
+        const selectedCount = $('table tbody input[type="checkbox"]:checked').length;
 
+        if(selectedCount > 0){
+            event.preventDefault();
+            var selectedIds = [];
+
+            $('input[name="services[]"]:checked').each(function() {
+                selectedIds.push($(this).val());
+            });
+            servicesId = selectedIds;
+            $('#showDialogDelete').modal('show');
+            $('#groupDeleteInput').val(selectedIds.join(','));
+            $('#deleteUserModal').modal('show');
+        }
+    });
+    let serviceId = null;
+    $('.single-delete').click(function (event){
+        event.preventDefault();
+        serviceId = $(this).data('service-id');
+        $('#showDialogDelete').modal('show');
+    });
+     var url = '';
+    $('.confirmDelete').click(function (){
+        var final = null;
+        if(servicesId.length === 0){
+            final = serviceId;
+        }else{
+            final = servicesId
+        }
+       // if(!Array.isArray(servicesId)){
+       //      url  = `${BASE_URL}/admin/services/delete/${serviceId}`;
+       // }else{
+       //     console.log(servicesId)
+       //     url  = `${BASE_URL}/admin/services/delete/${servicesId}`;
+       // }
+        $.ajax({
+            url: `${BASE_URL}/admin/services/delete/${final}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                    console.log(data.message)
+                    $('#showDialogDelete').modal('hide');
+                    location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.log("Full error response:", xhr);
+                console.log("Response text:", xhr.responseText);
+                console.log("Status:", xhr.status);
+                console.log("Response headers:", xhr.getAllResponseHeaders());
+                console.error('Error deleting service:', error);
+
+                // نمایش پاسخ خام برای دیباگ
+                alert('پاسخ سرور: ' + xhr.responseText.substring(0, 200));
+            }
+        });
+    });
 
     $('#editModal').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget);

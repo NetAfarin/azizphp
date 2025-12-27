@@ -483,40 +483,64 @@ class ServiceController extends Controller
 
     public function deleteService($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            exit('Method Not Allowed');
-        }
+        header('Content-Type: application/json');
+        $id = array_map('intval', explode(',', $id));
+        if(is_array($id)){
+            $successCount = 0;
+            $failedCount = 0;
+            $errorMessages = [];
+            $isParent = false;
+            foreach ($id as $i) {
+                $i = (int)$i;
+                $service = Service::query()->find($i);
+                if(!empty($service)){
+                    $childCount = Service::query()
+                        ->where("parent_id", "=", $service->id)
+                        ->where("deleted", "=", "0")
+                        ->count();
 
-        $category = Service::find((int)$id);
-        $stmt = Service::query()->where("parent_id", "=", $category->id)->where("deleted" , "=" , "0")->get();
-        if (sizeof($stmt) > 0) {
-            $_SESSION['flash_error'] = sprintf(__('delete_category_not_allowed'), sizeof($stmt));;
-            redirect("/admin/services/create");
+                    if ($childCount > 0) {
+                        echo json_encode(['success' => false,]);
+                        $_SESSION['flash_error'] = sprintf(__('delete_category_not_allowed'), $childCount);
+                        exit;
+                    }else{
+                        $isParent = true;
+                    }
+                    if (property_exists($service, 'deleted')) {
+                        $service->deleted = 1;
+                        $success = $service->save();
+                    } else {
+                        $success = $service->delete();
+                    }
+                    if ($success) {
+                        $successCount++;
+                        Logger::info("Service {$service->id} deleted by admin {$_SESSION['user_id']}");
+                    } else {
+                        $failedCount++;
+                        $errorMessages[] = sprintf(__('delete_failed_for_item'), $service->id);
+                    }
+                } else {
+                    $failedCount++;
+                    $errorMessages[] = sprintf(__('item_not_found'), $i);
+                }
+            }
+            if ($failedCount > 0) {
+                $_SESSION['flash_error'] = sprintf(__('bulk_delete_partial_success'), $successCount, $failedCount);
+                echo json_encode(['success' => false,]);
+            } else {
+                if($successCount >= 2){
+                    $_SESSION['flash_success'] = sprintf(__('services_deleted'), $successCount);
+                }else{
+                    $_SESSION['flash_success'] = __('delete_sub_category_message');
+                    if ($isParent){
+                        $_SESSION['flash_success'] = __('delete_category_message');
+                    }
+                }
+                echo json_encode(['success' => true,]);
+            }
             exit;
-        }
-        if (!$category) {
-            $_SESSION['flash_error'] = __('category_not_found');
-            redirect("/admin/services/create");
-            exit;
-        }
 
-
-        if (property_exists($category, 'deleted')) {
-            $category->deleted = 1;
-            $success = $category->save();
-        } else {
-            $success = $category->delete();
         }
-
-        if ($success) {
-            $_SESSION['flash_success'] = __('delete_sub_category_message');
-            Logger::info("Service {$category->id} deleted by admin {$_SESSION['user_id']}");
-        } else {
-            $_SESSION['flash_error'] = __('delete_failed');
-        }
-
-        redirect("/admin/services/create");
         exit;
     }
 }

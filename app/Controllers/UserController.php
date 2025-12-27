@@ -312,8 +312,10 @@ class UserController extends Controller
         $getId = (int)$id;
         $getStatus = ServiceVisitRelation::find($getId);
         if (!$getStatus) {
+            echo json_encode(['success' => false, 'message' => 'سرویس یافت نشد']);
             exit;
         }
+
         $statusType = (int)($_POST['status_id'] ?? 0);
         $employeeId = (int)($_POST['employee_id'] ?? 0);
         $dateTime = ($_POST['register_datetime'] ?? "00:00:00");
@@ -351,9 +353,6 @@ class UserController extends Controller
                 $_SESSION['flash_error'] = __('status_cant_change');
                 exit;
             }
-
-
-
     }
 
     public function operatorDashboard()
@@ -398,13 +397,13 @@ class UserController extends Controller
             }
         }
         $pagination = $query->paginate($page, $perPage);
-        $doneServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d", strtotime("-1 day")))->get());
-        $cancelledServiceYesterday = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(3)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d", strtotime("-1 day")))->get());
+        $doneServiceYesterday = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::COMPLETED , date("Y-m-d", strtotime("-1 day")));
+        $cancelledServiceYesterday = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::CANCELLED , date("Y-m-d", strtotime("-1 day")));
         $todayVisitsCount = ServiceVisitRelation::getVisitsNumberToday();
         $visitStatus = VisitStatus::all();
-        $doneServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(5)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
-        $pendingServicesCount = sizeof(ServiceVisitRelation::visitsDetailsWithStatusType(2)->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", date("Y-m-d"))->get());
-        $customersCount = sizeof(User::query()->where("user_type", "=", UserType::CUSTOMER)->where("deleted" , "=" , "0")->get());
+        $doneServicesCount = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::COMPLETED , "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')");
+        $pendingServicesCount = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::CONFIRMED , "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')");
+        $customersCount = User::getUserCountWithType(UserType::CUSTOMER);
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [
             'title' => __('dashboard'),

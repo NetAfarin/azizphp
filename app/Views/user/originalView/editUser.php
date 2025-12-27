@@ -99,6 +99,9 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                             </option>
                         <?php endforeach;?>
                     </select>
+                    <?php if (!empty($errors['services'])): ?>
+                        <div class="text-danger small"><?= htmlspecialchars($errors['services'][0]) ?></div>
+                    <?php endif; ?>
 
                 </div>
             </div>

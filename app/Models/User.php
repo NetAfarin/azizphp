@@ -285,4 +285,11 @@ class User extends Model
             ];
         }, $results);
     }
+    public static function getUserCountWithType($type)
+    {
+        return sizeof(User::query()
+            ->where("user_type", "=", $type)
+            ->where("deleted" , "=" , "0")->get());
+
+    }
 }

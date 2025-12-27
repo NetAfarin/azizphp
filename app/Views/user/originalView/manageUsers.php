@@ -15,10 +15,10 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
             </select>
         </div>
     </div>
-    <form method="post" action="<?= BASE_URL ?>/admin/users/delete"
-          id="groupActionForm">
+    <form method="post" action="<?= BASE_URL ?>/admin/users/delete" id="deleteForm">
         <?= csrf_field() ?>
-        <input type="hidden" name="action" id="groupActionInput">
+        <input type="hidden" name="user_id" id="singleDeleteInput">
+        <input type="hidden" name="user_ids[]" id="groupDeleteInput">
         <div class="modal fade borderless-modal" id="deleteUserModal"
              tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -26,7 +26,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                     <div class="modal-body custom-modal-body mt-4 mb-4">
                         <h4 class="fw-bold">آیا از حذف کاربر هستید؟</h4>
                         <div class="d-flex gap-4 mt-5">
-                            <button type="submit" class="btn btn-primary btn-modal">بله</button>
+                            <button type="submit" class="btn btn-primary btn-modal ">بله</button>
                             <button type="button" class="btn btn-outline-secondary btn-modal"
                                     data-bs-dismiss="modal">خیر
                             </button>
@@ -48,7 +48,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                             <option><?= __("group_work") ?></option>
                         </select>
                         <button type="submit"
-                                form=""
+                                form="deleteForm"
                                 class="btn btn-primary mx-1 groupDelete"
                                 style="width: 59px;height: 50px;">
                             <?= __("execution") ?>
@@ -238,9 +238,7 @@ include BASE_PATH . '/app/Views/components/layout.php'; ?>
                                                     <hr class="dropdown-divider">
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item text-start delete-single-btn"
-                                                       data-bs-toggle="modal"
-                                                       data-bs-target="#deleteUserModal"
+                                                    <a class="dropdown-item text-start single-delete"
                                                        data-user-id="<?= $user->id ?>">
                                                         <?= __("delete") ?>
                                                     </a>

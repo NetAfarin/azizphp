@@ -77,7 +77,7 @@
                                   </button>
                               <?php else:?>
                                   <?php if (!empty($search)): ?><button class="btn btn-search border-start-0" type="button" id="btn-delete">
-                                      <a class="center text-decoration-none">
+                                      <a href="?filter=<?= htmlspecialchars($getStatus) ?>&page=1&per_page=<?= $per_page ?>" class="center text-decoration-none">
                                           <i class='fas fa-xmark text-primary'></i></a>
                                       </button>
                                   <?php endif;?>

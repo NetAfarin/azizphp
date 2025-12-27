@@ -78,7 +78,10 @@ class ServiceVisitRelation extends Model
             ->join("user_table AS c", "c.id", "=", "vt.customer_id")
             ->join("service_table", "service_table.id", "=", "service_visit_relation_table.service_id")
             ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
-            ->where('vt.deleted', "=", "0");
+            ->where('vt.deleted', "=", "0")
+            ->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))
+            ->orderBy("vt.visit_datetime", "DESC")
+            ->orderBy("service_visit_relation_table.id");
     }
     public static function visitsDetailsWithStatusType($type)
     {
@@ -102,7 +105,10 @@ class ServiceVisitRelation extends Model
             ->join("service_table", "service_table.id", "=", "service_visit_relation_table.service_id")
             ->join("visit_status_table AS vst", "vst.id", "=", "service_visit_relation_table.visit_status")
             ->where('service_visit_relation_table.visit_status', "=",$type)
-            ->where('vt.deleted', "=", "0");
+            ->where('vt.deleted', "=", "0")
+            ->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')" , "=", date("Y-m-d"))
+            ->orderBy("vt.visit_datetime", "DESC")
+            ->orderBy("service_visit_relation_table.id");
     }
     public static function getVisitsNumberToday()
     {
@@ -114,4 +120,13 @@ class ServiceVisitRelation extends Model
             ->get();
 
     }
+    public static function doneServiceYesterdaySize($type , $date)
+    {
+        return  sizeof(ServiceVisitRelation::visitsDetailsWithStatusType($type)
+            ->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", $date)
+            ->get());
+
+    }
+
+
 }

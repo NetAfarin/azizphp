@@ -11,19 +11,25 @@ $(document).ready(function () {
     });
     $('.groupDelete').click(function (){
         const selectedCount = $('table tbody input[type="checkbox"]:checked').length;
-
         if(selectedCount > 0){
-            $('#deleteUserModal').modal('show');
-            document.getElementById('deleteUserModal').addEventListener('show.bs.modal', function (event) {
-                // دکمه‌ای که modal را فراخوانی کرده
-                var button = event.relatedTarget;
-                // دریافت user-id از data attribute
-                var userId = button.getAttribute('data-user-id');
-                // قرار دادن user-id در فیلد مخفی فرم
-                document.getElementById('deleteUserIdInput').value = userId;
+            event.preventDefault();
+            var selectedIds = [];
+            $('input[name="services[]"]:checked').each(function() {
+                selectedIds.push($(this).val());
             });
+            $('#groupDeleteInput').val(selectedIds.join(','));
+            $('#deleteUserModal').modal('show');
+            console.log(selectedIds);
         }
     });
+    $('.single-delete').click(function (event){
+        event.preventDefault();
+        var button = this;
+        var userId = $(button).data('user-id');
+        $('#singleDeleteInput').val(userId);
+        $('#deleteUserModal').modal('show');
+    });
+
 
     const urlParams = new URLSearchParams(window.location.search);
     const filter = urlParams.get('filter') || 'all';

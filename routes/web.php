@@ -65,8 +65,7 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
     Route::post('/admin/services/category/edit/{id}', [ServiceController::class, 'editCategory']);
     Route::post('/admin/services/category/delete/{id}', [ServiceController::class, 'deleteCategory']);
     Route::post('/admin/services/create', [ServiceController::class, 'addService']);
-    Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
-    Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
+//    Route::post('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
     Route::post('/admin/services/update/{id}', [ServiceController::class, 'updateService']);
     Route::post('/operator/dashboard/changeStatus/{id}', [UserController::class, 'updateStatusType']);
     Route::post('/admin/services/edit/{id}', [ServiceController::class, 'editService']);
@@ -85,6 +84,8 @@ Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddlewa
 // Admin GET routes
 Route::middleware([InstanceMiddleware::class,AuthMiddleware::class, RoleMiddleware::class])->group(function () {
     Route::get('/user/submit/rank', [UserController::class, 'submitRank']);
+    Route::get('/admin/services/delete/{id}', [ServiceController::class, 'deleteService']);
+
     Route::get('/admin/user/edit/{id}', [AdminController::class, 'editUser2']);
     Route::get('/admin/bookings/get/{id}', [AdminBookingController::class, 'getServiceId']);
     Route::get('/admin/bookings/get/date/{id}', [AdminBookingController::class, 'getServiceByDate']);

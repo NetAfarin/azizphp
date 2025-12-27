@@ -353,4 +353,6 @@ return [
     'feedback' => 'Feedback and Suggestions',
     'link_not_valid' => 'Link is not valid!',
     'done_visit_cant_change' => 'This visit cannot be changed!',
+    'users_deleted' => '%s Users Deleted',
+    'services_deleted' => '%s Services Deleted',
 ];

@@ -1,234 +1,87 @@
-// $(document).ready(function () {
-//     const durationOptions = window.durations.map(d =>
-//         `<option value="${d.id}">${d.title}</option>`
-//     ).join('');
-//     const $userTypeSelect          = $('#user_type_select');
-//     const $employeeServicesSection = $('#employee_services_section');
-//     const $servicesTableWrapper    = $('#services_table_wrapper');
-//     const $servicesTable           = $('#services_table');
-//     const $serviceSelect           = $('.js-example-basic-multiple');
-//
-//
-//     function toggleEmployeeServices() {
-//         const selectedText = $userTypeSelect.find('option:selected').text().toLowerCase();
-//
-//         if (selectedText.includes('کارمند') || selectedText.includes('employee')) {
-//
-//             $employeeServicesSection.show();
-//             $servicesTableWrapper.show();
-//             $serviceSelect.select2();
-//         } else {
-//             $employeeServicesSection.hide();
-//             $servicesTableWrapper.hide();
-//
-//             $servicesTable.find('tbody').empty();
-//
-//             $serviceSelect.val(null).trigger('change');
-//         }
-//     }
-//
-//     toggleEmployeeServices();
-//
-//     $userTypeSelect.on('change', toggleEmployeeServices);
-//
-//     $serviceSelect.select2();
-//
-//     $serviceSelect.on('select2:select', function (e) {
-//         $servicesTableWrapper.show();
-//
-//         const serviceId   = e.params.data.id;
-//         const serviceText = e.params.data.text;
-//
-//         if ($('#row-' + serviceId).length === 0) {
-//             const row = `
-//                 <tr id="row-${serviceId}">
-//                     <td>${serviceText}</td>
-//                     <td>
-//                         <input type="number" step="0.01" min="0"
-//                                class="form-control"
-//                                name="service_prices[${serviceId}]"
-//                                required>
-//                     </td>
-//                     <td>
-//                         <select name="service_durations[${serviceId}]" class="form-select" required>
-//                             ${durationOptions}
-//                         </select>
-//                     </td>
-//                     <td>
-//                         <button type="button" class="btn btn-danger btn-sm remove-row" data-id="${serviceId}">✖</button>
-//                     </td>
-//                 </tr>`;
-//             $servicesTable.find('tbody').append(row);
-//         }
-//     });
-//
-//     $serviceSelect.on('select2:unselect', function (e) {
-//         const serviceId = e.params.data.id;
-//         $('#row-' + serviceId).remove();
-//
-//         if ($servicesTable.find('tbody').children().length === 0) {
-//             $servicesTableWrapper.hide();
-//         }
-//     });
-//
-//     $(document).on('click', '.remove-row', function () {
-//         const serviceId = $(this).data('id');
-//
-//         let values = $serviceSelect.val() || [];
-//         values = values.filter(id => id != serviceId);
-//         $serviceSelect.val(values).trigger('change');
-//
-//         $('#row-' + serviceId).remove();
-//
-//         if ($servicesTable.find('tbody').children().length === 0) {
-//             $servicesTableWrapper.hide();
-//         }
-//     });
-// });
 $(document).ready(function () {
-
-    // if (typeof window.durations !== 'undefined' && window.durations !== null) {
-    //
-    //     // تبدیل آبجکت به آرایه
-    //     var durationArray = Object.values(window.durations);
-    //         console.log(durationArray)
-    //     if (Array.isArray(durationArray)) {
-    //         durationArray.forEach(function(item, index) {
-    //             if (item && item.title) {
-    //                 console.log(item.title);
-    //             }
-    //         });
-    //     }
-    // }else {
-    //
-    // }
-
-    // const holidayCheckBox = $('.holiday-checkbox');
-    // holidayCheckBox.each(function() {
-    //     var index = $(this).data('id');
-    //     if ($(this).is(':checked')) {
-    //         $('#startTime-' + index).val('').prop('disabled', true);
-    //         $('#endTime-' + index).val('').prop('disabled', true);
-    //     }
-    // });
-    // holidayCheckBox.change(function() {
-    //     var index = $(this).data('id');
-    //     $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
-    //     $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
-    // });
-    // $('.js-example-basic-single').select2({
-    //     minimumResultsForSearch: Infinity,
-    // });
-    // $('.duration-select').select2({
-    //     minimumResultsForSearch: Infinity,
-    // });
-    // $('#multi-services').on('select2:select', function(e) {
-    //     let id = e.params.data.id;
-    //     let title = e.params.data.text;
-    //
-    //     let durationOptionsHTML = `<?php foreach ($durations as $i): ?>
-    //           <option value="<?= $i->id ?>"><?= $i->title ?></option>
-    //              <?php endforeach; ?>`;
-    //     if($('#services_table_wrapper tbody tr[data-id="'+id+'"]').length === 0) {
-    //
-    //         let row = `<tr data-id="${id}">
-    //         <td>${title}</td>
-    //         <td><input type="text" min="0" class="form-control" name="service_prices[${id}]" required></td>
-    //         <td>
-    //             <select name="service_durations[${id}]" class="duration-select-js" required>
-    //                 ${durationOptionsHTML}
-    //             </select>
-    //         </td>
-    //         <td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>
-    //     </tr>`;
-    //         $('#services_table_wrapper tbody').append(row);
-    //         $('#services_table_wrapper tbody tr[data-id="' + id + '"] .duration-select-js').select2({
-    //             minimumResultsForSearch: Infinity,
-    //         });
-    //     }
-    //
-    // });
-    //
-    // $(document).on('click', '.remove-row', function () {
-    //     let row = $(this).closest('tr');
-    //     let id = row.data('id');
-    //     row.remove();
-    //     let selectedValues = $('#multi-services').val();
-    //     selectedValues = selectedValues.filter(v => v != id);
-    //
-    //     $('#multi-services').val(selectedValues).trigger('change');
-    // });
-    //
-    // $('#multi-services').on('select2:unselect', function (e) {
-    //     let id = e.params.data.id;
-    //     $('#services_table_wrapper tbody tr[data-id="'+id+'"]').remove();
-    // });
     const holidayCheckBox = $('.holiday-checkbox');
-    holidayCheckBox.each(function() {
+
+    holidayCheckBox.each(function () {
         var index = $(this).data('id');
         if ($(this).is(':checked')) {
             $('#startTime-' + index).val('').prop('disabled', true);
             $('#endTime-' + index).val('').prop('disabled', true);
         }
     });
-    holidayCheckBox.change(function() {
+
+    holidayCheckBox.change(function () {
         var index = $(this).data('id');
         $('#startTime-' + index).prop('disabled', $(this).is(':checked'));
         $('#endTime-' + index).prop('disabled', $(this).is(':checked'));
     });
+
     $('.js-example-basic-single').select2({
-        minimumResultsForSearch: Infinity,
+        minimumResultsForSearch: Infinity
     });
+
     $('.duration-select').select2({
-        minimumResultsForSearch: Infinity,
+        minimumResultsForSearch: Infinity
     });
 
-    $('#multi-services').on('select2:select', function(e) {
+    $('#multi-services').on('select2:select', function (e) {
         let id = e.params.data.id;
-
         let title = e.params.data.text;
         let durationOptionsHTML = '';
-        if (Array.isArray(durations)) {
-            durations.forEach(function(item) {
-                let itemId = item.id || item['id'];
 
+        if ($.isArray(durations)) {
+            $.each(durations, function (index, item) {
+                let itemId = item.id || item['id'];
                 let itemTitle = item.title || item['title'];
-                let optionTitle = (lang == 'fa') ? itemTitle : itemTitle;
+                let enItemTitle = item.title || item['en_title'];
+                let optionTitle = (lang == 'fa') ? itemTitle : enItemTitle;
+
                 if (itemId) {
-                    durationOptionsHTML += `<option value="${itemId}">${optionTitle}</option>`;
-                }else {
-                    console.log("em")
+                    durationOptionsHTML += '<option value="' + itemId + '">' + optionTitle + '</option>';
                 }
             });
         }
 
-        if($('#services_table_wrapper tbody tr[data-id="'+id+'"]').length === 0) {
-            let row = `<tr data-id="${id}">
-            <td>${title}</td>
-            <td><input type="text" min="0" class="form-control" name="service_prices[${id}]" required></td>
-            <td>
-                <select name="service_durations[${id}]" class="duration-select-js" required>
-                    ${durationOptionsHTML}
-                </select>
-            </td>
-            <td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>
-        </tr>`;
+        if ($('#services_table_wrapper tbody tr[data-id="' + id + '"]').length === 0) {
+            let row = '<tr data-id="' + id + '">' +
+                '<td>' + title + '</td>' +
+                '<td><input type="text" min="0" class="form-control" name="service_prices[' + id + ']" required></td>' +
+                '<td>' +
+                '<select name="service_durations[' + id + ']" class="duration-select-js" required>' +
+                durationOptionsHTML +
+                '</select>' +
+                '</td>' +
+                '<td><i class="fa fa-close remove-row icon-color" style="cursor:pointer;"></i></td>' +
+                '</tr>';
 
             $('#services_table_wrapper tbody').append(row);
             $('#services_table_wrapper tbody tr[data-id="' + id + '"] .duration-select-js').select2({
-                minimumResultsForSearch: Infinity,
+                minimumResultsForSearch: Infinity
             });
         }
     });
 
     $('#multi-services').on('select2:unselect', function (e) {
         let id = e.params.data.id;
-        $('#services_table_wrapper tbody tr[data-id="'+id+'"]').remove();
+        $('#services_table_wrapper tbody tr[data-id="' + id + '"]').remove();
     });
-    var switchData = document.getElementById("switchBox");
-    var table = document.getElementById("workTable");
-    var shiftTitle = document.getElementById("shiftTitle");
-    var section = document.getElementById("employeeSection");
+
+    $(document).on('click', '.remove-row', function () {
+        let row = $(this).closest('tr');
+        let id = row.data('id');
+        row.remove();
+        let selectedValues = $('#multi-services').val();
+        if (selectedValues && selectedValues.length > 0) {
+            selectedValues = $.grep(selectedValues, function (value) {
+                return value != id;
+            });
+            $('#multi-services').val(selectedValues).trigger('change');
+        }
+    });
+
+    var switchData = $('#switchBox');
+    var table = $('#workTable');
+    var shiftTitle = $('#shiftTitle');
+    var section = $('#employeeSection');
     var role = $('#userRole');
 
     function updateTableDisplay() {
@@ -236,24 +89,24 @@ $(document).ready(function () {
         var optionId = selectedOption.val();
 
         if (optionId == "1") {
-            switchBox.style.display = "block";
-            shiftTitle.style.display = "block";
-            section.style.display = "block";
+            switchData.show();
+            shiftTitle.show();
+            section.show();
 
-            if (switchData.checked) {
-                table.style.display = "none";
+            if (switchData.is(':checked')) {
+                table.hide();
             } else {
-                table.style.display = "block";
+                table.show();
             }
         } else {
-            switchBox.style.display = "none";
-            table.style.display = "none";
-            shiftTitle.style.display = "none";
-            section.style.display = "none";
+            switchData.hide();
+            table.hide();
+            shiftTitle.hide();
+            section.hide();
         }
     }
 
-    switchData.addEventListener('change', updateTableDisplay);
-    role.on('change', updateTableDisplay);
+    switchData.change(updateTableDisplay);
+    role.change(updateTableDisplay);
     updateTableDisplay();
 });

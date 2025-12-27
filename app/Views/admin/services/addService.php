@@ -83,9 +83,8 @@ if (!empty($publicErrors)): ?>
                         <option><?= __("group_work") ?></option>
                         <option><?= __("group_work") ?></option>
                     </select>
-
                     <button type="submit"
-                            class="btn btn-primary mx-1"
+                            class="btn btn-primary mx-1 groupDelete"
                             style="width: 59px;height: 50px;">
                         <?= __("execution") ?>
                     </button>                </div>
@@ -130,7 +129,7 @@ if (!empty($publicErrors)): ?>
                     <table class="table custom-table">
                     <thead class="table-primary ">
                     <tr>
-                        <th> <input class="form-check-input checkBox" type="checkbox" value="" id="allServices">
+                        <th> <input class="form-check-input checkBox" type="checkbox" value="" id="allServices" >
                             <label for="allServices"><?= __("row") ?></label>
                         </th>
                         <th class="text-center" >
@@ -186,9 +185,12 @@ if (!empty($publicErrors)): ?>
                     <?php foreach ($allServices as $service): ?>
                         <tr>
                             <td>
-                                <input class="form-check-input checkBox" type="checkbox" value="<?= $service->id ?>" name="serviceId" id="tableService<?= $count?>">
+                                <input class="form-check-input checkBox" type="checkbox"
+                                       value="<?= $service->id ?>"
+                                       name="services[]"
+                                       id="tableService<?= $count?>">
                                 <label class="form-check-label" for="tableService<?= $count?>">
-                                    <?=  htmlspecialchars($count)?>
+                                    <?= htmlspecialchars($count) ?>
                                 </label>
                             </td>
                             <td>
@@ -242,26 +244,26 @@ if (!empty($publicErrors)): ?>
 
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-start " data-bs-toggle="modal" data-bs-target="#showDialogDelete<?= $service->id ?>"><?=__("delete")?></a></li>
+                                        <li><a class="dropdown-item text-start single-delete " data-service-id="<?= $service->id ?>"><?=__("delete")?></a></li>
                                     </ul>
                                 </div>
                             </td>
-                            <form method="post" action="<?= BASE_URL ?>/admin/services/delete/<?= $service->id ?>" id="editServiceForm">
-                                <?= csrf_field() ?>
-                                <div class="modal fade borderless-modal" id="showDialogDelete<?= $service->id ?>" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+<!--                            <form method="post" action="--><?php //= BASE_URL ?><!--/admin/services/delete/--><?php //= $service->id ?><!--" id="editServiceForm">-->
+<!--                                --><?php //= csrf_field() ?>
+                                <div class="modal fade borderless-modal" id="showDialogDelete" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-body custom-modal-body mt-4 mb-4">
                                                 <h4 class="fw-bold text-center"><?=__("confirm_delete_service")?></h4>
                                                 <div class="d-flex gap-4 mt-5">
-                                                    <button type="submit" class="btn btn-primary btn-modal"><?= __("yes") ?></button>
+                                                    <button type="submit" class="btn btn-primary btn-modal confirmDelete"><?= __("yes") ?></button>
                                                     <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal"><?= __("no") ?></button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+<!--                            </form>-->
 
                             <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
@@ -338,5 +340,3 @@ if (!empty($publicErrors)): ?>
 </div>
 </div>
 <script src="<?= asset('/js/service/edit-service.js') ?>"></script>
-</body>
-

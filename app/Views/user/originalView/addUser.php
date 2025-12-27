@@ -64,7 +64,7 @@
      <div class="row mt-5">
          <div class="col-12">
              <label for="address"><?= __("postal_address") ?><span class="bullet-color"> *</span></label>
-             <input type="text" class="form-control" id="user-role" name="address">
+             <input type="text" class="form-control" id="user-role" name="postal_address">
              <?php if (!empty($errors['postal_address'])): ?>
                  <div class="text-danger small"><?= htmlspecialchars($errors['postal_address'][0]) ?></div>
              <?php endif; ?>
