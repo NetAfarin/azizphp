@@ -77,7 +77,7 @@
     --bs-body-font-size: 1rem;
     --bs-body-font-weight: 400;
     --bs-body-line-height: 1.5;
-    --bs-body-color: #212529;
+    /*--bs-body-color: #212529;*/
     --bs-body-color-rgb: 33, 37, 41;
     --bs-body-bg: #fff;
     --bs-body-bg-rgb: 255, 255, 255;
@@ -137,14 +137,25 @@
     --bs-bg-dropdown-item:#BBBBBB;
     --bs-bg-border-left:#B9B8B8;
     --action-menu:#EBEAEA;
+    --bs-body-color: #E9F3F9;
     --bs-pagination-border-radius: 8px;
 }
+
+
+[data-theme="dark"] {
+    --bs-body-color: #1E3A5F;
+    --bs-dark-rgb: 255, 255, 255;
+}
+.text-dark{
+    color: var(--bs-dark);
+}
 body{
-    background: #E9F3F9;
+    background-color: var(--bs-body-color);
 }
 body, * {
     font-family: myFont, serif;
 }
+
 .btn-primary {
     --bs-btn-color: #fff;
     --bs-btn-bg: #EA4C89;

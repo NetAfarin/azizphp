@@ -57,8 +57,8 @@ $menuItems = [
 
     <div class="row">
         <div class="col-lg-3 col-md-3 col-xl-3 col-xxl-2 px-4 d-none d-lg-block">
-            <div class="bg-white d-flex flex-column  pb-4 sidebar-full-height menu-border-radius">
-                <div class="sidebar-scroll">
+            <div class="bg-white flex-column  pb-4 sidebar-full-height menu-border-radius">
+                <div class="sidebar-scroll d-flex flex-column justify-content-between h-100">
 
                 <img src="<?= asset('img/delarose-black.png') ?>" style="height: 200px; object-fit: contain"
                      class="mt-4">
@@ -145,7 +145,7 @@ $menuItems = [
         <div class="col-lg-9 col-md-12 col-xl-9 col-xxl-10 px-3">
             <div class=" mt-lg-0 mt-3">
                 <div class="col-12 d-flex  justify-content-between align-items-center">
-                    <h4 class="<?php echo $lang == 'en' ? 'title-left-border' : 'title-right-border' ?> px-2"><?= $title ?></h4>
+                    <h4 class="<?php echo $lang == 'en' ? 'title-left-border' : 'title-right-border text-dark' ?> px-2"><?= $title ?></h4>
                     <div class="d-flex align-items-center gap-4">
                         <div class="d-flex justify-content-center">
                             <div class="profile-details py-3" style="width: 60px;">
@@ -169,7 +169,8 @@ $menuItems = [
                                 <li><a class="dropdown-item" href="<?= BASE_URL ?>/user/logout"><?= __('logout') ?></a></li>
                             </ul>
                         </div>
-
+                        <button id="darkModeToggle" class="btn btn-primary py-3">
+                        </button>
                     </div>
                 </div>
 

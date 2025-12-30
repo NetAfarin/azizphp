@@ -20,6 +20,32 @@
         const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
         toast.show();
     }
+    $(document).ready(function() {
+        const $toggleButton = $('#darkModeToggle');
+        const $body = $('body');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        $body.attr('data-theme', savedTheme);
+        if (savedTheme === 'dark') {
+            $toggleButton.html('<i class="fas fa-sun"></i>');
+        } else {
+            $toggleButton.html('<i class="fas fa-moon"></i>');
+        }
+        $toggleButton.on('click', function() {
+            const currentTheme = $body.attr('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            $body.attr('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            if (newTheme === 'dark') {
+                $toggleButton.html('<i class="fas fa-sun"></i>');
+            } else {
+                $toggleButton.html('<i class="fas fa-moon"></i>');
+            }
+            $body.addClass('theme-changing');
+            setTimeout(() => {
+                $body.removeClass('theme-changing');
+            }, 300);
+        });
+    });
 </script>
 </body>
 </html>
