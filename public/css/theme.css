@@ -149,6 +149,10 @@
 .text-dark{
     color: var(--bs-dark);
 }
+label , .card-header , a {
+    color: var(--bs-dark) !important;
+}
+
 body{
     background-color: var(--bs-body-color);
 }

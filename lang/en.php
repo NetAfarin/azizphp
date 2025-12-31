@@ -354,5 +354,11 @@ return [
     'link_not_valid' => 'Link is not valid!',
     'done_visit_cant_change' => 'This visit cannot be changed!',
     'users_deleted' => '%s Users Deleted',
+    'users_cant_deleted' => 'Error in deleting users!',
     'services_deleted' => '%s Services Deleted',
+    'users_doesnt_selected' => 'User cant find!',
+    'user_cant_delete' => 'User cannot be deleted!',
+    'services_cant_delete' => 'کاربر حذف نشد!',
+    'service_delete' => 'خدمت با موفقیت حذف شد.',
+    'category_delete' => 'دسته بندی با موفقیت حذف شد.',
 ];

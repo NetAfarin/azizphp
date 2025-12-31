@@ -44,7 +44,7 @@
         <div class="col-lg-8 col-sm-12 col-md-8">
             <div class="col-lg-12 col-sm-12 mt-5">
                 <div class="d-flex py-4 rounded bg-white flex-column justify-content-evenly shadow-md">
-                    <div class="p-2 fw-bold text-center "><?= __("click_to_create_reserve") ?></div>
+                    <div class="p-2 fw-bold text-center text-dark"><?= __("click_to_create_reserve") ?></div>
                     <div class="p-2 text-secondary text-center">
                         <a href="/fw/admin/bookings/create">
                             <button class="btn btn-primary"><?= __("create_new_reserve") ?></button>
@@ -247,7 +247,7 @@
         <div class="col-lg-4 col-sm-12 col-md-4">
             <div class="mt-5">
                 <div class="shadow-md bg-white rounded py-4 px-4 vh-100">
-                    <h4 class="text-start mb-3"><?= __("lastest_news") ?></h4>
+                    <h4 class="text-star text-dark mb-3"><?= __("lastest_news") ?></h4>
                     <ul class="list-unstyled bg-white " >
                         <li class="d-flex align-items-center mb-3">
                             <i class="fa fa-circle text-primary mt-1 me-2 flex-shrink-0"></i>

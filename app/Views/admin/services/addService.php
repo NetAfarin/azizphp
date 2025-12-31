@@ -20,6 +20,27 @@ if (!empty($publicErrors)): ?>
     </div>
 <?php endif; ?>
 <?php include BASE_PATH . '/app/Views/components/layout.php'; ?>
+<form method="post" action="<?= BASE_URL ?>/admin/services/delete" id="deleteForm">
+    <?= csrf_field() ?>
+    <input type="hidden" name="servicesId" id="groupUserDelete">
+
+    <div class="modal fade borderless-modal" id="deleteUserModal"
+         tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body custom-modal-body mt-4 mb-4">
+                    <h4 class="fw-bold text-dark">آیا از حذف سرویس‌ها مطمئن هستید؟</h4>
+                    <div class="d-flex gap-4 mt-5">
+                        <button type="submit" class="btn btn-primary btn-modal">بله</button>
+                        <button type="button" class="btn btn-outline-secondary btn-modal"
+                                data-bs-dismiss="modal">خیر
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
 <form method="post">
     <?= csrf_field() ?>
@@ -187,7 +208,7 @@ if (!empty($publicErrors)): ?>
                             <td>
                                 <input class="form-check-input checkBox" type="checkbox"
                                        value="<?= $service->id ?>"
-                                       name="services[]"
+                                       name="services"
                                        id="tableService<?= $count?>">
                                 <label class="form-check-label" for="tableService<?= $count?>">
                                     <?= htmlspecialchars($count) ?>
@@ -244,25 +265,31 @@ if (!empty($publicErrors)): ?>
 
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item text-start single-delete " data-service-id="<?= $service->id ?>"><?=__("delete")?></a></li>
+                                        <li>
+                                            <a class="dropdown-item text-start single-delete" data-id="<?= $service->id ?>" href="#">
+                                                <?= __("delete") ?>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </td>
 <!--                            <form method="post" action="--><?php //= BASE_URL ?><!--/admin/services/delete/--><?php //= $service->id ?><!--" id="editServiceForm">-->
 <!--                                --><?php //= csrf_field() ?>
-                                <div class="modal fade borderless-modal" id="showDialogDelete" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-body custom-modal-body mt-4 mb-4">
-                                                <h4 class="fw-bold text-center"><?=__("confirm_delete_service")?></h4>
-                                                <div class="d-flex gap-4 mt-5">
-                                                    <button type="submit" class="btn btn-primary btn-modal confirmDelete"><?= __("yes") ?></button>
-                                                    <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal"><?= __("no") ?></button>
-                                                </div>
+                            <div class="modal fade borderless-modal" id="showDialogDelete" tabindex="-1" aria-labelledby="borderlessModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-body custom-modal-body mt-4 mb-4">
+                                            <h4 class="fw-bold text-center"><?= __("confirm_delete_service") ?></h4>
+                                            <div class="d-flex gap-4 mt-5 justify-content-center">
+                                                <a href="#" id="deleteConfirmBtn">
+                                                    <button type="button" class="btn btn-primary btn-modal"><?= __("yes") ?></button>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-secondary btn-modal" data-bs-dismiss="modal"><?= __("no") ?></button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 <!--                            </form>-->
 
                             <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">

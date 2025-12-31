@@ -29,7 +29,7 @@
             <div class="mb-3 mx-2 text-start">
                    <i class="fa-solid fa-phone-flip icon-custom <?php if($lang == 'en') echo 'ltr-icon'; ?>"></i>
                    <label for="exampleInputTel" class="form-label text-black px-1"><?= __("phone_number") ?><span class="bullet-color"> *</span></label>
-                <input type="tel" name="phone_number" class="form-control mt-0  ltr-input" id="exampleInputTel">
+                <input type="tel" name="phone_number" class="form-control mt-0 text-dark  ltr-input" id="exampleInputTel">
                 <?php if (!empty($errors['phone_number'])) : ?>
                     <div class="text-danger small"><?= htmlspecialchars($errors['phone_number'][0]) ?></div>
                 <?php endif; ?>

@@ -79,7 +79,7 @@ if (!empty($publicErrors)): ?>
                                     <span class="bullet-color"> *</span>
                                 </label>
                                 <div class="input-with-icon">
-                                    <input type="password" class="form-control ltr-input" id="passwordInput" name="password">
+                                    <input type="password" class="form-control text-dark ltr-input" id="passwordInput" name="password">
                                     <i class="fa fa-eye iconPointer" id="togglePassword"></i>
                                 </div>
                                 <?php if (!empty($errors['password'])) : ?>
@@ -106,7 +106,7 @@ if (!empty($publicErrors)): ?>
                                 <span class="bullet-color"> *</span>
                             </label>
                             <div class="input-with-icon">
-                                <input type="password" class="form-control ltr-input" id="otpInput">
+                                <input type="password" class="form-control text-dark ltr-input" id="otpInput">
                                 <i class="fa fa-eye" id="toggleOtp"></i>
                             </div>
                             <?php if (!empty($errors['otp'])) : ?>

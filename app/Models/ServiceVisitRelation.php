@@ -120,11 +120,11 @@ class ServiceVisitRelation extends Model
             ->get();
 
     }
-    public static function doneServiceYesterdaySize($type , $date)
+    public static function getServiceWithTypeAndDate($type , $date)
     {
-        return  sizeof(ServiceVisitRelation::visitsDetailsWithStatusType($type)
+        return  ServiceVisitRelation::visitsDetailsWithStatusType($type)
             ->where("DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')", "=", $date)
-            ->get());
+            ->get();
 
     }
 

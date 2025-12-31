@@ -362,5 +362,13 @@ return [
     'link_not_valid' => 'لینک معتبر نیست!',
     'done_visit_cant_change' => 'این ویزیت انجام شده است. نمیتوانید عوض کنید!',
     'users_deleted' => '%s کاربر با موفقیت حذف شدند',
+    'users_cant_deleted' => 'خطا در حذف کاربر',
     'services_deleted' => '%s خدمات  با موفقیت حذف شدند',
+    'category_deleted' => '%s خدمات  با موفقیت حذف شدند',
+    'users_doesnt_selected' => 'کاربر یافت نشد!',
+    'services_doesnt_selected' => 'خدمتی یافت نشد!',
+    'user_cant_delete' => 'کاربر حذف نشد!',
+    'services_cant_delete' => 'کاربر حذف نشد!',
+    'service_delete' => 'خدمت با موفقیت حذف شد.',
+    'category_delete' => 'دسته بندی با موفقیت حذف شد.',
 ];

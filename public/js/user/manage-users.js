@@ -14,23 +14,14 @@ $(document).ready(function () {
         if(selectedCount > 0){
             event.preventDefault();
             var selectedIds = [];
-            $('input[name="services[]"]:checked').each(function() {
+            $('input[name="users"]:checked').each(function() {
                 selectedIds.push($(this).val());
             });
-            $('#groupDeleteInput').val(selectedIds.join(','));
+            $('#groupUserDelete').val(selectedIds.join(','));
             $('#deleteUserModal').modal('show');
             console.log(selectedIds);
         }
     });
-    $('.single-delete').click(function (event){
-        event.preventDefault();
-        var button = this;
-        var userId = $(button).data('user-id');
-        $('#singleDeleteInput').val(userId);
-        $('#deleteUserModal').modal('show');
-    });
-
-
     const urlParams = new URLSearchParams(window.location.search);
     const filter = urlParams.get('filter') || 'all';
 

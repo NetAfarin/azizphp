@@ -305,11 +305,6 @@ class AdminController extends Controller
 
     public function deleteUser($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            http_response_code(405);
-            exit('Method Not Allowed');
-        }
-
         $user = User::find((int)$id);
         if (!$user) {
             $_SESSION['flash_error'] = __('user_not_found');
@@ -321,8 +316,7 @@ class AdminController extends Controller
             $_SESSION['flash_error'] = __('cannot_delete_self');
             redirect("/admin/user/manage");
             exit;
-        }
-        if ($user->user_type == UserType::ADMIN) {
+        }else if ($user->user_type == UserType::ADMIN) {
             $_SESSION['flash_error'] = __('cannot_delete_admin');
             redirect("/admin/user/manage");
             exit;
@@ -903,57 +897,50 @@ class AdminController extends Controller
 
     public function deleteUsers()
     {
-        $userId = $_POST['user_id'] ?? '';
-        $usersIds = $_POST['user_ids'] ?? [];
+        $usersIds = $_POST['usersId'] ?? '';
+        $usersIds = explode(',', $usersIds);
+        $usersIds = array_map('intval', $usersIds);
         $action = (!empty($_POST['action'])) ? $_POST['action'] : 'delete';
         $messageSuccess = "";
         $messageError = "";
          if($action == 'delete') {
-            if (!empty($userId)) {
-                $userId = (int) $userId;
-                $user = User::find($userId);
-                if ($user->user_type == UserType::ADMIN) {
-                    $_SESSION['flash_error'] = __('cannot_delete_admin');
-                    redirect("/admin/user/manage");
-                }else if($user->id == $_SESSION['user_id']){
-                    $_SESSION['flash_error'] = __('cannot_delete_self');
-                    redirect("/admin/user/manage");
-                }else{
-                    $user->deleted = 1;
-                    $user->save();
-                    $_SESSION['flash_success']= __('user_deleted');
-                    redirect("/admin/user/manage");
-                }
-            }else {
-                $idsArray = explode(',', $usersIds[0]);
-                $idsArray = array_map('intval', $idsArray);
-                $count = 0;
-                $errors = [];
-                foreach ($idsArray as $id) {
-                    $id = (int)$id;
-                    $user = User::find($id);
+             $successCount = 0;
+             $failedCount = 0;
+             $errorMessages = [];
+             foreach ($usersIds as $i) {
+                 $user = User::find($i);
+                 if (!empty($user)) {
+                     $user->deleted = 1;
+                     if($user->user_type == UserType::SUPER_ADMIN){
+                         $failedCount++;
+                         $messageError = __("cannot_delete_admin");
+                     }else if($user->id == $_SESSION['user_id']){
+                         $failedCount++;
+                         $messageError = __("cannot_delete_self");
+                     }else if($user->save()) {
+                         $successCount++;
+                     } else {
+                         $failedCount++;
+                         $messageError=__("user_cant_delete");
+                     }
+                 }
+                 else{
+                     $failedCount++;
+                     $messageError=__("users_doesnt_selected");
+                 }
+             }
+             if($successCount > 0){
+                 if($successCount >= 2){
+                     $_SESSION['flash_success'] = sprintf(__('users_deleted'), $successCount);
+                 }else{
+                     $_SESSION['flash_success'] = __('user_deleted');
+                 }
+             }
+             if($failedCount > 0){
+                 $_SESSION['flash_error'] = $messageError;
+             }
 
-                    if (!empty($user)) {
-                        if ($user->user_type == UserType::ADMIN) {
-                            $errors[] = __('cannot_delete_admin');
-                        } else if ($user->id == $_SESSION['user_id']) {
-                            $errors[] = __('cannot_delete_self');
-                        } else {
-                            $user->deleted = 1;
-                            $user->save();
-                            $count += 1;
-                        }
-                    }
-                }
-                if($count != 0){
-                    $_SESSION['flash_success'] =($count >= 2) ? sprintf( __('users_deleted'), $count) : __('user_deleted') ;
-                }
-
-                if (!empty($errors)) {
-                    $_SESSION['flash_error'] = implode('<br>', $errors);
-                }
-                redirect("/admin/user/manage");
-            }
+             redirect('/admin/user/manage');
          }
         else{
             $_SESSION['flash_error'] = __('user_doesnt_selected');

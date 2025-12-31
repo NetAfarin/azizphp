@@ -397,12 +397,12 @@ class UserController extends Controller
             }
         }
         $pagination = $query->paginate($page, $perPage);
-        $doneServiceYesterday = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::COMPLETED , date("Y-m-d", strtotime("-1 day")));
-        $cancelledServiceYesterday = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::CANCELLED , date("Y-m-d", strtotime("-1 day")));
+        $doneServiceYesterday = sizeof(ServiceVisitRelation::getServiceWithTypeAndDate(VisitStatus::COMPLETED , date("Y-m-d", strtotime("-1 day"))));
+        $cancelledServiceYesterday = sizeof(ServiceVisitRelation::getServiceWithTypeAndDate(VisitStatus::CANCELLED , date("Y-m-d", strtotime("-1 day"))));
         $todayVisitsCount = ServiceVisitRelation::getVisitsNumberToday();
         $visitStatus = VisitStatus::all();
-        $doneServicesCount = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::COMPLETED , "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')");
-        $pendingServicesCount = ServiceVisitRelation::doneServiceYesterdaySize(VisitStatus::CONFIRMED , "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')");
+        $doneServicesCount = sizeof(ServiceVisitRelation::getServiceWithTypeAndDate(VisitStatus::COMPLETED , "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')"));
+        $pendingServicesCount = sizeof(ServiceVisitRelation::getServiceWithTypeAndDate(VisitStatus::CONFIRMED , "DATE_FORMAT(vt.visit_datetime, '%Y-%m-%d')"));
         $customersCount = User::getUserCountWithType(UserType::CUSTOMER);
         $totalPages = ceil($pagination['total'] / $perPage);
         $this->view('user/originalView/operatorDashboard', [

@@ -18,25 +18,26 @@ $(document).ready(function () {
     let servicesId = [];
     $('.groupDelete').click(function (event) {
         const selectedCount = $('table tbody input[type="checkbox"]:checked').length;
-
         if(selectedCount > 0){
             event.preventDefault();
-            var selectedIds = [];
 
-            $('input[name="services[]"]:checked').each(function() {
+            var selectedIds = [];
+            $('input[name="services"]:checked').each(function() {
                 selectedIds.push($(this).val());
             });
-            servicesId = selectedIds;
-            $('#showDialogDelete').modal('show');
-            $('#groupDeleteInput').val(selectedIds.join(','));
+
+            $('#groupUserDelete').val(selectedIds.join(','));
             $('#deleteUserModal').modal('show');
         }
     });
+
     let serviceId = null;
-    $('.single-delete').click(function (event){
-        event.preventDefault();
-        serviceId = $(this).data('service-id');
-        $('#showDialogDelete').modal('show');
+    $('.single-delete').click(function(e) {
+        e.preventDefault();
+        const serviceId = $(this).data('id');
+        $('#deleteConfirmBtn').attr('href', '/fw/admin/service/delete/' + serviceId);
+        const myModal = new bootstrap.Modal(document.getElementById('showDialogDelete'));
+        myModal.show();
     });
      var url = '';
     $('.confirmDelete').click(function (){
